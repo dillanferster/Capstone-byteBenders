@@ -8,6 +8,7 @@ function App() {
   const [data, setData] = useState();
   const [showData, setShowData] = useState();
 
+  // creates new users
   function createProject() {
     let projectObject = {
       projectName: "new project",
@@ -19,6 +20,7 @@ function App() {
     axios.post("http://localhost:3000/projects", projectObject);
   }
 
+  // gets all project data
   useEffect(() => {
     async function getData() {
       const response = await axios.get("http://localhost:3000/projects");
