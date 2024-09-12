@@ -1,11 +1,20 @@
 import { useState, useEffect } from "react";
-import axios from "axios";
+
 import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
 
+// database functions from api file
+import {
+  getProjects,
+  getProject,
+  createProject,
+  updateProject,
+  deleteProject,
+} from "./api.js";
+
 // styles , material UI
-import { Box, CssBaseline, ThemeProvider, createTheme } from '@mui/material';
+import { Box, CssBaseline, ThemeProvider, createTheme } from "@mui/material";
 import "./App.css";
-import SideNavbar from "./assets/components/sidenav";
+import SideNavbar from "./components/sidenav";
 
 //pages
 import HomePage from "./pages/home";
@@ -14,30 +23,28 @@ import TaskPage from "./pages/task";
 
 function App() {
   //// DATABASE ////
-  const [data, setData] = useState();
-  const [showData, setShowData] = useState();
+  const [projects, setProjects] = useState();
 
-  function createProject() {
+  function makeProject() {
     let projectObject = {
-      projectName: "new project",
-      projectDesc: "the new one",
+      projectName: "first",
+      projectDesc: "yes",
       assignedTo: "dillan",
       dateCreated: new Date(),
     };
 
-    axios.post("http://localhost:3000/projects", projectObject);
+    createProject(projectObject);
+    
   }
 
-  useEffect(() => {
-    async function getData() {
-      const response = await axios.get("http://localhost:3000/projects");
-      if (response.status === 200) {
-        setData(response);
-      }
+  async function loadAllProjects() {
+    const data = await getProjects();
+    if (data) {
+      setProjects(data);
     }
+  }
 
-    getData();
-  }, []);
+  useEffect(() => {}, []);
   /////DATABASE///
 
   // Create a theme instance, material UI theme that can be passed into the themeprovider to set a defualt styles across app and children
@@ -48,7 +55,6 @@ function App() {
     { text: "Home", icon: "HomeIcon", path: "/" },
     { text: "Projects", icon: "FolderIcon", path: "/project" },
     { text: "Tasks", icon: "AssignmentIcon", path: "/task" },
-    
   ];
 
   return (
@@ -60,7 +66,16 @@ function App() {
             <SideNavbar menuItems={menuItems} />
             <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
               <Routes>
-                <Route path="/" element={<HomePage setShowData={setShowData} showData={showData} data={data} createProject={createProject()}/>} />
+                <Route
+                  path="/"
+                  element={
+                    <HomePage
+                      data={projects}
+                      makeProject={makeProject}
+                      loadProjects={loadAllProjects}
+                    />
+                  }
+                />
                 <Route path="/project" element={<ProjectPage />} />
                 <Route path="/task" element={<TaskPage />} />
               </Routes>

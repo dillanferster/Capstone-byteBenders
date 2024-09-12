@@ -1,24 +1,24 @@
-import React, { useState } from 'react';
-import { Link, useLocation } from 'react-router-dom';
-import { 
-  Drawer, 
-  List, 
-  ListItem, 
-  ListItemIcon, 
-  ListItemText, 
-  IconButton, 
-  AppBar, 
-  Toolbar, 
+import React, { useState } from "react";
+import { Link, useLocation } from "react-router-dom";
+import {
+  Drawer,
+  List,
+  ListItem,
+  ListItemIcon,
+  ListItemText,
+  IconButton,
+  AppBar,
+  Toolbar,
   Typography,
   Box,
   useMediaQuery,
-  useTheme
+  useTheme,
 } from "@mui/material";
-import MenuIcon from '@mui/icons-material/Menu';
-import HomeIcon from '@mui/icons-material/Home';
-import FolderIcon from '@mui/icons-material/Folder';
-import AssignmentIcon from '@mui/icons-material/Assignment';
-import BarChartIcon from '@mui/icons-material/BarChart';
+import MenuIcon from "@mui/icons-material/Menu";
+import HomeIcon from "@mui/icons-material/Home";
+import FolderIcon from "@mui/icons-material/Folder";
+import AssignmentIcon from "@mui/icons-material/Assignment";
+import BarChartIcon from "@mui/icons-material/BarChart";
 
 const iconMap = {
   HomeIcon,
@@ -30,7 +30,7 @@ const iconMap = {
 const SideNavbar = ({ menuItems }) => {
   const [mobileOpen, setMobileOpen] = useState(false);
   const theme = useTheme();
-  const isSmallScreen = useMediaQuery(theme.breakpoints.down('sm'));
+  const isSmallScreen = useMediaQuery(theme.breakpoints.down("sm"));
   const location = useLocation();
 
   const handleDrawerToggle = () => {
@@ -44,15 +44,16 @@ const SideNavbar = ({ menuItems }) => {
         {menuItems.map((item) => {
           const IconComponent = iconMap[item.icon];
           return (
-            <ListItem 
-              button 
-              key={item.text} 
-              component={Link} 
+            <ListItem
+              button="true"
+              key={item.text}
+              component={Link}
               to={item.path}
               selected={location.pathname === item.path}
-              
             >
-              <ListItemIcon><IconComponent /></ListItemIcon>
+              <ListItemIcon>
+                <IconComponent />
+              </ListItemIcon>
               <ListItemText primary={item.text} />
             </ListItem>
           );
@@ -63,7 +64,10 @@ const SideNavbar = ({ menuItems }) => {
 
   return (
     <>
-      <AppBar position="fixed" sx={{ zIndex: (theme) => theme.zIndex.drawer + 1 }}>
+      <AppBar
+        position="fixed"
+        sx={{ zIndex: (theme) => theme.zIndex.drawer + 1 }}
+      >
         <Toolbar>
           {isSmallScreen && (
             <IconButton
@@ -71,7 +75,7 @@ const SideNavbar = ({ menuItems }) => {
               aria-label="open drawer"
               edge="start"
               onClick={handleDrawerToggle}
-              sx={{ mr: 2, display: { sm: 'none' } }}
+              sx={{ mr: 2, display: { sm: "none" } }}
             >
               <MenuIcon />
             </IconButton>
@@ -81,10 +85,7 @@ const SideNavbar = ({ menuItems }) => {
           </Typography>
         </Toolbar>
       </AppBar>
-      <Box
-        component="nav"
-        sx={{ width: { sm: 240 }, flexShrink: { sm: 0 } }}
-      >
+      <Box component="nav" sx={{ width: { sm: 240 }, flexShrink: { sm: 0 } }}>
         <Drawer
           variant={isSmallScreen ? "temporary" : "permanent"}
           open={isSmallScreen ? mobileOpen : true}
@@ -93,12 +94,11 @@ const SideNavbar = ({ menuItems }) => {
             keepMounted: true,
           }}
           sx={{
-            display: { xs: 'block', sm: 'block' },
-            '& .MuiDrawer-paper': { boxSizing: 'border-box', width: 240 },
+            display: { xs: "block", sm: "block" },
+            "& .MuiDrawer-paper": { boxSizing: "border-box", width: 240 },
           }}
         >
           {drawerContent}
-       
         </Drawer>
       </Box>
     </>
