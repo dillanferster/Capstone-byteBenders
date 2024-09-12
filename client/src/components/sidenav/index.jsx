@@ -20,6 +20,9 @@ import FolderIcon from "@mui/icons-material/Folder";
 import AssignmentIcon from "@mui/icons-material/Assignment";
 import BarChartIcon from "@mui/icons-material/BarChart";
 
+// nav menu items
+import { menuItems } from "../../pages/pageData.js";
+
 const iconMap = {
   HomeIcon,
   FolderIcon,
@@ -27,7 +30,8 @@ const iconMap = {
   BarChartIcon,
 };
 
-const SideNavbar = ({ menuItems }) => {
+const SideNavbar = () => {
+  // nav responsivness controls
   const [mobileOpen, setMobileOpen] = useState(false);
   const theme = useTheme();
   const isSmallScreen = useMediaQuery(theme.breakpoints.down("sm"));
@@ -36,6 +40,7 @@ const SideNavbar = ({ menuItems }) => {
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);
   };
+  // 
 
   const drawerContent = (
     <Box sx={{ width: 240 }}>
@@ -81,7 +86,7 @@ const SideNavbar = ({ menuItems }) => {
             </IconButton>
           )}
           <Typography variant="h6" noWrap component="div">
-            Dashboard
+            Planzo
           </Typography>
         </Toolbar>
       </AppBar>
