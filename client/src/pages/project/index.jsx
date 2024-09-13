@@ -13,7 +13,7 @@ import {
 //
 
 const ProjectPage = () => {
-  const [projects, setProjects] = useState();
+  const [projects, setProjects] = useState([]);
 
   useEffect(() => {
     async function loadAllProjects() {
@@ -26,7 +26,6 @@ const ProjectPage = () => {
     loadAllProjects();
   }, []);
 
-  
   return (
     <div>
       <ProjectGrid></ProjectGrid>

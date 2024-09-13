@@ -2,7 +2,7 @@
 const connect = require("./connect");
 const express = require("express");
 const cors = require("cors");
-const posts = require("./postRoutes");
+const posts = require("./projectRoutes");
 
 const app = express();
 
