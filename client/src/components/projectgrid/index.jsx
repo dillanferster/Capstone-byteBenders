@@ -4,8 +4,6 @@ import { DataGrid } from "@mui/x-data-grid";
 import { Container } from "@mui/material";
 import { useState, useEffect } from "react";
 
-
-
 /// columns for MUI datagrid
 const columns = [
   { field: "id", headerName: "ID", width: 90 },
@@ -36,10 +34,9 @@ const columns = [
     width: 160,
   },
 ];
-/// 
+///
 
-export default function ProjectGrid({ projects }) {
-
+export default function ProjectGrid({ projects, isloading }) {
   // projects object array from the database is passed into grid from project page
   // rows maps the project list to the corresponding fields that match to the MUI columns for the datagrid component, rows is then passed into the datagrid component
   const rows = projects.map((project) => {
@@ -51,7 +48,6 @@ export default function ProjectGrid({ projects }) {
       dateCreated: project.dateCreated,
     };
   });
-  ////
 
   return (
     <Container>
@@ -67,8 +63,14 @@ export default function ProjectGrid({ projects }) {
             },
           }}
           pageSizeOptions={[5]}
-          checkboxSelection
-          disableRowSelectionOnClick
+          loading={isloading}
+          slotProps={{
+            loadingOverlay: {
+              variant: "skeleton",
+              noRowsVariant: "skeleton",
+            },
+          }}
+          checkboxSelection="true"
         />
       </Box>
     </Container>
