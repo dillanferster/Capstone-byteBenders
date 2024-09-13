@@ -34,7 +34,6 @@ function App() {
     };
 
     createProject(projectObject);
-    
   }
 
   async function loadAllProjects() {
@@ -69,14 +68,13 @@ function App() {
                 <Route
                   path="/"
                   element={
-                    <HomePage
-                      data={projects}
-                      makeProject={makeProject}
-                      loadProjects={loadAllProjects}
-                    />
+                    <HomePage data={projects} loadProjects={loadAllProjects} />
                   }
                 />
-                <Route path="/project" element={<ProjectPage />} />
+                <Route
+                  path="/project"
+                  element={<ProjectPage makeProject={makeProject} />}
+                />
                 <Route path="/task" element={<TaskPage />} />
               </Routes>
             </Box>
