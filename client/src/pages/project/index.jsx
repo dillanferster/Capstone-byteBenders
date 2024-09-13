@@ -28,7 +28,7 @@ const ProjectPage = () => {
 
   return (
     <div>
-      <ProjectGrid></ProjectGrid>
+      <ProjectGrid  projects={projects}></ProjectGrid>
     </div>
   );
 };

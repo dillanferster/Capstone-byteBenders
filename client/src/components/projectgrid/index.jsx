@@ -2,7 +2,11 @@ import * as React from "react";
 import Box from "@mui/material/Box";
 import { DataGrid } from "@mui/x-data-grid";
 import { Container } from "@mui/material";
+import { useState, useEffect } from "react";
 
+
+
+/// columns for MUI datagrid
 const columns = [
   { field: "id", headerName: "ID", width: 90 },
   {
@@ -25,22 +29,30 @@ const columns = [
     editable: true,
   },
   {
-    field: "fullName",
-    headerName: "Full name",
+    field: "dateCreated",
+    headerName: "Date",
     description: "This column has a value getter and is not sortable.",
-    sortable: false,
+    sortable: true,
     width: 160,
-    valueGetter: (value, row) => `${row.firstName || ""} ${row.lastName || ""}`,
   },
 ];
+/// 
 
-const rows = [
-  { id: 1, projectName: "Snow", projectDesc: "Jon", assignedTo: 14 },
-  { id: 2, projectName: "Lannister", projectDesc: "Cersei", assignedTo: 31 },
-  { id: 3, projectName: "Lannister", projectDesc: "Jaime", assignedTo: 31 },
-];
+export default function ProjectGrid({ projects }) {
 
-export default function ProjectGrid() {
+  // projects object array from the database is passed into grid from project page
+  // rows maps the project list to the corresponding fields that match to the MUI columns for the datagrid component, rows is then passed into the datagrid component
+  const rows = projects.map((project) => {
+    return {
+      id: project._id,
+      projectName: project.projectName,
+      projectDesc: project.projectDesc,
+      assignedTo: project.assignedTo,
+      dateCreated: project.dateCreated,
+    };
+  });
+  ////
+
   return (
     <Container>
       <Box sx={{ height: 400, width: "100%" }}>
