@@ -82,4 +82,4 @@ projectRoutes.route("/projects/:id").delete(async (request, response) => {
   response.json(data);
 });
 
-module.exports = postRoutes;
+module.exports = projectRoutes;
