@@ -12,9 +12,14 @@ import {
 } from "../../api.js";
 //
 
-const ProjectPage = () => {
+const ProjectPage = ({ makeProject }) => {
   const [projects, setProjects] = useState([]);
   const [isloading, setIsLoading] = useState(true);
+
+  // add project button handeler
+  function handleButtonAdd() {
+    makeProject();
+  }
 
   useEffect(() => {
     setIsLoading(true);
@@ -32,6 +37,7 @@ const ProjectPage = () => {
 
   return (
     <div>
+      <button onClick={() => handleButtonAdd()}>add project</button>
       <ProjectGrid isloading={isloading} projects={projects}></ProjectGrid>
     </div>
   );
