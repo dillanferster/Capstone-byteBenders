@@ -14,12 +14,16 @@ import {
 
 const ProjectPage = () => {
   const [projects, setProjects] = useState([]);
+  const [isloading, setIsLoading] = useState(true);
 
   useEffect(() => {
+    setIsLoading(true);
+
     async function loadAllProjects() {
       const data = await getProjects();
       if (data) {
         setProjects(data);
+        setIsLoading(false);
       }
     }
 
@@ -28,7 +32,7 @@ const ProjectPage = () => {
 
   return (
     <div>
-      <ProjectGrid></ProjectGrid>
+      <ProjectGrid isloading={isloading} projects={projects}></ProjectGrid>
     </div>
   );
 };
