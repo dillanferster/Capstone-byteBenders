@@ -9,17 +9,14 @@ export default function ProjectGrid({
   rows,
   columns,
   setSelectedProject,
+  selectedId,
 }) {
+  
+
+  //// handels MUI onrow selection change, passes in the id of grid item
   const handleSelectionChange = (rowSelectionModel, details) => {
-    // console.log("Selected row IDs:", rowSelectionModel);
-
-    const selectedId = rowSelectionModel[0];
-
-    const selected = rows.find((row) => selectedId === row.id);
-
-    console.log("found row with matching id", selected);
-
-    setSelectedProject(selected);
+    selectedId(rowSelectionModel);
+   
   };
 
   return (

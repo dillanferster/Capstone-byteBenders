@@ -49,7 +49,7 @@ const ProjectPage = ({ makeProject }) => {
   /// ** state
   const [projects, setProjects] = useState([]);
   const [isloading, setIsLoading] = useState(true);
-  const [selectedProject, setSelectedProject] = useState();
+  const [selectedProject, setSelectedProject] = useState([]);
   const [reloadGrid, setReloadGrid] = useState(false);
   /// ** state
 
@@ -75,9 +75,19 @@ const ProjectPage = ({ makeProject }) => {
   function handleButtonDelete() {
     console.log("deleted project with id:", selectedProject.id);
     deleteProject(selectedProject.id);
-    setSelectedProject(null);
+
     setReloadGrid(!reloadGrid);
   }
+
+  /// item selection, takes the selected ids, finds the full object then adds them to selected project array
+  const selectedId = (rowSelectionModel) => {
+    rowSelectionModel.forEach((project) => {
+      const selected = rows.find((row) => project === row.id);
+      setSelectedProject(selected);
+      console.log("added to selected", selected);
+    });
+  };
+  ////
 
   // loads all projects from database into list
   useEffect(() => {
@@ -96,7 +106,7 @@ const ProjectPage = ({ makeProject }) => {
 
   return (
     <div>
-      {selectedProject ? (
+      {selectedProject && Object.keys(selectedProject).length > 0 ? (
         <Button
           variant="outlined"
           color="error"
@@ -118,6 +128,7 @@ const ProjectPage = ({ makeProject }) => {
         isloading={isloading}
         projects={projects}
         setSelectedProject={setSelectedProject}
+        selectedId={selectedId}
         rows={rows}
         columns={columns}
       ></ProjectGrid>
