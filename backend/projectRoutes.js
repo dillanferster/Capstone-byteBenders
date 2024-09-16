@@ -2,7 +2,7 @@ const express = require("express");
 
 const database = require("./connect");
 
-let postRoutes = express.Router();
+let projectRoutes = express.Router();
 
 // imports from mongodb to convert string to object id
 const ObjectId = require("mongodb").ObjectId;
@@ -11,9 +11,9 @@ const ObjectId = require("mongodb").ObjectId;
 // connects to database via ./connect file module function
 // goes into connection and finds all, returns as array
 // check to make sure resposone has a value then returns in json
-postRoutes.route("/projects").get(async (request, response) => {
+projectRoutes.route("/projects").get(async (request, response) => {
   let db = database.getDb();
-  let data = await db.collection("projects").find({}).toArray();
+  let data = await db.collection("Dillan").find({}).toArray();
   if (data.length > 0) {
     response.json(data);
   } else {
@@ -25,10 +25,10 @@ postRoutes.route("/projects").get(async (request, response) => {
 // connects to database via ./connect file module function
 // goes into connection and finds item that matches the id
 // check to make sure resposone has a value then returns in json
-postRoutes.route("/projects/:id").get(async (request, response) => {
+projectRoutes.route("/projects/:id").get(async (request, response) => {
   let db = database.getDb();
   let data = await db
-    .collection("projects")
+    .collection("Dillan")
     .findOne({ _id: new ObjectId(request.params.id) });
   if (Object.keys(data.length > 0)) {
     response.json(data);
@@ -40,7 +40,7 @@ postRoutes.route("/projects/:id").get(async (request, response) => {
 // create one
 // connects to database via ./connect file module function
 // makes a post with an object
-postRoutes.route("/projects").post(async (request, response) => {
+projectRoutes.route("/projects").post(async (request, response) => {
   let db = database.getDb();
   let mongoObject = {
     projectName: request.body.projectName,
@@ -48,14 +48,14 @@ postRoutes.route("/projects").post(async (request, response) => {
     assignedTo: request.body.assignedTo,
     dateCreated: request.body.dateCreated,
   };
-  let data = await db.collection("projects").insertOne(mongoObject);
+  let data = await db.collection("Dillan").insertOne(mongoObject);
   response.json(data);
 });
 
 // update one
 // connects to database via ./connect file module function
 //
-postRoutes.route("/projects/:id").put(async (request, response) => {
+projectRoutes.route("/projects/:id").put(async (request, response) => {
   let db = database.getDb();
   let mongoObject = {
     $set: {
@@ -66,20 +66,20 @@ postRoutes.route("/projects/:id").put(async (request, response) => {
     },
   };
   let data = await db
-    .collection("projects")
+    .collection("Dillan")
     .updateOne({ _id: new ObjectId(request.params.id) }, mongoObject);
   response.json(data);
 });
 
 // delete one
 // connects to database via ./connect file module function
-postRoutes.route("/projects/:id").delete(async (request, response) => {
+projectRoutes.route("/projects/:id").delete(async (request, response) => {
   let db = database.getDb();
   let data = await db
-    .collection("projects")
+    .collection("Dillan")
     .deleteOne({ _id: new ObjectId(request.params.id) });
 
   response.json(data);
 });
 
-module.exports = postRoutes;
+module.exports = projectRoutes;

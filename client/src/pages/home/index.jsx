@@ -1,16 +1,8 @@
 import React from "react";
+import { useState } from "react";
 
-const HomePage = ({setShowData, showData, data}) => {
-  return (
-    <div>
-      Home
-      <button onClick={() => setShowData(!showData)} variant="contained">
-        show Data
-      </button>
-      {showData ? <div>{JSON.stringify(data)}</div> : <div></div>}
-      <button onClick={() => createProject()}>add project</button>
-    </div>
-  );
+const HomePage = ({}) => {
+  return <div>Home</div>;
 };
 
 export default HomePage;
