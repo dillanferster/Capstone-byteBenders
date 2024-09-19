@@ -12,6 +12,7 @@ import {
   deleteProject,
 } from "../../api.js";
 import ProjectGrid from "../../components/projectgrid/index.jsx";
+import EditMenu from "../../components/editmenu/index.jsx";
 
 //
 
@@ -71,7 +72,6 @@ const ProjectPage = ({ makeProject }) => {
 
   // projects object array from the database is passed into grid from project page
   // rows maps the project list to the corresponding fields that match to the MUI columns for the datagrid component, rows is then passed into the datagrid component
-
   const rows = useMemo(
     () =>
       projects.map((project) => ({
@@ -111,7 +111,11 @@ const ProjectPage = ({ makeProject }) => {
     setReloadGrid(!reloadGrid);
   }
 
-  // handles delete button
+  // handles edit button
+  function handleButtonEdit() {}
+
+  // handles delete button, loops through seleced project and pass the id
+  // to the deleteProject function
   function handleButtonDelete() {
     selectedProject.forEach((project) => {
       deleteProject(project.id);
@@ -122,6 +126,7 @@ const ProjectPage = ({ makeProject }) => {
   }
 
   // handels when the list selection item changes ex. click or deselect an item
+  // sets selected project list with selection
   const handleOnSelectionChanged = (event) => {
     let checkedRows = event.api.getSelectedRows();
     console.log("selected row", checkedRows);
@@ -146,16 +151,28 @@ const ProjectPage = ({ makeProject }) => {
 
   return (
     <div>
-      {selectedProject && Object.keys(selectedProject).length > 0 ? (
-        <Button
-          variant="outlined"
-          color="error"
-          onClick={() => handleButtonDelete()}
-        >
-          Delete
-        </Button>
-      ) : (
-        ""
+      {selectedProject.length > 0 && (
+        <div>
+          <div>
+            {" "}
+            <Button
+              variant="outlined"
+              color="error"
+              onClick={() => handleButtonDelete()}
+            >
+              Delete
+            </Button>
+          </div>
+          <div>
+            <Button
+              variant="outlined"
+              color="warning"
+              onClick={() => handleButtonEdit()}
+            >
+              Edit
+            </Button>
+          </div>
+        </div>
       )}
       <Button
         variant="contained"
@@ -164,15 +181,15 @@ const ProjectPage = ({ makeProject }) => {
       >
         Add project
       </Button>
-      {
-        <ProjectGrid
-          rows={rows}
-          columns={columns}
-          selection={selection}
-          selectionColumnDef={selectionColumnDef}
-          onSelectionChanged={handleOnSelectionChanged}
-        ></ProjectGrid>
-      }
+
+      <ProjectGrid
+        rows={rows}
+        columns={columns}
+        selection={selection}
+        selectionColumnDef={selectionColumnDef}
+        onSelectionChanged={handleOnSelectionChanged}
+      ></ProjectGrid>
+      <EditMenu></EditMenu>
     </div>
   );
 };
