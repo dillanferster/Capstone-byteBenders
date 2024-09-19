@@ -158,8 +158,8 @@ const ProjectPage = ({ makeProject }) => {
 
   return (
     <div className=" mt-[10rem]">
-      {selectedProject.length > 0 && (
-        <div className="flex ">
+      <div className="flex ">
+        {selectedProject.length > 0 && (
           <div>
             {" "}
             <Button
@@ -170,6 +170,8 @@ const ProjectPage = ({ makeProject }) => {
               Delete
             </Button>
           </div>
+        )}
+        {selectedProject.length === 1 && (
           <div>
             <Button
               variant="outlined"
@@ -179,8 +181,9 @@ const ProjectPage = ({ makeProject }) => {
               Edit
             </Button>
           </div>
-        </div>
-      )}
+        )}
+      </div>
+
       <Button
         variant="contained"
         color="success"

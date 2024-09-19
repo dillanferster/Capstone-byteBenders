@@ -34,6 +34,23 @@ export default function EditMenu({ toggleForm, isOpen, setIsOpen }) {
               htmlFor="projectName"
               className="block text-sm font-medium mb-2 text-gray-300"
             >
+              Project ID
+            </label>
+            <input
+              type="text"
+              id="projectName"
+              value={projectName}
+              onChange={(e) => setProjectName(e.target.value)}
+              className="w-full px-4 py-2 bg-gray-700 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              required
+              placeholder="Enter Project name"
+            />
+          </div>
+          <div>
+            <label
+              htmlFor="projectName"
+              className="block text-sm font-medium mb-2 text-gray-300"
+            >
               Project Name
             </label>
             <input
@@ -85,7 +102,7 @@ export default function EditMenu({ toggleForm, isOpen, setIsOpen }) {
             type="submit"
             className="w-full px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50"
           >
-            Add Task
+            Save Edit
           </button>
         </form>
       </div>
