@@ -68,6 +68,8 @@ const ProjectPage = ({ makeProject }) => {
   const [isloading, setIsLoading] = useState(true);
   const [selectedProject, setSelectedProject] = useState([]);
   const [reloadGrid, setReloadGrid] = useState(false);
+  // edit menu
+  const [isOpen, setIsOpen] = useState(false);
   /// ** state
 
   // projects object array from the database is passed into grid from project page
@@ -111,8 +113,13 @@ const ProjectPage = ({ makeProject }) => {
     setReloadGrid(!reloadGrid);
   }
 
+  // sets the form menu state
+  const toggleForm = () => setIsOpen(!isOpen);
+
   // handles edit button
-  function handleButtonEdit() {}
+  function handleButtonEdit() {
+    toggleForm();
+  }
 
   // handles delete button, loops through seleced project and pass the id
   // to the deleteProject function
@@ -150,9 +157,9 @@ const ProjectPage = ({ makeProject }) => {
   }, [reloadGrid]);
 
   return (
-    <div>
+    <div className=" mt-[10rem]">
       {selectedProject.length > 0 && (
-        <div>
+        <div className="flex ">
           <div>
             {" "}
             <Button
@@ -189,7 +196,11 @@ const ProjectPage = ({ makeProject }) => {
         selectionColumnDef={selectionColumnDef}
         onSelectionChanged={handleOnSelectionChanged}
       ></ProjectGrid>
-      <EditMenu></EditMenu>
+      <EditMenu
+        isOpen={isOpen}
+        setIsOpen={setIsOpen}
+        toggleForm={toggleForm}
+      ></EditMenu>
     </div>
   );
 };

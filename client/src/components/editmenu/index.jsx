@@ -1,29 +1,19 @@
 import { useState } from "react";
 
-export default function EditMenu() {
-  const [isOpen, setIsOpen] = useState(false);
-  const [taskName, setTaskName] = useState("");
-  const [dueDate, setDueDate] = useState("");
+export default function EditMenu({ toggleForm, isOpen, setIsOpen }) {
+  const [projectName, setProjectName] = useState("");
+  const [dateCreated, setDateCreated] = useState("");
   const [description, setDescription] = useState("");
-
-  const toggleForm = () => setIsOpen(!isOpen);
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log({ taskName, dueDate, description });
+    console.log({ projectName, date, description });
     // Here you would typically send this data to your backend
     setIsOpen(false);
   };
 
   return (
     <div>
-      <button
-        onClick={toggleForm}
-        className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50"
-      >
-        {isOpen ? "Close Form" : "Open Form"}
-      </button>
-
       <div
         className={`fixed inset-0 bg-black bg-opacity-50 transition-opacity duration-300 ${
           isOpen ? "opacity-100" : "opacity-0 pointer-events-none"
@@ -36,39 +26,39 @@ export default function EditMenu() {
           isOpen ? "translate-x-0" : "translate-x-full"
         }`}
       >
-        <h2 className="text-3xl font-bold mb-8 text-white">Add New Task</h2>
+        <h2 className="text-3xl font-bold mb-8 text-white">Add New Project</h2>
 
         <form onSubmit={handleSubmit} className="space-y-6">
           <div>
             <label
-              htmlFor="taskName"
+              htmlFor="projectName"
               className="block text-sm font-medium mb-2 text-gray-300"
             >
-              Task Name
+              Project Name
             </label>
             <input
               type="text"
-              id="taskName"
-              value={taskName}
-              onChange={(e) => setTaskName(e.target.value)}
+              id="projectName"
+              value={projectName}
+              onChange={(e) => setProjectName(e.target.value)}
               className="w-full px-4 py-2 bg-gray-700 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
               required
-              placeholder="Enter task name"
+              placeholder="Enter Project name"
             />
           </div>
 
           <div>
             <label
-              htmlFor="dueDate"
+              htmlFor="dateCreated"
               className="block text-sm font-medium mb-2 text-gray-300"
             >
-              Due Date
+              Date Created
             </label>
             <input
               type="date"
-              id="dueDate"
-              value={dueDate}
-              onChange={(e) => setDueDate(e.target.value)}
+              id="dateCreated"
+              value={dateCreated}
+              onChange={(e) => setDateCreated(e.target.value)}
               className="w-full px-4 py-2 bg-gray-700 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
               required
             />
