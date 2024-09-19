@@ -1,6 +1,7 @@
-import React from "react";
-import ProjectGrid from "../../components/projectgrid";
-import { useState, useEffect } from "react";
+import React, { useCallback } from "react";
+
+import { useState, useEffect, useMemo } from "react";
+
 import { Button } from "@mui/material";
 // database functions from api file
 import {
@@ -10,37 +11,52 @@ import {
   updateProject,
   deleteProject,
 } from "../../api.js";
+import ProjectGrid from "../../components/projectgrid/index.jsx";
 
 //
 
 /// columns for MUI datagrid
 const columns = [
-  { field: "id", headerName: "ID", width: 90 },
+  {
+    field: "id",
+    headerName: "ID",
+
+    filter: true,
+    floatingFilter: true,
+    editable: false,
+  },
   {
     field: "projectName",
     headerName: "Project name",
-    width: 150,
-    editable: true,
+
+    filter: true,
+    floatingFilter: true,
+    editable: false,
   },
   {
     field: "projectDesc",
     headerName: "Project Desc",
-    width: 150,
-    editable: true,
+
+    filter: true,
+    floatingFilter: true,
+    editable: false,
   },
   {
     field: "assignedTo",
     headerName: "Assigned To",
-    type: "string",
-    width: 110,
-    editable: true,
+
+    filter: true,
+    floatingFilter: true,
+
+    editable: false,
   },
   {
     field: "dateCreated",
     headerName: "Date",
-    description: "This column has a value getter and is not sortable.",
-    sortable: true,
-    width: 160,
+    floatingFilter: true,
+    filter: true,
+
+    editable: false,
   },
 ];
 ///
@@ -55,15 +71,39 @@ const ProjectPage = ({ makeProject }) => {
 
   // projects object array from the database is passed into grid from project page
   // rows maps the project list to the corresponding fields that match to the MUI columns for the datagrid component, rows is then passed into the datagrid component
-  const rows = projects.map((project) => {
+
+  const rows = useMemo(
+    () =>
+      projects.map((project) => ({
+        id: project._id,
+        projectName: project.projectName,
+        projectDesc: project.projectDesc,
+        assignedTo: project.assignedTo,
+        dateCreated: project.dateCreated,
+      })),
+    [projects, reloadGrid]
+  );
+
+  /// for AG data grid
+  const selectionColumnDef = useMemo(() => {
     return {
-      id: project._id,
-      projectName: project.projectName,
-      projectDesc: project.projectDesc,
-      assignedTo: project.assignedTo,
-      dateCreated: project.dateCreated,
+      sortable: true,
+      width: 120,
+      maxWidth: 120,
     };
-  });
+  }, []);
+
+  const selection = useMemo(() => {
+    return {
+      mode: "multiRow",
+      checkboxes: false,
+      headerCheckbox: false,
+      enableMultiSelectWithClick: true,
+      enableClickSelection: true,
+    };
+  }, []);
+
+  /// for AG data grid
 
   // add project button handeler
   function handleButtonAdd() {
@@ -73,21 +113,21 @@ const ProjectPage = ({ makeProject }) => {
 
   // handles delete button
   function handleButtonDelete() {
-    console.log("deleted project with id:", selectedProject.id);
-    deleteProject(selectedProject.id);
+    selectedProject.forEach((project) => {
+      deleteProject(project.id);
+      console.log("deleted project with id:", project.id);
+    });
 
     setReloadGrid(!reloadGrid);
   }
 
-  /// item selection, takes the selected ids, finds the full object then adds them to selected project array
-  const selectedId = (rowSelectionModel) => {
-    rowSelectionModel.forEach((project) => {
-      const selected = rows.find((row) => project === row.id);
-      setSelectedProject(selected);
-      console.log("added to selected", selected);
-    });
+  // handels when the list selection item changes ex. click or deselect an item
+  const handleOnSelectionChanged = (event) => {
+    let checkedRows = event.api.getSelectedRows();
+    console.log("selected row", checkedRows);
+
+    setSelectedProject(checkedRows);
   };
-  ////
 
   // loads all projects from database into list
   useEffect(() => {
@@ -124,14 +164,15 @@ const ProjectPage = ({ makeProject }) => {
       >
         Add project
       </Button>
-      <ProjectGrid
-        isloading={isloading}
-        projects={projects}
-        setSelectedProject={setSelectedProject}
-        selectedId={selectedId}
-        rows={rows}
-        columns={columns}
-      ></ProjectGrid>
+      {
+        <ProjectGrid
+          rows={rows}
+          columns={columns}
+          selection={selection}
+          selectionColumnDef={selectionColumnDef}
+          onSelectionChanged={handleOnSelectionChanged}
+        ></ProjectGrid>
+      }
     </div>
   );
 };

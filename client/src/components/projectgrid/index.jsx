@@ -1,49 +1,29 @@
 import * as React from "react";
-import Box from "@mui/material/Box";
-import { DataGrid } from "@mui/x-data-grid";
-import { Container } from "@mui/material";
+import { AgGridReact } from "ag-grid-react";
+import "ag-grid-community/styles/ag-grid.css";
+import "ag-grid-community/styles/ag-theme-quartz.css";
 
-export default function ProjectGrid({
-  projects,
-  isloading,
+function ProjectGrid({
   rows,
   columns,
-  setSelectedProject,
-  selectedId,
+  selection,
+  selectionColumnDef,
+  onSelectionChanged,
 }) {
-  
-
-  //// handels MUI onrow selection change, passes in the id of grid item
-  const handleSelectionChange = (rowSelectionModel, details) => {
-    selectedId(rowSelectionModel);
-   
-  };
-
   return (
-    <Container>
-      <Box sx={{ height: 400, width: "100%" }}>
-        <DataGrid
-          rows={rows}
-          columns={columns}
-          initialState={{
-            pagination: {
-              paginationModel: {
-                pageSize: 5,
-              },
-            },
-          }}
-          pageSizeOptions={[5]}
-          loading={isloading}
-          slotProps={{
-            loadingOverlay: {
-              variant: "skeleton",
-              noRowsVariant: "skeleton",
-            },
-          }}
-          checkboxSelection
-          onRowSelectionModelChange={handleSelectionChange}
-        />
-      </Box>
-    </Container>
+    <div
+      className="ag-theme-quartz" // applying the Data Grid theme
+      style={{ height: 500, width: 1000 }}
+    >
+      <AgGridReact
+        rowData={rows}
+        columnDefs={columns}
+        selection={selection}
+        selectionColumnDef={selectionColumnDef}
+        onSelectionChanged={onSelectionChanged}
+      ></AgGridReact>
+    </div>
   );
 }
+
+export default ProjectGrid;

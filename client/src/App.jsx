@@ -63,7 +63,13 @@ function App() {
           <Box sx={{ display: "flex" }}>
             <CssBaseline />
             <SideNavbar menuItems={menuItems} />
-            <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
+            <Box
+              component="main"
+              sx={{
+                flexGrow: 1,
+                p: 3,
+              }}
+            >
               <Routes>
                 <Route
                   path="/"
@@ -73,7 +79,9 @@ function App() {
                 />
                 <Route
                   path="/project"
-                  element={<ProjectPage makeProject={makeProject} />}
+                  element={
+                    <ProjectPage makeProject={makeProject}></ProjectPage>
+                  }
                 />
                 <Route path="/task" element={<TaskPage />} />
               </Routes>
