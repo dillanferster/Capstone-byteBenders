@@ -89,15 +89,28 @@ userRoutes.route("/users/:id").put(async (request, response) => {
   response.json(data);
 });
 
-// delete one
+// verify user login
 // connects to database via ./connect file module function
-userRoutes.route("/users/:id").delete(async (request, response) => {
+// goes into connection and finds item that matches the email
+userRoutes.route("/users/login").post(async (request, response) => {
   let db = database.getDb();
-  let data = await db
+  const user = await db
     .collection("users")
-    .deleteOne({ _id: new ObjectId(request.params.id) });
+    .findOne({ email: request.body.email });
 
-  response.json(data);
+  if (user) {
+    let confirmation = await bcrypt.compare(
+      request.body.password,
+      user.password
+    );
+    if (confirmation) {
+      response.json({ success: true, user });
+    } else {
+      response.json({ success: false, message: "Incorrect password" });
+    }
+  } else {
+    response.json({ success: false, message: "User not found" });
+  }
 });
 
 module.exports = userRoutes;

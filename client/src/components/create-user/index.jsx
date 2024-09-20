@@ -1,7 +1,8 @@
 import { createUser as apiCreateUSer } from "../../api.js";
 import { useState } from "react";
 import Button from "@mui/material/Button";
-export default function createUser() {
+
+export default function CreateUser() {
   const [user, setUser] = useState({
     fname: "",
     lname: "",
@@ -11,19 +12,24 @@ export default function createUser() {
 
   async function handleSubmit(e) {
     e.preventDefault();
+    // Check if any field is empty
+    if (!user.fname || !user.lname || !user.email || !user.password) {
+      alert("All fields are required");
+      return;
+    }
     try {
       let response = await apiCreateUSer(user);
       if (response.status !== 200) {
-        alert("User could not be created");
+        alert("User account could not be created");
       } else {
-        alert("User created");
+        alert("User account created");
       }
     } catch (error) {
       console.log(error);
     }
   }
 
-  async function handleChange(e) {
+  function handleChange(e) {
     setUser({ ...user, [e.target.name]: e.target.value });
   }
 
