@@ -6,6 +6,7 @@ import Typography from "@mui/material/Typography";
 import { useNavigate } from "react-router-dom";
 import { Box, Container, Paper } from "@mui/material";
 import axios from "axios";
+import logo from "../../assets/images/logo.png";
 
 export default function Login() {
   const [user, setUser] = useState({
@@ -45,6 +46,12 @@ export default function Login() {
             alignItems: "center",
           }}
         >
+          {/* Logo */}
+          <img
+            src={logo}
+            alt="Planzo Logo"
+            style={{ width: "300px", marginBottom: "20px" }}
+          />
           <Typography component="h1" variant="h5" sx={{ marginBottom: 3 }}>
             Sign In
           </Typography>

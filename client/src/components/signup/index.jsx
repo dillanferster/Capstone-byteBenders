@@ -5,6 +5,7 @@ import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
 import { Box, Container, Paper } from "@mui/material";
 import { useNavigate } from "react-router-dom";
+import logo from "../../assets/images/logo.png";
 
 export default function SignUp() {
   const [user, setUser] = useState({
@@ -28,7 +29,7 @@ export default function SignUp() {
       if (response.status !== 200) {
         alert("User account could not be created");
       } else {
-        alert("User account created");
+        alert("Your account is created. Please login to continue.");
         navigate("/");
       }
     } catch (error) {
@@ -50,8 +51,14 @@ export default function SignUp() {
             alignItems: "center",
           }}
         >
+          {/* Logo */}
+          <img
+            src={logo}
+            alt="Planzo Logo"
+            style={{ width: "300px", marginBottom: "10px" }}
+          />
           <Typography component="h1" variant="h5" sx={{ marginBottom: 3 }}>
-            Create Account
+            Sign Up
           </Typography>
           <form onSubmit={handleSubmit} style={{ width: "100%" }}>
             <TextField
@@ -100,6 +107,9 @@ export default function SignUp() {
               sx={{ marginTop: 3, marginBottom: 2 }}
             >
               Create Account
+            </Button>
+            <Button variant="text" onClick={() => navigate("/")}>
+              Back to Login
             </Button>
           </form>
         </Box>
