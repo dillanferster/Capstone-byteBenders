@@ -13,7 +13,7 @@ const ObjectId = require("mongodb").ObjectId;
 // check to make sure resposone has a value then returns in json
 projectRoutes.route("/projects").get(async (request, response) => {
   let db = database.getDb();
-  let data = await db.collection("Dillan").find({}).toArray();
+  let data = await db.collection("projects").find({}).toArray();
   if (data.length > 0) {
     response.json(data);
   } else {
@@ -28,7 +28,7 @@ projectRoutes.route("/projects").get(async (request, response) => {
 projectRoutes.route("/projects/:id").get(async (request, response) => {
   let db = database.getDb();
   let data = await db
-    .collection("Dillan")
+    .collection("projects")
     .findOne({ _id: new ObjectId(request.params.id) });
   if (Object.keys(data.length > 0)) {
     response.json(data);
@@ -48,7 +48,7 @@ projectRoutes.route("/projects").post(async (request, response) => {
     assignedTo: request.body.assignedTo,
     dateCreated: request.body.dateCreated,
   };
-  let data = await db.collection("Dillan").insertOne(mongoObject);
+  let data = await db.collection("projects").insertOne(mongoObject);
   response.json(data);
 });
 
@@ -66,7 +66,7 @@ projectRoutes.route("/projects/:id").put(async (request, response) => {
     },
   };
   let data = await db
-    .collection("Dillan")
+    .collection("projects")
     .updateOne({ _id: new ObjectId(request.params.id) }, mongoObject);
   response.json(data);
 });
@@ -76,7 +76,7 @@ projectRoutes.route("/projects/:id").put(async (request, response) => {
 projectRoutes.route("/projects/:id").delete(async (request, response) => {
   let db = database.getDb();
   let data = await db
-    .collection("Dillan")
+    .collection("projects")
     .deleteOne({ _id: new ObjectId(request.params.id) });
 
   response.json(data);

@@ -40,3 +40,10 @@ export async function deleteProject(id) {
   const response = await axios.delete(`${URL}/projects/${id}`);
   return response;
 }
+
+///USER///
+// creates a new user , pass in user object
+export async function createUser(user) {
+  const response = await axios.post(`${URL}/users`, user);
+  return response;
+}

@@ -1,8 +1,11 @@
 import React from "react";
-import { useState } from "react";
 
 const HomePage = ({}) => {
-  return <div>Home</div>;
+  return (
+    <div>
+      <h1>Home Page</h1>
+    </div>
+  );
 };
 
 export default HomePage;

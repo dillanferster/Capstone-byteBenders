@@ -20,6 +20,7 @@ import SideNavbar from "./components/sidenav";
 import HomePage from "./pages/home";
 import ProjectPage from "./pages/project";
 import TaskPage from "./pages/task";
+import LoginPage from "./pages/login";
 
 function App() {
   //// DATABASE ////
@@ -71,12 +72,8 @@ function App() {
               }}
             >
               <Routes>
-                <Route
-                  path="/"
-                  element={
-                    <HomePage data={projects} loadProjects={loadAllProjects} />
-                  }
-                />
+                <Route path="/" element={<LoginPage />} />
+                <Route path="/home" element={<HomePage />} />
                 <Route
                   path="/project"
                   element={
