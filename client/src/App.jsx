@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import axios from "axios";
 
 import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
 
@@ -23,6 +24,17 @@ import TaskPage from "./pages/task";
 import Landing from "./pages/landing/index.jsx";
 
 function App() {
+  //// AUTHENTICATION TOKEN ////
+  // set up a default authorization header for Axios requests
+  // using a token stored in sessionStorage
+  useEffect(() => {
+    let token = sessionStorage.getItem("User");
+    if (token) {
+      axios.defaults.headers.common["Authorization"] = `Bearer ${token}`; // Bearer = authentication token formatting
+    }
+  }, []);
+  //// AUTHENTICATION TOKEN ////
+
   //// DATABASE ////
   const [projects, setProjects] = useState();
 
