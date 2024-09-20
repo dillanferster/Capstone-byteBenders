@@ -40,3 +40,20 @@ export async function deleteProject(id) {
   const response = await axios.delete(`${URL}/projects/${id}`);
   return response;
 }
+
+///USER///
+// creates a new user , pass in user object
+export async function createUser(user) {
+  const response = await axios.post(`${URL}/users`, user);
+  return response;
+}
+
+// verify user login
+export async function verifyUser(user) {
+  const response = await axios.post(`${URL}/users/login`, user);
+  if (response.data.success) {
+    return response.data.token;
+  } else {
+    throw new Error(response.statusText);
+  }
+}
