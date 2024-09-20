@@ -2,6 +2,7 @@ import { verifyUser } from "../../api.js";
 import { useState } from "react";
 import Button from "@mui/material/Button";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
 
 export default function Login() {
   const [user, setUser] = useState({
@@ -16,6 +17,8 @@ export default function Login() {
     try {
       let response = await verifyUser(user);
       if (response) {
+        sessionStorage.setItem("User", response);
+        axios.defaults.headers.common["Authorization"] = `Bearer ${response}`; // Bearer = authentication token formatting
         navigate("/home");
       } else {
         alert("Login failed");

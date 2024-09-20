@@ -1,16 +1,14 @@
 const express = require("express");
-
 const database = require("./connect");
-
-let userRoutes = express.Router();
-
 // imports from mongodb to convert string to object id
 const ObjectId = require("mongodb").ObjectId;
-
 const bcrypt = require("bcrypt"); // for password hashing
+const jwt = require("jsonwebtoken"); // for token generation
+require("dotenv").config({ path: "./.env" });
 
+let userRoutes = express.Router();
 const SALT_ROUNDS = 10;
-
+const secretKey = process.env.SECRET_KEY;
 // Read all
 // connects to database via ./connect file module function
 // goes into connection and finds all, returns as array
@@ -104,7 +102,8 @@ userRoutes.route("/users/login").post(async (request, response) => {
       user.password
     );
     if (confirmation) {
-      response.json({ success: true, user });
+      const token = jwt.sign(user, secretKey, { expiresIn: "1h" });
+      response.json({ success: true, token });
     } else {
       response.json({ success: false, message: "Incorrect password" });
     }

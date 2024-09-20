@@ -83,3 +83,5 @@ projectRoutes.route("/projects/:id").delete(async (request, response) => {
 });
 
 module.exports = projectRoutes;
+
+// verify authentication token
