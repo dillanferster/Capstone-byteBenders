@@ -40,7 +40,7 @@ const SideNavbar = () => {
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);
   };
-  // 
+  //
 
   const drawerContent = (
     <Box sx={{ width: 240 }}>

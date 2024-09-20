@@ -11,10 +11,10 @@ import {
   deleteProject,
 } from "./api.js";
 
-// styles , material UI
+// styles , components, material UI
 import { Box, CssBaseline, ThemeProvider, createTheme } from "@mui/material";
 import "./App.css";
-import SideNavbar from "./components/sidenav";
+import Layout from "./components/layout";
 
 //pages
 import HomePage from "./pages/home";
@@ -50,37 +50,37 @@ function App() {
   // Create a theme instance, material UI theme that can be passed into the themeprovider to set a defualt styles across app and children
   const theme = createTheme();
 
-  // navbar items array
-  const menuItems = [
-    { text: "Home", icon: "HomeIcon", path: "/" },
-    { text: "Projects", icon: "FolderIcon", path: "/project" },
-    { text: "Tasks", icon: "AssignmentIcon", path: "/task" },
-  ];
-
   return (
     <>
       <ThemeProvider theme={theme}>
         <Router>
           <Box sx={{ display: "flex" }}>
             <CssBaseline />
-            <SideNavbar menuItems={menuItems} />
             <Box
               component="main"
               sx={{
                 flexGrow: 1,
                 p: 3,
+                minHeight: "100vh", // Makes the box take up full viewport height
+                display: "flex", // Flexbox for layout
+                flexDirection: "column", // Stack elements vertically
+                justifyContent: "center", // Centers content vertically
+                alignItems: "center", // Centers content horizontally
+                backgroundColor: "#f5f5f5", // Example background color to visually separate the section
               }}
             >
               <Routes>
                 <Route path="/" element={<Landing />} />
-                <Route path="/home" element={<HomePage />} />
-                <Route
-                  path="/project"
-                  element={
-                    <ProjectPage makeProject={makeProject}></ProjectPage>
-                  }
-                />
-                <Route path="/task" element={<TaskPage />} />
+                <Route element={<Layout />}>
+                  <Route path="/home" element={<HomePage />} />
+                  <Route
+                    path="/project"
+                    element={
+                      <ProjectPage makeProject={makeProject}></ProjectPage>
+                    }
+                  />
+                  <Route path="/task" element={<TaskPage />} />
+                </Route>
               </Routes>
             </Box>
           </Box>
