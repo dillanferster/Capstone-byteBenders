@@ -21,7 +21,8 @@ import Layout from "./components/layout";
 import HomePage from "./pages/home";
 import ProjectPage from "./pages/project";
 import TaskPage from "./pages/task";
-import Landing from "./pages/landing/index.jsx";
+import LoginPage from "./pages/login/index.jsx";
+import SignUpPage from "./pages/signup/index.jsx";
 
 function App() {
   //// AUTHENTICATION TOKEN ////
@@ -82,7 +83,8 @@ function App() {
               }}
             >
               <Routes>
-                <Route path="/" element={<Landing />} />
+                <Route path="/" element={<LoginPage />} />
+                <Route path="/signup" element={<SignUpPage />} />
                 <Route element={<Layout />}>
                   <Route path="/home" element={<HomePage />} />
                   <Route

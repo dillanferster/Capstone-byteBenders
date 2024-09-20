@@ -1,14 +1,15 @@
-import { verifyUser } from "../../api.js";
+import { createUser as apiCreateUser } from "../../api.js";
 import { useState } from "react";
 import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
-import { useNavigate } from "react-router-dom";
 import { Box, Container, Paper } from "@mui/material";
-import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
-export default function Login() {
+export default function SignUp() {
   const [user, setUser] = useState({
+    fname: "",
+    lname: "",
     email: "",
     password: "",
   });
@@ -17,21 +18,25 @@ export default function Login() {
 
   async function handleSubmit(e) {
     e.preventDefault();
+    // Check if any field is empty
+    if (!user.fname || !user.lname || !user.email || !user.password) {
+      alert("All fields are required");
+      return;
+    }
     try {
-      let response = await verifyUser(user);
-      if (response) {
-        sessionStorage.setItem("User", JSON.stringify(response));
-        axios.defaults.headers.common["Authorization"] = `Bearer ${response}`; // Bearer = authentication token formatting
-        navigate("/home");
+      let response = await apiCreateUser(user);
+      if (response.status !== 200) {
+        alert("User account could not be created");
       } else {
-        alert("Login failed");
+        alert("User account created");
+        navigate("/");
       }
     } catch (error) {
       console.log(error);
     }
   }
 
-  async function handleChange(e) {
+  function handleChange(e) {
     setUser({ ...user, [e.target.name]: e.target.value });
   }
 
@@ -46,15 +51,32 @@ export default function Login() {
           }}
         >
           <Typography component="h1" variant="h5" sx={{ marginBottom: 3 }}>
-            Sign In
+            Create Account
           </Typography>
           <form onSubmit={handleSubmit} style={{ width: "100%" }}>
             <TextField
               margin="normal"
               fullWidth
+              label="First Name"
+              name="fname"
+              onChange={handleChange}
+              variant="outlined"
+              required
+            />
+            <TextField
+              margin="normal"
+              fullWidth
+              label="Last Name"
+              name="lname"
+              onChange={handleChange}
+              variant="outlined"
+              required
+            />
+            <TextField
+              margin="normal"
+              fullWidth
               label="Email"
               name="email"
-              autoComplete="email"
               type="email"
               onChange={handleChange}
               variant="outlined"
@@ -65,7 +87,6 @@ export default function Login() {
               fullWidth
               label="Password"
               name="password"
-              autoComplete="current-password"
               type="password"
               onChange={handleChange}
               variant="outlined"
@@ -78,15 +99,9 @@ export default function Login() {
               color="primary"
               sx={{ marginTop: 3, marginBottom: 2 }}
             >
-              Login
+              Create Account
             </Button>
           </form>
-          <Typography variant="body2" sx={{ marginTop: 2 }}>
-            Don't have an account?{" "}
-            <Button variant="text" onClick={() => navigate("/signup")}>
-              Sign Up
-            </Button>
-          </Typography>
         </Box>
       </Paper>
     </Container>
