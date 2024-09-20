@@ -92,7 +92,7 @@ projectRoutes
     response.json(data);
   });
 
-// verify authentication token
+// middleware to verify authentication token
 function verifyToken(request, response, next) {
   const authHeaders = request.headers["authorization"];
   const token = authHeaders && authHeaders.split(" ")[1];

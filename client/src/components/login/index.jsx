@@ -17,7 +17,7 @@ export default function Login() {
     try {
       let response = await verifyUser(user);
       if (response) {
-        sessionStorage.setItem("User", response);
+        sessionStorage.setItem("User", JSON.stringify(response));
         axios.defaults.headers.common["Authorization"] = `Bearer ${response}`; // Bearer = authentication token formatting
         navigate("/home");
       } else {
