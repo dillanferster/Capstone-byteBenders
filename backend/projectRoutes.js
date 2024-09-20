@@ -16,6 +16,7 @@ const secretKey = process.env.SECRET_KEY;
 projectRoutes.route("/projects").get(verifyToken, async (request, response) => {
   let db = database.getDb();
   let data = await db.collection("projects").find({}).toArray();
+
   if (data.length > 0) {
     response.json(data);
   } else {
