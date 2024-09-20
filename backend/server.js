@@ -3,6 +3,7 @@ const connect = require("./connect");
 const express = require("express");
 const cors = require("cors");
 const posts = require("./projectRoutes");
+const users = require("./userRoutes");
 
 const app = express();
 
@@ -15,8 +16,11 @@ app.use(cors());
 // formats everything into json
 app.use(express.json());
 
-//mounting routes, makes posts available to the rest of the app
+//mounting projects, makes projects available to the rest of the app
 app.use(posts);
+
+//mounting routes, makes users available to the rest of the app
+app.use(users);
 
 // creates the server
 // callback function runs the connect file once connection is established
