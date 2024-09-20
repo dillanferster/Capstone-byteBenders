@@ -12,9 +12,9 @@ export default function Landing() {
     <>
       {!view ? (
         <>
-          <h1>Login To Planzo</h1>
+          <h1 className="text-xl">Login To Planzo</h1>
           <Login />
-          <Button variant="contained" onClick={() => setView(!view)}>
+          <Button variant="text" onClick={() => setView(!view)}>
             Sign up here
           </Button>
         </>
@@ -23,7 +23,7 @@ export default function Landing() {
           <h1>Sign Up</h1>
           <h2>Not yet a user? Create an account here!</h2>
           <CreateUser />
-          <Button variant="contained" onClick={() => setView(!view)}>
+          <Button variant="text" onClick={() => setView(!view)}>
             Login here
           </Button>
         </>
