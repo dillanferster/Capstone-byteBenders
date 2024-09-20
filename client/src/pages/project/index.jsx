@@ -107,7 +107,7 @@ const ProjectPage = ({ makeProject }) => {
 
   /// for AG data grid
 
-  // add project button handeler
+  // add project button handler
   function handleButtonAdd() {
     makeProject();
     setReloadGrid(!reloadGrid);
