@@ -1,10 +1,11 @@
 /**
  *
  * This file creates the node server 
- * listen for requests on port 3000
+ * 
+ * listen for HTTP requests on port 3000
  *  
  * 
- *  References for this connection file are from
+ *  References for this file are from
  *  https://www.youtube.com/watch?v=Jcs_2jNPgtE&t=8033s
  *
  *  */

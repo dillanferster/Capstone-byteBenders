@@ -2,9 +2,11 @@
  *
  * This file creates all of the project routes
  *
+ * once server gets a request it finds corresponding route and the logic in route gets * executed
+ *
  *  Exports as  projectRoutes
  *
- *  References for this connection file are from
+ *  References for this file are from
  *  https://www.youtube.com/watch?v=Jcs_2jNPgtE&t=8033s
  *
  *  */
