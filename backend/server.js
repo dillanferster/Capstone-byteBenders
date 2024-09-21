@@ -1,10 +1,10 @@
 /**
  *
- * This file creates the node server 
- * 
+ * This file creates the node server
+ *
  * listen for HTTP requests on port 3000
- *  
- * 
+ *
+ *
  *  References for this file are from
  *  https://www.youtube.com/watch?v=Jcs_2jNPgtE&t=8033s
  *
@@ -16,7 +16,7 @@ const express = require("express"); // imports express object from the npm i exp
 
 const cors = require("cors"); // imports cors from npm i cors
 
-const posts = require("./projectRoutes"); // imports projectRoutes file
+const projects = require("./projectRoutes"); // imports projectRoutes file
 
 const users = require("./userRoutes"); // imports userRoutes file
 
@@ -25,14 +25,14 @@ const app = express(); // creates express application instance
 // specifies what port the server will listen for requests on
 const PORT = 3000;
 
-// deals with cors domain information 
+// deals with cors domain information
 app.use(cors());
 
 // formats everything into json
 app.use(express.json());
 
 //mounting projects, makes projects available to the rest of the app
-app.use(posts);
+app.use(projects);
 
 //mounting routes, makes users available to the rest of the app
 app.use(users);

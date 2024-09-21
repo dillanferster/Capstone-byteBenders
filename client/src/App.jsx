@@ -50,14 +50,16 @@ function App() {
     createProject(projectObject);
   }
 
-  async function loadAllProjects() {
-    const data = await getProjects();
-    if (data) {
-      setProjects(data);
+  useEffect(() => {
+    async function loadAllProjects() {
+      const data = await getProjects();
+      if (data) {
+        setProjects(data);
+      }
     }
-  }
 
-  useEffect(() => {}, []);
+    loadAllProjects();
+  }, [projects]);
   /////DATABASE///
 
   // Create a theme instance, material UI theme that can be passed into the themeprovider to set a defualt styles across app and children
