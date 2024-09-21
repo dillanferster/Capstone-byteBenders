@@ -1,5 +1,16 @@
+/**
+ *
+ * This file creates all of the project routes
+ *
+ *  Exports as  projectRoutes
+ *
+ *  References for this connection file are from
+ *  https://www.youtube.com/watch?v=Jcs_2jNPgtE&t=8033s
+ *
+ *  */
+
 const { MongoClient, ServerApiVersion } = require("mongodb");
-require("dotenv").config({ path: "./.env" });
+require("dotenv").config({ path: "./.env" }); // imports dotenv , loads the environment variables from .env file
 
 // Create a MongoClient with a MongoClientOptions object to set the Stable API version
 const client = new MongoClient(process.env.ATLAS_URI, {
@@ -9,13 +20,12 @@ const client = new MongoClient(process.env.ATLAS_URI, {
     deprecationErrors: true,
   },
 });
-
 ////
 
 let database;
 
 // can use reqiure() to access one module.export
-
+// making the connection the to the database
 module.exports = {
   // creates initail connect to database, uses the client from above and connects to "Projects db"
   connectToServer: () => {
