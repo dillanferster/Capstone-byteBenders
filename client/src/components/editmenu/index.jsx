@@ -1,9 +1,19 @@
+/**
+ * This page component displays the Edit Menu
+ *
+ * destructs toggleForm, isOpen, setIsOpen
+ *
+ *
+ */
+
 import { useState } from "react";
 
 export default function EditMenu({ toggleForm, isOpen, setIsOpen }) {
+  // * state
   const [projectName, setProjectName] = useState("");
   const [dateCreated, setDateCreated] = useState("");
   const [description, setDescription] = useState("");
+  //*
 
   const handleSubmit = (e) => {
     e.preventDefault();

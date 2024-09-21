@@ -50,6 +50,9 @@ function App() {
     createProject(projectObject);
   }
 
+  // When app component renders loadAllProjects() is called asynchronously
+  // so the rest on the program can still run when the function logic is being excutied and returned some time in future
+  // if data is returned , then setProjects state is updated with data
   useEffect(() => {
     async function loadAllProjects() {
       const data = await getProjects();
@@ -59,7 +62,7 @@ function App() {
     }
 
     loadAllProjects();
-  }, [projects]);
+  }, []);
   /////DATABASE///
 
   // Create a theme instance, material UI theme that can be passed into the themeprovider to set a defualt styles across app and children
