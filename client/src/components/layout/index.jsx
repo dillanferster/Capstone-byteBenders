@@ -3,12 +3,14 @@ import { Outlet } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import { useEffect } from "react";
 
+
 const Layout = () => {
   // navbar items array
   const menuItems = [
     { text: "Home", icon: "HomeIcon", path: "/home" },
     { text: "Projects", icon: "FolderIcon", path: "/project" },
     { text: "Tasks", icon: "AssignmentIcon", path: "/task" },
+    { text: "Notes", icon: "NoteIcon", path: "/note" },
   ];
 
   // check if user is authenticated

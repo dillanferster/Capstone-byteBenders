@@ -19,6 +19,7 @@ import HomeIcon from "@mui/icons-material/Home";
 import FolderIcon from "@mui/icons-material/Folder";
 import AssignmentIcon from "@mui/icons-material/Assignment";
 import BarChartIcon from "@mui/icons-material/BarChart";
+import NoteIcon from "@mui/icons-material/Note"; // <-- Add this line
 import logo from "../../assets/images/logo.png"; // <-- Import the logo
 
 // nav menu items
@@ -29,6 +30,7 @@ const iconMap = {
   FolderIcon,
   AssignmentIcon,
   BarChartIcon,
+  NoteIcon,
 };
 
 const SideNavbar = () => {
