@@ -174,7 +174,10 @@ export default function EditMenu({
             <button
               type="button"
               className="w-full px-6 py-3 bg-orange-400 text-white rounded-lg hover:bg-orange-500 transition-colors duration-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50"
-              onClick={() => setViewOpen(!viewOpen)}
+              onClick={(e) => {
+                e.preventDefault();
+                setViewOpen(!viewOpen);
+              }}
             >
               Edit
             </button>
