@@ -34,7 +34,7 @@ const secretKey = process.env.SECRET_KEY;
 // check to make sure data  has a value then returns response in json, if not gives an error
 projectRoutes.route("/projects").get(verifyToken, async (request, response) => {
   let db = database.getDb();
-  let data = await db.collection("projects").find({}).toArray();
+  let data = await db.collection("Dillan").find({}).toArray();
 
   if (data.length > 0) {
     response.json(data);
@@ -56,7 +56,7 @@ projectRoutes
   .get(verifyToken, async (request, response) => {
     let db = database.getDb();
     let data = await db
-      .collection("projects")
+      .collection("Dillan")
       .findOne({ _id: new ObjectId(request.params.id) });
     if (Object.keys(data.length > 0)) {
       response.json(data);
@@ -83,7 +83,7 @@ projectRoutes
       assignedTo: request.body.assignedTo,
       dateCreated: request.body.dateCreated,
     };
-    let data = await db.collection("projects").insertOne(mongoObject);
+    let data = await db.collection("Dillan").insertOne(mongoObject);
     response.json(data);
   });
 
@@ -108,7 +108,7 @@ projectRoutes
       },
     };
     let data = await db
-      .collection("projects")
+      .collection("Dillan")
       .updateOne({ _id: new ObjectId(request.params.id) }, mongoObject);
     response.json(data);
   });
@@ -125,7 +125,7 @@ projectRoutes
   .delete(verifyToken, async (request, response) => {
     let db = database.getDb();
     let data = await db
-      .collection("projects")
+      .collection("Dillan")
       .deleteOne({ _id: new ObjectId(request.params.id) });
 
     response.json(data);

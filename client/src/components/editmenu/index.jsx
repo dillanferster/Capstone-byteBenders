@@ -6,14 +6,40 @@
  *
  */
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
-export default function EditMenu({ toggleForm, isOpen, setIsOpen }) {
+export default function EditMenu({
+  toggleForm,
+  isOpen,
+  setIsOpen,
+  selectedProject,
+}) {
   // * state
+  const [projectId, setProjectId] = useState("");
   const [projectName, setProjectName] = useState("");
   const [dateCreated, setDateCreated] = useState("");
-  const [description, setDescription] = useState("");
+  const [assignedTo, setAssignedTo] = useState("");
+  const [projectDescription, setProjectDescription] = useState("");
   //*
+
+  // conditional
+  // check to make sure there is a value in selected projects
+  // if there is then set the project default values for each input
+  // if we dont have this here the default value triggers an undefined error on page load when there is no selection yet
+  // dependencies : selectedProject
+  useEffect(() => {
+    if (selectedProject.length > 0) {
+      setProjectId(selectedProject[0].id);
+      setProjectName(selectedProject[0].projectName);
+      setDateCreated(selectedProject[0].dateCreated);
+      setAssignedTo(selectedProject[0].assignedTo);
+      setProjectDescription(selectedProject[0].projectDescription);
+
+      console.log("set project defaults");
+    }
+  }, [selectedProject]);
+
+  
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -25,14 +51,14 @@ export default function EditMenu({ toggleForm, isOpen, setIsOpen }) {
   return (
     <div>
       <div
-        className={`fixed inset-0 bg-black bg-opacity-50 transition-opacity duration-300 ${
+        className={`fixed inset-0 bg-gray-500 bg-opacity-40 backdrop-blur-sm transition-opacity duration-300 ${
           isOpen ? "opacity-100" : "opacity-0 pointer-events-none"
         }`}
         onClick={toggleForm}
       />
 
       <div
-        className={`fixed top-0 right-0 w-full max-w-md h-full bg-gray-800 text-gray-100 p-8 shadow-lg transition-transform duration-300 ease-in-out transform ${
+        className={`fixed top-0 right-0 w-full max-w-lg h-full bg-gray-800 text-gray-100 p-8 shadow-xl transition-transform duration-300 ease-in-out transform ${
           isOpen ? "translate-x-0" : "translate-x-full"
         }`}
       >
@@ -49,11 +75,9 @@ export default function EditMenu({ toggleForm, isOpen, setIsOpen }) {
             <input
               type="text"
               id="projectName"
-              value={projectName}
-              onChange={(e) => setProjectName(e.target.value)}
+              defaultValue={projectId}
               className="w-full px-4 py-2 bg-gray-700 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
-              required
-              placeholder="Enter Project name"
+              disabled
             />
           </div>
           <div>
@@ -68,6 +92,24 @@ export default function EditMenu({ toggleForm, isOpen, setIsOpen }) {
               id="projectName"
               value={projectName}
               onChange={(e) => setProjectName(e.target.value)}
+              className="w-full px-4 py-2 bg-gray-700 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              required
+              placeholder="Enter Project name"
+            />
+          </div>
+
+          <div>
+            <label
+              htmlFor="projectName"
+              className="block text-sm font-medium mb-2 text-gray-300"
+            >
+              Assigned To
+            </label>
+            <input
+              type="text"
+              id="assignedTo"
+              value={assignedTo}
+              onChange={(e) => setAssignedTo(e.target.value)}
               className="w-full px-4 py-2 bg-gray-700 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
               required
               placeholder="Enter Project name"
@@ -100,8 +142,8 @@ export default function EditMenu({ toggleForm, isOpen, setIsOpen }) {
             </label>
             <textarea
               id="description"
-              value={description}
-              onChange={(e) => setDescription(e.target.value)}
+              value={projectDescription}
+              onChange={(e) => setProjectDescription(e.target.value)}
               className="w-full px-4 py-2 bg-gray-700 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
               rows={4}
               placeholder="Enter task description"

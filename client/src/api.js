@@ -19,8 +19,6 @@ import axios from "axios";
 // url to send the request route to, same one that server is listening on
 const URL = "http://localhost:3000";
 
-
-
 // gets all projects,
 // async function
 // awaits axios get method, sends the HTTP request to the /project route on backend
@@ -72,7 +70,7 @@ export async function updateProject(id, project) {
 // deletes project , pass in id
 // async function
 // awaits axios get method, sends the HTTP request to the /project/:id route on backend
-// returns response 
+// returns response
 export async function deleteProject(id) {
   const response = await axios.delete(`${URL}/projects/${id}`);
   return response;

@@ -3,6 +3,8 @@ import axios from "axios";
 
 import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
 
+import { format } from "date-fns";
+
 // database functions from api file
 import {
   getProjects,
@@ -44,7 +46,7 @@ function App() {
       projectName: "first",
       projectDesc: "yes",
       assignedTo: "dillan",
-      dateCreated: new Date(),
+      dateCreated: format(new Date(), "yyyy-MM-dd"),
     };
 
     createProject(projectObject);
