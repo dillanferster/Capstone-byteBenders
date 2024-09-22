@@ -14,6 +14,8 @@ export default function EditMenu({
   setIsOpen,
   selectedProject,
   updateProject,
+  viewOpen,
+  setViewOpen,
 }) {
   // * state
   const [projectId, setProjectId] = useState("");
@@ -21,6 +23,7 @@ export default function EditMenu({
   const [dateCreated, setDateCreated] = useState("");
   const [assignedTo, setAssignedTo] = useState("");
   const [projectDescription, setProjectDescription] = useState("");
+
   //*
 
   // conditional
@@ -77,7 +80,7 @@ export default function EditMenu({
       >
         <h2 className="text-3xl font-bold mb-8 text-white">Add New Project</h2>
 
-        <form onSubmit={handleSubmit} className="space-y-6">
+        <form className="space-y-6" onSubmit={handleSubmit}>
           <div>
             <label
               htmlFor="projectName"
@@ -108,6 +111,7 @@ export default function EditMenu({
               className="w-full px-4 py-2 bg-gray-700 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
               required
               placeholder="Enter Project name"
+              disabled={viewOpen}
             />
           </div>
 
@@ -126,6 +130,7 @@ export default function EditMenu({
               className="w-full px-4 py-2 bg-gray-700 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
               required
               placeholder="Enter Project name"
+              disabled={viewOpen}
             />
           </div>
 
@@ -143,6 +148,7 @@ export default function EditMenu({
               onChange={(e) => setDateCreated(e.target.value)}
               className="w-full px-4 py-2 bg-gray-700 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
               required
+              disabled={viewOpen}
             />
           </div>
 
@@ -160,15 +166,26 @@ export default function EditMenu({
               className="w-full px-4 py-2 bg-gray-700 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
               rows={4}
               placeholder="Enter task description"
+              disabled={viewOpen}
             />
           </div>
 
-          <button
-            type="submit"
-            className="w-full px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50"
-          >
-            Save Edit
-          </button>
+          {viewOpen ? (
+            <button
+              type="button"
+              className="w-full px-6 py-3 bg-orange-400 text-white rounded-lg hover:bg-orange-500 transition-colors duration-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50"
+              onClick={() => setViewOpen(!viewOpen)}
+            >
+              Edit
+            </button>
+          ) : (
+            <button
+              type="submit"
+              className="w-full px-6 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors duration-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50"
+            >
+              Save Edit
+            </button>
+          )}
         </form>
       </div>
     </div>

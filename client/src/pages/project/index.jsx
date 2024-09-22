@@ -2,7 +2,7 @@
  * This page displays project items in a data table
  *
  * destructs makeProject
- * 
+ *
  * preforms CRUD operations
  *
  * Uses AG Grid component
@@ -16,6 +16,9 @@
 
 import React from "react";
 import { useState, useEffect, useMemo } from "react";
+
+// date formatter
+import { format } from "date-fns";
 
 // Components
 import { Button } from "@mui/material";
@@ -76,16 +79,15 @@ const columns = [
   },
 ];
 
-
-
-
-const ProjectPage = ({ makeProject }) => {
+const ProjectPage = () => {
   //* state
   const [projects, setProjects] = useState([]); // Loaded projects from database
   const [isLoading, setIsLoading] = useState(); // state for loading
   const [selectedProject, setSelectedProject] = useState([]); // selected project array, when users click on projects in data table
   const [reloadGrid, setReloadGrid] = useState(false); // to update grid rows
   const [isOpen, setIsOpen] = useState(false); // for edit  menu
+  const [viewOpen, setViewOpen] = useState(false);
+
   //*
 
   // projects object array from the database
@@ -139,13 +141,29 @@ const ProjectPage = ({ makeProject }) => {
   // calls makeProject
   // setReloadGrid so the rows rerender with new item
   function handleButtonAdd() {
-    makeProject();
+    let projectObject = {
+      projectName: "first",
+      projectDesc: "yes",
+      assignedTo: "dillan",
+      dateCreated: format(new Date(), "yyyy-MM-dd"),
+    };
+
+    createProject(projectObject);
+
     setReloadGrid(!reloadGrid);
   }
 
   // function handles edit button
   // calls toggleForm
   function handleButtonEdit() {
+    toggleForm();
+  }
+
+  // function handles view button
+  // calls toggleForm
+  function handleButtonView() {
+    setViewOpen(true);
+    console.log("set view to", viewOpen);
     toggleForm();
   }
 
@@ -199,39 +217,53 @@ const ProjectPage = ({ makeProject }) => {
 
   return (
     <div className=" mt-[10rem] ml-[5rem]">
-      <div className="flex ">
-        {selectedProject.length > 0 && (
-          <div>
-            {" "}
-            <Button
-              variant="outlined"
-              color="error"
-              onClick={() => handleButtonDelete()}
-            >
-              Delete
-            </Button>
-          </div>
-        )}
-        {selectedProject.length === 1 && (
-          <div>
-            <Button
-              variant="outlined"
-              color="warning"
-              onClick={() => handleButtonEdit()}
-            >
-              Edit
-            </Button>
-          </div>
-        )}
+      <div className="flex justify-between">
+        <Button
+          variant="contained"
+          color="success"
+          onClick={() => handleButtonAdd()}
+        >
+          Add project
+        </Button>
+        <div className="flex gap-4">
+          {" "}
+          {selectedProject.length === 1 && (
+            <div className="flex gap-4">
+              <div>
+                <Button
+                  variant="outlined"
+                  color="info"
+                  onClick={() => handleButtonView()}
+                >
+                  View
+                </Button>
+              </div>
+              <div>
+                {" "}
+                <Button
+                  variant="outlined"
+                  color="warning"
+                  onClick={() => handleButtonEdit()}
+                >
+                  Edit
+                </Button>
+              </div>
+            </div>
+          )}
+          {selectedProject.length > 0 && (
+            <div>
+              {" "}
+              <Button
+                variant="contained"
+                color="error"
+                onClick={() => handleButtonDelete()}
+              >
+                Delete
+              </Button>
+            </div>
+          )}
+        </div>
       </div>
-
-      <Button
-        variant="contained"
-        color="success"
-        onClick={() => handleButtonAdd()}
-      >
-        Add project
-      </Button>
 
       <ProjectGrid
         rows={rows}
@@ -246,6 +278,8 @@ const ProjectPage = ({ makeProject }) => {
         toggleForm={toggleForm}
         selectedProject={selectedProject}
         updateProject={updateProject}
+        viewOpen={viewOpen}
+        setViewOpen={setViewOpen}
       ></EditMenu>
     </div>
   );

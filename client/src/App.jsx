@@ -3,7 +3,7 @@ import axios from "axios";
 
 import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
 
-import { format } from "date-fns";
+
 
 // database functions from api file
 import {
@@ -40,17 +40,6 @@ function App() {
 
   //// DATABASE ////
   const [projects, setProjects] = useState();
-
-  function makeProject() {
-    let projectObject = {
-      projectName: "first",
-      projectDesc: "yes",
-      assignedTo: "dillan",
-      dateCreated: format(new Date(), "yyyy-MM-dd"),
-    };
-
-    createProject(projectObject);
-  }
 
   // When app component renders loadAllProjects() is called asynchronously
   // so the rest on the program can still run when the function logic is being excutied and returned some time in future
@@ -96,9 +85,7 @@ function App() {
                   <Route path="/home" element={<HomePage />} />
                   <Route
                     path="/project"
-                    element={
-                      <ProjectPage makeProject={makeProject}></ProjectPage>
-                    }
+                    element={<ProjectPage></ProjectPage>}
                   />
                   <Route path="/task" element={<TaskPage />} />
                 </Route>
