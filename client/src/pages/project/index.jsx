@@ -245,6 +245,7 @@ const ProjectPage = ({ makeProject }) => {
         setIsOpen={setIsOpen}
         toggleForm={toggleForm}
         selectedProject={selectedProject}
+        updateProject={updateProject}
       ></EditMenu>
     </div>
   );

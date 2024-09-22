@@ -82,6 +82,7 @@ projectRoutes
       projectDesc: request.body.projectDesc,
       assignedTo: request.body.assignedTo,
       dateCreated: request.body.dateCreated,
+      
     };
     let data = await db.collection("Dillan").insertOne(mongoObject);
     response.json(data);

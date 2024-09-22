@@ -13,6 +13,7 @@ export default function EditMenu({
   isOpen,
   setIsOpen,
   selectedProject,
+  updateProject,
 }) {
   // * state
   const [projectId, setProjectId] = useState("");
@@ -33,18 +34,30 @@ export default function EditMenu({
       setProjectName(selectedProject[0].projectName);
       setDateCreated(selectedProject[0].dateCreated);
       setAssignedTo(selectedProject[0].assignedTo);
-      setProjectDescription(selectedProject[0].projectDescription);
+      setProjectDescription(selectedProject[0].projectDesc);
 
       console.log("set project defaults");
     }
   }, [selectedProject]);
 
-  
-
+  // handles the submit from update form , takes in the submit event
+  // prevents the default submit action
+  // logs current project id
+  // creates a new object with the updated state variables from the inputs
+  // calls update project , pass the project id and updated project object
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log({ projectName, date, description });
-    // Here you would typically send this data to your backend
+    console.log("updating project", projectId);
+
+    const updatedProject = {
+      projectName: projectName,
+      projectDesc: projectDescription,
+      assignedTo: assignedTo,
+      dateCreated: dateCreated,
+    };
+
+    updateProject(projectId, updatedProject);
+
     setIsOpen(false);
   };
 
@@ -58,7 +71,7 @@ export default function EditMenu({
       />
 
       <div
-        className={`fixed top-0 right-0 w-full max-w-lg h-full bg-gray-800 text-gray-100 p-8 shadow-xl transition-transform duration-300 ease-in-out transform ${
+        className={`fixed top-0 right-0 w-full max-w-2xl h-full bg-gray-800 text-gray-100 p-8 shadow-xl transition-transform duration-300 ease-in-out transform ${
           isOpen ? "translate-x-0" : "translate-x-full"
         }`}
       >
