@@ -1,0 +1,40 @@
+/* NotePage.css */
+.note-page {
+    display: flex;
+    height: 100vh;
+  }
+  
+  .sidebar {
+    width: 300px;
+    overflow-y: auto;
+    background-color: #f8f9fa;
+  }
+  
+  .note-editor {
+    flex: 1;
+    padding: 20px;
+    overflow-y: auto;
+  }
+  
+  .note-card {
+    padding: 10px;
+    border-bottom: 1px solid #ddd;
+    cursor: pointer;
+  }
+  
+  .note-card.active {
+    background-color: #e9ecef;
+  }
+  
+  .note-card h4 {
+    margin: 0;
+  }
+  
+  .note-card button {
+    float: right;
+  }
+  
+  button {
+    margin-top: 10px;
+  }
+  
