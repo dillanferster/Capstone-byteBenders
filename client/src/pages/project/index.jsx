@@ -21,7 +21,7 @@ import { useState, useEffect, useMemo } from "react";
 import { format } from "date-fns";
 
 // Components
-import { Button } from "@mui/material";
+import { Button, fabClasses } from "@mui/material";
 
 // database functions from api file
 import {
@@ -86,7 +86,9 @@ const ProjectPage = () => {
   const [selectedProject, setSelectedProject] = useState([]); // selected project array, when users click on projects in data table
   const [reloadGrid, setReloadGrid] = useState(false); // to update grid rows
   const [isOpen, setIsOpen] = useState(false); // for edit  menu
-  const [viewOpen, setViewOpen] = useState(false);
+  const [viewClicked, setViewClicked] = useState(false); // for view button
+  const [addClicked, setAddClicked] = useState(false); // for add button
+  const [editClicked, setEditClicked] = useState(false); // for add button
 
   //*
 
@@ -141,6 +143,9 @@ const ProjectPage = () => {
   // calls makeProject
   // setReloadGrid so the rows rerender with new item
   function handleButtonAdd() {
+    setAddClicked(!addClicked);
+    toggleForm();
+
     let projectObject = {
       projectName: "first",
       projectDesc: "yes",
@@ -148,22 +153,25 @@ const ProjectPage = () => {
       dateCreated: format(new Date(), "yyyy-MM-dd"),
     };
 
-    createProject(projectObject);
-
-    setReloadGrid(!reloadGrid);
+    reloadTheGrid();
   }
 
   // function handles edit button
   // calls toggleForm
   function handleButtonEdit() {
+    setEditClicked(!editClicked);
     toggleForm();
   }
+
+  const reloadTheGrid = () => {
+    setReloadGrid(!reloadGrid);
+  };
 
   // function handles view button
   // calls toggleForm
   function handleButtonView() {
-    setViewOpen(true);
-    console.log("set view to", viewOpen);
+    setViewClicked(!viewClicked);
+    console.log("set view to", viewClicked);
     toggleForm();
   }
 
@@ -177,11 +185,13 @@ const ProjectPage = () => {
       console.log("deleted project with id:", project.id);
     });
 
-    setReloadGrid(!reloadGrid);
+    reloadTheGrid();
   }
 
-  // sets the form menu state
-  const toggleForm = () => setIsOpen(!isOpen);
+  // sets the form menu state to open or close menu
+  const toggleForm = () => {
+    setIsOpen(!isOpen);
+  };
 
   // handles when the list selection item changes ex. click or deselect an item
   // pass in selection event
@@ -278,8 +288,14 @@ const ProjectPage = () => {
         toggleForm={toggleForm}
         selectedProject={selectedProject}
         updateProject={updateProject}
-        viewOpen={viewOpen}
-        setViewOpen={setViewOpen}
+        createProject={createProject}
+        viewClicked={viewClicked}
+        setViewClicked={setViewClicked}
+        addClicked={addClicked}
+        setAddClicked={setAddClicked}
+        editClicked={editClicked}
+        setEditClicked={setEditClicked}
+        reloadTheGrid={reloadTheGrid}
       ></EditMenu>
     </div>
   );

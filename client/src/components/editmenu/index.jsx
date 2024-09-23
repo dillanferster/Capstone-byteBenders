@@ -4,6 +4,9 @@
  * destructs toggleForm, isOpen, setIsOpen
  *
  *
+ *
+ * TO DO NOTES : crud operations working but delay when updated or added into DB, refreshs before it is added sometiems
+ * need to wait for db confirmation before reloading the grid
  */
 
 import { useEffect, useState } from "react";
@@ -14,8 +17,14 @@ export default function EditMenu({
   setIsOpen,
   selectedProject,
   updateProject,
-  viewOpen,
-  setViewOpen,
+  createProject,
+  viewClicked,
+  setViewClicked,
+  addClicked,
+  setAddClicked,
+  editClicked,
+  setEditClicked,
+  reloadTheGrid,
 }) {
   // * state
   const [projectId, setProjectId] = useState("");
@@ -40,18 +49,20 @@ export default function EditMenu({
       setProjectDescription(selectedProject[0].projectDesc);
 
       console.log("set project defaults");
+    } else {
+      setProjectId("");
+      setProjectName("");
+      setDateCreated("");
+      setAssignedTo("");
+      setProjectDescription("");
     }
   }, [selectedProject]);
 
-  // handles the submit from update form , takes in the submit event
-  // prevents the default submit action
+  // handles the submit from update form
   // logs current project id
   // creates a new object with the updated state variables from the inputs
   // calls update project , pass the project id and updated project object
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    console.log("updating project", projectId);
-
+  const submitUpdatedProject = () => {
     const updatedProject = {
       projectName: projectName,
       projectDesc: projectDescription,
@@ -60,17 +71,46 @@ export default function EditMenu({
     };
 
     updateProject(projectId, updatedProject);
+    console.log("updating project", projectId);
 
-    setIsOpen(false);
+    toggleForm();
+
+    reloadTheGrid();
   };
 
+  const submitAddedProject = () => {
+    const addedProject = {
+      projectName: projectName,
+      projectDesc: projectDescription,
+      assignedTo: assignedTo,
+      dateCreated: dateCreated,
+    };
+
+    createProject(addedProject);
+    console.log("adding project", projectName);
+
+    toggleForm();
+
+    reloadTheGrid();
+  };
+
+  // handles click off menu
+  // closes menu and resets button states
+
+  const handleClickOff = () => {
+    setAddClicked(false);
+    setEditClicked(false);
+    setViewClicked(false);
+
+    toggleForm();
+  };
   return (
     <div>
       <div
         className={`fixed inset-0 bg-gray-500 bg-opacity-40 backdrop-blur-sm transition-opacity duration-300 ${
           isOpen ? "opacity-100" : "opacity-0 pointer-events-none"
         }`}
-        onClick={toggleForm}
+        onClick={() => handleClickOff()}
       />
 
       <div
@@ -80,7 +120,7 @@ export default function EditMenu({
       >
         <h2 className="text-3xl font-bold mb-8 text-white">Add New Project</h2>
 
-        <form className="space-y-6" onSubmit={handleSubmit}>
+        <form className="space-y-6">
           <div>
             <label
               htmlFor="projectName"
@@ -94,6 +134,7 @@ export default function EditMenu({
               defaultValue={projectId}
               className="w-full px-4 py-2 bg-gray-700 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
               disabled
+              placeholder={addClicked && "ID will be generated automatically"}
             />
           </div>
           <div>
@@ -111,7 +152,7 @@ export default function EditMenu({
               className="w-full px-4 py-2 bg-gray-700 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
               required
               placeholder="Enter Project name"
-              disabled={viewOpen}
+              disabled={viewClicked}
             />
           </div>
 
@@ -129,8 +170,8 @@ export default function EditMenu({
               onChange={(e) => setAssignedTo(e.target.value)}
               className="w-full px-4 py-2 bg-gray-700 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
               required
-              placeholder="Enter Project name"
-              disabled={viewOpen}
+              placeholder="Assign Project"
+              disabled={viewClicked}
             />
           </div>
 
@@ -148,7 +189,7 @@ export default function EditMenu({
               onChange={(e) => setDateCreated(e.target.value)}
               className="w-full px-4 py-2 bg-gray-700 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
               required
-              disabled={viewOpen}
+              disabled={viewClicked}
             />
           </div>
 
@@ -165,28 +206,50 @@ export default function EditMenu({
               onChange={(e) => setProjectDescription(e.target.value)}
               className="w-full px-4 py-2 bg-gray-700 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
               rows={4}
-              placeholder="Enter task description"
-              disabled={viewOpen}
+              placeholder="Enter Description"
+              disabled={viewClicked}
             />
           </div>
 
-          {viewOpen ? (
+          {viewClicked && (
             <button
               type="button"
               className="w-full px-6 py-3 bg-orange-400 text-white rounded-lg hover:bg-orange-500 transition-colors duration-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50"
               onClick={(e) => {
                 e.preventDefault();
-                setViewOpen(!viewOpen);
+                setViewClicked(!viewClicked);
+                setEditClicked(!editClicked);
               }}
             >
               Edit
             </button>
-          ) : (
+          )}
+
+          {editClicked && (
             <button
-              type="submit"
+              type="button"
               className="w-full px-6 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors duration-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50"
+              onClick={(e) => {
+                e.preventDefault();
+                submitUpdatedProject();
+                setEditClicked(!editClicked);
+              }}
             >
               Save Edit
+            </button>
+          )}
+
+          {addClicked && (
+            <button
+              type="button"
+              className="w-full px-6 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors duration-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50"
+              onClick={(e) => {
+                e.preventDefault();
+                submitAddedProject();
+                setAddClicked(!addClicked);
+              }}
+            >
+              Add Project
             </button>
           )}
         </form>
