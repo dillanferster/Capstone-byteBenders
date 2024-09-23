@@ -80,9 +80,9 @@ projectRoutes
     let mongoObject = {
       projectName: request.body.projectName,
       projectDesc: request.body.projectDesc,
+      caseId: request.body.caseId,
       assignedTo: request.body.assignedTo,
       dateCreated: request.body.dateCreated,
-      
     };
     let data = await db.collection("Dillan").insertOne(mongoObject);
     response.json(data);
@@ -104,6 +104,7 @@ projectRoutes
       $set: {
         projectName: request.body.projectName,
         projectDesc: request.body.projectDesc,
+        caseId: request.body.caseId,
         assignedTo: request.body.assignedTo,
         dateCreated: request.body.dateCreated,
       },

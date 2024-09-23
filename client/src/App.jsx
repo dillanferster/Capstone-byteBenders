@@ -44,12 +44,10 @@ const App = () => {
   }, []);
   /////DATABASE///
 
-
   // THEME SETUP //
   const theme = createTheme();
 
   return (
-
     <ThemeProvider theme={theme}>
       <Router>
         <Box sx={{ display: "flex" }}>
@@ -72,8 +70,8 @@ const App = () => {
               <Route path="/signup" element={<SignUpPage />} />
               <Route element={<Layout />}>
                 <Route path="/home" element={<HomePage />} />
-                <Route path="/project" element={<ProjectPage makeProject={makeProject} />} />
-                <Route path="/note" element={<NotePage/>}/>
+                <Route path="/project" element={<ProjectPage />} />
+                <Route path="/note" element={<NotePage />} />
                 <Route path="/task" element={<TaskPage />} />
               </Route>
             </Routes>

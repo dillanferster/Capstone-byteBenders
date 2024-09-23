@@ -56,13 +56,15 @@ const columns = [
     floatingFilter: true,
     editable: false,
   },
+
   {
-    field: "projectDesc",
-    headerName: "Project Desc",
-    filter: true,
+    field: "caseId",
+    headerName: "Case Id (Quickbase)",
     floatingFilter: true,
+    filter: true,
     editable: false,
   },
+
   {
     field: "assignedTo",
     headerName: "Assigned To",
@@ -75,6 +77,13 @@ const columns = [
     headerName: "Date",
     floatingFilter: true,
     filter: true,
+    editable: false,
+  },
+  {
+    field: "projectDesc",
+    headerName: "Project Desc",
+    filter: true,
+    floatingFilter: true,
     editable: false,
   },
 ];
@@ -103,6 +112,7 @@ const ProjectPage = () => {
         id: project._id,
         projectName: project.projectName,
         projectDesc: project.projectDesc,
+        caseId: project.caseId,
         assignedTo: project.assignedTo,
         dateCreated: project.dateCreated,
       })),
@@ -146,14 +156,15 @@ const ProjectPage = () => {
     setAddClicked(!addClicked);
     toggleForm();
 
-    let projectObject = {
-      projectName: "first",
-      projectDesc: "yes",
-      assignedTo: "dillan",
-      dateCreated: format(new Date(), "yyyy-MM-dd"),
-    };
+    // let projectObject = {
+    //   projectName: selectedProject.projectName,
+    //   projectDesc: selectedProject.projectDesc,
+    //   caseId: selectedProject.caseId,
+    //   assignedTo: selectedProject.assignedTo,
+    //   dateCreated: format(new Date(), "yyyy-MM-dd"),
+    // };
 
-    reloadTheGrid();
+    // reloadTheGrid();
   }
 
   // function handles edit button

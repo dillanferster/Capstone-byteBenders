@@ -31,6 +31,7 @@ export default function EditMenu({
   const [projectName, setProjectName] = useState("");
   const [dateCreated, setDateCreated] = useState("");
   const [assignedTo, setAssignedTo] = useState("");
+  const [caseId, setCaseId] = useState("");
   const [projectDescription, setProjectDescription] = useState("");
 
   //*
@@ -45,6 +46,7 @@ export default function EditMenu({
       setProjectId(selectedProject[0].id);
       setProjectName(selectedProject[0].projectName);
       setDateCreated(selectedProject[0].dateCreated);
+      setCaseId(selectedProject[0].caseId);
       setAssignedTo(selectedProject[0].assignedTo);
       setProjectDescription(selectedProject[0].projectDesc);
 
@@ -53,6 +55,7 @@ export default function EditMenu({
       setProjectId("");
       setProjectName("");
       setDateCreated("");
+      setCaseId("");
       setAssignedTo("");
       setProjectDescription("");
     }
@@ -66,6 +69,7 @@ export default function EditMenu({
     const updatedProject = {
       projectName: projectName,
       projectDesc: projectDescription,
+      caseId: caseId,
       assignedTo: assignedTo,
       dateCreated: dateCreated,
     };
@@ -82,6 +86,7 @@ export default function EditMenu({
     const addedProject = {
       projectName: projectName,
       projectDesc: projectDescription,
+      caseId: caseId,
       assignedTo: assignedTo,
       dateCreated: dateCreated,
     };
@@ -152,6 +157,25 @@ export default function EditMenu({
               className="w-full px-4 py-2 bg-gray-700 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
               required
               placeholder="Enter Project name"
+              disabled={viewClicked}
+            />
+          </div>
+
+          <div>
+            <label
+              htmlFor="caseId"
+              className="block text-sm font-medium mb-2 text-gray-300"
+            >
+              Case ID (Quickbase)
+            </label>
+            <input
+              type="text"
+              id="projectName"
+              value={caseId}
+              onChange={(e) => setCaseId(e.target.value)}
+              className="w-full px-4 py-2 bg-gray-700 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              required
+              placeholder="Enter Case Id"
               disabled={viewClicked}
             />
           </div>
