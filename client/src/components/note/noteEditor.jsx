@@ -25,7 +25,7 @@ const NoteEditor = ({ currentNote, updateNote }) => {
   };
 
   return (
-    <div className="note-editor">
+    <div className="note-editor justify-center">
       {isEditing ? (
         <div>
           <input

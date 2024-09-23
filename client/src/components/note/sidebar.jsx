@@ -5,9 +5,9 @@ import NoteCard from './noteCard'; // Ensure NoteCard displays each note in the 
 
 const Sidebar = ({ notes, addNote, deleteNote, currentNoteId, setCurrentNoteId }) => {
   return (
-    <div className="sidebar border-end">
+    <div className="sidebar border-end justify-center">
       <Stack direction="horizontal" className="p-3 border-bottom">
-        <h1>Notes</h1>
+        <h1 className='justify-center'>Notes</h1>
         <Button variant="primary" className="ms-auto" onClick={addNote}>
           Add Note
         </Button>

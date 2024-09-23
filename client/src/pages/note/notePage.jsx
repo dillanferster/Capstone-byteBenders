@@ -51,17 +51,22 @@ const NotePage = () => {
 
   // Get the current note based on currentNoteId
   const getCurrentNote = () => notes.find(note => note.id === currentNoteId);
+  // Remove duplicate state and functions
+
+  console.log("current notes", notes);
+  console.log("current note id", currentNoteId);
 
   return (
     <div className="note-page">
-      <Sidebar
+      <Sidebar className="justify-center"
         notes={notes}
         addNote={addNote}
         deleteNote={deleteNote}
         currentNoteId={currentNoteId}
         setCurrentNoteId={setCurrentNoteId}
+        updateNote={updateNote}
       />
-      <NoteEditor
+      <NoteEditor className="justify-center"
         currentNote={getCurrentNote()}
         updateNote={updateNote}
       />

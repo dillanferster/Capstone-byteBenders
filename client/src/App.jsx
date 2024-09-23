@@ -50,54 +50,6 @@ const App = () => {
     loadAllProjects();
   }, []);
 
-  ///// NOTES MANAGEMENT ////
-  const [notes, setNotes] = useState(() => {
-    try {
-      const storedNotes = JSON.parse(localStorage.getItem("notes"));
-      return Array.isArray(storedNotes) ? storedNotes : [];
-    } catch (error) {
-      console.error("Error parsing notes from localStorage:", error);
-      return [];
-    }
-  });
-
-  const [currentNoteId, setCurrentNoteId] = useState(notes[0]?.id || "");
-
-  useEffect(() => {
-    localStorage.setItem("notes", JSON.stringify(notes));
-  }, [notes]);
-
-  const addNote = () => {
-    const newNote = {
-      id: nanoid(),
-      title: "Untitled",
-      content: "",
-      updatedAt: Date.now(),
-    };
-    setNotes((prevNotes) => [...prevNotes, newNote]);
-    setCurrentNoteId(newNote.id);
-  };
-
-  const updateNote = (updatedNote) => {
-    setNotes((prevNotes) =>
-      prevNotes.map((note) => (note.id === updatedNote.id ? updatedNote : note))
-    );
-  };
-
-  const getCurrentNote = () => {
-    return notes.find((note) => note.id === currentNoteId) || notes[0];
-  };
-
-  const deleteNote = (noteToDeleteId) => {
-    setNotes((prevNotes) => prevNotes.filter((note) => note.id !== noteToDeleteId));
-    if (noteToDeleteId === currentNoteId) {
-      setCurrentNoteId(notes[0]?.id || ""); // Adjust to set to another valid note ID or empty if none left
-    }
-  };
-
-  console.log("current notes", notes);
-  console.log("current note id", currentNoteId);
-
   // THEME SETUP //
   const theme = createTheme();
 
@@ -125,19 +77,7 @@ const App = () => {
               <Route element={<Layout />}>
                 <Route path="/home" element={<HomePage />} />
                 <Route path="/project" element={<ProjectPage makeProject={makeProject} />} />
-                <Route
-                  path="/note"
-                  element={
-                    <NotePage
-                      notes={notes}
-                      addNote={addNote}
-                      currentNoteId={currentNoteId}
-                      setCurrentNoteId={setCurrentNoteId}
-                      updateNote={updateNote}
-                      deleteNote={deleteNote}
-                    />
-                  }
-                />
+                <Route path="/note" element={<NotePage/>}/>
                 <Route path="/task" element={<TaskPage />} />
               </Route>
             </Routes>
