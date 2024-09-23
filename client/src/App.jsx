@@ -2,6 +2,7 @@
 import { useState, useEffect } from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import axios from "axios";
+
 import { Box, CssBaseline, ThemeProvider, createTheme } from "@mui/material";
 import "./App.css";
 import Layout from "./components/layout";
@@ -28,32 +29,27 @@ const App = () => {
   //// DATABASE ////
   const [projects, setProjects] = useState();
 
-  const makeProject = () => {
-    let projectObject = {
-      projectName: "first",
-      projectDesc: "yes",
-      assignedTo: "dillan",
-      dateCreated: new Date(),
-    };
-
-    createProject(projectObject);
-  };
-
-  const loadAllProjects = async () => {
-    const data = await getProjects();
-    if (data) {
-      setProjects(data);
-    }
-  };
-
+  // When app component renders loadAllProjects() is called asynchronously
+  // so the rest on the program can still run when the function logic is being excutied and returned some time in future
+  // if data is returned , then setProjects state is updated with data
   useEffect(() => {
+    async function loadAllProjects() {
+      const data = await getProjects();
+      if (data) {
+        setProjects(data);
+      }
+    }
+
     loadAllProjects();
   }, []);
+  /////DATABASE///
+
 
   // THEME SETUP //
   const theme = createTheme();
 
   return (
+
     <ThemeProvider theme={theme}>
       <Router>
         <Box sx={{ display: "flex" }}>

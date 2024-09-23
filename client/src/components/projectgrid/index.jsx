@@ -1,15 +1,32 @@
-import * as React from "react";
+/**
+ * This page component displays the ag data grid
+ *
+ * destructs rows, column, selection, selectionColumnDef,  onSelectionChanged
+ * Passes all of them into AgGrid as props
+ *
+ * Uses AG Grid component
+ *
+ * References:
+ * https://www.ag-grid.com/react-data-grid/getting-started/
+ * https://www.ag-grid.com/react-data-grid/row-selection/
+ * https://www.ag-grid.com/react-data-grid/row-selection-multi-row/
+ *
+ */
+
+import React from "react";
 import { AgGridReact } from "ag-grid-react";
+
+// AG grid default styling
 import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-quartz.css";
 
-function ProjectGrid({
+const ProjectGrid = ({
   rows,
   columns,
   selection,
   selectionColumnDef,
   onSelectionChanged,
-}) {
+}) => {
   return (
     <div
       className="ag-theme-quartz" // applying the Data Grid theme
@@ -24,6 +41,6 @@ function ProjectGrid({
       ></AgGridReact>
     </div>
   );
-}
+};
 
 export default ProjectGrid;
