@@ -32,6 +32,8 @@ export default function EditMenu({
   const [dateCreated, setDateCreated] = useState("");
   const [assignedTo, setAssignedTo] = useState("");
   const [caseId, setCaseId] = useState("");
+  const [dataClassification, setDataClassification] = useState("");
+  const [projectStatus, setProjectStatus] = useState("");
   const [projectDescription, setProjectDescription] = useState("");
 
   //*
@@ -47,30 +49,42 @@ export default function EditMenu({
       setProjectName(selectedProject[0].projectName);
       setDateCreated(selectedProject[0].dateCreated);
       setCaseId(selectedProject[0].caseId);
+      setDataClassification(selectedProject[0].dataClassification);
       setAssignedTo(selectedProject[0].assignedTo);
+      setProjectStatus(selectedProject[0].projectStatus);
       setProjectDescription(selectedProject[0].projectDesc);
 
       console.log("set project defaults");
     } else {
-      setProjectId("");
-      setProjectName("");
-      setDateCreated("");
-      setCaseId("");
-      setAssignedTo("");
-      setProjectDescription("");
+      clearAddInputs();
     }
   }, [selectedProject]);
+
+  function clearAddInputs() {
+    setProjectId("");
+    setProjectName("");
+    setDateCreated("");
+    setCaseId("");
+    setDataClassification("");
+    setAssignedTo("");
+    setProjectStatus("");
+    setProjectDescription("");
+  }
 
   // handles the submit from update form
   // logs current project id
   // creates a new object with the updated state variables from the inputs
   // calls update project , pass the project id and updated project object
   const submitUpdatedProject = () => {
+    setEditClicked(!editClicked);
+
     const updatedProject = {
       projectName: projectName,
       projectDesc: projectDescription,
       caseId: caseId,
+      dataClassification: dataClassification,
       assignedTo: assignedTo,
+      projectStatus: projectStatus,
       dateCreated: dateCreated,
     };
 
@@ -83,20 +97,30 @@ export default function EditMenu({
   };
 
   const submitAddedProject = () => {
+    setAddClicked(!addClicked);
+
     const addedProject = {
       projectName: projectName,
       projectDesc: projectDescription,
       caseId: caseId,
+      dataClassification: dataClassification,
       assignedTo: assignedTo,
+      projectStatus: projectStatus,
       dateCreated: dateCreated,
     };
 
-    createProject(addedProject);
+    const returnResponse = () => createProject(addedProject);
     console.log("adding project", projectName);
+
+    createProject(addedProject);
 
     toggleForm();
 
-    reloadTheGrid();
+    clearAddInputs();
+
+    if (returnResponse === 200) {
+      reloadTheGrid();
+    }
   };
 
   // handles click off menu
@@ -119,7 +143,7 @@ export default function EditMenu({
       />
 
       <div
-        className={`fixed top-0 right-0 w-full max-w-2xl h-full bg-gray-800 text-gray-100 p-8 shadow-xl transition-transform duration-300 ease-in-out transform ${
+        className={`fixed top-0 right-0 w-full max-w-2xl h-full bg-gray-800 text-gray-100 p-8 z-[10] shadow-xl transition-transform duration-300 ease-in-out transform ${
           isOpen ? "translate-x-0" : "translate-x-full"
         }`}
       >
@@ -169,13 +193,32 @@ export default function EditMenu({
               Case ID (Quickbase)
             </label>
             <input
-              type="text"
+              type="number"
               id="projectName"
               value={caseId}
               onChange={(e) => setCaseId(e.target.value)}
               className="w-full px-4 py-2 bg-gray-700 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
               required
               placeholder="Enter Case Id"
+              disabled={viewClicked}
+            />
+          </div>
+
+          <div>
+            <label
+              htmlFor="dataClassification"
+              className="block text-sm font-medium mb-2 text-gray-300"
+            >
+              Data Classification
+            </label>
+            <input
+              type="text"
+              id="projectName"
+              value={dataClassification}
+              onChange={(e) => setDataClassification(e.target.value)}
+              className="w-full px-4 py-2 bg-gray-700 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              required
+              placeholder="Enter data classification"
               disabled={viewClicked}
             />
           </div>
@@ -219,6 +262,27 @@ export default function EditMenu({
 
           <div>
             <label
+              htmlFor="projectStatus"
+              className="block text-sm font-medium mb-2 text-gray-300"
+            >
+              Project Status
+            </label>
+            <select
+              id="projectStatus"
+              value={projectStatus}
+              onChange={(e) => setProjectStatus(e.target.value)}
+              className="w-full px-4 py-2 bg-gray-700 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+              disabled={viewClicked}
+            >
+              <option value="In progress">In Progress</option>
+              <option value="Complete">Complete</option>
+              <option value="Not started">Not Started</option>
+              <option value="Storage">Storage</option>
+            </select>
+          </div>
+
+          <div>
+            <label
               htmlFor="description"
               className="block text-sm font-medium mb-2 text-gray-300"
             >
@@ -256,7 +320,6 @@ export default function EditMenu({
               onClick={(e) => {
                 e.preventDefault();
                 submitUpdatedProject();
-                setEditClicked(!editClicked);
               }}
             >
               Save Edit
@@ -270,7 +333,6 @@ export default function EditMenu({
               onClick={(e) => {
                 e.preventDefault();
                 submitAddedProject();
-                setAddClicked(!addClicked);
               }}
             >
               Add Project

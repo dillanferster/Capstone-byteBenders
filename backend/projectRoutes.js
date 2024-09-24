@@ -81,7 +81,9 @@ projectRoutes
       projectName: request.body.projectName,
       projectDesc: request.body.projectDesc,
       caseId: request.body.caseId,
+      dataClassification: request.body.dataClassification,
       assignedTo: request.body.assignedTo,
+      projectStatus: request.body.projectStatus,
       dateCreated: request.body.dateCreated,
     };
     let data = await db.collection("Dillan").insertOne(mongoObject);
@@ -105,7 +107,9 @@ projectRoutes
         projectName: request.body.projectName,
         projectDesc: request.body.projectDesc,
         caseId: request.body.caseId,
+        dataClassification: request.body.dataClassification,
         assignedTo: request.body.assignedTo,
+        projectStatus: request.body.projectStatus,
         dateCreated: request.body.dateCreated,
       },
     };

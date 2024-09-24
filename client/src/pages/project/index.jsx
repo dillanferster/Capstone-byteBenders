@@ -66,6 +66,14 @@ const columns = [
   },
 
   {
+    field: "dataClassification",
+    headerName: "Data Classification",
+    floatingFilter: true,
+    filter: true,
+    editable: false,
+  },
+
+  {
     field: "assignedTo",
     headerName: "Assigned To",
     filter: true,
@@ -75,6 +83,13 @@ const columns = [
   {
     field: "dateCreated",
     headerName: "Date",
+    floatingFilter: true,
+    filter: true,
+    editable: false,
+  },
+  {
+    field: "projectStatus",
+    headerName: "Project Status",
     floatingFilter: true,
     filter: true,
     editable: false,
@@ -111,12 +126,14 @@ const ProjectPage = () => {
       projects.map((project) => ({
         id: project._id,
         projectName: project.projectName,
-        projectDesc: project.projectDesc,
         caseId: project.caseId,
+        dataClassification: project.dataClassification,
         assignedTo: project.assignedTo,
         dateCreated: project.dateCreated,
+        projectStatus: project.projectStatus,
+        projectDesc: project.projectDesc,
       })),
-    [projects, reloadGrid]
+    [projects]
   );
 
   /// Default style props for AG data grid
@@ -154,17 +171,8 @@ const ProjectPage = () => {
   // setReloadGrid so the rows rerender with new item
   function handleButtonAdd() {
     setAddClicked(!addClicked);
+    setSelectedProject("");
     toggleForm();
-
-    // let projectObject = {
-    //   projectName: selectedProject.projectName,
-    //   projectDesc: selectedProject.projectDesc,
-    //   caseId: selectedProject.caseId,
-    //   assignedTo: selectedProject.assignedTo,
-    //   dateCreated: format(new Date(), "yyyy-MM-dd"),
-    // };
-
-    // reloadTheGrid();
   }
 
   // function handles edit button
