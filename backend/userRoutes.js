@@ -104,9 +104,10 @@ userRoutes.route("/users/login").post(async (request, response) => {
       user.password
     );
     if (confirmation) {
+      console.log("secretkey: ", secretKey); //  Gigi Debug log for token authentication -> remove before production
       // generate JWT token for this login session
       const token = jwt.sign(user, secretKey, { expiresIn: "1h" }); // token expires in 1 hour
-      response.json({ success: true, token });
+      response.json({ success: true, token }); // return token to client
     } else {
       response.json({ success: false, message: "Incorrect password" });
     }
