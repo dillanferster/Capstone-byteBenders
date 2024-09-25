@@ -143,14 +143,16 @@ const TaskPage = () => {
     () =>
       tasks.map((task) => ({
         id: task._id,
-        taskName: task.taskName,
-        caseId: task.caseId,
-        dataClassification: task.dataClassification,
         assignedTo: task.assignedTo,
-        dateCreated: task.dateCreated,
         taskStatus: task.taskStatus,
-        quickBaseLink: task.quickBaseLink,
-        taskDesc: task.taskDesc,
+        priority: task.priority,
+        taskCategory: task.taskCategory,
+        startDate: task.startDate,
+        dueDate: task.dueDate,
+        projectStatus: task.projectStatus,
+        addChronicles: task.addChronicles,
+        attachments: task.attachments,
+        chroniclesComplete: task.chroniclesComplete,
       })),
     [tasks]
   );
@@ -275,7 +277,7 @@ const TaskPage = () => {
         </Button>
         <div className="flex gap-4">
           {" "}
-          {selectedProject.length === 1 && (
+          {selectedTask.length === 1 && (
             <div className="flex gap-4">
               <div>
                 <Button
@@ -298,7 +300,7 @@ const TaskPage = () => {
               </div>
             </div>
           )}
-          {selectedProject.length > 0 && (
+          {selectedTask.length > 0 && (
             <div>
               {" "}
               <Button
@@ -320,7 +322,7 @@ const TaskPage = () => {
         selectionColumnDef={selectionColumnDef}
         onSelectionChanged={handleOnSelectionChanged}
       ></ProjectGrid>
-      <EditMenu
+      {/* <EditMenu
         isOpen={isOpen}
         setIsOpen={setIsOpen}
         toggleForm={toggleForm}
@@ -334,7 +336,7 @@ const TaskPage = () => {
         editClicked={editClicked}
         setEditClicked={setEditClicked}
         reloadTheGrid={reloadTheGrid}
-      ></EditMenu>
+      ></EditMenu> */}
     </div>
   );
 };

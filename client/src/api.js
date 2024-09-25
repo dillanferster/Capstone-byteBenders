@@ -97,7 +97,7 @@ export async function getTasks() {
 // async function
 // awaits axios get method, sends the HTTP request to the /project/:id route on backend
 // if the response sent back is good "200" the function returns the data else console.logs issue
-export async function getTasks(id) {
+export async function getTask(id) {
   const response = await axios.get(`${URL}/tasks/${id}`);
   if (response.status === 200) {
     return response.data;
