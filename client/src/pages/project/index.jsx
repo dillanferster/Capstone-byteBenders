@@ -93,6 +93,7 @@ const columns = [
     floatingFilter: true,
     filter: true,
     editable: false,
+    
   },
   {
     field: "quickBaseLink",
@@ -153,7 +154,9 @@ const ProjectPage = () => {
       sortable: true,
       width: 120,
       maxWidth: 120,
+      
     };
+    
   }, []);
 
   // Selection control props for AG data grid

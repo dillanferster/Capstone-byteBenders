@@ -78,6 +78,65 @@ export async function deleteProject(id) {
 }
 ///PROJECTS///
 
+///TASKS///
+// gets all projects,
+// async function
+// awaits axios get method, sends the HTTP request to the /project route on backend
+// if the response sent back is good "200" the function returns the data, else console.logs issue
+export async function getTasks() {
+  const response = await axios.get(`${URL}/tasks`);
+  if (response.status === 200) {
+    return response.data;
+  } else {
+    console.log("issue with get", response.status);
+    return;
+  }
+}
+
+// gets one project, takes an id
+// async function
+// awaits axios get method, sends the HTTP request to the /project/:id route on backend
+// if the response sent back is good "200" the function returns the data else console.logs issue
+export async function getTasks(id) {
+  const response = await axios.get(`${URL}/tasks/${id}`);
+  if (response.status === 200) {
+    return response.data;
+  } else {
+    console.log("issue with get", response.status);
+    return;
+  }
+}
+
+// creates a new project , pass in project object
+// async function
+// awaits axios post method, sends the HTTP request to the /project route on backend
+// passes in the project object as the request
+// returns the response object
+export async function createTask(task) {
+  const response = await axios.post(`${URL}/tasks`, task);
+  return response;
+}
+
+// updates a project, pass in id and project object
+// async function
+// awaits axios get method, sends the HTTP request to the /project/:id route on backend
+// passes in the project id, and project object as the request
+// returns the response object
+export async function updateTask(id, task) {
+  const response = await axios.put(`${URL}/tasks/${id}`, task);
+  return response;
+}
+
+// deletes project , pass in id
+// async function
+// awaits axios get method, sends the HTTP request to the /project/:id route on backend
+// returns response
+export async function deleteTask(id) {
+  const response = await axios.delete(`${URL}/tasks/${id}`);
+  return response;
+}
+///TASKS///
+
 ///USER///
 // creates a new user , pass in user object
 export async function createUser(user) {
