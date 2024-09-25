@@ -34,6 +34,7 @@ export default function EditMenu({
   const [caseId, setCaseId] = useState("");
   const [dataClassification, setDataClassification] = useState("");
   const [projectStatus, setProjectStatus] = useState("");
+  const [quickBaseLink, setQuickBaseLink] = useState("");
   const [projectDescription, setProjectDescription] = useState("");
 
   //*
@@ -52,6 +53,7 @@ export default function EditMenu({
       setDataClassification(selectedProject[0].dataClassification);
       setAssignedTo(selectedProject[0].assignedTo);
       setProjectStatus(selectedProject[0].projectStatus);
+      setQuickBaseLink(selectedProject[0].quickBaseLink);
       setProjectDescription(selectedProject[0].projectDesc);
 
       console.log("set project defaults");
@@ -68,6 +70,7 @@ export default function EditMenu({
     setDataClassification("");
     setAssignedTo("");
     setProjectStatus("");
+    setQuickBaseLink("");
     setProjectDescription("");
   }
 
@@ -85,6 +88,7 @@ export default function EditMenu({
       dataClassification: dataClassification,
       assignedTo: assignedTo,
       projectStatus: projectStatus,
+      quickBaseLink: quickBaseLink,
       dateCreated: dateCreated,
     };
 
@@ -106,6 +110,7 @@ export default function EditMenu({
       dataClassification: dataClassification,
       assignedTo: assignedTo,
       projectStatus: projectStatus,
+      quickBaseLink: quickBaseLink,
       dateCreated: dateCreated,
     };
 
@@ -281,6 +286,25 @@ export default function EditMenu({
               <option value="Not started">Not Started</option>
               <option value="Storage">Storage</option>
             </select>
+          </div>
+
+          <div>
+            <label
+              htmlFor="projectName"
+              className="block text-sm font-medium mb-2 text-gray-300"
+            >
+              QuickBase Case Link
+            </label>
+            <input
+              type="text"
+              id="quickBaseLink"
+              value={quickBaseLink}
+              onChange={(e) => setQuickBaseLink(e.target.value)}
+              className="w-full px-4 py-2 bg-gray-700 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              required
+              placeholder="Enter QuickBase Link"
+              disabled={viewClicked}
+            />
           </div>
 
           <div>

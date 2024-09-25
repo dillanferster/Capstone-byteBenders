@@ -82,6 +82,7 @@ projectRoutes
       dataClassification: request.body.dataClassification,
       assignedTo: request.body.assignedTo,
       projectStatus: request.body.projectStatus,
+      quickBaseLink: request.body.quickBaseLink,
       dateCreated: request.body.dateCreated,
     };
     let data = await db.collection("Dillan").insertOne(mongoObject);
@@ -109,6 +110,7 @@ projectRoutes
         dataClassification: request.body.dataClassification,
         assignedTo: request.body.assignedTo,
         projectStatus: request.body.projectStatus,
+        quickBaseLink: request.body.quickBaseLink,
         dateCreated: request.body.dateCreated,
       },
     };

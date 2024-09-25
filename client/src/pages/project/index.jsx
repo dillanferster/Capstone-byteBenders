@@ -95,6 +95,13 @@ const columns = [
     editable: false,
   },
   {
+    field: "quickBaseLink",
+    headerName: "QuickBase Case Link",
+    floatingFilter: true,
+    filter: true,
+    editable: false,
+  },
+  {
     field: "projectDesc",
     headerName: "Project Desc",
     filter: true,
@@ -131,6 +138,7 @@ const ProjectPage = () => {
         assignedTo: project.assignedTo,
         dateCreated: project.dateCreated,
         projectStatus: project.projectStatus,
+        quickBaseLink: project.quickBaseLink,
         projectDesc: project.projectDesc,
       })),
     [projects]
@@ -245,7 +253,7 @@ const ProjectPage = () => {
   }, [reloadGrid]);
 
   return (
-    <div className=" mt-[10rem] ml-[5rem]">
+    <div className="ml-[5rem] w-full h-full border-2 border-red-500">
       <div className="flex justify-between">
         <Button
           variant="contained"
