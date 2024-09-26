@@ -19,10 +19,11 @@ export default function Login() {
   async function handleSubmit(e) {
     e.preventDefault();
     try {
-      let response = await verifyUser(user);
-      if (response) {
-        sessionStorage.setItem("User", JSON.stringify(response));
-        axios.defaults.headers.common["Authorization"] = `Bearer ${response}`; // Bearer = authentication token formatting
+      let tokenValue = await verifyUser(user);
+      console.log("Token received from backend:", tokenValue); // Gigi Debug log for token authentication -> remove before production
+      if (tokenValue) {
+        sessionStorage.setItem("User", tokenValue);
+        axios.defaults.headers.common["Authorization"] = `Bearer ${tokenValue}`; // Bearer = authentication token formatting
         navigate("/home");
       } else {
         alert("Login failed");

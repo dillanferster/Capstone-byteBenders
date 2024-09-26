@@ -19,6 +19,7 @@ import axios from "axios";
 // url to send the request route to, same one that server is listening on
 const URL = "http://localhost:3000";
 
+///PROJECTS///
 // gets all projects,
 // async function
 // awaits axios get method, sends the HTTP request to the /project route on backend
@@ -75,6 +76,7 @@ export async function deleteProject(id) {
   const response = await axios.delete(`${URL}/projects/${id}`);
   return response;
 }
+///PROJECTS///
 
 ///USER///
 // creates a new user , pass in user object
@@ -92,3 +94,63 @@ export async function verifyUser(user) {
     throw new Error(response.statusText);
   }
 }
+///USER///
+
+///NOTES///
+// gets all notes,
+// async function
+// awaits axios get method, sends the HTTP request to the /note route on backend
+// if the response sent back is good "200" the function returns the data, else console.logs issue
+export async function getNotes() {
+  const response = await axios.get(`${URL}/notes`);
+  if (response.status === 200) {
+    return response.data;
+  } else {
+    console.log("issue with get", response.status);
+    return;
+  }
+}
+
+// gets one note, takes an id
+// async function
+// awaits axios get method, sends the HTTP request to the /note/:id route on backend
+// if the response sent back is good "200" the function returns the data else console.logs issue
+export async function getNote(id) {
+  const response = await axios.get(`${URL}/notes/${id}`);
+  if (response.status === 200) {
+    return response.data;
+  } else {
+    console.log("issue with get", response.status);
+    return;
+  }
+}
+
+// creates a new note , pass in note object
+// async function
+// awaits axios post method, sends the HTTP request to the /note route on backend
+// passes in the note object as the request
+// returns the response object
+export async function createNote(note) {
+  const response = await axios.post(`${URL}/notes`, note);
+  return response;
+}
+
+// updates a note, pass in id and note object
+// async function
+// awaits axios get method, sends the HTTP request to the /note/:id route on backend
+// passes in the note id, and note object as the request
+// returns the response object
+export async function updateNote(id, note) {
+  const response = await axios.put(`${URL}/notes/${id}`, note);
+  return response;
+}
+
+// deletes note , pass in id
+// async function
+// awaits axios get method, sends the HTTP request to the /note/:id route on backend
+// returns response
+export async function deleteNote(id) {
+  const response = await axios.delete(`${URL}/notes/${id}`);
+  return response;
+}
+///NOTES///
