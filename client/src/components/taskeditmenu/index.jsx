@@ -128,7 +128,7 @@ export default function TaskEditMenu({
       chroniclesComplete: chroniclesComplete,
     };
 
-    updateTask(addedTask).then((response) => {
+    createTask(addedTask).then((response) => {
       console.log("updating task", taskId);
 
       if (response.status === 200) {

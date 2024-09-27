@@ -68,7 +68,7 @@ export async function createProject(project) {
       },
     });
     console.log(response);
-    return response.data;
+    return response;
   } catch (error) {
     console.error("Error creating project:", error);
     throw error; // Optionally, throw the error to handle it in the component
@@ -89,7 +89,7 @@ export async function updateProject(id, project) {
       },
     });
     console.log(response);
-    return response.data;
+    return response;
   } catch (error) {
     console.error("Error updating project:", error);
     throw error; // Optionally, throw the error to handle it in the component
@@ -109,7 +109,7 @@ export async function deleteProject(id) {
       },
     });
     console.log(response);
-    return response.data;
+    return response;
   } catch (error) {
     console.error("Error deleting project:", error);
     throw error; // Optionally, throw the error to handle it in the component
@@ -139,12 +139,18 @@ export async function getNLP(text) {
 // awaits axios get method, sends the HTTP request to the /project route on backend
 // if the response sent back is good "200" the function returns the data, else console.logs issue
 export async function getTasks() {
-  const response = await axios.get(`${URL}/tasks`);
-  if (response.status === 200) {
+  try {
+    const token = sessionStorage.getItem("User"); // Retrieve the token
+    const response = await axios.get(`${URL}/tasks/`, {
+      headers: {
+        Authorization: `Bearer ${token}`, // Attach the token in the Authorization header
+      },
+    });
+    console.log(response);
     return response.data;
-  } else {
-    console.log("issue with get", response.status);
-    return;
+  } catch (error) {
+    console.error("Error fetching projects:", error);
+    throw error; // Optionally, throw the error to handle it in the component
   }
 }
 
@@ -155,7 +161,7 @@ export async function getTasks() {
 export async function getTask(id) {
   const response = await axios.get(`${URL}/tasks/${id}`);
   if (response.status === 200) {
-    return response.data;
+    return response;
   } else {
     console.log("issue with get", response.status);
     return;
@@ -168,8 +174,19 @@ export async function getTask(id) {
 // passes in the project object as the request
 // returns the response object
 export async function createTask(task) {
-  const response = await axios.post(`${URL}/tasks`, task);
-  return response;
+  try {
+    const token = sessionStorage.getItem("User"); // Retrieve the token
+    const response = await axios.post(`${URL}/tasks`, task, {
+      headers: {
+        Authorization: `Bearer ${token}`, // Attach the token in the Authorization header
+      },
+    });
+    console.log(response);
+    return response;
+  } catch (error) {
+    console.error("Error creating project:", error);
+    throw error; // Optionally, throw the error to handle it in the component
+  }
 }
 
 // updates a project, pass in id and project object
@@ -178,8 +195,19 @@ export async function createTask(task) {
 // passes in the project id, and project object as the request
 // returns the response object
 export async function updateTask(id, task) {
-  const response = await axios.put(`${URL}/tasks/${id}`, task);
-  return response;
+  try {
+    const token = sessionStorage.getItem("User"); // Retrieve the token
+    const response = await axios.put(`${URL}/tasks/${id}`, task, {
+      headers: {
+        Authorization: `Bearer ${token}`, // Attach the token in the Authorization header
+      },
+    });
+    console.log(response);
+    return response;
+  } catch (error) {
+    console.error("Error updating project:", error);
+    throw error; // Optionally, throw the error to handle it in the component
+  }
 }
 
 // deletes project , pass in id
@@ -187,8 +215,19 @@ export async function updateTask(id, task) {
 // awaits axios get method, sends the HTTP request to the /project/:id route on backend
 // returns response
 export async function deleteTask(id) {
-  const response = await axios.delete(`${URL}/tasks/${id}`);
-  return response;
+  try {
+    const token = sessionStorage.getItem("User"); // Retrieve the token
+    const response = await axios.delete(`${URL}/tasks/${id}`, {
+      headers: {
+        Authorization: `Bearer ${token}`, // Attach the token in the Authorization header
+      },
+    });
+    console.log(response);
+    return response;
+  } catch (error) {
+    console.error("Error deleting project:", error);
+    throw error; // Optionally, throw the error to handle it in the component
+  }
 }
 ///TASKS///
 
