@@ -32,7 +32,7 @@ import {
   deleteTask,
 } from "../../api.js";
 import ProjectGrid from "../../components/projectgrid/index.jsx";
-// import EditMenu from "../../components/editmenu/index.jsx";
+// import TaskEditMenu from "../../components/taskeditmenu/index.jsx";
 //
 
 // columns for AG grid
@@ -322,7 +322,7 @@ const TaskPage = () => {
         selectionColumnDef={selectionColumnDef}
         onSelectionChanged={handleOnSelectionChanged}
       ></ProjectGrid>
-      {/* <EditMenu
+      {/* <TaskEditMenu
         isOpen={isOpen}
         setIsOpen={setIsOpen}
         toggleForm={toggleForm}
@@ -336,7 +336,7 @@ const TaskPage = () => {
         editClicked={editClicked}
         setEditClicked={setEditClicked}
         reloadTheGrid={reloadTheGrid}
-      ></EditMenu> */}
+      ></TaskEditMenu> */}
     </div>
   );
 };
