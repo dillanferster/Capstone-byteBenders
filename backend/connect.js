@@ -24,7 +24,7 @@ const client = new MongoClient(process.env.ATLAS_URI, {
 
 let database;
 
-// can use reqiure() to access one module.export
+// can use require() to access one module.export
 // making the connection the to the database
 module.exports = {
   // creates initail connect to database, uses the client from above and connects to "Projects db"
