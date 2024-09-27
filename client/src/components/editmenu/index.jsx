@@ -78,6 +78,7 @@ export default function EditMenu({
   // logs current project id
   // creates a new object with the updated state variables from the inputs
   // calls update project , pass the project id and updated project object
+  // .then makes sure response returned from database operation was successful before reloading grid
   const submitUpdatedProject = () => {
     setEditClicked(!editClicked);
 
@@ -92,14 +93,23 @@ export default function EditMenu({
       dateCreated: dateCreated,
     };
 
-    updateProject(projectId, updatedProject);
-    console.log("updating project", projectId);
+    updateProject(projectId, updatedProject).then((response) => {
+      console.log("updating project", projectId);
 
-    toggleForm();
-
-    reloadTheGrid();
+      if (response.status === 200) {
+        reloadTheGrid();
+        toggleForm();
+        clearAddInputs();
+      }
+    });
   };
 
+
+  // handles the submit from add button
+  // logs current project id
+  // creates a new object with the updated state variables from the inputs
+  // calls update project , pass the project id and updated project object
+  // .then makes sure response returned from database operation was successful before reloading grid
   const submitAddedProject = () => {
     setAddClicked(!addClicked);
 
@@ -114,18 +124,15 @@ export default function EditMenu({
       dateCreated: dateCreated,
     };
 
-    const returnResponse = () => createProject(addedProject);
-    console.log("adding project", projectName);
+    createProject(addedProject).then((response) => {
+      console.log("adding project", response);
 
-    createProject(addedProject);
-
-    toggleForm();
-
-    clearAddInputs();
-
-    if (returnResponse === 200) {
-      reloadTheGrid();
-    }
+      if (response.status === 200) {
+        reloadTheGrid();
+        toggleForm();
+        clearAddInputs();
+      }
+    });
   };
 
   // handles click off menu
@@ -148,7 +155,7 @@ export default function EditMenu({
       />
 
       <div
-        className={`fixed top-0 right-0 w-full max-w-2xl h-full bg-gray-800 text-gray-100 p-8 z-[10] shadow-xl transition-transform duration-300 ease-in-out transform ${
+        className={`fixed top-0 right-0 w-full max-w-2xl h-full bg-gray-800 text-gray-100 p-8 z-[10] shadow-xl transition-transform duration-300 ease-in-out transform overflow-y-scroll ${
           isOpen ? "translate-x-0" : "translate-x-full"
         }`}
       >

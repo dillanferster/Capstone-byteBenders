@@ -222,11 +222,13 @@ const TaskPage = () => {
   // setReloadGrid to rerender row list with newly deleted item
   function handleButtonDelete() {
     selectedTask.forEach((task) => {
-      deleteTask(task.id);
-      console.log("deleted project with id:", task.id);
+      deleteTask(task.id).then((response) => {
+        if (response.status === 200) {
+          console.log("deleted project with id:", task.id);
+          reloadTheGrid();
+        }
+      });
     });
-
-    reloadTheGrid();
   }
 
   // sets the form menu state to open or close menu
