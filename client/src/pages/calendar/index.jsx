@@ -48,7 +48,8 @@ const Calendar = () => {
   };
 
   return (
-    <Box m="20px">
+    // Added padding 40 top and to fit until fix the sidebar and header
+    <Box m="20px" pt="40px">
       <Header title="CALENDAR" subtitle="Full Calendar Interactive Page" />
       <Box display="flex" justifyContent="space-between">
         {/* CALENDAR SIDEBAR */}
