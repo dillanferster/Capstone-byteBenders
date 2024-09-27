@@ -88,7 +88,7 @@ const App = () => {
             sx={{
               flexGrow: 1,
               p: 3,
-              minHeight: "100vh",
+              height: "100vh",
               display: "flex",
               flexDirection: "column",
               justifyContent: "center",

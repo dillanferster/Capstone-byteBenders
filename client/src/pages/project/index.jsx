@@ -56,13 +56,23 @@ const columns = [
     floatingFilter: true,
     editable: false,
   },
+
   {
-    field: "projectDesc",
-    headerName: "Project Desc",
-    filter: true,
+    field: "caseId",
+    headerName: "Case Id (Quickbase)",
     floatingFilter: true,
+    filter: true,
     editable: false,
   },
+
+  {
+    field: "dataClassification",
+    headerName: "Data Classification",
+    floatingFilter: true,
+    filter: true,
+    editable: false,
+  },
+
   {
     field: "assignedTo",
     headerName: "Assigned To",
@@ -75,6 +85,28 @@ const columns = [
     headerName: "Date",
     floatingFilter: true,
     filter: true,
+    editable: false,
+  },
+  {
+    field: "projectStatus",
+    headerName: "Project Status",
+    floatingFilter: true,
+    filter: true,
+    editable: false,
+    
+  },
+  {
+    field: "quickBaseLink",
+    headerName: "QuickBase Case Link",
+    floatingFilter: true,
+    filter: true,
+    editable: false,
+  },
+  {
+    field: "projectDesc",
+    headerName: "Project Desc",
+    filter: true,
+    floatingFilter: true,
     editable: false,
   },
 ];
@@ -102,11 +134,15 @@ const ProjectPage = () => {
       projects.map((project) => ({
         id: project._id,
         projectName: project.projectName,
-        projectDesc: project.projectDesc,
+        caseId: project.caseId,
+        dataClassification: project.dataClassification,
         assignedTo: project.assignedTo,
         dateCreated: project.dateCreated,
+        projectStatus: project.projectStatus,
+        quickBaseLink: project.quickBaseLink,
+        projectDesc: project.projectDesc,
       })),
-    [projects, reloadGrid]
+    [projects]
   );
 
   /// Default style props for AG data grid
@@ -118,7 +154,9 @@ const ProjectPage = () => {
       sortable: true,
       width: 120,
       maxWidth: 120,
+      
     };
+    
   }, []);
 
   // Selection control props for AG data grid
@@ -144,16 +182,8 @@ const ProjectPage = () => {
   // setReloadGrid so the rows rerender with new item
   function handleButtonAdd() {
     setAddClicked(!addClicked);
+    setSelectedProject("");
     toggleForm();
-
-    let projectObject = {
-      projectName: "first",
-      projectDesc: "yes",
-      assignedTo: "dillan",
-      dateCreated: format(new Date(), "yyyy-MM-dd"),
-    };
-
-    reloadTheGrid();
   }
 
   // function handles edit button
@@ -226,7 +256,7 @@ const ProjectPage = () => {
   }, [reloadGrid]);
 
   return (
-    <div className=" mt-[10rem] ml-[5rem]">
+    <div className="ml-[5rem] w-full h-full border-2 border-red-500">
       <div className="flex justify-between">
         <Button
           variant="contained"
