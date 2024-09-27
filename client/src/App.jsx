@@ -13,6 +13,9 @@ import TaskPage from "./pages/task";
 import LoginPage from "./pages/login/index.jsx";
 import SignUpPage from "./pages/signup/index.jsx";
 import NotePage from "./pages/note/notePage.jsx";
+import CalendarPage from "./pages/calendar";
+import DocumentationPage from "./pages/documentation";
+// import DashboardPage from "./pages/home/index.jsx";
 import { nanoid } from "nanoid";
 
 // Database functions from the API file
@@ -101,6 +104,9 @@ const App = () => {
                 <Route path="/project" element={<ProjectPage />} />
                 <Route path="/note" element={<NotePage />} />
                 <Route path="/task" element={<TaskPage />} />
+                <Route path="/calendar" element={<CalendarPage />} />
+                <Route path="/documentation" element={<DocumentationPage />} />
+                {/* <Route path="/dashboard" element={<DashboardPage />} /> */}
               </Route>
             </Routes>
           </Box>
