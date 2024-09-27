@@ -25,12 +25,18 @@ const URL = "http://localhost:3000";
 // awaits axios get method, sends the HTTP request to the /project route on backend
 // if the response sent back is good "200" the function returns the data, else console.logs issue
 export async function getProjects() {
-  const response = await axios.get(`${URL}/projects`);
-  if (response.status === 200) {
+  try {
+    const token = sessionStorage.getItem("User"); // Retrieve the token
+    const response = await axios.get(`${URL}/projects/`, {
+      headers: {
+        Authorization: `Bearer ${token}`, // Attach the token in the Authorization header
+      },
+    });
+    console.log(response);
     return response.data;
-  } else {
-    console.log("issue with get", response.status);
-    return;
+  } catch (error) {
+    console.error("Error fetching projects:", error);
+    throw error; // Optionally, throw the error to handle it in the component
   }
 }
 
@@ -54,8 +60,19 @@ export async function getProject(id) {
 // passes in the project object as the request
 // returns the response object
 export async function createProject(project) {
-  const response = await axios.post(`${URL}/projects`, project);
-  return response;
+  try {
+    const token = sessionStorage.getItem("User"); // Retrieve the token
+    const response = await axios.post(`${URL}/projects`, project, {
+      headers: {
+        Authorization: `Bearer ${token}`, // Attach the token in the Authorization header
+      },
+    });
+    console.log(response);
+    return response.data;
+  } catch (error) {
+    console.error("Error creating project:", error);
+    throw error; // Optionally, throw the error to handle it in the component
+  }
 }
 
 // updates a project, pass in id and project object
@@ -64,8 +81,19 @@ export async function createProject(project) {
 // passes in the project id, and project object as the request
 // returns the response object
 export async function updateProject(id, project) {
-  const response = await axios.put(`${URL}/projects/${id}`, project);
-  return response;
+  try {
+    const token = sessionStorage.getItem("User"); // Retrieve the token
+    const response = await axios.put(`${URL}/projects/${id}`, project, {
+      headers: {
+        Authorization: `Bearer ${token}`, // Attach the token in the Authorization header
+      },
+    });
+    console.log(response);
+    return response.data;
+  } catch (error) {
+    console.error("Error updating project:", error);
+    throw error; // Optionally, throw the error to handle it in the component
+  }
 }
 
 // deletes project , pass in id
@@ -73,19 +101,48 @@ export async function updateProject(id, project) {
 // awaits axios get method, sends the HTTP request to the /project/:id route on backend
 // returns response
 export async function deleteProject(id) {
-  const response = await axios.delete(`${URL}/projects/${id}`);
+  try {
+    const token = sessionStorage.getItem("User"); // Retrieve the token
+    const response = await axios.delete(`${URL}/projects/${id}`, {
+      headers: {
+        Authorization: `Bearer ${token}`, // Attach the token in the Authorization header
+      },
+    });
+    console.log(response);
+    return response.data;
+  } catch (error) {
+    console.error("Error deleting project:", error);
+    throw error; // Optionally, throw the error to handle it in the component
+  }
+}
+
+////////////////////////// AWS Comprehend //////////////////////////
+// // gets NLP data from AWS Comprehend
+// // Author: Gigi Vu (gigi-vu2804)
+// // async function
+// // awaits axios post method, sends the HTTP request to the /projects/analyze-email route on backend
+// // passes in the text object as the request
+// // returns the response object
+export async function getNLP(text) {
+  const response = await axios.post(`${URL}/analyze-email`, {
+    emailText: text,
+  });
   return response;
 }
+////////////////////////// AWS Comprehend //////////////////////////
+
 ///PROJECTS///
 
 ///USER///
 // creates a new user , pass in user object
+// Author: Gigi Vu (gigi-vu2804)
 export async function createUser(user) {
   const response = await axios.post(`${URL}/users`, user);
   return response;
 }
 
 // verify user login
+// Author: Gigi Vu (gigi-vu2804)
 export async function verifyUser(user) {
   const response = await axios.post(`${URL}/users/login`, user);
   if (response.data.success) {
@@ -97,60 +154,114 @@ export async function verifyUser(user) {
 ///USER///
 
 ///NOTES///
-// gets all notes,
+// gets all notes
+// Author: Gigi Vu (gigi-vu2804)
 // async function
 // awaits axios get method, sends the HTTP request to the /note route on backend
 // if the response sent back is good "200" the function returns the data, else console.logs issue
 export async function getNotes() {
-  const response = await axios.get(`${URL}/notes`);
-  if (response.status === 200) {
-    return response.data;
-  } else {
-    console.log("issue with get", response.status);
-    return;
+  try {
+    const token = sessionStorage.getItem("User"); // Retrieve the token
+    const response = await axios.get(`${URL}/notes`, {
+      headers: {
+        Authorization: `Bearer ${token}`, // Attach the token in the Authorization header
+      },
+    });
+    if (response.status === 200) {
+      return response.data;
+    } else {
+      console.log("Issue with get", response.status);
+    }
+  } catch (error) {
+    console.error("Error fetching notes:", error);
+    throw error; // Optionally, throw the error to handle it in the component
   }
 }
 
 // gets one note, takes an id
+// Author: Gigi Vu (gigi-vu2804)
 // async function
 // awaits axios get method, sends the HTTP request to the /note/:id route on backend
 // if the response sent back is good "200" the function returns the data else console.logs issue
 export async function getNote(id) {
-  const response = await axios.get(`${URL}/notes/${id}`);
-  if (response.status === 200) {
-    return response.data;
-  } else {
-    console.log("issue with get", response.status);
-    return;
+  try {
+    const token = sessionStorage.getItem("User"); // Retrieve the token
+    const response = await axios.get(`${URL}/notes/${id}`, {
+      headers: {
+        Authorization: `Bearer ${token}`, // Attach the token in the Authorization header
+      },
+    });
+    if (response.status === 200) {
+      return response.data;
+    } else {
+      console.log("Issue with get", response.status);
+    }
+  } catch (error) {
+    console.error("Error fetching note:", error);
+    throw error; // Optionally, throw the error to handle it in the component
   }
 }
 
 // creates a new note , pass in note object
+// Author: Gigi Vu (gigi-vu2804)
 // async function
 // awaits axios post method, sends the HTTP request to the /note route on backend
 // passes in the note object as the request
 // returns the response object
 export async function createNote(note) {
-  const response = await axios.post(`${URL}/notes`, note);
-  return response;
+  try {
+    const token = sessionStorage.getItem("User"); // Retrieve the token
+    const response = await axios.post(`${URL}/notes`, note, {
+      headers: {
+        Authorization: `Bearer ${token}`, // Attach the token in the Authorization header
+      },
+    });
+    return response.data;
+  } catch (error) {
+    console.error("Error creating note:", error);
+    throw error;
+  }
 }
 
 // updates a note, pass in id and note object
+// Author: Gigi Vu (gigi-vu2804)
 // async function
 // awaits axios get method, sends the HTTP request to the /note/:id route on backend
 // passes in the note id, and note object as the request
 // returns the response object
 export async function updateNote(id, note) {
-  const response = await axios.put(`${URL}/notes/${id}`, note);
-  return response;
+  try {
+    const token = sessionStorage.getItem("User"); // Retrieve the token
+    const response = await axios.put(`${URL}/notes/${id}`, note, {
+      headers: {
+        Authorization: `Bearer ${token}`, // Attach the token in the Authorization header
+      },
+    });
+    return response.data;
+  } catch (error) {
+    console.error("Error updating note:", error);
+    throw error;
+  }
 }
 
 // deletes note , pass in id
+// Author: Gigi Vu (gigi-vu2804)
 // async function
 // awaits axios get method, sends the HTTP request to the /note/:id route on backend
 // returns response
 export async function deleteNote(id) {
-  const response = await axios.delete(`${URL}/notes/${id}`);
-  return response;
+  try {
+    const token = sessionStorage.getItem("User"); // Retrieve the token
+    const response = await axios.delete(`${URL}/notes/${id}`, {
+      headers: {
+        Authorization: `Bearer ${token}`, // Attach the token in the Authorization header
+      },
+    });
+    return response.data;
+  } catch (error) {
+    console.error("Error deleting note:", error);
+    throw error;
+  }
 }
+
 ///NOTES///
