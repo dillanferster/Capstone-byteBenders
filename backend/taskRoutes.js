@@ -72,14 +72,16 @@ taskRoutes.route("/tasks/:id").get(verifyToken, async (request, response) => {
 taskRoutes.route("/tasks").post(verifyToken, async (request, response) => {
   let db = database.getDb();
   let mongoObject = {
-    projectName: request.body.projectName,
-    projectDesc: request.body.projectDesc,
-    caseId: request.body.caseId,
-    dataClassification: request.body.dataClassification,
     assignedTo: request.body.assignedTo,
+    taskStatus: request.body.taskStatus,
+    priority: request.body.priority,
+    taskCategory: request.body.taskCategory,
+    startDate: request.body.startDate,
+    dueDate: request.body.dueDate,
     projectStatus: request.body.projectStatus,
-    quickBaseLink: request.body.quickBaseLink,
-    dateCreated: request.body.dateCreated,
+    addChronicles: request.body.addChronicles,
+    attachments: request.body.attachments,
+    chroniclesComplete: request.body.chroniclesComplete,
   };
   let data = await db.collection("tasks").insertOne(mongoObject);
   response.json(data);
@@ -98,14 +100,16 @@ taskRoutes.route("/tasks/:id").put(verifyToken, async (request, response) => {
   let db = database.getDb();
   let mongoObject = {
     $set: {
-      projectName: request.body.projectName,
-      projectDesc: request.body.projectDesc,
-      caseId: request.body.caseId,
-      dataClassification: request.body.dataClassification,
       assignedTo: request.body.assignedTo,
+      taskStatus: request.body.taskStatus,
+      priority: request.body.priority,
+      taskCategory: request.body.taskCategory,
+      startDate: request.body.startDate,
+      dueDate: request.body.dueDate,
       projectStatus: request.body.projectStatus,
-      quickBaseLink: request.body.quickBaseLink,
-      dateCreated: request.body.dateCreated,
+      addChronicles: request.body.addChronicles,
+      attachments: request.body.attachments,
+      chroniclesComplete: request.body.chroniclesComplete,
     },
   };
   let data = await db

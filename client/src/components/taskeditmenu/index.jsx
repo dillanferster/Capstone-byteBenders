@@ -237,9 +237,9 @@ export default function TaskEditMenu({
               className="w-full px-4 py-2 bg-gray-700 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
               disabled={viewClicked}
             >
-              <option value="In progress">High</option>
-              <option value="Complete">Medium</option>
-              <option value="Not started">Low</option>
+              <option value="High">High</option>
+              <option value="Medium">Medium</option>
+              <option value="Low">Low</option>
             </select>
           </div>
 
