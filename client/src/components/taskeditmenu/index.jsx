@@ -394,7 +394,7 @@ export default function TaskEditMenu({
               className="w-full px-6 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors duration-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50"
               onClick={(e) => {
                 e.preventDefault();
-                submitUpdatedProject();
+                submitUpdatedTask();
               }}
             >
               Save Edit
@@ -407,10 +407,10 @@ export default function TaskEditMenu({
               className="w-full px-6 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors duration-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50"
               onClick={(e) => {
                 e.preventDefault();
-                submitAddedProject();
+                submitAddedTask();
               }}
             >
-              Add Project
+              Add Task
             </button>
           )}
         </form>

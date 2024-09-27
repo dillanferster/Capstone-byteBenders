@@ -222,7 +222,7 @@ const TaskPage = () => {
   // setReloadGrid to rerender row list with newly deleted item
   function handleButtonDelete() {
     selectedTask.forEach((task) => {
-      deleteProject(task.id);
+      deleteTask(task.id);
       console.log("deleted project with id:", task.id);
     });
 
@@ -274,7 +274,7 @@ const TaskPage = () => {
           color="success"
           onClick={() => handleButtonAdd()}
         >
-          Add project
+          Add Task
         </Button>
         <div className="flex gap-4">
           {" "}
