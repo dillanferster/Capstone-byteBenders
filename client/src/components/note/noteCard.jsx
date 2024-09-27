@@ -1,6 +1,6 @@
-// NoteCard.jsx
 import React from 'react';
-import { Button } from 'react-bootstrap';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faTrash } from '@fortawesome/free-solid-svg-icons';
 
 const NoteCard = ({ note, deleteNote, currentNoteId, setCurrentNoteId }) => {
   return (
@@ -10,16 +10,15 @@ const NoteCard = ({ note, deleteNote, currentNoteId, setCurrentNoteId }) => {
     >
       <h4>{note.title || 'Untitled'}</h4>
       <small>{new Date(note.updatedAt).toLocaleString()}</small>
-      <Button
-        variant="danger"
-        size="sm"
+      <FontAwesomeIcon
+        icon={faTrash}
+        className="icon-btn delete-icon"
         onClick={(e) => {
-          e.stopPropagation(); // Prevents selecting the note when clicking delete
+          e.stopPropagation(); // Prevent clicking the delete icon from selecting the note
           deleteNote(note.id);
         }}
-      >
-        Delete
-      </Button>
+        title="Delete Note"
+      />
     </div>
   );
 };

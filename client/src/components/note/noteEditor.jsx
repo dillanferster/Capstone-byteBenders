@@ -1,12 +1,9 @@
-// NoteEditor.jsx
 import React, { useState, useEffect } from 'react';
 
 const NoteEditor = ({ currentNote, updateNote }) => {
-  const [isEditing, setIsEditing] = useState(true);
   const [noteContent, setNoteContent] = useState(currentNote?.content || '');
   const [noteTitle, setNoteTitle] = useState(currentNote?.title || '');
 
-  // Update the editor fields when the current note changes
   useEffect(() => {
     setNoteTitle(currentNote?.title || '');
     setNoteContent(currentNote?.content || '');
@@ -21,33 +18,31 @@ const NoteEditor = ({ currentNote, updateNote }) => {
       updatedAt: Date.now(),
     };
     updateNote(updatedNote);
-    setIsEditing(false);
   };
 
   return (
-    <div className="note-editor justify-center">
-      {isEditing ? (
-        <div>
-          <input
-            type="text"
-            value={noteTitle}
-            onChange={(e) => setNoteTitle(e.target.value)}
-            placeholder="Title"
-          />
-          <textarea
-            value={noteContent}
-            onChange={(e) => setNoteContent(e.target.value)}
-            placeholder="Content..."
-          />
-          <button onClick={handleSave}>Save</button>
-        </div>
-      ) : (
-        <div>
-          <h2>{currentNote?.title}</h2>
-          <p>{currentNote?.content}</p>
-          <button onClick={() => setIsEditing(true)}>Edit</button>
-        </div>
-      )}
+    <div className="note-editor-container">
+      <div className="editor-mode">
+        <input
+          type="text"
+          value={noteTitle}
+          onChange={(e) => setNoteTitle(e.target.value)}
+          placeholder="Untitled"
+        />
+        <textarea
+          value={noteContent}
+          onChange={(e) => setNoteContent(e.target.value)}
+          placeholder="Content..."
+        />
+        <button className="add-note-button" onClick={handleSave}>
+          Save
+        </button>
+      </div>
+      <div className="preview-mode">
+        <div className="preview-title">Preview</div>
+        <h2>{noteTitle || 'Untitled'}</h2>
+        <p>{noteContent || 'No content available...'}</p>
+      </div>
     </div>
   );
 };
