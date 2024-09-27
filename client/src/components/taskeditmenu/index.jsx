@@ -15,9 +15,9 @@ export default function TaskEditMenu({
   toggleForm,
   isOpen,
   setIsOpen,
-  selectedProject,
-  updateProject,
-  createProject,
+  selectedTask,
+  updateTask,
+  createTask,
   viewClicked,
   setViewClicked,
   addClicked,
@@ -27,15 +27,17 @@ export default function TaskEditMenu({
   reloadTheGrid,
 }) {
   // * state
-  const [projectId, setProjectId] = useState("");
-  const [projectName, setProjectName] = useState("");
-  const [dateCreated, setDateCreated] = useState("");
+  const [taskId, setTaskId] = useState("");
   const [assignedTo, setAssignedTo] = useState("");
-  const [caseId, setCaseId] = useState("");
-  const [dataClassification, setDataClassification] = useState("");
+  const [taskStatus, setTaskStatus] = useState("");
+  const [priority, setPriority] = useState("");
+  const [taskCategory, setTaskCategory] = useState("");
+  const [startDate, setStartDate] = useState("");
+  const [dueDate, setDueDate] = useState("");
   const [projectStatus, setProjectStatus] = useState("");
-  const [quickBaseLink, setQuickBaseLink] = useState("");
-  const [projectDescription, setProjectDescription] = useState("");
+  const [addChronicles, setAddChronicles] = useState("");
+  const [attachments, setAttachments] = useState("");
+  const [chroniclesComplete, setChroniclesComplete] = useState("");
 
   //*
 
@@ -45,79 +47,87 @@ export default function TaskEditMenu({
   // if we dont have this here the default value triggers an undefined error on page load when there is no selection yet
   // dependencies : selectedProject
   useEffect(() => {
-    if (selectedProject.length > 0) {
-      setProjectId(selectedProject[0].id);
-      setProjectName(selectedProject[0].projectName);
-      setDateCreated(selectedProject[0].dateCreated);
-      setCaseId(selectedProject[0].caseId);
-      setDataClassification(selectedProject[0].dataClassification);
-      setAssignedTo(selectedProject[0].assignedTo);
-      setProjectStatus(selectedProject[0].projectStatus);
-      setQuickBaseLink(selectedProject[0].quickBaseLink);
-      setProjectDescription(selectedProject[0].projectDesc);
+    if (selectedTask.length > 0) {
+      setTaskId(selectedTask[0].id);
+      setAssignedTo(selectedTask[0].assignedTo);
+      setTaskStatus(selectedTask[0].taskStatus);
+      setPriority(selectedTask[0].priority);
+      setTaskCategory(selectedTask[0].taskCategory);
+      setStartDate(selectedTask[0].startDate);
+      setDueDate(selectedTask[0].dueDate);
+      setProjectStatus(selectedTask[0].projectStatus);
+      setAddChronicles(selectedTask[0].addChronicles);
+      setAttachments(selectedTask[0].attachments);
+      setChroniclesComplete(selectedTask[0].chroniclesComplete);
 
-      console.log("set project defaults");
+      console.log("set task defaults");
     } else {
       clearAddInputs();
     }
-  }, [selectedProject]);
+  }, [selectedTask]);
 
   function clearAddInputs() {
-    setProjectId("");
-    setProjectName("");
-    setDateCreated("");
-    setCaseId("");
-    setDataClassification("");
+    setTaskId("");
     setAssignedTo("");
+    setTaskStatus("");
+    setPriority("");
+    setTaskCategory("");
+    setStartDate("");
+    setDueDate("");
     setProjectStatus("");
-    setQuickBaseLink("");
-    setProjectDescription("");
+    setAddChronicles("");
+    setAttachments("");
+    setChroniclesComplete("");
   }
 
   // handles the submit from update form
   // logs current project id
   // creates a new object with the updated state variables from the inputs
   // calls update project , pass the project id and updated project object
-  const submitUpdatedProject = () => {
+  const submitUpdatedTask = () => {
     setEditClicked(!editClicked);
 
-    const updatedProject = {
-      projectName: projectName,
-      projectDesc: projectDescription,
-      caseId: caseId,
-      dataClassification: dataClassification,
+    const updatedTask = {
       assignedTo: assignedTo,
+      taskStatus: taskStatus,
+      priority: priority,
+      taskCategory: taskCategory,
+      startDate: startDate,
+      dueDate: dueDate,
       projectStatus: projectStatus,
-      quickBaseLink: quickBaseLink,
-      dateCreated: dateCreated,
+      addChronicles: addChronicles,
+      attachments: attachments,
+      chroniclesComplete: chroniclesComplete,
     };
 
-    updateProject(projectId, updatedProject);
-    console.log("updating project", projectId);
+    updateTask(taskId, updatedTask);
+    console.log("updating task", taskId);
 
     toggleForm();
 
     reloadTheGrid();
   };
 
-  const submitAddedProject = () => {
+  const submitAddedTask = () => {
     setAddClicked(!addClicked);
 
-    const addedProject = {
-      projectName: projectName,
-      projectDesc: projectDescription,
-      caseId: caseId,
-      dataClassification: dataClassification,
+    const addedTask = {
       assignedTo: assignedTo,
+      taskStatus: taskStatus,
+      priority: priority,
+      taskCategory: taskCategory,
+      startDate: startDate,
+      dueDate: dueDate,
       projectStatus: projectStatus,
-      quickBaseLink: quickBaseLink,
-      dateCreated: dateCreated,
+      addChronicles: addChronicles,
+      attachments: attachments,
+      chroniclesComplete: chroniclesComplete,
     };
 
-    const returnResponse = () => createProject(addedProject);
-    console.log("adding project", projectName);
+    const returnResponse = () => createTask(addedTask);
+    console.log("adding Task", taskName);
 
-    createProject(addedProject);
+    createTask(addedTask);
 
     toggleForm();
 
@@ -152,87 +162,30 @@ export default function TaskEditMenu({
           isOpen ? "translate-x-0" : "translate-x-full"
         }`}
       >
-        <h2 className="text-3xl font-bold mb-8 text-white">Add New Project</h2>
+        <h2 className="text-3xl font-bold mb-8 text-white">Add New Task</h2>
 
         <form className="space-y-6">
           <div>
             <label
-              htmlFor="projectName"
+              htmlFor="taskId"
               className="block text-sm font-medium mb-2 text-gray-300"
             >
-              Project ID
+              Task ID
             </label>
             <input
               type="text"
-              id="projectName"
-              defaultValue={projectId}
+              id="taskName"
+              defaultValue={taskId}
               className="w-full px-4 py-2 bg-gray-700 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
               disabled
               placeholder={
                 addClicked ? "ID will be generated automatically" : ""
-              } // Gigi: Found a bug here "Received false for a non-boolean attribute 'placeholder'" -> bug is fixed now
+              }
             />
           </div>
           <div>
             <label
-              htmlFor="projectName"
-              className="block text-sm font-medium mb-2 text-gray-300"
-            >
-              Project Name
-            </label>
-            <input
-              type="text"
-              id="projectName"
-              value={projectName}
-              onChange={(e) => setProjectName(e.target.value)}
-              className="w-full px-4 py-2 bg-gray-700 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
-              required
-              placeholder="Enter Project name"
-              disabled={viewClicked}
-            />
-          </div>
-
-          <div>
-            <label
-              htmlFor="caseId"
-              className="block text-sm font-medium mb-2 text-gray-300"
-            >
-              Case ID (Quickbase)
-            </label>
-            <input
-              type="number"
-              id="projectName"
-              value={caseId}
-              onChange={(e) => setCaseId(e.target.value)}
-              className="w-full px-4 py-2 bg-gray-700 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
-              required
-              placeholder="Enter Case Id"
-              disabled={viewClicked}
-            />
-          </div>
-
-          <div>
-            <label
-              htmlFor="dataClassification"
-              className="block text-sm font-medium mb-2 text-gray-300"
-            >
-              Data Classification
-            </label>
-            <input
-              type="text"
-              id="projectName"
-              value={dataClassification}
-              onChange={(e) => setDataClassification(e.target.value)}
-              className="w-full px-4 py-2 bg-gray-700 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
-              required
-              placeholder="Enter data classification"
-              disabled={viewClicked}
-            />
-          </div>
-
-          <div>
-            <label
-              htmlFor="projectName"
+              htmlFor="assignedTo"
               className="block text-sm font-medium mb-2 text-gray-300"
             >
               Assigned To
@@ -244,23 +197,101 @@ export default function TaskEditMenu({
               onChange={(e) => setAssignedTo(e.target.value)}
               className="w-full px-4 py-2 bg-gray-700 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
               required
-              placeholder="Assign Project"
+              placeholder="Assign"
               disabled={viewClicked}
             />
           </div>
 
           <div>
             <label
-              htmlFor="dateCreated"
+              htmlFor="taskStatus"
               className="block text-sm font-medium mb-2 text-gray-300"
             >
-              Date Created
+              Task Status
+            </label>
+            <select
+              id="taskStatus"
+              value={taskStatus}
+              onChange={(e) => setTaskStatus(e.target.value)}
+              className="w-full px-4 py-2 bg-gray-700 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+              disabled={viewClicked}
+            >
+              <option value="In progress">In Progress</option>
+              <option value="Complete">Complete</option>
+              <option value="Not started">Not Started</option>
+              <option value="Storage">Storage</option>
+            </select>
+          </div>
+
+          <div>
+            <label
+              htmlFor="priority"
+              className="block text-sm font-medium mb-2 text-gray-300"
+            >
+              Priority
+            </label>
+            <select
+              id="priority"
+              value={priority}
+              onChange={(e) => setPriority(e.target.value)}
+              className="w-full px-4 py-2 bg-gray-700 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+              disabled={viewClicked}
+            >
+              <option value="In progress">High</option>
+              <option value="Complete">Medium</option>
+              <option value="Not started">Low</option>
+            </select>
+          </div>
+
+          <div>
+            <label
+              htmlFor="taskCategory"
+              className="block text-sm font-medium mb-2 text-gray-300"
+            >
+              Task Category
+            </label>
+            <input
+              type="text"
+              id="taskCategory"
+              value={taskCategory}
+              onChange={(e) => setTaskCategory(e.target.value)}
+              className="w-full px-4 py-2 bg-gray-700 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              required
+              placeholder="Enter Category"
+              disabled={viewClicked}
+            />
+          </div>
+
+          <div>
+            <label
+              htmlFor="startDate"
+              className="block text-sm font-medium mb-2 text-gray-300"
+            >
+              Start Date
             </label>
             <input
               type="date"
-              id="dateCreated"
-              value={dateCreated}
-              onChange={(e) => setDateCreated(e.target.value)}
+              id="startDate"
+              value={startDate}
+              onChange={(e) => setStartDate(e.target.value)}
+              className="w-full px-4 py-2 bg-gray-700 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+              required
+              disabled={viewClicked}
+            />
+          </div>
+
+          <div>
+            <label
+              htmlFor="dueDate"
+              className="block text-sm font-medium mb-2 text-gray-300"
+            >
+              Due Date
+            </label>
+            <input
+              type="date"
+              id="dueDate"
+              value={dueDate}
+              onChange={(e) => setDueDate(e.target.value)}
               className="w-full px-4 py-2 bg-gray-700 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
               required
               disabled={viewClicked}
@@ -290,37 +321,55 @@ export default function TaskEditMenu({
 
           <div>
             <label
-              htmlFor="projectName"
+              htmlFor="addChronicles"
               className="block text-sm font-medium mb-2 text-gray-300"
             >
-              QuickBase Case Link
+              Add Chronicles
             </label>
             <input
               type="text"
-              id="quickBaseLink"
-              value={quickBaseLink}
-              onChange={(e) => setQuickBaseLink(e.target.value)}
+              id="addChronicles"
+              value={addChronicles}
+              onChange={(e) => setAddChronicles(e.target.value)}
               className="w-full px-4 py-2 bg-gray-700 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
               required
-              placeholder="Enter QuickBase Link"
+              placeholder="Add Chronicles"
               disabled={viewClicked}
             />
           </div>
 
           <div>
             <label
-              htmlFor="description"
+              htmlFor="attachments"
               className="block text-sm font-medium mb-2 text-gray-300"
             >
-              Description
+              Attachments
             </label>
             <textarea
-              id="description"
-              value={projectDescription}
-              onChange={(e) => setProjectDescription(e.target.value)}
+              id="attachments"
+              value={attachments}
+              onChange={(e) => setAttachments(e.target.value)}
               className="w-full px-4 py-2 bg-gray-700 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
               rows={4}
-              placeholder="Enter Description"
+              placeholder="Enter Attachments"
+              disabled={viewClicked}
+            />
+          </div>
+
+          <div>
+            <label
+              htmlFor="chroniclesComplete"
+              className="block text-sm font-medium mb-2 text-gray-300"
+            >
+              Chronicles Complete
+            </label>
+            <textarea
+              id="chroniclesComplete"
+              value={chroniclesComplete}
+              onChange={(e) => setChroniclesComplete(e.target.value)}
+              className="w-full px-4 py-2 bg-gray-700 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              rows={4}
+              placeholder="Chronicles Completes"
               disabled={viewClicked}
             />
           </div>
