@@ -13,13 +13,22 @@ import TaskPage from "./pages/task";
 import LoginPage from "./pages/login/index.jsx";
 import SignUpPage from "./pages/signup/index.jsx";
 import NotePage from "./pages/note/notePage.jsx";
-import { nanoid } from "nanoid";
+import EmailAnalysisForm from "./pages/emailanalysis/index.jsx";
 
 // Database functions from the API file
 import { getProjects, createProject } from "./api.js";
 
 const App = () => {
   //// AUTHENTICATION TOKEN ////
+  // Function to set the Authorization header with the token
+  const setAuthHeader = (token) => {
+    if (token) {
+      axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+    } else {
+      delete axios.defaults.headers.common["Authorization"]; // Remove auth header if token doesn't exist
+    }
+  };
+
   useEffect(() => {
     let token = sessionStorage.getItem("User");
 
@@ -39,7 +48,7 @@ const App = () => {
           window.location.href = "/"; // Redirects to login page
         } else {
           // If the token is still valid, set the Axios default header
-          axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+          setAuthHeader(token);
         }
       } catch (error) {
         console.error("Error decoding token:", error);
@@ -101,6 +110,7 @@ const App = () => {
                 <Route path="/project" element={<ProjectPage />} />
                 <Route path="/note" element={<NotePage />} />
                 <Route path="/task" element={<TaskPage />} />
+                <Route path="/analyze-email" element={<EmailAnalysisForm />} />
               </Route>
             </Routes>
           </Box>

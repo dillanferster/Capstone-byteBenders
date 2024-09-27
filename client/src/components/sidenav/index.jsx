@@ -19,8 +19,9 @@ import HomeIcon from "@mui/icons-material/Home";
 import FolderIcon from "@mui/icons-material/Folder";
 import AssignmentIcon from "@mui/icons-material/Assignment";
 import BarChartIcon from "@mui/icons-material/BarChart";
-import NoteIcon from "@mui/icons-material/Note"; // <-- Add this line
+import NoteIcon from "@mui/icons-material/Note";
 import logo from "../../assets/images/logo.png"; // <-- Import the logo
+import EmailIcon from "@mui/icons-material/Email";
 
 // nav menu items
 import { menuItems } from "../../pages/pageData.js";
@@ -31,6 +32,7 @@ const iconMap = {
   AssignmentIcon,
   BarChartIcon,
   NoteIcon,
+  EmailIcon,
 };
 
 const SideNavbar = () => {
