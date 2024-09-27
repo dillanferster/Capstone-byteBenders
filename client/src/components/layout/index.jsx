@@ -10,6 +10,7 @@ const Layout = () => {
     { text: "Projects", icon: "FolderIcon", path: "/project" },
     { text: "Tasks", icon: "AssignmentIcon", path: "/task" },
     { text: "Notes", icon: "NoteIcon", path: "/note" },
+    { text: "Analyze Email", icon: "EmailIcon", path: "/analyze-email" },
   ];
 
   // check if user is authenticated

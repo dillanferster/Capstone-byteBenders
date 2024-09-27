@@ -22,10 +22,25 @@ const tasks = require("./taskRoutes"); // imports projectRoutes file
 
 const users = require("./userRoutes"); // imports userRoutes file
 
+const AWS = require("aws-sdk"); // Import AWS SDK v2 (in maintenance mode). Migrate to AWS SDK for Javascript V3 later
+
+require("dotenv").config({ path: "./.env" }); // Load environment variables
+
 const app = express(); // creates express application instance
 
 // specifies what port the server will listen for requests on
 const PORT = 3000;
+
+////////////////////////// AWS Comprehend //////////////////////////
+// // AWS SDK configuration
+AWS.config.update({
+  accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+  secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
+  region: process.env.AWS_REGION,
+});
+
+const comprehend = new AWS.Comprehend(); // Initialize Comprehend
+////////////////////////// AWS Comprehend //////////////////////////
 
 // deals with cors domain information
 app.use(cors());
@@ -38,6 +53,7 @@ app.use(projects);
 
 //mounting tasks, makes projects available to the rest of the app
 app.use(tasks);
+
 
 //mounting routes, makes users available to the rest of the app
 app.use(users);

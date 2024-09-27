@@ -15,6 +15,7 @@ const express = require("express"); // imports express object from the npm i exp
 const database = require("./connect"); // imports ./connect file from backend, saves it in the database variable
 const { verifyToken } = require("./middleware/auth"); // imports verifyToken function from authMiddleware file
 require("dotenv").config({ path: "./.env" }); // imports dotenv , loads the environment variables from .env file
+const AWS = require("aws-sdk"); // Import AWS SDK
 
 // sets the express object router function as projectRoutes variable
 let projectRoutes = express.Router();
@@ -138,5 +139,82 @@ projectRoutes
 
     response.json(data);
   });
+
+////////////////////////// AWS Comprehend //////////////////////////
+// // Analyze email text
+// // Assuming AWS SDK is already configured in server.js
+const comprehend = new AWS.Comprehend();
+
+projectRoutes
+  .route("/analyze-email")
+  .post(verifyToken, async (request, response) => {
+    const { emailText } = request.body; // Get the email content from request body
+
+    // Ensure emailText is provided and non-empty
+    if (!emailText || emailText.trim().length === 0) {
+      return response
+        .status(400)
+        .json({ success: false, error: "Email content cannot be empty" });
+    }
+
+    const params = {
+      LanguageCode: "en", // English
+      TextList: [emailText], // Email content in an array (expected by AWS comprehend)
+    };
+
+    try {
+      console.log("Sending request to AWS Comprehend:", params);
+
+      // AWS Comprehend to detect entities from email
+      const data = await comprehend.batchDetectEntities(params).promise();
+
+      console.log("AWS Comprehend response:", data);
+
+      const entities = data.ResultList[0].Entities;
+
+      console.log("Extracted entities:", entities);
+
+      // Map extracted entities into project fields
+      let project = {
+        projectName: "",
+        projectDesc: "",
+        caseId: "",
+        dataClassification: "",
+        assignedTo: "",
+        projectStatus: "",
+        quickBaseLink: "",
+        dateCreated: "",
+        startDate: "",
+        endDate: "",
+        projectNumber: "",
+        projectClient: "",
+      };
+
+      // Process extracted entities
+      entities.forEach((entity) => {
+        if (entity.Type === "PERSON") {
+          project.assignedTo = entity.Text;
+        } else if (entity.Type === "TITLE" || entity.Type === "EVENT") {
+          project.projectName = entity.Text;
+        } else if (entity.Type === "OTHER") {
+          project.projectDesc = entity.Text;
+        } else if (entity.Type === "DATE") {
+          project.startDate = entity.Text;
+        } else if (entity.Type === "QUANTITY") {
+          project.projectNumber = entity.Text;
+        } else if (entity.Type === "ORGANIZATION") {
+          project.projectClient = entity.Text;
+        }
+      });
+
+      response.json({ success: true, project });
+    } catch (error) {
+      console.error("Error analyzing email:", error);
+      response
+        .status(500)
+        .json({ success: false, error: "Failed to analyze email" });
+    }
+  });
+////////////////////////// AWS Comprehend //////////////////////////
 
 module.exports = projectRoutes;

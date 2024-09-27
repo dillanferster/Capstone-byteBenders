@@ -17,12 +17,22 @@ import CalendarPage from "./pages/calendar";
 import DocumentationPage from "./pages/documentation";
 // import DashboardPage from "./pages/home/index.jsx";
 import { nanoid } from "nanoid";
+import EmailAnalysisForm from "./pages/emailanalysis/index.jsx";
 
 // Database functions from the API file
 import { getProjects, createProject } from "./api.js";
 
 const App = () => {
   //// AUTHENTICATION TOKEN ////
+  // Function to set the Authorization header with the token
+  const setAuthHeader = (token) => {
+    if (token) {
+      axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+    } else {
+      delete axios.defaults.headers.common["Authorization"]; // Remove auth header if token doesn't exist
+    }
+  };
+
   useEffect(() => {
     let token = sessionStorage.getItem("User");
 
@@ -42,7 +52,7 @@ const App = () => {
           window.location.href = "/"; // Redirects to login page
         } else {
           // If the token is still valid, set the Axios default header
-          axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+          setAuthHeader(token);
         }
       } catch (error) {
         console.error("Error decoding token:", error);
@@ -107,6 +117,7 @@ const App = () => {
                 <Route path="/calendar" element={<CalendarPage />} />
                 <Route path="/documentation" element={<DocumentationPage />} />
                 {/* <Route path="/dashboard" element={<DashboardPage />} /> */}
+                <Route path="/analyze-email" element={<EmailAnalysisForm />} />
               </Route>
             </Routes>
           </Box>
