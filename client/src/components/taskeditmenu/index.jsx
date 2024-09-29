@@ -81,8 +81,12 @@ export default function TaskEditMenu({
     setAddChronicles("");
     setAttachments("");
     setChroniclesComplete("");
+    setProjectTask("");
   }
 
+  // takes in the current taskId and projectTask (project name)
+  // finds the project object that matches the project name, gets the id from it
+  // calls addTaskToProject to update the project task array
   const updateTaskToProject = (taskId, projectTask) => {
     const foundProject = projects.find(
       (project) => project.projectName === projectTask
@@ -128,14 +132,13 @@ export default function TaskEditMenu({
         toggleForm();
 
         reloadTheGrid();
+        updateTaskToProject(taskId, projectTask);
         clearAddInputs();
       }
     });
-
-    updateTaskToProject(taskId, projectTask);
   };
 
-  const submitAddedTask = () => {
+  const submitAddedTask = (taskId) => {
     setAddClicked(!addClicked);
 
     const addedTask = {
@@ -153,11 +156,12 @@ export default function TaskEditMenu({
     };
 
     createTask(addedTask).then((response) => {
-      console.log("updating task", taskId);
+      console.log("adding task", taskId);
 
       if (response.status === 200) {
         reloadTheGrid();
         toggleForm();
+        updateTaskToProject(taskId, projectTask);
         clearAddInputs();
       }
     });
@@ -223,6 +227,12 @@ export default function TaskEditMenu({
               className="w-full px-4 py-2 bg-gray-700 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
               disabled={viewClicked}
             >
+              {addClicked && (
+                <option value="" disabled={addClicked}>
+                  --Select an option--
+                </option>
+              )}
+
               {projects.map((project) => (
                 <option key={project._id} value={project.projectName}>
                   {project.projectName}
@@ -264,6 +274,11 @@ export default function TaskEditMenu({
               className="w-full px-4 py-2 bg-gray-700 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
               disabled={viewClicked}
             >
+              {addClicked && (
+                <option value="" disabled={addClicked}>
+                  --Select an option--
+                </option>
+              )}
               <option value="In progress">In Progress</option>
               <option value="Complete">Complete</option>
               <option value="Not started">Not Started</option>
@@ -285,6 +300,11 @@ export default function TaskEditMenu({
               className="w-full px-4 py-2 bg-gray-700 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
               disabled={viewClicked}
             >
+              {addClicked && (
+                <option value="" disabled={addClicked}>
+                  --Select an option--
+                </option>
+              )}
               <option value="High">High</option>
               <option value="Medium">Medium</option>
               <option value="Low">Low</option>
@@ -360,6 +380,11 @@ export default function TaskEditMenu({
               className="w-full px-4 py-2 bg-gray-700 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
               disabled={viewClicked}
             >
+              {addClicked && (
+                <option value="" disabled={addClicked}>
+                  --Select an option--
+                </option>
+              )}
               <option value="In progress">In Progress</option>
               <option value="Complete">Complete</option>
               <option value="Not started">Not Started</option>

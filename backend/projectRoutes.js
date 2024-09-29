@@ -120,7 +120,10 @@ projectRoutes
     response.json(data);
   });
 
-/// push practice
+/// UPDATE PROJECT TASK ARRAY
+// takes in the project id and task id
+// finds the matching project in the database
+// adds the task id to the TaskIdForProject array
 projectRoutes
   .route("/projectsupdate/:id")
   .put(verifyToken, async (request, response) => {
