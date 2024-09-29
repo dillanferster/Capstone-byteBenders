@@ -96,6 +96,27 @@ export async function updateProject(id, project) {
   }
 }
 
+/// add tasks to project
+export async function addTaskToProject(projectId, taskIdObject) {
+  try {
+    const token = sessionStorage.getItem("User"); // Retrieve the token
+    const response = await axios.put(
+      `${URL}/projectsupdate/${projectId}`,
+      taskIdObject,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`, // Attach the token in the Authorization header
+        },
+      }
+    );
+    console.log(response);
+    return response;
+  } catch (error) {
+    console.error("Error updating project:", error);
+    throw error; // Optionally, throw the error to handle it in the component
+  }
+}
+
 // deletes project , pass in id
 // async function
 // awaits axios get method, sends the HTTP request to the /project/:id route on backend

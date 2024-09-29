@@ -31,6 +31,7 @@ import {
   updateTask,
   deleteTask,
   getProjects,
+  addTaskToProject,
 } from "../../api.js";
 import ProjectGrid from "../../components/projectgrid/index.jsx";
 import TaskEditMenu from "../../components/taskeditmenu/index.jsx";
@@ -370,6 +371,7 @@ const TaskPage = () => {
         setEditClicked={setEditClicked}
         reloadTheGrid={reloadTheGrid}
         projects={projects}
+        addTaskToProject={addTaskToProject}
       ></TaskEditMenu>
     </div>
   );

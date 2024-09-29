@@ -26,6 +26,7 @@ export default function TaskEditMenu({
   setEditClicked,
   reloadTheGrid,
   projects,
+  addTaskToProject,
 }) {
   // * state
   const [taskId, setTaskId] = useState("");
@@ -82,6 +83,23 @@ export default function TaskEditMenu({
     setChroniclesComplete("");
   }
 
+  const updateTaskToProject = (taskId, projectTask) => {
+    const foundProject = projects.find(
+      (project) => project.projectName === projectTask
+    );
+
+    const foundProjectId = foundProject._id;
+
+    const taskIdObject = {
+      taskId: taskId,
+    };
+
+    console.log(
+      `in add task to project, task id: ${taskId} projectId ${foundProjectId}`
+    );
+    addTaskToProject(foundProjectId, taskIdObject);
+  };
+
   // handles the submit from update form
   // logs current project id
   // creates a new object with the updated state variables from the inputs
@@ -113,6 +131,8 @@ export default function TaskEditMenu({
         clearAddInputs();
       }
     });
+
+    updateTaskToProject(taskId, projectTask);
   };
 
   const submitAddedTask = () => {
@@ -204,7 +224,7 @@ export default function TaskEditMenu({
               disabled={viewClicked}
             >
               {projects.map((project) => (
-                <option key={project.id} value={project.projectName}>
+                <option key={project._id} value={project.projectName}>
                   {project.projectName}
                 </option>
               ))}

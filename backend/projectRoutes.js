@@ -120,6 +120,20 @@ projectRoutes
     response.json(data);
   });
 
+/// push practice
+projectRoutes
+  .route("/projectsupdate/:id")
+  .put(verifyToken, async (request, response) => {
+    let db = database.getDb();
+    let mongoObject = {
+      $push: { TaskIdForProject: request.body.taskId },
+    };
+    let data = await db
+      .collection("Dillan")
+      .updateOne({ _id: new ObjectId(request.params.id) }, mongoObject);
+    response.json(data);
+  });
+
 // Delete One / delete
 // async callback function, passes in HTTP request and response object
 // uses the express projectRoutes object to set the GET route as "/projects/:id"

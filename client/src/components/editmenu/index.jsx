@@ -104,7 +104,6 @@ export default function EditMenu({
     });
   };
 
-
   // handles the submit from add button
   // logs current project id
   // creates a new object with the updated state variables from the inputs
