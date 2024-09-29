@@ -25,9 +25,11 @@ export default function TaskEditMenu({
   editClicked,
   setEditClicked,
   reloadTheGrid,
+  projects,
 }) {
   // * state
   const [taskId, setTaskId] = useState("");
+  const [projectTask, setProjectTask] = useState("");
   const [assignedTo, setAssignedTo] = useState("");
   const [taskStatus, setTaskStatus] = useState("");
   const [priority, setPriority] = useState("");
@@ -94,6 +96,7 @@ export default function TaskEditMenu({
       taskCategory: taskCategory,
       startDate: startDate,
       dueDate: dueDate,
+      projectTask: projectTask,
       projectStatus: projectStatus,
       addChronicles: addChronicles,
       attachments: attachments,
@@ -122,6 +125,7 @@ export default function TaskEditMenu({
       taskCategory: taskCategory,
       startDate: startDate,
       dueDate: dueDate,
+      projectTask: projectTask,
       projectStatus: projectStatus,
       addChronicles: addChronicles,
       attachments: attachments,
@@ -184,6 +188,29 @@ export default function TaskEditMenu({
               }
             />
           </div>
+
+          <div>
+            <label
+              htmlFor="projectTask"
+              className="block text-sm font-medium mb-2 text-gray-300"
+            >
+              Project
+            </label>
+            <select
+              id="projectTask"
+              value={projectTask}
+              onChange={(e) => setProjectTask(e.target.value)}
+              className="w-full px-4 py-2 bg-gray-700 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+              disabled={viewClicked}
+            >
+              {projects.map((project) => (
+                <option key={project.id} value={project.projectName}>
+                  {project.projectName}
+                </option>
+              ))}
+            </select>
+          </div>
+
           <div>
             <label
               htmlFor="assignedTo"
