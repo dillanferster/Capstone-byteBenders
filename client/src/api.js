@@ -155,6 +155,7 @@ export async function getNLP(text) {
 ///PROJECTS///
 
 ///TASKS///
+
 // gets all projects,
 // async function
 // awaits axios get method, sends the HTTP request to the /project route on backend

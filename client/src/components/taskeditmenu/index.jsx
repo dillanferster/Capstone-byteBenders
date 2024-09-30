@@ -58,6 +58,7 @@ export default function TaskEditMenu({
       setTaskCategory(selectedTask[0].taskCategory);
       setStartDate(selectedTask[0].startDate);
       setDueDate(selectedTask[0].dueDate);
+      setProjectTask(selectedTask[0].projectTask);
       setProjectStatus(selectedTask[0].projectStatus);
       setAddChronicles(selectedTask[0].addChronicles);
       setAttachments(selectedTask[0].attachments);
@@ -87,7 +88,7 @@ export default function TaskEditMenu({
   // takes in the current taskId and projectTask (project name)
   // finds the project object that matches the project name, gets the id from it
   // calls addTaskToProject to update the project task array
-  const updateTaskToProject = (taskId, projectTask) => {
+  function updateTaskToProject(taskId) {
     const foundProject = projects.find(
       (project) => project.projectName === projectTask
     );
@@ -102,7 +103,7 @@ export default function TaskEditMenu({
       `in add task to project, task id: ${taskId} projectId ${foundProjectId}`
     );
     addTaskToProject(foundProjectId, taskIdObject);
-  };
+  }
 
   // handles the submit from update form
   // logs current project id
@@ -132,13 +133,25 @@ export default function TaskEditMenu({
         toggleForm();
 
         reloadTheGrid();
-        updateTaskToProject(taskId, projectTask);
+
         clearAddInputs();
+      }
+
+      if (projectTask) {
+        updateTaskToProject(taskId, projectTask);
       }
     });
   };
 
-  const submitAddedTask = (taskId) => {
+  // function, async
+  // handles the submit from add task
+  // logs current project id
+  // creates a new object with the state variables from the inputs
+  // we await the createTask so we can confirm that the item was added to database
+  // await updateTaskProject to make sure we update the task array
+  // uses the response id to pass into update
+  // then we call reloadGrid which reloads the rows, toggleFrom closes menu, and clearInputs
+  const submitAddedTask = async () => {
     setAddClicked(!addClicked);
 
     const addedTask = {
@@ -155,16 +168,26 @@ export default function TaskEditMenu({
       chroniclesComplete: chroniclesComplete,
     };
 
-    createTask(addedTask).then((response) => {
-      console.log("adding task", taskId);
+    try {
+      const response = await createTask(addedTask);
+      console.log("Task created:", response);
 
       if (response.status === 200) {
+        // Now we have the new task ID
+        const newTaskId = response.data.insertedId;
+        console.log("New task ID:", newTaskId);
+
+        // Update the project with the new task ID
+        await updateTaskToProject(newTaskId);
+
         reloadTheGrid();
         toggleForm();
-        updateTaskToProject(taskId, projectTask);
         clearAddInputs();
       }
-    });
+    } catch (error) {
+      console.error("Error adding task:", error);
+      // Handle the error appropriately (e.g., show an error message to the user)
+    }
   };
 
   // handles click off menu
