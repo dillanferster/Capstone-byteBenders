@@ -30,6 +30,9 @@ import {
   createTask,
   updateTask,
   deleteTask,
+  getProjects,
+  addTaskToProject,
+  deleteTaskFromProject,
 } from "../../api.js";
 import ProjectGrid from "../../components/projectgrid/index.jsx";
 import TaskEditMenu from "../../components/taskeditmenu/index.jsx";
@@ -46,6 +49,13 @@ const columns = [
   {
     field: "id",
     headerName: "ID",
+    filter: true,
+    floatingFilter: true,
+    editable: false,
+  },
+  {
+    field: "projectTask",
+    headerName: "Project",
     filter: true,
     floatingFilter: true,
     editable: false,
@@ -125,6 +135,7 @@ const columns = [
 const TaskPage = () => {
   //* state
   const [tasks, setTasks] = useState([]); // Loaded projects from database
+  const [projects, setProjects] = useState([]); // Loaded projects from database
   const [isLoading, setIsLoading] = useState(); // state for loading
   const [selectedTask, setSelectedTask] = useState([]); // selected project array, when users click on projects in data table
   const [reloadGrid, setReloadGrid] = useState(false); // to update grid rows
@@ -150,6 +161,7 @@ const TaskPage = () => {
         taskCategory: task.taskCategory,
         startDate: task.startDate,
         dueDate: task.dueDate,
+        projectTask: task.projectTask,
         projectStatus: task.projectStatus,
         addChronicles: task.addChronicles,
         attachments: task.attachments,
@@ -220,15 +232,41 @@ const TaskPage = () => {
   // loops through selecedProject array
   // passes the id of selected project to the deleteProject function
   // setReloadGrid to rerender row list with newly deleted item
-  function handleButtonDelete() {
-    selectedTask.forEach((task) => {
-      deleteTask(task.id).then((response) => {
-        if (response.status === 200) {
-          console.log("deleted project with id:", task.id);
-          reloadTheGrid();
-        }
-      });
-    });
+  // Reference: GitHub copilot
+  async function handleButtonDelete() {
+    for (const task of selectedTask) {
+      const response = await deleteTask(task.id);
+
+      if (response.status === 200) {
+        console.log("projectTask", selectedTask[0].projectTask);
+
+        const projectMatch = projects.find(
+          (project) => project.projectName === selectedTask[0].projectTask
+        );
+        console.log("project that task will be deleted from", projectMatch._id);
+
+        const taskObject = {
+          taskId: task.id,
+        };
+
+        console.log(
+          "inside handle delete btn, TASK that task will be deleted from project",
+          taskObject.taskId
+        );
+
+        const projectId = projectMatch._id;
+
+        ///// ISSUE HERE /////
+        const deleteResponse = await deleteTaskFromProject(
+          projectId,
+          taskObject
+        );
+        ///// ISSUE HERE /////
+        console.log("after deleting task from project", deleteResponse);
+
+        reloadTheGrid();
+      }
+    }
   }
 
   // sets the form menu state to open or close menu
@@ -247,6 +285,26 @@ const TaskPage = () => {
 
     setSelectedTask(checkedRows);
   };
+
+  // loads all projects from database into list
+  // When app component renders loadAllProjects() is called asynchronously
+  // so the rest on the program can still run when the function logic is being executed and returned some time in future
+  // if data is returned , then setProjects state is updated with data
+  // sets loading to true, then if and when data is returned sets to false
+  // dependencies : reloadGrid
+  useEffect(() => {
+    setIsLoading(true);
+
+    async function loadAllProjects() {
+      const data = await getProjects();
+      if (data) {
+        setProjects(data);
+        setIsLoading(false);
+      }
+    }
+
+    loadAllProjects();
+  }, []);
 
   // loads all projects from database into list
   // When app component renders loadAllProjects() is called asynchronously
@@ -339,6 +397,8 @@ const TaskPage = () => {
         editClicked={editClicked}
         setEditClicked={setEditClicked}
         reloadTheGrid={reloadTheGrid}
+        projects={projects}
+        addTaskToProject={addTaskToProject}
       ></TaskEditMenu>
     </div>
   );

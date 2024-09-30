@@ -93,7 +93,6 @@ const columns = [
     floatingFilter: true,
     filter: true,
     editable: false,
-    
   },
   {
     field: "quickBaseLink",
@@ -154,9 +153,7 @@ const ProjectPage = () => {
       sortable: true,
       width: 120,
       maxWidth: 120,
-      
     };
-    
   }, []);
 
   // Selection control props for AG data grid
@@ -211,11 +208,13 @@ const ProjectPage = () => {
   // setReloadGrid to rerender row list with newly deleted item
   function handleButtonDelete() {
     selectedProject.forEach((project) => {
-      deleteProject(project.id);
-      console.log("deleted project with id:", project.id);
+      deleteProject(project.id).then((response) => {
+        if (response.status === 200) {
+          console.log("deleted project with id:", project.id);
+          reloadTheGrid();
+        }
+      });
     });
-
-    reloadTheGrid();
   }
 
   // sets the form menu state to open or close menu
