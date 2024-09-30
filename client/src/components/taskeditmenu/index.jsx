@@ -25,9 +25,12 @@ export default function TaskEditMenu({
   editClicked,
   setEditClicked,
   reloadTheGrid,
+  projects,
+  addTaskToProject,
 }) {
   // * state
   const [taskId, setTaskId] = useState("");
+  const [projectTask, setProjectTask] = useState("");
   const [assignedTo, setAssignedTo] = useState("");
   const [taskStatus, setTaskStatus] = useState("");
   const [priority, setPriority] = useState("");
@@ -55,6 +58,7 @@ export default function TaskEditMenu({
       setTaskCategory(selectedTask[0].taskCategory);
       setStartDate(selectedTask[0].startDate);
       setDueDate(selectedTask[0].dueDate);
+      setProjectTask(selectedTask[0].projectTask);
       setProjectStatus(selectedTask[0].projectStatus);
       setAddChronicles(selectedTask[0].addChronicles);
       setAttachments(selectedTask[0].attachments);
@@ -78,6 +82,27 @@ export default function TaskEditMenu({
     setAddChronicles("");
     setAttachments("");
     setChroniclesComplete("");
+    setProjectTask("");
+  }
+
+  // takes in the current taskId and projectTask (project name)
+  // finds the project object that matches the project name, gets the id from it
+  // calls addTaskToProject to update the project task array
+  function updateTaskToProject(taskId) {
+    const foundProject = projects.find(
+      (project) => project.projectName === projectTask
+    );
+
+    const foundProjectId = foundProject._id;
+
+    const taskIdObject = {
+      taskId: taskId,
+    };
+
+    console.log(
+      `in add task to project, task id: ${taskId} projectId ${foundProjectId}`
+    );
+    addTaskToProject(foundProjectId, taskIdObject);
   }
 
   // handles the submit from update form
@@ -94,6 +119,7 @@ export default function TaskEditMenu({
       taskCategory: taskCategory,
       startDate: startDate,
       dueDate: dueDate,
+      projectTask: projectTask,
       projectStatus: projectStatus,
       addChronicles: addChronicles,
       attachments: attachments,
@@ -107,12 +133,26 @@ export default function TaskEditMenu({
         toggleForm();
 
         reloadTheGrid();
+
         clearAddInputs();
+      }
+
+      if (projectTask) {
+        updateTaskToProject(taskId, projectTask);
       }
     });
   };
 
-  const submitAddedTask = () => {
+  // function, async
+  // handles the submit from add task
+  // logs current project id
+  // creates a new object with the state variables from the inputs
+  // we await the createTask so we can confirm that the item was added to database
+  // await updateTaskProject to make sure we update the task array
+  // uses the response id to pass into update
+  // then we call reloadGrid which reloads the rows, toggleFrom closes menu, and clearInputs
+  // Reference : PHIND , prompt : "how is that different from using .then like how i have it"
+  const submitAddedTask = async () => {
     setAddClicked(!addClicked);
 
     const addedTask = {
@@ -122,21 +162,33 @@ export default function TaskEditMenu({
       taskCategory: taskCategory,
       startDate: startDate,
       dueDate: dueDate,
+      projectTask: projectTask,
       projectStatus: projectStatus,
       addChronicles: addChronicles,
       attachments: attachments,
       chroniclesComplete: chroniclesComplete,
     };
 
-    updateTask(addedTask).then((response) => {
-      console.log("updating task", taskId);
+    try {
+      const response = await createTask(addedTask);
+      console.log("Task created:", response);
 
       if (response.status === 200) {
+        // Now we have the new task ID
+        const newTaskId = response.data.insertedId;
+        console.log("New task ID:", newTaskId);
+
+        // Update the project with the new task ID
+        await updateTaskToProject(newTaskId);
+
         reloadTheGrid();
         toggleForm();
         clearAddInputs();
       }
-    });
+    } catch (error) {
+      console.error("Error adding task:", error);
+      // Handle the error appropriately (e.g., show an error message to the user)
+    }
   };
 
   // handles click off menu
@@ -184,6 +236,35 @@ export default function TaskEditMenu({
               }
             />
           </div>
+
+          <div>
+            <label
+              htmlFor="projectTask"
+              className="block text-sm font-medium mb-2 text-gray-300"
+            >
+              Project
+            </label>
+            <select
+              id="projectTask"
+              value={projectTask}
+              onChange={(e) => setProjectTask(e.target.value)}
+              className="w-full px-4 py-2 bg-gray-700 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+              disabled={viewClicked}
+            >
+              {addClicked && (
+                <option value="" disabled={addClicked}>
+                  --Select an option--
+                </option>
+              )}
+
+              {projects.map((project) => (
+                <option key={project._id} value={project.projectName}>
+                  {project.projectName}
+                </option>
+              ))}
+            </select>
+          </div>
+
           <div>
             <label
               htmlFor="assignedTo"
@@ -217,6 +298,11 @@ export default function TaskEditMenu({
               className="w-full px-4 py-2 bg-gray-700 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
               disabled={viewClicked}
             >
+              {addClicked && (
+                <option value="" disabled={addClicked}>
+                  --Select an option--
+                </option>
+              )}
               <option value="In progress">In Progress</option>
               <option value="Complete">Complete</option>
               <option value="Not started">Not Started</option>
@@ -238,6 +324,11 @@ export default function TaskEditMenu({
               className="w-full px-4 py-2 bg-gray-700 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
               disabled={viewClicked}
             >
+              {addClicked && (
+                <option value="" disabled={addClicked}>
+                  --Select an option--
+                </option>
+              )}
               <option value="High">High</option>
               <option value="Medium">Medium</option>
               <option value="Low">Low</option>
@@ -313,6 +404,11 @@ export default function TaskEditMenu({
               className="w-full px-4 py-2 bg-gray-700 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
               disabled={viewClicked}
             >
+              {addClicked && (
+                <option value="" disabled={addClicked}>
+                  --Select an option--
+                </option>
+              )}
               <option value="In progress">In Progress</option>
               <option value="Complete">Complete</option>
               <option value="Not started">Not Started</option>

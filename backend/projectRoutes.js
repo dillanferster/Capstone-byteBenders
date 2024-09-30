@@ -57,7 +57,7 @@ projectRoutes
     let data = await db
       .collection("Dillan")
       .findOne({ _id: new ObjectId(request.params.id) });
-    if (Object.keys(data.length > 0)) {
+    if (data) {
       response.json(data);
     } else {
       throw new Error("data was not found");
@@ -114,6 +114,42 @@ projectRoutes
         quickBaseLink: request.body.quickBaseLink,
         dateCreated: request.body.dateCreated,
       },
+    };
+    let data = await db
+      .collection("Dillan")
+      .updateOne({ _id: new ObjectId(request.params.id) }, mongoObject);
+    response.json(data);
+  });
+
+/// UPDATE PROJECT TASK ARRAY
+// takes in the project id and task id
+// finds the matching project in the database
+// adds the task id to the TaskIdForProject array
+// Reference: https://www.mongodb.com/docs/manual/reference/operator/update/push/
+projectRoutes
+  .route("/projectsupdate/:id")
+  .put(verifyToken, async (request, response) => {
+    let db = database.getDb();
+    let mongoObject = {
+      $push: { TaskIdForProject: request.body.taskId },
+    };
+    let data = await db
+      .collection("Dillan")
+      .updateOne({ _id: new ObjectId(request.params.id) }, mongoObject);
+    response.json(data);
+  });
+
+// DELETE TASK FROM PROJECT TASK ARRAY
+projectRoutes
+  .route("/projectstaskdelete/:id")
+  .delete(verifyToken, async (request, response) => {
+    let db = database.getDb();
+
+    console.log("Project ID INSIDE ROUTE:", request.params.id);
+    console.log("Task ID to delete INSIDE ROUTE:", request.body.taskId);
+
+    let mongoObject = {
+      $pull: { TaskIdForProject: request.body.taskId },
     };
     let data = await db
       .collection("Dillan")
