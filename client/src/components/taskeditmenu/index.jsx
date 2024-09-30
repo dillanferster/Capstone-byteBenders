@@ -151,6 +151,7 @@ export default function TaskEditMenu({
   // await updateTaskProject to make sure we update the task array
   // uses the response id to pass into update
   // then we call reloadGrid which reloads the rows, toggleFrom closes menu, and clearInputs
+  // Reference : PHIND , prompt : "how is that different from using .then like how i have it"
   const submitAddedTask = async () => {
     setAddClicked(!addClicked);
 

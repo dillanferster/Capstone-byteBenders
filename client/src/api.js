@@ -96,7 +96,11 @@ export async function updateProject(id, project) {
   }
 }
 
-/// add tasks to project
+// adds task id to project, pass in id and project object
+// async function
+// awaits axios get method, sends the HTTP request to the /project/:id route on backend
+// passes in the project id, and taskIdObject
+// returns the response object
 export async function addTaskToProject(projectId, taskIdObject) {
   try {
     const token = sessionStorage.getItem("User"); // Retrieve the token
@@ -116,6 +120,34 @@ export async function addTaskToProject(projectId, taskIdObject) {
     throw error; // Optionally, throw the error to handle it in the component
   }
 }
+
+/// DELETE TASK FROM PROJECT TASK ARRAY
+// for some reason i had to send the task id through the data field and not the body
+// even though in route its still acceses it by request.body.taskId
+// reference: CLAUDE, prompt: "this taskObject.taskId console.long works im getting the id"
+export async function deleteTaskFromProject(projectId, taskObject) {
+  try {
+    const token = sessionStorage.getItem("User"); // Retrieve the token
+    const response = await axios.delete(
+      `${URL}/projectstaskdelete/${projectId}`,
+
+      {
+        headers: {
+          Authorization: `Bearer ${token}`, // Attach the token in the Authorization header
+        },
+        data: { taskId: taskObject.taskId },
+      }
+    );
+
+    console.log("In TASK DELETE API, TASK ID: ", taskObject.taskId);
+
+    return response;
+  } catch (error) {
+    console.error("Error updating project:", error);
+    throw error; // Optionally, throw the error to handle it in the component
+  }
+}
+///// ISSUE HERE /////
 
 // deletes project , pass in id
 // async function

@@ -32,6 +32,7 @@ import {
   deleteTask,
   getProjects,
   addTaskToProject,
+  deleteTaskFromProject,
 } from "../../api.js";
 import ProjectGrid from "../../components/projectgrid/index.jsx";
 import TaskEditMenu from "../../components/taskeditmenu/index.jsx";
@@ -231,15 +232,41 @@ const TaskPage = () => {
   // loops through selecedProject array
   // passes the id of selected project to the deleteProject function
   // setReloadGrid to rerender row list with newly deleted item
-  function handleButtonDelete() {
-    selectedTask.forEach((task) => {
-      deleteTask(task.id).then((response) => {
-        if (response.status === 200) {
-          console.log("deleted project with id:", task.id);
-          reloadTheGrid();
-        }
-      });
-    });
+  // Reference: GitHub copilot
+  async function handleButtonDelete() {
+    for (const task of selectedTask) {
+      const response = await deleteTask(task.id);
+
+      if (response.status === 200) {
+        console.log("projectTask", selectedTask[0].projectTask);
+
+        const projectMatch = projects.find(
+          (project) => project.projectName === selectedTask[0].projectTask
+        );
+        console.log("project that task will be deleted from", projectMatch._id);
+
+        const taskObject = {
+          taskId: task.id,
+        };
+
+        console.log(
+          "inside handle delete btn, TASK that task will be deleted from project",
+          taskObject.taskId
+        );
+
+        const projectId = projectMatch._id;
+
+        ///// ISSUE HERE /////
+        const deleteResponse = await deleteTaskFromProject(
+          projectId,
+          taskObject
+        );
+        ///// ISSUE HERE /////
+        console.log("after deleting task from project", deleteResponse);
+
+        reloadTheGrid();
+      }
+    }
   }
 
   // sets the form menu state to open or close menu
