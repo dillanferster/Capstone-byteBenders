@@ -7,5 +7,5 @@ export const menuItems = [
   { text: "Calendar", icon: "FolderIcon", path: "/calendar" },
   { text: "Documentation", icon: "AssignmentIcon", path: "/documentation" },
   // { text: "Dashboard", icon: "BarChartIcon", path: "/dashboard" },
-  { text: "Email Analysis (Test)", icon: "EmailIcon", path: "/analyze-email" },
+  { text: "Email Analysis (Beta)", icon: "EmailIcon", path: "/analyze-email" },
 ];

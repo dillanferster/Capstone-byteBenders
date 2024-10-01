@@ -22,6 +22,13 @@ import BarChartIcon from "@mui/icons-material/BarChart";
 import NoteIcon from "@mui/icons-material/Note";
 import logo from "../../assets/images/logo.png"; // <-- Import the logo
 import EmailIcon from "@mui/icons-material/Email";
+import SearchIcon from "@mui/icons-material/Search";
+import InputBase from "@mui/material/InputBase";
+import LightModeOutlinedIcon from "@mui/icons-material/LightModeOutlined";
+import DarkModeOutlinedIcon from "@mui/icons-material/DarkModeOutlined";
+import NotificationsOutlinedIcon from "@mui/icons-material/NotificationsOutlined";
+import PersonOutlinedIcon from "@mui/icons-material/PersonOutlined";
+import SettingsOutlinedIcon from "@mui/icons-material/SettingsOutlined";
 
 // nav menu items
 import { menuItems } from "../../pages/pageData.js";
@@ -55,8 +62,8 @@ const SideNavbar = () => {
           marginBottom: "20px", // Adjust the margin as needed
         }}
       >
-        {/* Add Logo
-        <img src={logo} alt="Planzo Logo" style={{ width: "200px" }} /> */}
+        {/* Add Logo */}
+        <img src={logo} alt="Planzo Logo" style={{ width: "200px" }} />
       </Box>
       <List>
         {menuItems.map((item) => {
@@ -82,6 +89,7 @@ const SideNavbar = () => {
 
   return (
     <>
+      {/* Top Bar */}
       <AppBar
         position="fixed"
         sx={{ zIndex: (theme) => theme.zIndex.drawer + 1 }}
@@ -98,21 +106,33 @@ const SideNavbar = () => {
               <MenuIcon />
             </IconButton>
           )}
-          {/* If you want the logo in the AppBar as well */}
-          <Box
-            sx={{
-              display: "flex",
-              alignItems: "center",
-              marginRight: "10px",
-            }}
-          >
-            <img src={logo} alt="Planzo Logo" style={{ width: "80px" }} />
+
+          {/* Search bar */}
+          <Box display="flex" backgroundColor="#f5f5f5" borderRadius="4px">
+            <InputBase sx={{ ml: 2, flex: 1 }} placeholder="Search" />
+            <IconButton type="button" sx={{ p: 1 }}>
+              <SearchIcon />
+            </IconButton>
           </Box>
-          <Typography variant="h6" noWrap component="div">
-            Planzo
-          </Typography>
+
+          {/* Icons */}
+          <Box display="flex" ml="auto">
+            <IconButton>
+              <LightModeOutlinedIcon />
+            </IconButton>
+            <IconButton>
+              <NotificationsOutlinedIcon />
+            </IconButton>
+            <IconButton>
+              <SettingsOutlinedIcon />
+            </IconButton>
+            <IconButton>
+              <PersonOutlinedIcon />
+            </IconButton>
+          </Box>
         </Toolbar>
       </AppBar>
+
       <Box component="nav" sx={{ width: { sm: 240 }, flexShrink: { sm: 0 } }}>
         <Drawer
           variant={isSmallScreen ? "temporary" : "permanent"}
