@@ -111,8 +111,8 @@ const Calendar = () => {
             select={handleDateClick}
             eventClick={handleEventClick}
             initialEvents={[
-              { id: "1234", title: "All Day Event", date: "2024-09-23" },
-              { id: "4321", title: "Timed Event", date: "2024-09-28" },
+              { id: "1234", title: "All Day Event", date: "2024-10-01" },
+              { id: "4321", title: "Timed Event", date: "2024-10-04" },
             ]}
             eventsSet={(events) => setCurrentEvents(events)}
           />
