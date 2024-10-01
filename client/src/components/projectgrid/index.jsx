@@ -30,7 +30,7 @@ const ProjectGrid = ({
   return (
     <div
       className="ag-theme-quartz" // applying the Data Grid theme
-      style={{ height: 500, width: 1000 }}
+      style={{ height: 500, width: 1800 }}
     >
       <AgGridReact
         rowData={rows}

@@ -255,7 +255,7 @@ const ProjectPage = () => {
   }, [reloadGrid]);
 
   return (
-    <div className="ml-[5rem] w-full h-full border-2 border-red-500">
+    <div className="ml-[5rem] w-full h-full">
       <div className="flex justify-between">
         <Button
           variant="contained"

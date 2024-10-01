@@ -14,11 +14,6 @@ import * as yup from "yup";
 import { Formik } from "formik";
 
 export default function Login({ handleSubmit }) {
-  // const [user, setUser] = useState({
-  //   email: "",
-  //   password: "",
-  // });
-
   const isNonMobile = useMediaQuery("(min-width:600px)");
   const [showPassword, setShowPassword] = useState(false); // State to toggle password visibility
 
