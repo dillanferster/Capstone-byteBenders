@@ -40,6 +40,7 @@ const iconMap = {
   BarChartIcon,
   NoteIcon,
   EmailIcon,
+  PersonOutlinedIcon,
 };
 
 const SideNavbar = () => {

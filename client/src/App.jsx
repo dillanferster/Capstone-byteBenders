@@ -15,6 +15,8 @@ import SignUpPage from "./pages/signup/index.jsx";
 import NotePage from "./pages/note/notePage.jsx";
 import CalendarPage from "./pages/calendar";
 import DocumentationPage from "./pages/documentation";
+import CreateUserPage from "./pages/create-user/index.jsx";
+
 // import DashboardPage from "./pages/home/index.jsx";
 import { nanoid } from "nanoid";
 import EmailAnalysisForm from "./pages/emailanalysis/index.jsx";
@@ -108,9 +110,10 @@ const App = () => {
           >
             <Routes>
               <Route path="/" element={<LoginPage />} />
-              <Route path="/signup" element={<SignUpPage />} />
               <Route element={<Layout />}>
                 <Route path="/home" element={<HomePage />} />
+                <Route path="/create-user" element={<CreateUserPage />} />
+                {/* <Route path="/signup" element={<SignUpPage />} /> */}
                 <Route path="/project" element={<ProjectPage />} />
                 <Route path="/note" element={<NotePage />} />
                 <Route path="/task" element={<TaskPage />} />

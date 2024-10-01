@@ -1,4 +1,3 @@
-// Login Page
 // Path: client/src/pages/signup/index.jsx
 // Author: Gigi Vu
 
