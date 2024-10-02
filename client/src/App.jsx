@@ -84,30 +84,25 @@ const App = () => {
   return (
     <ColorModeContext.Provider value={colorMode}>
       <ThemeProvider theme={theme}>
-        <Router>
-          <CssBaseline />
-          <div className="app">
-            <Sidebar />
-            <main className="content">
-              <Topbar />
-              <Routes>
-                <Route path="/" element={<LoginPage />} />
-                <Route path="/signup" element={<SignUpPage />} />
-                <Route element={<Layout />}>
-                  <Route path="/home" element={<HomePage />} />
-                  <Route path="/project" element={<ProjectPage />} />
-                  <Route path="/note" element={<NotePage />} />
-                  <Route path="/task" element={<TaskPage />} />
-                  <Route path="/calendar" element={<CalendarPage />} />
-                  <Route
-                    path="/documentation"
-                    element={<DocumentationPage />}
-                  />
-                </Route>
-              </Routes>
-            </main>
-          </div>
-        </Router>
+        <CssBaseline />
+        <div className="app">
+          {/* <Sidebar /> */}
+          <main className="content">
+            {/* <Topbar /> */}
+            <Routes>
+              <Route path="/" element={<LoginPage />} />
+              <Route path="/signup" element={<SignUpPage />} />
+              <Route element={<Layout />}>
+                <Route path="/home" element={<HomePage />} />
+                <Route path="/project" element={<ProjectPage />} />
+                <Route path="/note" element={<NotePage />} />
+                <Route path="/task" element={<TaskPage />} />
+                <Route path="/calendar" element={<CalendarPage />} />
+                <Route path="/documentation" element={<DocumentationPage />} />
+              </Route>
+            </Routes>
+          </main>
+        </div>
       </ThemeProvider>
     </ColorModeContext.Provider>
   );
