@@ -298,8 +298,19 @@ export async function deleteTask(id) {
 // creates a new user , pass in user object
 // Author: Gigi Vu (gigi-vu2804)
 export async function createUser(user) {
-  const response = await axios.post(`${URL}/users`, user);
-  return response;
+  try {
+    const token = sessionStorage.getItem("User"); // Retrieve the token
+    const response = await axios.post(`${URL}/users`, user, {
+      headers: {
+        Authorization: `Bearer ${token}`, // Attach the token in the Authorization header
+      },
+    });
+    console.log(response); // Gigi debug log for auth headers
+    return response;
+  } catch (error) {
+    console.error("Error deleting project:", error);
+    throw error;
+  }
 }
 
 // verify user login

@@ -1,83 +1,88 @@
-import { createUser as apiCreateUser } from "../../api.js";
+// Author: gg-vu2804
+// Source: Admin Dashboard Youtube Tutorial
+
 import { useState } from "react";
-import Button from "@mui/material/Button";
-import TextField from "@mui/material/TextField";
-import Typography from "@mui/material/Typography";
-import { Box, Container, Paper } from "@mui/material";
-import { useNavigate } from "react-router-dom";
-import logo from "../../assets/images/logo.png";
+import { Formik } from "formik";
+import useMediaQuery from "@mui/material/useMediaQuery";
+import {
+  Box,
+  Button,
+  TextField,
+  IconButton,
+  InputAdornment,
+  Typography,
+} from "@mui/material";
+import { Visibility, VisibilityOff } from "@mui/icons-material"; // Import visibility icons
+import * as yup from "yup";
 
-export default function SignUp() {
-  const [user, setUser] = useState({
-    fname: "",
-    lname: "",
-    email: "",
-    password: "",
-  });
+export default function SignUp({ handleSubmit }) {
+  const isNonMobile = useMediaQuery("(min-width:600px)");
+  const [showPassword, setShowPassword] = useState(false); // State to toggle password visibility
 
-  const navigate = useNavigate();
-
-  async function handleSubmit(e) {
-    e.preventDefault();
-    // Check if any field is empty
-    if (!user.fname || !user.lname || !user.email || !user.password) {
-      alert("All fields are required");
-      return;
-    }
-    try {
-      let response = await apiCreateUser(user);
-      if (response.status !== 200) {
-        alert("User account could not be created");
-      } else {
-        alert("Your account is created. Please login to continue.");
-        navigate("/");
-      }
-    } catch (error) {
-      console.log(error);
-    }
-  }
-
-  function handleChange(e) {
-    setUser({ ...user, [e.target.name]: e.target.value });
-  }
+  // Toggle password visibility
+  const handleClickShowPassword = () => {
+    setShowPassword(!showPassword);
+  };
 
   return (
-    <Container component="main" maxWidth="xs">
-      <Paper elevation={3} sx={{ padding: 4, marginTop: 8, borderRadius: 3 }}>
-        <Box
-          sx={{
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-          }}
-        >
-          {/* Logo */}
-          <img
-            src={logo}
-            alt="Planzo Logo"
-            style={{ width: "300px", marginBottom: "10px" }}
-          />
-          <Typography component="h1" variant="h5" sx={{ marginBottom: 3 }}>
-            Sign Up
-          </Typography>
-          <form onSubmit={handleSubmit} style={{ width: "100%" }}>
+    <Formik
+      initialValues={{
+        fname: "",
+        lname: "",
+        email: "",
+        password: "",
+      }}
+      validationSchema={checkoutSchema}
+      onSubmit={handleSubmit} // Custom handleSubmit passed from props
+    >
+      {({
+        values,
+        errors,
+        touched,
+        handleBlur,
+        handleChange,
+        handleSubmit,
+        setFieldValue,
+        isSubmitting,
+      }) => (
+        <form onSubmit={handleSubmit} style={{ width: "100%" }}>
+          <Box
+            display="grid"
+            gap="30px"
+            gridTemplateColumns="repeat(4, minmax(0, 1fr))"
+            sx={{
+              "& > div": { gridColumn: isNonMobile ? undefined : "span 4" },
+            }}
+          >
             <TextField
               margin="normal"
+              type="text"
               fullWidth
               label="First Name"
               name="fname"
-              onChange={handleChange}
+              onBlur={handleBlur}
+              onChange={(e) => setFieldValue("fname", e.target.value)} // Use setFieldValue to handle input
               variant="outlined"
+              value={values.fname} // Controlled input
+              error={!!touched.fname && !!errors.fname}
+              helperText={touched.fname && errors.fname}
               required
+              sx={{ gridColumn: "span 2" }}
             />
             <TextField
               margin="normal"
+              type="text"
               fullWidth
               label="Last Name"
               name="lname"
-              onChange={handleChange}
+              onBlur={handleBlur}
+              onChange={(e) => setFieldValue("lname", e.target.value)} // Use setFieldValue to handle input
               variant="outlined"
+              value={values.lname} // Controlled input
+              error={!!touched.lname && !!errors.lname}
+              helperText={touched.lname && errors.lname}
               required
+              sx={{ gridColumn: "span 2" }}
             />
             <TextField
               margin="normal"
@@ -85,35 +90,73 @@ export default function SignUp() {
               label="Email"
               name="email"
               type="email"
-              onChange={handleChange}
+              onBlur={handleBlur}
+              onChange={(e) => setFieldValue("email", e.target.value)} // Use setFieldValue to handle input
               variant="outlined"
+              value={values.email} // Controlled input
+              error={!!touched.email && !!errors.email}
+              helperText={touched.email && errors.email}
               required
+              sx={{ gridColumn: "span 4" }}
             />
             <TextField
               margin="normal"
               fullWidth
               label="Password"
               name="password"
-              type="password"
-              onChange={handleChange}
+              type={showPassword ? "text" : "password"} // Toggle between 'text' and 'password'
+              onBlur={handleBlur}
+              onChange={(e) => setFieldValue("password", e.target.value)} // Use setFieldValue to handle input
               variant="outlined"
+              value={values.password} // Controlled input
+              error={!!touched.password && !!errors.password}
+              helperText={touched.password && errors.password}
               required
+              sx={{ gridColumn: "span 4" }}
+              InputProps={{
+                // Add the visibility toggle icon
+                endAdornment: (
+                  <InputAdornment position="end">
+                    <IconButton onClick={handleClickShowPassword} edge="end">
+                      {showPassword ? <VisibilityOff /> : <Visibility />}
+                    </IconButton>
+                  </InputAdornment>
+                ),
+              }}
             />
+          </Box>
+          <Box display="flex" justifyContent="end" mt="20px">
             <Button
               type="submit"
               fullWidth
               variant="contained"
               color="primary"
               sx={{ marginTop: 3, marginBottom: 2 }}
+              disabled={isSubmitting}
             >
-              Create Account
+              Create User Account
             </Button>
-            <Button variant="text" onClick={() => navigate("/")}>
-              Back to Login
-            </Button>
-          </form>
-        </Box>
-      </Paper>
-    </Container>
+          </Box>
+        </form>
+      )}
+    </Formik>
   );
 }
+
+// Validation schema with password rules
+const checkoutSchema = yup.object().shape({
+  fname: yup.string().required("First name is required"),
+  lname: yup.string().required("Last name is required"),
+  email: yup
+    .string()
+    .email("Invalid email. (example@example.com)")
+    .required("Email is required"),
+  password: yup
+    .string()
+    .min(8, "Password must be at least 8 characters")
+    .matches(
+      /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d@$!%*?&]{8,}$/,
+      "Password must contain letters and numbers"
+    )
+    .required("Password is required"),
+});

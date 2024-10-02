@@ -15,12 +15,16 @@ import SignUpPage from "./pages/signup/index.jsx";
 import NotePage from "./pages/note/notePage.jsx";
 import CalendarPage from "./pages/calendar";
 import DocumentationPage from "./pages/documentation";
+import CreateUserPage from "./pages/create-user/index.jsx";
+
 // import DashboardPage from "./pages/home/index.jsx";
 import { nanoid } from "nanoid";
 import EmailAnalysisForm from "./pages/emailanalysis/index.jsx";
 
 // Database functions from the API file
 import { getProjects, createProject } from "./api.js";
+
+const sidenavWidth = 240; // Set the sidebar width globally
 
 const App = () => {
   //// AUTHENTICATION TOKEN ////
@@ -91,26 +95,29 @@ const App = () => {
   return (
     <ThemeProvider theme={theme}>
       <Router>
-        <Box sx={{ display: "flex" }}>
+        <Box sx={{ display: "flex", height: "100vh" }}>
           <CssBaseline />
           <Box
             component="main"
             sx={{
               flexGrow: 1,
-              p: 3,
-              height: "100vh",
+              p: 2,
+              // height: "100vh",
               display: "flex",
               flexDirection: "column",
               justifyContent: "center",
-              alignItems: "center",
+              // alignItems: "center",
+              width: { sm: `calc(100% - ${sidenavWidth}px)` }, // Full width minus drawer width
+              ml: { sm: `${sidenavWidth}px` }, // Add left margin for non-small screens
               backgroundColor: "#f5f5f5",
             }}
           >
             <Routes>
               <Route path="/" element={<LoginPage />} />
-              <Route path="/signup" element={<SignUpPage />} />
               <Route element={<Layout />}>
                 <Route path="/home" element={<HomePage />} />
+                <Route path="/create-user" element={<CreateUserPage />} />
+                {/* <Route path="/signup" element={<SignUpPage />} /> */}
                 <Route path="/project" element={<ProjectPage />} />
                 <Route path="/note" element={<NotePage />} />
                 <Route path="/task" element={<TaskPage />} />

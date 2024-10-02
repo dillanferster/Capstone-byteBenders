@@ -1,11 +1,14 @@
 import React, { useState } from "react";
 import { getNLP } from "../../api.js";
-import { Button } from "@mui/material";
+import { Button, TextField, Box, Typography, useTheme } from "@mui/material";
+import { tokens } from "../../theme";
 
 const EmailAnalysisForm = () => {
   const [emailText, setEmailText] = useState("");
   const [project, setProject] = useState(null);
   const [error, setError] = useState(null);
+  const theme = useTheme(); // Accessing the current theme
+  const colors = tokens(theme.palette.mode); // Accessing the color tokens
 
   // Handle form submission
   async function handleSubmit(e) {
@@ -39,68 +42,114 @@ const EmailAnalysisForm = () => {
   }
 
   return (
-    <div>
-      <p>
-        This function can categorize text that contain these AWS predefined
-        entities (We can create custom entities later on!) <br></br>- Person:
-        Individuals, groups of people, nicknames, fictional characters, etc.{" "}
-        <br></br>- Title: An official name given to any creation or creative
-        work, such as movies, books, songs, etc. <br></br>- Quantity: quantified
-        amount, such as currency, percentages, numbers, bytes, etc. <br></br>-
-        Date: A full date (for example, 11/25/2017), day (Tuesday), month (May),
-        or time (8:30 a.m.) <br></br>- Other: Any other type of entity that does
-        not fit into the other categories
-        <br></br>- Event: An event, such as a festival, concert, election, etc.
+    <Box
+      sx={{
+        backgroundColor: colors.primary[500], // Background color based on theme
+        padding: 2,
+        borderRadius: 2,
+        boxShadow: 3,
+        color: colors.grey[100], // Text color from tokens
+      }}
+    >
+      <Typography variant="h5" color={colors.greenAccent[500]} gutterBottom>
+        Generate New Project From Email
+      </Typography>
+      <Typography
+        variant="h6"
+        color={colors.grey[600]} // Use grey for description
+        gutterBottom
+      >
+        This function can categorize text containing AWS Comprehend predefined
+        entities such as{" "}
+        <strong>Person, Title, Quantity, Date, and more</strong>. Try analyzing
+        an email or text below.<br></br>
         <br></br>
-      </p>
-      <p>
-        Try this text to see output: "Actor George Clooney played in the movie
-        Ocean Twelve by Paramount which aired in 20 April 2000 and sold for
-        4,000 DVD copies. "
-      </p>
+        Example: George Clooney played in the movie Ocean Twelve by Paramount in
+        2011 which sold millions of DVD copies.
+      </Typography>
       <form onSubmit={handleSubmit}>
-        <label>
-          Enter Email Content:
-          <textarea
-            value={emailText}
-            onChange={handleChange} // Update emailText on change
-            placeholder="Paste the email content here..."
-            rows={10}
-            cols={50}
-            name="emailText"
-          />
-        </label>
-        <br />
-        <Button variant="contained" type="submit">
+        <TextField
+          label="Enter Email Content"
+          multiline
+          rows={10}
+          fullWidth
+          variant="outlined"
+          value={emailText}
+          onChange={handleChange}
+          sx={{
+            marginBottom: 2,
+            backgroundColor: colors.grey[900], // Using background from the theme
+            color: colors.grey[100], // Text color from tokens
+            borderColor: colors.grey[700], // Border based on tokens
+          }}
+          InputProps={{
+            style: { color: colors.grey[100] }, // Input text color
+          }}
+        />
+        <Button
+          variant="contained"
+          type="submit"
+          sx={{
+            backgroundColor: colors.blueAccent[500],
+            color: colors.primary[100],
+            "&:hover": {
+              backgroundColor: colors.blueAccent[700], // Hover effect
+            },
+          }}
+        >
           Analyze Email
         </Button>
       </form>
-      {error && <p style={{ color: "red" }}>{error}</p>}{" "}
-      {/* Display error message */}
-      {project && ( // Conditionally display the project details if available
-        <div>
-          <h3>Generated Project</h3>
-          <p>
-            <strong>Project Name:</strong> {project.projectName || "N/A"}
-          </p>
-          <p>
-            <strong>Description:</strong> {project.projectDesc || "N/A"}
-          </p>
-          <p>
-            <strong>Assigned Staff:</strong> {project.assignedTo || "N/A"}
-          </p>
-          <p>
-            <strong>Project Date:</strong> {project.startDate || "N/A"}
-          </p>
-          <p>
-            <strong>Project Number:</strong> {project.projectNumber || "N/A"}
-          </p>
-          <p>
-            <strong>Project Client:</strong> {project.projectClient || "N/A"}
-          </p>
-        </div>
+      {error && (
+        <Typography
+          color={theme.palette.error.main}
+          variant="body2"
+          sx={{ marginTop: 2 }}
+        >
+          {error}
+        </Typography>
       )}
-    </div>
+      {project && (
+        <Box sx={{ marginTop: 3, marginBottom: 3 }}>
+          <Box sx={{ paddingBottom: 1 }}>
+            <Typography variant="h6" color={colors.greenAccent[500]}>
+              <strong>Generated Project</strong>
+            </Typography>
+            <Typography variant="body1" color={colors.grey[600]}>
+              <strong>Project Name:</strong> {project.projectName || "N/A"}
+            </Typography>
+            <Typography variant="body1" color={colors.grey[600]}>
+              <strong>Description:</strong> {project.projectDesc || "N/A"}
+            </Typography>
+            <Typography variant="body1" color={colors.grey[600]}>
+              <strong>Assigned Staff:</strong> {project.assignedTo || "N/A"}
+            </Typography>
+            <Typography variant="body1" color={colors.grey[600]}>
+              <strong>Project Date:</strong> {project.startDate || "N/A"}
+            </Typography>
+            <Typography variant="body1" color={colors.grey[600]}>
+              <strong>Project Quantity:</strong>{" "}
+              {project.projectNumber || "N/A"}
+            </Typography>
+            <Typography variant="body1" color={colors.grey[600]}>
+              <strong>Project Client:</strong> {project.projectClient || "N/A"}
+            </Typography>
+          </Box>
+          <Button
+            variant="contained"
+            sx={{
+              backgroundColor: colors.redAccent[500],
+              color: colors.primary[100],
+              "&:hover": {
+                backgroundColor: colors.blueAccent[700], // Hover effect
+              },
+            }}
+          >
+            Create Project
+          </Button>
+        </Box>
+      )}
+    </Box>
   );
 };
 
