@@ -1,12 +1,15 @@
 // App.jsx
 import { useState, useEffect } from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { ColorModeContext, useMode } from "./theme";
 import axios from "axios";
 import { jwtDecode } from "jwt-decode";
 
 import { Box, CssBaseline, ThemeProvider, createTheme } from "@mui/material";
 import "./App.css";
 import Layout from "./components/layout";
+import Sidebar from "./pages/global/sidebar";
+import Topbar from "./pages/global/topbar";
 import HomePage from "./pages/home";
 import ProjectPage from "./pages/project";
 import TaskPage from "./pages/task";
@@ -76,43 +79,37 @@ const App = () => {
   /////DATABASE///
 
   // THEME SETUP //
-  const theme = createTheme();
+  const [theme, colorMode] = useMode([]);
 
   return (
-    <ThemeProvider theme={theme}>
-      <Router>
-        <Box sx={{ display: "flex" }}>
+    <ColorModeContext.Provider value={colorMode}>
+      <ThemeProvider theme={theme}>
+        <Router>
           <CssBaseline />
-          <Box
-            component="main"
-            sx={{
-              flexGrow: 1,
-              p: 3,
-              minHeight: "100vh",
-              display: "flex",
-              flexDirection: "column",
-              justifyContent: "center",
-              alignItems: "center",
-              backgroundColor: "#f5f5f5",
-            }}
-          >
-            <Routes>
-              <Route path="/" element={<LoginPage />} />
-              <Route path="/signup" element={<SignUpPage />} />
-              <Route element={<Layout />}>
-                <Route path="/home" element={<HomePage />} />
-                <Route path="/project" element={<ProjectPage />} />
-                <Route path="/note" element={<NotePage />} />
-                <Route path="/task" element={<TaskPage />} />
-                <Route path="/calendar" element={<CalendarPage />} />
-                <Route path="/documentation" element={<DocumentationPage />} />
-                {/* <Route path="/dashboard" element={<DashboardPage />} /> */}
-              </Route>
-            </Routes>
-          </Box>
-        </Box>
-      </Router>
-    </ThemeProvider>
+          <div className="app">
+            <Sidebar />
+            <main className="content">
+              <Topbar />
+              <Routes>
+                <Route path="/" element={<LoginPage />} />
+                <Route path="/signup" element={<SignUpPage />} />
+                <Route element={<Layout />}>
+                  <Route path="/home" element={<HomePage />} />
+                  <Route path="/project" element={<ProjectPage />} />
+                  <Route path="/note" element={<NotePage />} />
+                  <Route path="/task" element={<TaskPage />} />
+                  <Route path="/calendar" element={<CalendarPage />} />
+                  <Route
+                    path="/documentation"
+                    element={<DocumentationPage />}
+                  />
+                </Route>
+              </Routes>
+            </main>
+          </div>
+        </Router>
+      </ThemeProvider>
+    </ColorModeContext.Provider>
   );
 };
 
