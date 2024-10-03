@@ -256,12 +256,11 @@ const TaskPage = () => {
 
         const projectId = projectMatch._id;
 
-        ///// ISSUE HERE /////
         const deleteResponse = await deleteTaskFromProject(
           projectId,
           taskObject
         );
-        ///// ISSUE HERE /////
+
         console.log("after deleting task from project", deleteResponse);
 
         reloadTheGrid();
