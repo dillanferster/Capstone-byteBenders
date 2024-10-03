@@ -256,7 +256,7 @@ const ProjectPage = () => {
 
   return (
     <div className="ml-[5rem] w-full h-full">
-      <div className="flex justify-between">
+      <div className="flex justify-between mr-16">
         <Button
           variant="contained"
           color="success"
