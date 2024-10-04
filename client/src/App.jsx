@@ -8,8 +8,6 @@ import { jwtDecode } from "jwt-decode";
 import { Box, CssBaseline, ThemeProvider, createTheme } from "@mui/material";
 import "./App.css";
 import Layout from "./components/layout";
-import Sidebar from "./pages/global/sidebar";
-import Topbar from "./pages/global/topbar";
 import HomePage from "./pages/home";
 import ProjectPage from "./pages/project";
 import TaskPage from "./pages/task";
@@ -18,11 +16,6 @@ import SignUpPage from "./pages/signup/index.jsx";
 import NotePage from "./pages/note/notePage.jsx";
 import CalendarPage from "./pages/calendar";
 import DocumentationPage from "./pages/documentation";
-// import DashboardPage from "./pages/home/index.jsx";
-import { nanoid } from "nanoid";
-
-// Database functions from the API file
-import { getProjects, createProject } from "./api.js";
 
 const App = () => {
   //// AUTHENTICATION TOKEN ////
@@ -54,30 +47,6 @@ const App = () => {
     }
   }, []);
 
-  //// DATABASE ////
-  // const [projects, setProjects] = useState();
-
-  // When app component renders loadAllProjects() is called asynchronously
-  // so the rest on the program can still run when the function logic is being excuted and returned some time in future
-  // if data is returned , then setProjects state is updated with data
-  // useEffect(() => {
-  //   async function loadAllProjects() {
-  //     try {
-  //       const data = await getProjects();
-  //       if (data) {
-  //         setProjects(data);
-  //       } else {
-  //         console.log("No projects found");
-  //       }
-  //     } catch (error) {
-  //       console.error("Error loading projects:", error);
-  //     }
-  //   }
-
-  //   loadAllProjects();
-  // }, []);
-  /////DATABASE///
-
   // THEME SETUP //
   const [theme, colorMode] = useMode([]);
 
@@ -95,9 +64,9 @@ const App = () => {
               <Route element={<Layout />}>
                 <Route path="/home" element={<HomePage />} />
                 <Route path="/project" element={<ProjectPage />} />
-                <Route path="/note" element={<NotePage />} />
                 <Route path="/task" element={<TaskPage />} />
                 <Route path="/calendar" element={<CalendarPage />} />
+                <Route path="/note" element={<NotePage />} />
                 <Route path="/documentation" element={<DocumentationPage />} />
               </Route>
             </Routes>
