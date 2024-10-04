@@ -16,9 +16,28 @@ import SignUpPage from "./pages/signup/index.jsx";
 import NotePage from "./pages/note/notePage.jsx";
 import CalendarPage from "./pages/calendar";
 import DocumentationPage from "./pages/documentation";
+import CreateUserPage from "./pages/create-user/index.jsx";
+
+// import DashboardPage from "./pages/home/index.jsx";
+import { nanoid } from "nanoid";
+import EmailAnalysisForm from "./pages/emailanalysis/index.jsx";
+
+// Database functions from the API file
+import { getProjects, createProject } from "./api.js";
+
+const sidenavWidth = 240; // Set the sidebar width globally
 
 const App = () => {
   //// AUTHENTICATION TOKEN ////
+  // Function to set the Authorization header with the token
+  const setAuthHeader = (token) => {
+    if (token) {
+      axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+    } else {
+      delete axios.defaults.headers.common["Authorization"]; // Remove auth header if token doesn't exist
+    }
+  };
+
   useEffect(() => {
     let token = sessionStorage.getItem("User");
 
@@ -38,7 +57,7 @@ const App = () => {
           window.location.href = "/"; // Redirects to login page
         } else {
           // If the token is still valid, set the Axios default header
-          axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+          setAuthHeader(token);
         }
       } catch (error) {
         console.error("Error decoding token:", error);

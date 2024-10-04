@@ -31,6 +31,10 @@ export default function EditMenu({
   const [projectName, setProjectName] = useState("");
   const [dateCreated, setDateCreated] = useState("");
   const [assignedTo, setAssignedTo] = useState("");
+  const [caseId, setCaseId] = useState("");
+  const [dataClassification, setDataClassification] = useState("");
+  const [projectStatus, setProjectStatus] = useState("");
+  const [quickBaseLink, setQuickBaseLink] = useState("");
   const [projectDescription, setProjectDescription] = useState("");
 
   //*
@@ -45,53 +49,89 @@ export default function EditMenu({
       setProjectId(selectedProject[0].id);
       setProjectName(selectedProject[0].projectName);
       setDateCreated(selectedProject[0].dateCreated);
+      setCaseId(selectedProject[0].caseId);
+      setDataClassification(selectedProject[0].dataClassification);
       setAssignedTo(selectedProject[0].assignedTo);
+      setProjectStatus(selectedProject[0].projectStatus);
+      setQuickBaseLink(selectedProject[0].quickBaseLink);
       setProjectDescription(selectedProject[0].projectDesc);
 
       console.log("set project defaults");
     } else {
-      setProjectId("");
-      setProjectName("");
-      setDateCreated("");
-      setAssignedTo("");
-      setProjectDescription("");
+      clearAddInputs();
     }
   }, [selectedProject]);
+
+  function clearAddInputs() {
+    setProjectId("");
+    setProjectName("");
+    setDateCreated("");
+    setCaseId("");
+    setDataClassification("");
+    setAssignedTo("");
+    setProjectStatus("");
+    setQuickBaseLink("");
+    setProjectDescription("");
+  }
 
   // handles the submit from update form
   // logs current project id
   // creates a new object with the updated state variables from the inputs
   // calls update project , pass the project id and updated project object
+  // .then makes sure response returned from database operation was successful before reloading grid
   const submitUpdatedProject = () => {
+    setEditClicked(!editClicked);
+
     const updatedProject = {
       projectName: projectName,
       projectDesc: projectDescription,
+      caseId: caseId,
+      dataClassification: dataClassification,
       assignedTo: assignedTo,
+      projectStatus: projectStatus,
+      quickBaseLink: quickBaseLink,
       dateCreated: dateCreated,
     };
 
-    updateProject(projectId, updatedProject);
-    console.log("updating project", projectId);
+    updateProject(projectId, updatedProject).then((response) => {
+      console.log("updating project", projectId);
 
-    toggleForm();
-
-    reloadTheGrid();
+      if (response.status === 200) {
+        reloadTheGrid();
+        toggleForm();
+        clearAddInputs();
+      }
+    });
   };
 
+  // handles the submit from add button
+  // logs current project id
+  // creates a new object with the updated state variables from the inputs
+  // calls update project , pass the project id and updated project object
+  // .then makes sure response returned from database operation was successful before reloading grid
   const submitAddedProject = () => {
+    setAddClicked(!addClicked);
+
     const addedProject = {
       projectName: projectName,
       projectDesc: projectDescription,
+      caseId: caseId,
+      dataClassification: dataClassification,
       assignedTo: assignedTo,
+      projectStatus: projectStatus,
+      quickBaseLink: quickBaseLink,
       dateCreated: dateCreated,
     };
 
-    createProject(addedProject);
-    console.log("adding project", projectName);
+    createProject(addedProject).then((response) => {
+      console.log("adding project", response);
 
-    toggleForm();
-
-    reloadTheGrid();
+      if (response.status === 200) {
+        reloadTheGrid();
+        toggleForm();
+        clearAddInputs();
+      }
+    });
   };
 
   // handles click off menu
@@ -114,7 +154,7 @@ export default function EditMenu({
       />
 
       <div
-        className={`fixed top-0 right-0 w-full max-w-2xl h-full bg-gray-800 text-gray-100 p-8 shadow-xl transition-transform duration-300 ease-in-out transform ${
+        className={`fixed top-0 right-0 w-full max-w-2xl h-full bg-gray-800 text-gray-100 p-8 z-[10] shadow-xl transition-transform duration-300 ease-in-out transform overflow-y-scroll ${
           isOpen ? "translate-x-0" : "translate-x-full"
         }`}
       >
@@ -160,6 +200,44 @@ export default function EditMenu({
 
           <div>
             <label
+              htmlFor="caseId"
+              className="block text-sm font-medium mb-2 text-gray-300"
+            >
+              Case ID (Quickbase)
+            </label>
+            <input
+              type="number"
+              id="projectName"
+              value={caseId}
+              onChange={(e) => setCaseId(e.target.value)}
+              className="w-full px-4 py-2 bg-gray-700 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              required
+              placeholder="Enter Case Id"
+              disabled={viewClicked}
+            />
+          </div>
+
+          <div>
+            <label
+              htmlFor="dataClassification"
+              className="block text-sm font-medium mb-2 text-gray-300"
+            >
+              Data Classification
+            </label>
+            <input
+              type="text"
+              id="projectName"
+              value={dataClassification}
+              onChange={(e) => setDataClassification(e.target.value)}
+              className="w-full px-4 py-2 bg-gray-700 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              required
+              placeholder="Enter data classification"
+              disabled={viewClicked}
+            />
+          </div>
+
+          <div>
+            <label
               htmlFor="projectName"
               className="block text-sm font-medium mb-2 text-gray-300"
             >
@@ -191,6 +269,46 @@ export default function EditMenu({
               onChange={(e) => setDateCreated(e.target.value)}
               className="w-full px-4 py-2 bg-gray-700 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
               required
+              disabled={viewClicked}
+            />
+          </div>
+
+          <div>
+            <label
+              htmlFor="projectStatus"
+              className="block text-sm font-medium mb-2 text-gray-300"
+            >
+              Project Status
+            </label>
+            <select
+              id="projectStatus"
+              value={projectStatus}
+              onChange={(e) => setProjectStatus(e.target.value)}
+              className="w-full px-4 py-2 bg-gray-700 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+              disabled={viewClicked}
+            >
+              <option value="In progress">In Progress</option>
+              <option value="Complete">Complete</option>
+              <option value="Not started">Not Started</option>
+              <option value="Storage">Storage</option>
+            </select>
+          </div>
+
+          <div>
+            <label
+              htmlFor="projectName"
+              className="block text-sm font-medium mb-2 text-gray-300"
+            >
+              QuickBase Case Link
+            </label>
+            <input
+              type="text"
+              id="quickBaseLink"
+              value={quickBaseLink}
+              onChange={(e) => setQuickBaseLink(e.target.value)}
+              className="w-full px-4 py-2 bg-gray-700 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              required
+              placeholder="Enter QuickBase Link"
               disabled={viewClicked}
             />
           </div>
@@ -234,7 +352,6 @@ export default function EditMenu({
               onClick={(e) => {
                 e.preventDefault();
                 submitUpdatedProject();
-                setEditClicked(!editClicked);
               }}
             >
               Save Edit
@@ -248,7 +365,6 @@ export default function EditMenu({
               onClick={(e) => {
                 e.preventDefault();
                 submitAddedProject();
-                setAddClicked(!addClicked);
               }}
             >
               Add Project

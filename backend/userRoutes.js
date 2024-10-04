@@ -4,6 +4,8 @@
  * This module provides user registration and login routes for a Node.js/Express application using MongoDB.
  * It leverages `bcrypt` for password hashing and `jsonwebtoken` for generating JWT tokens.
  *
+ * Author: Gigi Vu
+ *
  * Dependencies:
  * - `express`: Framework for handling HTTP requests.
  * - `mongodb`: MongoDB client for interacting with the database.

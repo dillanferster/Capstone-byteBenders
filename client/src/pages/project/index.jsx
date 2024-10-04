@@ -56,13 +56,23 @@ const columns = [
     floatingFilter: true,
     editable: false,
   },
+
   {
-    field: "projectDesc",
-    headerName: "Project Desc",
-    filter: true,
+    field: "caseId",
+    headerName: "Case Id (Quickbase)",
     floatingFilter: true,
+    filter: true,
     editable: false,
   },
+
+  {
+    field: "dataClassification",
+    headerName: "Data Classification",
+    floatingFilter: true,
+    filter: true,
+    editable: false,
+  },
+
   {
     field: "assignedTo",
     headerName: "Assigned To",
@@ -75,6 +85,27 @@ const columns = [
     headerName: "Date",
     floatingFilter: true,
     filter: true,
+    editable: false,
+  },
+  {
+    field: "projectStatus",
+    headerName: "Project Status",
+    floatingFilter: true,
+    filter: true,
+    editable: false,
+  },
+  {
+    field: "quickBaseLink",
+    headerName: "QuickBase Case Link",
+    floatingFilter: true,
+    filter: true,
+    editable: false,
+  },
+  {
+    field: "projectDesc",
+    headerName: "Project Desc",
+    filter: true,
+    floatingFilter: true,
     editable: false,
   },
 ];
@@ -102,11 +133,15 @@ const ProjectPage = () => {
       projects.map((project) => ({
         id: project._id,
         projectName: project.projectName,
-        projectDesc: project.projectDesc,
+        caseId: project.caseId,
+        dataClassification: project.dataClassification,
         assignedTo: project.assignedTo,
         dateCreated: project.dateCreated,
+        projectStatus: project.projectStatus,
+        quickBaseLink: project.quickBaseLink,
+        projectDesc: project.projectDesc,
       })),
-    [projects, reloadGrid]
+    [projects]
   );
 
   /// Default style props for AG data grid
@@ -144,16 +179,8 @@ const ProjectPage = () => {
   // setReloadGrid so the rows rerender with new item
   function handleButtonAdd() {
     setAddClicked(!addClicked);
+    setSelectedProject("");
     toggleForm();
-
-    let projectObject = {
-      projectName: "first",
-      projectDesc: "yes",
-      assignedTo: "dillan",
-      dateCreated: format(new Date(), "yyyy-MM-dd"),
-    };
-
-    reloadTheGrid();
   }
 
   // function handles edit button
@@ -181,11 +208,13 @@ const ProjectPage = () => {
   // setReloadGrid to rerender row list with newly deleted item
   function handleButtonDelete() {
     selectedProject.forEach((project) => {
-      deleteProject(project.id);
-      console.log("deleted project with id:", project.id);
+      deleteProject(project.id).then((response) => {
+        if (response.status === 200) {
+          console.log("deleted project with id:", project.id);
+          reloadTheGrid();
+        }
+      });
     });
-
-    reloadTheGrid();
   }
 
   // sets the form menu state to open or close menu
@@ -226,8 +255,8 @@ const ProjectPage = () => {
   }, [reloadGrid]);
 
   return (
-    <div className=" mt-[10rem] ml-[5rem]">
-      <div className="flex justify-between">
+    <div className="ml-[5rem] w-full h-full">
+      <div className="flex justify-between mr-16">
         <Button
           variant="contained"
           color="success"

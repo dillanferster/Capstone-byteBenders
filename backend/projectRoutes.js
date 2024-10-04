@@ -15,6 +15,7 @@ const express = require("express"); // imports express object from the npm i exp
 const database = require("./connect"); // imports ./connect file from backend, saves it in the database variable
 const { verifyToken } = require("./middleware/auth"); // imports verifyToken function from authMiddleware file
 require("dotenv").config({ path: "./.env" }); // imports dotenv , loads the environment variables from .env file
+const AWS = require("aws-sdk"); // Import AWS SDK
 
 // sets the express object router function as projectRoutes variable
 let projectRoutes = express.Router();
@@ -31,7 +32,7 @@ const ObjectId = require("mongodb").ObjectId;
 // Authenticated route, verifyToken middleware is called before the async function is executed
 projectRoutes.route("/projects").get(verifyToken, async (request, response) => {
   let db = database.getDb();
-  let data = await db.collection("Dillan").find({}).toArray();
+  let data = await db.collection("projects").find({}).toArray();
 
   if (data.length > 0) {
     response.json(data);
@@ -56,7 +57,7 @@ projectRoutes
     let data = await db
       .collection("Dillan")
       .findOne({ _id: new ObjectId(request.params.id) });
-    if (Object.keys(data.length > 0)) {
+    if (data) {
       response.json(data);
     } else {
       throw new Error("data was not found");
@@ -78,10 +79,14 @@ projectRoutes
     let mongoObject = {
       projectName: request.body.projectName,
       projectDesc: request.body.projectDesc,
+      caseId: request.body.caseId,
+      dataClassification: request.body.dataClassification,
       assignedTo: request.body.assignedTo,
+      projectStatus: request.body.projectStatus,
+      quickBaseLink: request.body.quickBaseLink,
       dateCreated: request.body.dateCreated,
     };
-    let data = await db.collection("Dillan").insertOne(mongoObject);
+    let data = await db.collection("projects").insertOne(mongoObject);
     response.json(data);
   });
 
@@ -102,12 +107,53 @@ projectRoutes
       $set: {
         projectName: request.body.projectName,
         projectDesc: request.body.projectDesc,
+        caseId: request.body.caseId,
+        dataClassification: request.body.dataClassification,
         assignedTo: request.body.assignedTo,
+        projectStatus: request.body.projectStatus,
+        quickBaseLink: request.body.quickBaseLink,
         dateCreated: request.body.dateCreated,
       },
     };
     let data = await db
-      .collection("Dillan")
+      .collection("projects")
+      .updateOne({ _id: new ObjectId(request.params.id) }, mongoObject);
+    response.json(data);
+  });
+
+/// UPDATE PROJECT TASK ARRAY
+// takes in the project id and task id
+// finds the matching project in the database
+// adds the task id to the TaskIdForProject array
+// Reference: https://www.mongodb.com/docs/manual/reference/operator/update/push/
+projectRoutes
+  .route("/projectsupdate/:id")
+  .put(verifyToken, async (request, response) => {
+    let db = database.getDb();
+    let mongoObject = {
+      $push: { TaskIdForProject: request.body.taskId },
+    };
+    let data = await db
+      .collection("projects")
+      .updateOne({ _id: new ObjectId(request.params.id) }, mongoObject);
+    response.json(data);
+  });
+
+// DELETE TASK FROM PROJECT TASK ARRAY
+// Reference: https://www.mongodb.com/docs/manual/reference/operator/update/push/
+projectRoutes
+  .route("/projectstaskdelete/:id")
+  .delete(verifyToken, async (request, response) => {
+    let db = database.getDb();
+
+    console.log("Project ID INSIDE ROUTE:", request.params.id);
+    console.log("Task ID to delete INSIDE ROUTE:", request.body.taskId);
+
+    let mongoObject = {
+      $pull: { TaskIdForProject: request.body.taskId },
+    };
+    let data = await db
+      .collection("projects")
       .updateOne({ _id: new ObjectId(request.params.id) }, mongoObject);
     response.json(data);
   });
@@ -125,10 +171,87 @@ projectRoutes
   .delete(verifyToken, async (request, response) => {
     let db = database.getDb();
     let data = await db
-      .collection("Dillan")
+      .collection("projects")
       .deleteOne({ _id: new ObjectId(request.params.id) });
 
     response.json(data);
   });
+
+////////////////////////// AWS Comprehend //////////////////////////
+// // Analyze email text
+// // Assuming AWS SDK is already configured in server.js
+const comprehend = new AWS.Comprehend();
+
+projectRoutes
+  .route("/analyze-email")
+  .post(verifyToken, async (request, response) => {
+    const { emailText } = request.body; // Get the email content from request body
+
+    // Ensure emailText is provided and non-empty
+    if (!emailText || emailText.trim().length === 0) {
+      return response
+        .status(400)
+        .json({ success: false, error: "Email content cannot be empty" });
+    }
+
+    const params = {
+      LanguageCode: "en", // English
+      TextList: [emailText], // Email content in an array (expected by AWS comprehend)
+    };
+
+    try {
+      console.log("Sending request to AWS Comprehend:", params);
+
+      // AWS Comprehend to detect entities from email
+      const data = await comprehend.batchDetectEntities(params).promise();
+
+      console.log("AWS Comprehend response:", data);
+
+      const entities = data.ResultList[0].Entities;
+
+      console.log("Extracted entities:", entities);
+
+      // Map extracted entities into project fields
+      let project = {
+        projectName: "",
+        projectDesc: "",
+        caseId: "",
+        dataClassification: "",
+        assignedTo: "",
+        projectStatus: "",
+        quickBaseLink: "",
+        dateCreated: "",
+        startDate: "",
+        endDate: "",
+        projectNumber: "",
+        projectClient: "",
+      };
+
+      // Process extracted entities
+      entities.forEach((entity) => {
+        if (entity.Type === "PERSON") {
+          project.assignedTo = entity.Text;
+        } else if (entity.Type === "TITLE" || entity.Type === "EVENT") {
+          project.projectName = entity.Text;
+        } else if (entity.Type === "OTHER") {
+          project.projectDesc = entity.Text;
+        } else if (entity.Type === "DATE") {
+          project.startDate = entity.Text;
+        } else if (entity.Type === "QUANTITY") {
+          project.projectNumber = entity.Text;
+        } else if (entity.Type === "ORGANIZATION") {
+          project.projectClient = entity.Text;
+        }
+      });
+
+      response.json({ success: true, project });
+    } catch (error) {
+      console.error("Error analyzing email:", error);
+      response
+        .status(500)
+        .json({ success: false, error: "Failed to analyze email" });
+    }
+  });
+////////////////////////// AWS Comprehend //////////////////////////
 
 module.exports = projectRoutes;
