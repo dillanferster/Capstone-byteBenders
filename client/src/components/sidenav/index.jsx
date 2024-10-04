@@ -9,7 +9,6 @@ import {
   IconButton,
   AppBar,
   Toolbar,
-  Typography,
   Box,
   useMediaQuery,
   useTheme,

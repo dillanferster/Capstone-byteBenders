@@ -113,6 +113,7 @@ const Sidebar = () => {
 
           {/* MENU ITEMS */}
           <Box paddingLeft={isCollapsed ? undefined : "10%"}>
+            {/* Dashboard */}
             <Item
               title="Dashboard"
               to="/home"
@@ -120,6 +121,8 @@ const Sidebar = () => {
               selected={selected}
               setSelected={setSelected}
             />
+
+            {/* Data */}
             <Typography
               variant="h6"
               color={colors.grey[300]}
@@ -141,6 +144,8 @@ const Sidebar = () => {
               selected={selected}
               setSelected={setSelected}
             />
+
+            {/* Tools */}
             <Typography
               variant="h6"
               color={colors.grey[300]}
@@ -169,6 +174,15 @@ const Sidebar = () => {
               selected={selected}
               setSelected={setSelected}
             />
+            <Item
+              title="Analyze Email"
+              to="/emailanalysis"
+              icon={<CalendarTodayOutlinedIcon />}
+              selected={selected}
+              setSelected={setSelected}
+            />
+
+            {/* ADMIN TOOLS */}
             <Typography
               variant="h6"
               color={colors.grey[300]}
@@ -176,6 +190,13 @@ const Sidebar = () => {
             >
               Admin Tools
             </Typography>
+            <Item
+              title="Create User"
+              to="/create-user"
+              icon={<CalendarTodayOutlinedIcon />}
+              selected={selected}
+              setSelected={setSelected}
+            />
           </Box>
         </Menu>
       </ProSidebar>
