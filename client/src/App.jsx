@@ -1,10 +1,11 @@
 // App.jsx
-import { useState, useEffect } from "react";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { useEffect } from "react";
+import { Routes, Route } from "react-router-dom";
+import { ColorModeContext, useMode } from "./theme";
 import axios from "axios";
 import { jwtDecode } from "jwt-decode";
 
-import { Box, CssBaseline, ThemeProvider, createTheme } from "@mui/material";
+import { CssBaseline, ThemeProvider } from "@mui/material";
 import "./App.css";
 import Layout from "./components/layout";
 import HomePage from "./pages/home";
@@ -65,72 +66,33 @@ const App = () => {
     }
   }, []);
 
-  //// DATABASE ////
-  // const [projects, setProjects] = useState();
-
-  // When app component renders loadAllProjects() is called asynchronously
-  // so the rest on the program can still run when the function logic is being excuted and returned some time in future
-  // if data is returned , then setProjects state is updated with data
-  // useEffect(() => {
-  //   async function loadAllProjects() {
-  //     try {
-  //       const data = await getProjects();
-  //       if (data) {
-  //         setProjects(data);
-  //       } else {
-  //         console.log("No projects found");
-  //       }
-  //     } catch (error) {
-  //       console.error("Error loading projects:", error);
-  //     }
-  //   }
-
-  //   loadAllProjects();
-  // }, []);
-  /////DATABASE///
-
   // THEME SETUP //
-  const theme = createTheme();
+  const [theme, colorMode] = useMode([]);
 
   return (
-    <ThemeProvider theme={theme}>
-      <Router>
-        <Box sx={{ display: "flex", height: "100vh" }}>
-          <CssBaseline />
-          <Box
-            component="main"
-            sx={{
-              flexGrow: 1,
-              p: 2,
-              // height: "100vh",
-              display: "flex",
-              flexDirection: "column",
-              justifyContent: "center",
-              // alignItems: "center",
-              width: { sm: `calc(100% - ${sidenavWidth}px)` }, // Full width minus drawer width
-              ml: { sm: `${sidenavWidth}px` }, // Add left margin for non-small screens
-              backgroundColor: "#f5f5f5",
-            }}
-          >
-            <Routes>
-              <Route path="/" element={<LoginPage />} />
-              <Route element={<Layout />}>
-                <Route path="/home" element={<HomePage />} />
-                <Route path="/create-user" element={<CreateUserPage />} />
-                {/* <Route path="/signup" element={<SignUpPage />} /> */}
-                <Route path="/project" element={<ProjectPage />} />
-                <Route path="/note" element={<NotePage />} />
-                <Route path="/task" element={<TaskPage />} />
-                <Route path="/calendar" element={<CalendarPage />} />
-                <Route path="/documentation" element={<DocumentationPage />} />
-                {/* <Route path="/dashboard" element={<DashboardPage />} /> */}
-                <Route path="/analyze-email" element={<EmailAnalysisForm />} />
-              </Route>
-            </Routes>
-          </Box>
-        </Box>
-      </Router>
-    </ThemeProvider>
+    <ColorModeContext.Provider value={colorMode}>
+      <ThemeProvider theme={theme}>
+        <CssBaseline />
+        {/* <div className="app"> */}
+        {/* <Sidebar /> */}
+        {/* <main className="content"> */}
+        {/* <Topbar /> */}
+        <Routes>
+          <Route path="/" element={<LoginPage />} />
+          <Route path="/signup" element={<SignUpPage />} />
+          <Route element={<Layout />}>
+            <Route path="/home" element={<HomePage />} />
+            <Route path="/project" element={<ProjectPage />} />
+            <Route path="/task" element={<TaskPage />} />
+            <Route path="/calendar" element={<CalendarPage />} />
+            <Route path="/note" element={<NotePage />} />
+            <Route path="/documentation" element={<DocumentationPage />} />
+          </Route>
+        </Routes>
+        {/* </main> */}
+        {/* </div> */}
+      </ThemeProvider>
+    </ColorModeContext.Provider>
   );
 };
 
