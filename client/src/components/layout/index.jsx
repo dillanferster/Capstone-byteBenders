@@ -1,7 +1,8 @@
-import SideNavbar from "../sidenav";
 import { Outlet } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import { useEffect } from "react";
+import Sidebar from "../../pages/global/sidebar";
+import Topbar from "../../pages/global/topbar";
 
 const Layout = () => {
   // navbar items array
@@ -25,9 +26,13 @@ const Layout = () => {
   }, [user]);
 
   return (
-    <div>
-      <SideNavbar menuItems={menuItems} />
-      <Outlet />
+    <div className="app">
+      <Sidebar />
+      <main className="content">
+        <Topbar />
+        {/* <SideNavbar menuItems={menuItems} /> */}
+        <Outlet />
+      </main>
     </div>
   );
 };

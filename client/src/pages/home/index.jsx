@@ -33,8 +33,7 @@ const Dashboard = () => {
   };
 
   return (
-    // Added padding 40 top and left to fit until fix the sidebar and header
-    <Box m="20px" p="40px 0 0 40px">
+    <Box m="20px">
       <Box display="flex" justifyContent="space-between" alignItems="center">
         <Header title="DASHBOARD" subtitle="Welcome to your dashboard" />
 
