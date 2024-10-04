@@ -1,11 +1,11 @@
 // App.jsx
-import { useState, useEffect } from "react";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { useEffect } from "react";
+import { Routes, Route } from "react-router-dom";
 import { ColorModeContext, useMode } from "./theme";
 import axios from "axios";
 import { jwtDecode } from "jwt-decode";
 
-import { Box, CssBaseline, ThemeProvider, createTheme } from "@mui/material";
+import { CssBaseline, ThemeProvider } from "@mui/material";
 import "./App.css";
 import Layout from "./components/layout";
 import HomePage from "./pages/home";
@@ -54,24 +54,24 @@ const App = () => {
     <ColorModeContext.Provider value={colorMode}>
       <ThemeProvider theme={theme}>
         <CssBaseline />
-        <div className="app">
-          {/* <Sidebar /> */}
-          <main className="content">
-            {/* <Topbar /> */}
-            <Routes>
-              <Route path="/" element={<LoginPage />} />
-              <Route path="/signup" element={<SignUpPage />} />
-              <Route element={<Layout />}>
-                <Route path="/home" element={<HomePage />} />
-                <Route path="/project" element={<ProjectPage />} />
-                <Route path="/task" element={<TaskPage />} />
-                <Route path="/calendar" element={<CalendarPage />} />
-                <Route path="/note" element={<NotePage />} />
-                <Route path="/documentation" element={<DocumentationPage />} />
-              </Route>
-            </Routes>
-          </main>
-        </div>
+        {/* <div className="app"> */}
+        {/* <Sidebar /> */}
+        {/* <main className="content"> */}
+        {/* <Topbar /> */}
+        <Routes>
+          <Route path="/" element={<LoginPage />} />
+          <Route path="/signup" element={<SignUpPage />} />
+          <Route element={<Layout />}>
+            <Route path="/home" element={<HomePage />} />
+            <Route path="/project" element={<ProjectPage />} />
+            <Route path="/task" element={<TaskPage />} />
+            <Route path="/calendar" element={<CalendarPage />} />
+            <Route path="/note" element={<NotePage />} />
+            <Route path="/documentation" element={<DocumentationPage />} />
+          </Route>
+        </Routes>
+        {/* </main> */}
+        {/* </div> */}
       </ThemeProvider>
     </ColorModeContext.Provider>
   );

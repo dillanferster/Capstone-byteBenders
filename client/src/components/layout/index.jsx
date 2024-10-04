@@ -1,4 +1,3 @@
-import SideNavbar from "../sidenav";
 import { Outlet } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import { useEffect } from "react";
@@ -26,11 +25,13 @@ const Layout = () => {
   }, [user]);
 
   return (
-    <div>
-      <Topbar />
+    <div className="app">
       <Sidebar />
-      {/* <SideNavbar menuItems={menuItems} /> */}
-      <Outlet />
+      <main className="content">
+        <Topbar />
+        {/* <SideNavbar menuItems={menuItems} /> */}
+        <Outlet />
+      </main>
     </div>
   );
 };
