@@ -211,228 +211,277 @@ export default function TaskEditMenu({
       />
 
       <div
-        className={`fixed top-0 right-0 w-full max-w-2xl h-full bg-gray-800 text-gray-100 p-8 z-[10] shadow-xl transition-transform duration-300 ease-in-out transform overflow-y-scroll ${
+        className={`fixed top-0 right-0 w-full max-w-2xl h-full bg-[#1f2a40] text-gray-100 p-8 z-[10] shadow-xl transition-transform duration-300 ease-in-out transform overflow-y-scroll ${
           isOpen ? "translate-x-0" : "translate-x-full"
         }`}
       >
         <h2 className="text-3xl font-bold mb-8 text-white">Add New Task</h2>
 
         <form className="space-y-6">
-          <div>
-            <label
-              htmlFor="taskId"
-              className="block text-sm font-medium mb-2 text-gray-300"
-            >
-              Task ID
-            </label>
-            <input
-              type="text"
-              id="taskName"
-              defaultValue={taskId}
-              className="w-full px-4 py-2 bg-gray-700 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
-              disabled
-              placeholder={
-                addClicked ? "ID will be generated automatically" : ""
-              }
-            />
+          <div className="flex justify-between">
+            {" "}
+            <div className="w-[18rem]">
+              <label
+                htmlFor="taskId"
+                className="block text-sm font-medium mb-2 text-gray-300"
+              >
+                Task ID
+              </label>
+              <input
+                type="text"
+                id="taskName"
+                defaultValue={taskId}
+                className="w-full px-4 py-2 bg-gray-700 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                disabled
+                placeholder={
+                  addClicked ? "ID will be generated automatically" : ""
+                }
+              />
+            </div>
+            <div className="w-[18rem]">
+              <label
+                htmlFor="taskName"
+                className="block text-sm font-medium mb-2 text-gray-300"
+              >
+                Task Name
+              </label>
+              <input
+                type="text"
+                id="taskName"
+                defaultValue={taskId}
+                className="w-full px-4 py-2 bg-gray-700 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                disabled
+                placeholder={
+                  addClicked ? "ID will be generated automatically" : ""
+                }
+              />
+            </div>
           </div>
 
-          <div>
-            <label
-              htmlFor="projectTask"
-              className="block text-sm font-medium mb-2 text-gray-300"
-            >
-              Project
-            </label>
-            <select
-              id="projectTask"
-              value={projectTask}
-              onChange={(e) => setProjectTask(e.target.value)}
-              className="w-full px-4 py-2 bg-gray-700 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
-              disabled={viewClicked}
-            >
-              {addClicked && (
-                <option value="" disabled={addClicked}>
-                  --Select an option--
-                </option>
-              )}
+          <div className="flex justify-between">
+            {" "}
+            <div className="w-[18rem]">
+              <label
+                htmlFor="projectTask"
+                className="block text-sm font-medium mb-2 text-gray-300"
+              >
+                Project
+              </label>
+              <select
+                id="projectTask"
+                value={projectTask}
+                onChange={(e) => setProjectTask(e.target.value)}
+                className="w-full px-4 py-2 bg-gray-700 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                disabled={viewClicked}
+              >
+                {addClicked && (
+                  <option value="" disabled={addClicked}>
+                    --Select an option--
+                  </option>
+                )}
 
-              {projects.map((project) => (
-                <option key={project._id} value={project.projectName}>
-                  {project.projectName}
-                </option>
-              ))}
-            </select>
+                {projects.map((project) => (
+                  <option key={project._id} value={project.projectName}>
+                    {project.projectName}
+                  </option>
+                ))}
+              </select>
+            </div>
+            <div className="w-[18rem]">
+              <label
+                htmlFor="projectStatus"
+                className="block text-sm font-medium mb-2 text-gray-300"
+              >
+                Project Status
+              </label>
+              <select
+                id="projectStatus"
+                value={projectStatus}
+                onChange={(e) => setProjectStatus(e.target.value)}
+                className="w-full px-4 py-2 bg-gray-700 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                disabled={viewClicked}
+              >
+                {addClicked && (
+                  <option value="" disabled={addClicked}>
+                    --Select an option--
+                  </option>
+                )}
+                <option value="In progress">In Progress</option>
+                <option value="Complete">Complete</option>
+                <option value="Not started">Not Started</option>
+                <option value="Storage">Storage</option>
+              </select>
+            </div>
           </div>
 
-          <div>
-            <label
-              htmlFor="assignedTo"
-              className="block text-sm font-medium mb-2 text-gray-300"
-            >
-              Assigned To
-            </label>
-            <input
-              type="text"
-              id="assignedTo"
-              value={assignedTo}
-              onChange={(e) => setAssignedTo(e.target.value)}
-              className="w-full px-4 py-2 bg-gray-700 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
-              required
-              placeholder="Assign"
-              disabled={viewClicked}
-            />
+          <div className="flex justify-between">
+            <div className="w-[18rem]">
+              <label
+                htmlFor="assignedTo"
+                className="block text-sm font-medium mb-2 text-gray-300"
+              >
+                Assigned To
+              </label>
+              <input
+                type="text"
+                id="assignedTo"
+                value={assignedTo}
+                onChange={(e) => setAssignedTo(e.target.value)}
+                className="w-full px-4 py-2 bg-gray-700 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                required
+                placeholder="Assign"
+                disabled={viewClicked}
+              />
+            </div>
+
+            <div className="w-[18rem]">
+              <label
+                htmlFor="taskStatus"
+                className="block text-sm font-medium mb-2 text-gray-300"
+              >
+                Task Status
+              </label>
+              <select
+                id="taskStatus"
+                value={taskStatus}
+                onChange={(e) => setTaskStatus(e.target.value)}
+                className="w-full px-4 py-2 bg-gray-700 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                disabled={viewClicked}
+              >
+                {addClicked && (
+                  <option value="" disabled={addClicked}>
+                    --Select an option--
+                  </option>
+                )}
+                <option value="In progress">In Progress</option>
+                <option value="Complete">Complete</option>
+                <option value="Not started">Not Started</option>
+                <option value="Storage">Storage</option>
+              </select>
+            </div>
           </div>
 
-          <div>
-            <label
-              htmlFor="taskStatus"
-              className="block text-sm font-medium mb-2 text-gray-300"
-            >
-              Task Status
-            </label>
-            <select
-              id="taskStatus"
-              value={taskStatus}
-              onChange={(e) => setTaskStatus(e.target.value)}
-              className="w-full px-4 py-2 bg-gray-700 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
-              disabled={viewClicked}
-            >
-              {addClicked && (
-                <option value="" disabled={addClicked}>
-                  --Select an option--
-                </option>
-              )}
-              <option value="In progress">In Progress</option>
-              <option value="Complete">Complete</option>
-              <option value="Not started">Not Started</option>
-              <option value="Storage">Storage</option>
-            </select>
+          <div className="flex justify-between">
+            {" "}
+            <div className="w-[18rem]">
+              <label
+                htmlFor="priority"
+                className="block text-sm font-medium mb-2 text-gray-300"
+              >
+                Priority
+              </label>
+              <select
+                id="priority"
+                value={priority}
+                onChange={(e) => setPriority(e.target.value)}
+                className="w-full px-4 py-2 bg-gray-700 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                disabled={viewClicked}
+              >
+                {addClicked && (
+                  <option value="" disabled={addClicked}>
+                    --Select an option--
+                  </option>
+                )}
+                <option value="High">High</option>
+                <option value="Medium">Medium</option>
+                <option value="Low">Low</option>
+              </select>
+            </div>
+            <div className="w-[18rem]">
+              <label
+                htmlFor="taskCategory"
+                className="block text-sm font-medium mb-2 text-gray-300"
+              >
+                Category
+              </label>
+              <input
+                type="text"
+                id="taskCategory"
+                value={taskCategory}
+                onChange={(e) => setTaskCategory(e.target.value)}
+                className="w-full px-4 py-2 bg-gray-700 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                required
+                placeholder="Enter Category"
+                disabled={viewClicked}
+              />
+            </div>
           </div>
 
-          <div>
-            <label
-              htmlFor="priority"
-              className="block text-sm font-medium mb-2 text-gray-300"
-            >
-              Priority
-            </label>
-            <select
-              id="priority"
-              value={priority}
-              onChange={(e) => setPriority(e.target.value)}
-              className="w-full px-4 py-2 bg-gray-700 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
-              disabled={viewClicked}
-            >
-              {addClicked && (
-                <option value="" disabled={addClicked}>
-                  --Select an option--
-                </option>
-              )}
-              <option value="High">High</option>
-              <option value="Medium">Medium</option>
-              <option value="Low">Low</option>
-            </select>
+          <div className="flex justify-between">
+            {" "}
+            <div className="w-[18rem]">
+              <label
+                htmlFor="startDate"
+                className="block text-sm font-medium mb-2 text-gray-300"
+              >
+                Start Date
+              </label>
+              <input
+                type="date"
+                id="startDate"
+                value={startDate}
+                onChange={(e) => setStartDate(e.target.value)}
+                className="w-full px-4 py-2 bg-gray-700 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                required
+                disabled={viewClicked}
+              />
+            </div>
+            <div className="w-[18rem]">
+              <label
+                htmlFor="dueDate"
+                className="block text-sm font-medium mb-2 text-gray-300"
+              >
+                Due Date
+              </label>
+              <input
+                type="date"
+                id="dueDate"
+                value={dueDate}
+                onChange={(e) => setDueDate(e.target.value)}
+                className="w-full px-4 py-2 bg-gray-700 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                required
+                disabled={viewClicked}
+              />
+            </div>
           </div>
 
-          <div>
-            <label
-              htmlFor="taskCategory"
-              className="block text-sm font-medium mb-2 text-gray-300"
-            >
-              Task Category
-            </label>
-            <input
-              type="text"
-              id="taskCategory"
-              value={taskCategory}
-              onChange={(e) => setTaskCategory(e.target.value)}
-              className="w-full px-4 py-2 bg-gray-700 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
-              required
-              placeholder="Enter Category"
-              disabled={viewClicked}
-            />
-          </div>
-
-          <div>
-            <label
-              htmlFor="startDate"
-              className="block text-sm font-medium mb-2 text-gray-300"
-            >
-              Start Date
-            </label>
-            <input
-              type="date"
-              id="startDate"
-              value={startDate}
-              onChange={(e) => setStartDate(e.target.value)}
-              className="w-full px-4 py-2 bg-gray-700 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
-              required
-              disabled={viewClicked}
-            />
-          </div>
-
-          <div>
-            <label
-              htmlFor="dueDate"
-              className="block text-sm font-medium mb-2 text-gray-300"
-            >
-              Due Date
-            </label>
-            <input
-              type="date"
-              id="dueDate"
-              value={dueDate}
-              onChange={(e) => setDueDate(e.target.value)}
-              className="w-full px-4 py-2 bg-gray-700 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
-              required
-              disabled={viewClicked}
-            />
-          </div>
-
-          <div>
-            <label
-              htmlFor="projectStatus"
-              className="block text-sm font-medium mb-2 text-gray-300"
-            >
-              Project Status
-            </label>
-            <select
-              id="projectStatus"
-              value={projectStatus}
-              onChange={(e) => setProjectStatus(e.target.value)}
-              className="w-full px-4 py-2 bg-gray-700 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
-              disabled={viewClicked}
-            >
-              {addClicked && (
-                <option value="" disabled={addClicked}>
-                  --Select an option--
-                </option>
-              )}
-              <option value="In progress">In Progress</option>
-              <option value="Complete">Complete</option>
-              <option value="Not started">Not Started</option>
-              <option value="Storage">Storage</option>
-            </select>
-          </div>
-
-          <div>
-            <label
-              htmlFor="addChronicles"
-              className="block text-sm font-medium mb-2 text-gray-300"
-            >
-              Add Chronicles
-            </label>
-            <input
-              type="text"
-              id="addChronicles"
-              value={addChronicles}
-              onChange={(e) => setAddChronicles(e.target.value)}
-              className="w-full px-4 py-2 bg-gray-700 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
-              required
-              placeholder="Add Chronicles"
-              disabled={viewClicked}
-            />
+          <div className="flex justify-between">
+            {" "}
+            <div className="w-[18rem]">
+              <label
+                htmlFor="addChronicles"
+                className="block text-sm font-medium mb-2 text-gray-300"
+              >
+                Add Chronicles
+              </label>
+              <input
+                type="text"
+                id="addChronicles"
+                value={addChronicles}
+                onChange={(e) => setAddChronicles(e.target.value)}
+                className="w-full px-4 py-2 bg-gray-700 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                required
+                placeholder="Add Chronicles"
+                disabled={viewClicked}
+              />
+            </div>
+            <div className="w-[18rem]">
+              <label
+                htmlFor="chroniclesComplete"
+                className="block text-sm font-medium mb-2 text-gray-300"
+              >
+                Chronicles Complete
+              </label>
+              <input
+                id="chroniclesComplete"
+                value={chroniclesComplete}
+                onChange={(e) => setChroniclesComplete(e.target.value)}
+                className="w-full px-4 py-2 bg-gray-700 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                rows={4}
+                placeholder="Chronicles Completes"
+                disabled={viewClicked}
+              />
+            </div>
           </div>
 
           <div>
@@ -449,24 +498,6 @@ export default function TaskEditMenu({
               className="w-full px-4 py-2 bg-gray-700 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
               rows={4}
               placeholder="Enter Attachments"
-              disabled={viewClicked}
-            />
-          </div>
-
-          <div>
-            <label
-              htmlFor="chroniclesComplete"
-              className="block text-sm font-medium mb-2 text-gray-300"
-            >
-              Chronicles Complete
-            </label>
-            <textarea
-              id="chroniclesComplete"
-              value={chroniclesComplete}
-              onChange={(e) => setChroniclesComplete(e.target.value)}
-              className="w-full px-4 py-2 bg-gray-700 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
-              rows={4}
-              placeholder="Chronicles Completes"
               disabled={viewClicked}
             />
           </div>
