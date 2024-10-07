@@ -30,6 +30,8 @@ import {
   createTask,
   updateTask,
   deleteTask,
+  startTask,
+  completeTask,
   getProjects,
   addTaskToProject,
   deleteTaskFromProject,
@@ -232,6 +234,7 @@ const TaskPage = () => {
     toggleForm();
   }
 
+  // updates grid usestate to cause a re-render
   const reloadTheGrid = () => {
     setReloadGrid(!reloadGrid);
   };
@@ -242,6 +245,18 @@ const TaskPage = () => {
     setViewClicked(!viewClicked);
     console.log("set view to", viewClicked);
     toggleForm();
+  }
+
+  // handles button start task
+  function handleButtonStart() {
+    startTask(selectedTask[0].id);
+    console.log("task started");
+  }
+
+  // handles button start task
+  function handleButtonComplete() {
+    completeTask(selectedTask[0].id);
+    console.log("task completed");
   }
 
   // handles delete button
@@ -344,13 +359,37 @@ const TaskPage = () => {
   return (
     <div className=" p-[1rem] ">
       <div className=" p-[1rem] flex justify-between w-full">
-        <Button
-          variant="contained"
-          color="success"
-          onClick={() => handleButtonAdd()}
-        >
-          Add Task
-        </Button>
+        <div className="flex gap-8">
+          <div>
+            <Button
+              variant="contained"
+              color="success"
+              onClick={() => handleButtonAdd()}
+            >
+              Add Task
+            </Button>
+          </div>
+          {selectedTask.length === 1 && (
+            <div className="flex gap-4">
+              <Button
+                variant="outlined"
+                color="success"
+                onClick={() => handleButtonStart()}
+              >
+                Start Task
+              </Button>
+
+              <Button
+                variant="outlined"
+                color="error"
+                onClick={() => handleButtonComplete()}
+              >
+                Complete Task
+              </Button>
+            </div>
+          )}
+        </div>
+
         <div className="flex gap-4">
           {" "}
           {selectedTask.length === 1 && (

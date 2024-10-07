@@ -143,4 +143,32 @@ taskRoutes
     response.json(data);
   });
 
+// Start task
+taskRoutes
+  .route("/tasks/:id/start")
+  .put(verifyToken, async (request, response) => {
+    let db = database.getDb();
+    let mongoObject = {
+      $push: { startTime: new Date() },
+    };
+    let data = await db
+      .collection("tasks")
+      .updateOne({ _id: new ObjectId(request.params.id) }, mongoObject);
+    response.json(data);
+  });
+
+// complete task
+taskRoutes
+  .route("/tasks/:id/complete")
+  .put(verifyToken, async (request, response) => {
+    let db = database.getDb();
+    let mongoObject = {
+      $push: { completeTime: new Date() },
+    };
+    let data = await db
+      .collection("tasks")
+      .updateOne({ _id: new ObjectId(request.params.id) }, mongoObject);
+    response.json(data);
+  });
+
 module.exports = taskRoutes;

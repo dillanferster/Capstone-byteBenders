@@ -158,7 +158,6 @@ export async function deleteTaskFromProject(projectId, taskObject) {
     throw error; // Optionally, throw the error to handle it in the component
   }
 }
-///// ISSUE HERE /////
 
 // deletes project , pass in id
 // async function
@@ -293,6 +292,44 @@ export async function deleteTask(id) {
   }
 }
 ///TASKS///
+
+//// TASK TIME ///
+
+// start task
+export async function startTask(id) {
+  try {
+    const token = sessionStorage.getItem("User"); // Retrieve the token
+    const response = await axios.put(`${URL}/tasks/${id}/start`, {
+      headers: {
+        Authorization: `Bearer ${token}`, // Attach the token in the Authorization header
+      },
+    });
+    console.log(response); // Gigi debug log for auth headers
+    return response;
+  } catch (error) {
+    console.error("Error updating project:", error);
+    throw error;
+  }
+}
+
+// complete task
+export async function completeTask(id) {
+  try {
+    const token = sessionStorage.getItem("User"); // Retrieve the token
+    const response = await axios.put(`${URL}/tasks/${id}/complete`, {
+      headers: {
+        Authorization: `Bearer ${token}`, // Attach the token in the Authorization header
+      },
+    });
+    console.log(response); // Gigi debug log for auth headers
+    return response;
+  } catch (error) {
+    console.error("Error updating project:", error);
+    throw error;
+  }
+}
+
+//// TASK TIME ////
 
 ///USER///
 // creates a new user , pass in user object
