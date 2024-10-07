@@ -15,10 +15,19 @@ import MenuOutlinedIcon from "@mui/icons-material/MenuOutlined";
 const Item = ({ title, to, icon, selected, setSelected }) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
+  const activeTab = selected === title;
+
+  console.log("activeTab: ", activeTab);
+
   return (
     <MenuItem
       active={selected === title}
-      style={{ color: colors.grey[100] }}
+      style={{
+        color: activeTab ? colors.blueAccent[200] : colors.grey[100],
+        backgroundColor: activeTab ? colors.primary[300] : colors.primary[400],
+        borderRadius: "25px",
+        marginRight: "20px",
+      }}
       onClick={() => setSelected(title)}
       icon={icon}
     >
