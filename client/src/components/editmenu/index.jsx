@@ -233,6 +233,11 @@ export default function EditMenu({
                 className="w-full px-4 py-2 bg-gray-700 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
                 disabled={viewClicked}
               >
+                {addClicked && (
+                  <option value="" disabled={addClicked}>
+                    --Select an option--
+                  </option>
+                )}
                 <option value="In progress">In Progress</option>
                 <option value="Complete">Complete</option>
                 <option value="Not started">Not Started</option>

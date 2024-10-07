@@ -54,6 +54,13 @@ const columns = [
     editable: false,
   },
   {
+    field: "taskName",
+    headerName: "Task Name",
+    filter: true,
+    floatingFilter: true,
+    editable: false,
+  },
+  {
     field: "projectTask",
     headerName: "Project",
     filter: true,
@@ -117,6 +124,13 @@ const columns = [
     editable: false,
   },
   {
+    field: "taskDesc",
+    headerName: "Description",
+    filter: true,
+    floatingFilter: true,
+    editable: false,
+  },
+  {
     field: "attachments",
     headerName: "Attachments",
     filter: true,
@@ -155,6 +169,7 @@ const TaskPage = () => {
     () =>
       tasks.map((task) => ({
         id: task._id,
+        taskName: task.taskName,
         assignedTo: task.assignedTo,
         taskStatus: task.taskStatus,
         priority: task.priority,
@@ -164,6 +179,7 @@ const TaskPage = () => {
         projectTask: task.projectTask,
         projectStatus: task.projectStatus,
         addChronicles: task.addChronicles,
+        taskDesc: task.taskDesc,
         attachments: task.attachments,
         chroniclesComplete: task.chroniclesComplete,
       })),

@@ -30,6 +30,7 @@ export default function TaskEditMenu({
 }) {
   // * state
   const [taskId, setTaskId] = useState("");
+  const [taskName, setTaskName] = useState("");
   const [projectTask, setProjectTask] = useState("");
   const [assignedTo, setAssignedTo] = useState("");
   const [taskStatus, setTaskStatus] = useState("");
@@ -40,6 +41,7 @@ export default function TaskEditMenu({
   const [projectStatus, setProjectStatus] = useState("");
   const [addChronicles, setAddChronicles] = useState("");
   const [attachments, setAttachments] = useState("");
+  const [taskDesc, setTaskDesc] = useState("");
   const [chroniclesComplete, setChroniclesComplete] = useState("");
 
   //*
@@ -52,6 +54,7 @@ export default function TaskEditMenu({
   useEffect(() => {
     if (selectedTask.length > 0) {
       setTaskId(selectedTask[0].id);
+      setTaskName(selectedTask[0].taskName);
       setAssignedTo(selectedTask[0].assignedTo);
       setTaskStatus(selectedTask[0].taskStatus);
       setPriority(selectedTask[0].priority);
@@ -62,6 +65,7 @@ export default function TaskEditMenu({
       setProjectStatus(selectedTask[0].projectStatus);
       setAddChronicles(selectedTask[0].addChronicles);
       setAttachments(selectedTask[0].attachments);
+      setTaskDesc(selectedTask[0].taskDesc);
       setChroniclesComplete(selectedTask[0].chroniclesComplete);
 
       console.log("set task defaults");
@@ -72,6 +76,7 @@ export default function TaskEditMenu({
 
   function clearAddInputs() {
     setTaskId("");
+    setTaskName("");
     setAssignedTo("");
     setTaskStatus("");
     setPriority("");
@@ -80,6 +85,7 @@ export default function TaskEditMenu({
     setDueDate("");
     setProjectStatus("");
     setAddChronicles("");
+    setTaskDesc("");
     setAttachments("");
     setChroniclesComplete("");
     setProjectTask("");
@@ -113,6 +119,7 @@ export default function TaskEditMenu({
     setEditClicked(!editClicked);
 
     const updatedTask = {
+      taskName: taskName,
       assignedTo: assignedTo,
       taskStatus: taskStatus,
       priority: priority,
@@ -123,6 +130,7 @@ export default function TaskEditMenu({
       projectStatus: projectStatus,
       addChronicles: addChronicles,
       attachments: attachments,
+      taskDesc: taskDesc,
       chroniclesComplete: chroniclesComplete,
     };
 
@@ -156,6 +164,7 @@ export default function TaskEditMenu({
     setAddClicked(!addClicked);
 
     const addedTask = {
+      taskName: taskName,
       assignedTo: assignedTo,
       taskStatus: taskStatus,
       priority: priority,
@@ -165,6 +174,7 @@ export default function TaskEditMenu({
       projectTask: projectTask,
       projectStatus: projectStatus,
       addChronicles: addChronicles,
+      taskDesc: taskDesc,
       attachments: attachments,
       chroniclesComplete: chroniclesComplete,
     };
@@ -248,12 +258,11 @@ export default function TaskEditMenu({
               <input
                 type="text"
                 id="taskName"
-                defaultValue={taskId}
+                defaultValue={taskName}
+                onChange={(e) => setTaskName(e.target.value)}
                 className="w-full px-4 py-2 bg-gray-700 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                disabled
-                placeholder={
-                  addClicked ? "ID will be generated automatically" : ""
-                }
+                disabled={viewClicked}
+                placeholder={addClicked ? "Add task name" : ""}
               />
             </div>
           </div>
@@ -486,12 +495,30 @@ export default function TaskEditMenu({
 
           <div>
             <label
+              htmlFor="Description"
+              className="block text-sm font-medium mb-2 text-gray-300"
+            >
+              Description
+            </label>
+            <textarea
+              id="description"
+              value={taskDesc}
+              onChange={(e) => setTaskDesc(e.target.value)}
+              className="w-full px-4 py-2 bg-gray-700 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              rows={4}
+              placeholder="Enter Desc"
+              disabled={viewClicked}
+            />
+          </div>
+
+          <div>
+            <label
               htmlFor="attachments"
               className="block text-sm font-medium mb-2 text-gray-300"
             >
               Attachments
             </label>
-            <textarea
+            <input
               id="attachments"
               value={attachments}
               onChange={(e) => setAttachments(e.target.value)}
