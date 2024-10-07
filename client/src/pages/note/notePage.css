@@ -4,13 +4,13 @@
   height: 100vh;
   padding: 20px;
   margin: 20px;
-  background-color: #f8f9fa;
+  /* background-color: #f8f9fa; */
 }
 
 /* Sidebar styling */
 .sidebar {
   width: 250px;
-  background-color: #ffffff;
+  /* background-color: #ffffff; */
   border-right: 1px solid #ddd;
   padding: 10px;
 }
@@ -30,7 +30,7 @@
 
 .note-card {
   padding: 10px;
-  background-color: #e9ecef;
+  /* background-color: #e9ecef; */
   margin-bottom: 10px;
   border-radius: 4px;
   cursor: pointer;
@@ -76,7 +76,7 @@
   padding: 50px;
   border: 1px solid #ddd;
   border-radius: 8px;
-  background-color: #ffffff;
+  /* background-color: #ffffff; */
   box-shadow: 0 2px 8px #e9ecef;
 }
 
@@ -84,6 +84,7 @@
 .editor-mode {
   display: flex;
   flex-direction: column;
+  color: #000;
   gap: 10px;
   width: 400px;
   margin-top: 10px;
@@ -105,6 +106,7 @@
 .preview-title {
   font-size: 16px;
   font-weight: bold;
+  color: #000;
   margin-bottom: 10px;
   border-bottom: 1px solid #ccc;
   padding-bottom: 5px;
