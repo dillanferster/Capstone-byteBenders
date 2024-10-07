@@ -151,8 +151,8 @@ const ProjectPage = () => {
   const selectionColumnDef = useMemo(() => {
     return {
       sortable: true,
-      width: 120,
-      maxWidth: 120,
+      width: 100,
+      maxWidth: 100,
     };
   }, []);
 
@@ -255,8 +255,8 @@ const ProjectPage = () => {
   }, [reloadGrid]);
 
   return (
-    <div className="ml-[5rem] w-full h-full">
-      <div className="flex justify-between mr-16">
+    <div className=" p-[1rem]  ">
+      <div className=" p-[1rem] flex justify-between   w-full">
         <Button
           variant="contained"
           color="success"
