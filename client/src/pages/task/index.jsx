@@ -325,9 +325,22 @@ const TaskPage = () => {
 
   // handles button complete task
   // calls completeTask route
-  function handleButtonComplete() {
+  async function handleButtonComplete() {
     completeTask(selectedTask[0].id);
     console.log("task completed");
+
+    const updatedTask = {
+      taskStatus: "Completed",
+    };
+
+    try {
+      const response = await taskStatusUpdate(selectedTask[0].id, updatedTask);
+      if (response.status === 200) {
+        reloadTheGrid();
+      }
+    } catch (error) {
+      console.error("Error updating task Status:", error);
+    }
 
     reloadTheGrid();
   }
