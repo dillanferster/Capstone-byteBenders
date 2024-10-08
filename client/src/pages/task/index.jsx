@@ -457,43 +457,52 @@ const TaskPage = () => {
           </div>
 
           <div className="flex gap-4">
-            {selectedTask.length === 1 && !selectedTask[0].startTime && (
-              <Button
-                variant="outlined"
-                color="success"
-                onClick={() => handleButtonStart()}
-              >
-                Start Task
-              </Button>
-            )}
-            {selectedTask.length === 1 && selectedTask[0].startTime && (
-              <div>
-                {" "}
+            {selectedTask.length === 1 &&
+              selectedTask[0].taskStatus === "Not Started" && (
                 <Button
                   variant="outlined"
-                  color="warning"
-                  onClick={() => handleButtonPause()}
+                  color="success"
+                  onClick={() => handleButtonStart()}
                 >
-                  Pause Task
+                  Start Task
                 </Button>
+              )}
+            {selectedTask.length === 1 &&
+              (selectedTask[0].taskStatus === "Started" ||
+                selectedTask[0].taskStatus === "In progress") && (
+                <div>
+                  {" "}
+                  <Button
+                    variant="outlined"
+                    color="warning"
+                    onClick={() => handleButtonPause()}
+                  >
+                    Pause Task
+                  </Button>
+                </div>
+              )}{" "}
+            {selectedTask.length === 1 &&
+              selectedTask[0].taskStatus === "Paused" && (
+                <div>
+                  <Button
+                    variant="outlined"
+                    color="info"
+                    onClick={() => handleButtonResume()}
+                  >
+                    Resume Task
+                  </Button>
+                </div>
+              )}
+            {selectedTask.length === 1 &&
+              selectedTask[0].taskStatus !== "Completed" && (
                 <Button
                   variant="outlined"
-                  color="info"
-                  onClick={() => handleButtonResume()}
+                  color="error"
+                  onClick={() => handleButtonComplete()}
                 >
-                  Resume Task
+                  Complete Task
                 </Button>
-              </div>
-            )}
-            {selectedTask.length === 1 && (
-              <Button
-                variant="outlined"
-                color="error"
-                onClick={() => handleButtonComplete()}
-              >
-                Complete Task
-              </Button>
-            )}
+              )}
           </div>
         </div>
 
