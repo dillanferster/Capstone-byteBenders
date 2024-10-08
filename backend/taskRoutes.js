@@ -157,6 +157,39 @@ taskRoutes
     response.json(data);
   });
 
+// Pause task
+taskRoutes
+  .route("/tasks/:id/pause")
+  .put(verifyToken, async (request, response) => {
+    let db = database.getDb();
+    let mongoObject = {
+      $push: { pauseTime: { start: new Date() } },
+    };
+    let data = await db
+      .collection("tasks")
+      .updateOne({ _id: new ObjectId(request.params.id) }, mongoObject);
+    response.json(data);
+  });
+
+// Resume task
+// Reference Claude AI, prompt : "Resuming a task, can you explain this in more detail please"
+// chekcs to see if any of the pauseTime object DO NOT have a property called "end" if they dont
+// it adds that poperty to the object, in this case it will create an object pair {start: date end: date}
+taskRoutes
+  .route("/tasks/:id/resume")
+  .put(verifyToken, async (request, response) => {
+    console.log("in resume route");
+
+    let db = database.getDb();
+
+    let data = await db.collection("tasks").updateOne(
+      { _id: new ObjectId(request.params.id) }, // match the document by ID
+      { $set: { "pauseTime.$[elem].end": new Date() } }, // update the 'end' field
+      { arrayFilters: [{ "elem.end": { $exists: false } }] } // filter array elements with no 'end' field
+    );
+    response.json(data);
+  });
+
 // complete task
 taskRoutes
   .route("/tasks/:id/complete")

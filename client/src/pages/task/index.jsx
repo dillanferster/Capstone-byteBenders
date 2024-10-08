@@ -31,6 +31,8 @@ import {
   updateTask,
   deleteTask,
   startTask,
+  pauseTask,
+  resumeTask,
   completeTask,
   getProjects,
   addTaskToProject,
@@ -160,6 +162,10 @@ const TaskPage = () => {
   const [addClicked, setAddClicked] = useState(false); // for add button
   const [editClicked, setEditClicked] = useState(false); // for add button
 
+  // const [startedTask, setStartedTask] = useState(false); // for start task button
+  // const [pausedTask, setPausedTask] = useState(false); // for pause task button
+  // const [completedTask, setCompletedTask] = useState(false); // for complete task button
+
   //*
 
   // projects object array from the database
@@ -183,6 +189,8 @@ const TaskPage = () => {
         addChronicles: task.addChronicles,
         taskDesc: task.taskDesc,
         attachments: task.attachments,
+        startTime: task.startTime,
+        completeTime: task.completeTime,
         chroniclesComplete: task.chroniclesComplete,
       })),
     [tasks]
@@ -251,12 +259,32 @@ const TaskPage = () => {
   function handleButtonStart() {
     startTask(selectedTask[0].id);
     console.log("task started");
+
+    reloadTheGrid();
+  }
+
+  // handles button pause task
+  function handleButtonPause() {
+    pauseTask(selectedTask[0].id);
+    console.log("task Paused");
+
+    reloadTheGrid();
+  }
+
+  // handles button resume task
+  function handleButtonResume() {
+    resumeTask(selectedTask[0].id);
+    console.log("task Resumed");
+
+    reloadTheGrid();
   }
 
   // handles button start task
   function handleButtonComplete() {
     completeTask(selectedTask[0].id);
     console.log("task completed");
+
+    reloadTheGrid();
   }
 
   // handles delete button
@@ -369,8 +397,9 @@ const TaskPage = () => {
               Add Task
             </Button>
           </div>
-          {selectedTask.length === 1 && (
-            <div className="flex gap-4">
+
+          <div className="flex gap-4">
+            {selectedTask.length === 1 && !selectedTask[0].startTime && (
               <Button
                 variant="outlined"
                 color="success"
@@ -378,7 +407,27 @@ const TaskPage = () => {
               >
                 Start Task
               </Button>
-
+            )}
+            {selectedTask.length === 1 && selectedTask[0].startTime && (
+              <div>
+                {" "}
+                <Button
+                  variant="outlined"
+                  color="warning"
+                  onClick={() => handleButtonPause()}
+                >
+                  Pause Task
+                </Button>
+                <Button
+                  variant="outlined"
+                  color="info"
+                  onClick={() => handleButtonResume()}
+                >
+                  Resume Task
+                </Button>
+              </div>
+            )}
+            {selectedTask.length === 1 && (
               <Button
                 variant="outlined"
                 color="error"
@@ -386,8 +435,8 @@ const TaskPage = () => {
               >
                 Complete Task
               </Button>
-            </div>
-          )}
+            )}
+          </div>
         </div>
 
         <div className="flex gap-4">

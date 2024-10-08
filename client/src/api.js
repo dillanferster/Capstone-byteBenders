@@ -307,7 +307,41 @@ export async function startTask(id) {
     console.log(response); // Gigi debug log for auth headers
     return response;
   } catch (error) {
-    console.error("Error updating project:", error);
+    console.error("Error starting project:", error);
+    throw error;
+  }
+}
+
+// pause task
+export async function pauseTask(id) {
+  try {
+    const token = sessionStorage.getItem("User"); // Retrieve the token
+    const response = await axios.put(`${URL}/tasks/${id}/pause`, {
+      headers: {
+        Authorization: `Bearer ${token}`, // Attach the token in the Authorization header
+      },
+    });
+    console.log(response); // Gigi debug log for auth headers
+    return response;
+  } catch (error) {
+    console.error("Error pausing project:", error);
+    throw error;
+  }
+}
+
+// resume task
+export async function resumeTask(id) {
+  try {
+    const token = sessionStorage.getItem("User"); // Retrieve the token
+    const response = await axios.put(`${URL}/tasks/${id}/resume`, {
+      headers: {
+        Authorization: `Bearer ${token}`, // Attach the token in the Authorization header
+      },
+    });
+    console.log(response); // Gigi debug log for auth headers
+    return response;
+  } catch (error) {
+    console.error("Error resuming project:", error);
     throw error;
   }
 }
@@ -324,7 +358,7 @@ export async function completeTask(id) {
     console.log(response); // Gigi debug log for auth headers
     return response;
   } catch (error) {
-    console.error("Error updating project:", error);
+    console.error("Error completing project:", error);
     throw error;
   }
 }
