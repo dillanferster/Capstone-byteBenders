@@ -363,6 +363,23 @@ export async function completeTask(id) {
   }
 }
 
+// task status
+export async function taskStatusUpdate(id, updatedTask) {
+  try {
+    const token = sessionStorage.getItem("User"); // Retrieve the token
+    const response = await axios.put(`${URL}/tasks/${id}/status`, updatedTask, {
+      headers: {
+        Authorization: `Bearer ${token}`, // Attach the token in the Authorization header
+      },
+    });
+    console.log(response); // Gigi debug log for auth headers
+    return response;
+  } catch (error) {
+    console.error("Error updating project:", error);
+    throw error; // Optionally, throw the error to handle it in the component
+  }
+}
+
 //// TASK TIME ////
 
 ///USER///

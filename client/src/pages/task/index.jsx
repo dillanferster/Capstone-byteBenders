@@ -34,6 +34,7 @@ import {
   pauseTask,
   resumeTask,
   completeTask,
+  taskStatusUpdate,
   getProjects,
   addTaskToProject,
   deleteTaskFromProject,
@@ -153,6 +154,7 @@ const columns = [
 const TaskPage = () => {
   //* state
   const [tasks, setTasks] = useState([]); // Loaded projects from database
+  const [taskStatus, setTaskStatus] = useState([]); //
   const [projects, setProjects] = useState([]); // Loaded projects from database
   const [isLoading, setIsLoading] = useState(); // state for loading
   const [selectedTask, setSelectedTask] = useState([]); // selected project array, when users click on projects in data table
@@ -256,30 +258,73 @@ const TaskPage = () => {
   }
 
   // handles button start task
-  function handleButtonStart() {
+  // calls startTask route
+  async function handleButtonStart() {
     startTask(selectedTask[0].id);
     console.log("task started");
+
+    const updatedTask = {
+      taskStatus: "Started",
+    };
+
+    try {
+      const response = await taskStatusUpdate(selectedTask[0].id, updatedTask);
+      if (response.status === 200) {
+        reloadTheGrid();
+      }
+    } catch (error) {
+      console.error("Error updating task Status:", error);
+    }
 
     reloadTheGrid();
   }
 
   // handles button pause task
-  function handleButtonPause() {
+  // calls pauseTask route
+  async function handleButtonPause() {
     pauseTask(selectedTask[0].id);
     console.log("task Paused");
+
+    const updatedTask = {
+      taskStatus: "Paused",
+    };
+
+    try {
+      const response = await taskStatusUpdate(selectedTask[0].id, updatedTask);
+      if (response.status === 200) {
+        reloadTheGrid();
+      }
+    } catch (error) {
+      console.error("Error updating task Status:", error);
+    }
 
     reloadTheGrid();
   }
 
   // handles button resume task
-  function handleButtonResume() {
+  // calls resumeTask route
+  async function handleButtonResume() {
     resumeTask(selectedTask[0].id);
     console.log("task Resumed");
+
+    const updatedTask = {
+      taskStatus: "In progress",
+    };
+
+    try {
+      const response = await taskStatusUpdate(selectedTask[0].id, updatedTask);
+      if (response.status === 200) {
+        reloadTheGrid();
+      }
+    } catch (error) {
+      console.error("Error updating task Status:", error);
+    }
 
     reloadTheGrid();
   }
 
-  // handles button start task
+  // handles button complete task
+  // calls completeTask route
   function handleButtonComplete() {
     completeTask(selectedTask[0].id);
     console.log("task completed");

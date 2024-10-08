@@ -204,4 +204,19 @@ taskRoutes
     response.json(data);
   });
 
+// update task status
+taskRoutes
+  .route("/tasks/:id/status")
+  .put(verifyToken, async (request, response) => {
+    console.log("inside of task status");
+    let db = database.getDb();
+    let mongoObject = {
+      $set: { taskStatus: request.body.taskStatus },
+    };
+    let data = await db
+      .collection("tasks")
+      .updateOne({ _id: new ObjectId(request.params.id) }, mongoObject);
+    response.json(data);
+  });
+
 module.exports = taskRoutes;
