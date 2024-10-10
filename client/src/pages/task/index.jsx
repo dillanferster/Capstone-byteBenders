@@ -158,6 +158,7 @@ const TaskPage = () => {
   const [projects, setProjects] = useState([]); // Loaded projects from database
   const [isLoading, setIsLoading] = useState(); // state for loading
   const [selectedTask, setSelectedTask] = useState([]); // selected project array, when users click on projects in data table
+  const [selectedIdForTimeCalc, setSelectedIdForTimeCalc] = useState(); // id for time calculation
   const [reloadGrid, setReloadGrid] = useState(false); // to update grid rows
   const [isOpen, setIsOpen] = useState(false); // for edit  menu
   const [viewClicked, setViewClicked] = useState(false); // for view button
@@ -245,7 +246,7 @@ const TaskPage = () => {
   }
 
   // updates grid usestate to cause a re-render
-  const reloadTheGrid = () => {
+  const reloadTheGrid = async () => {
     setReloadGrid(!reloadGrid);
   };
 
@@ -275,8 +276,6 @@ const TaskPage = () => {
     } catch (error) {
       console.error("Error updating task Status:", error);
     }
-
-    reloadTheGrid();
   }
 
   // handles button pause task
@@ -297,8 +296,6 @@ const TaskPage = () => {
     } catch (error) {
       console.error("Error updating task Status:", error);
     }
-
-    reloadTheGrid();
   }
 
   // handles button resume task
@@ -319,14 +316,11 @@ const TaskPage = () => {
     } catch (error) {
       console.error("Error updating task Status:", error);
     }
-
-    reloadTheGrid();
   }
 
-  // handles button complete task
-  // calls completeTask route
   async function handleButtonComplete() {
-    completeTask(selectedTask[0].id);
+    await completeTask(selectedTask[0].id);
+
     console.log("task completed");
 
     const updatedTask = {
@@ -336,13 +330,48 @@ const TaskPage = () => {
     try {
       const response = await taskStatusUpdate(selectedTask[0].id, updatedTask);
       if (response.status === 200) {
-        reloadTheGrid();
+        const selectedId = selectedTask[0].id;
+        setSelectedIdForTimeCalc(selectedId);
+
+        console.log(" seleleted id in button complete", selectedId);
+
+        await reloadTheGrid();
       }
     } catch (error) {
       console.error("Error updating task Status:", error);
     }
+  }
 
-    reloadTheGrid();
+  //  calculate total hours
+  // based on start, pause, resume, and completed
+  function calculateTotalHours() {
+    console.log("in calculate");
+
+    const matchedTask = tasks.find(
+      (task) => task._id === selectedIdForTimeCalc
+    );
+
+    console.log("selected id for calc ", selectedIdForTimeCalc);
+    console.log("matched task ", matchedTask);
+
+    if (matchedTask && matchedTask.completeTime && matchedTask.startTime) {
+      const completeTime = new Date(matchedTask.completeTime[0]);
+      const startTime = new Date(matchedTask.startTime[0]);
+
+      if (completeTime && startTime) {
+        const totalMilisec = completeTime - startTime;
+
+        const totalHours = (totalMilisec / (1000 * 60 * 60)).toFixed(2);
+        const totalMin = (totalMilisec / (1000 * 60)).toFixed(2);
+
+        console.log(`Total Time, Hours: ${totalHours} Min: ${totalMin}`);
+        return totalHours;
+      } else {
+        console.log("Either start or complete time is missing");
+      }
+    } else {
+      console.log("No matching task found or required fields are missing");
+    }
   }
 
   // handles delete button
@@ -401,6 +430,12 @@ const TaskPage = () => {
 
     setSelectedTask(checkedRows);
   };
+
+  useEffect(() => {
+    if (selectedIdForTimeCalc && tasks.length > 0) {
+      calculateTotalHours();
+    }
+  }, [selectedIdForTimeCalc, tasks]);
 
   // loads all projects from database into list
   // When app component renders loadAllProjects() is called asynchronously
