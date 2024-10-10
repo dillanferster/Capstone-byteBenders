@@ -180,6 +180,8 @@ projectRoutes
 ////////////////////////// AWS Comprehend //////////////////////////
 // // Analyze email text
 // // Assuming AWS SDK is already configured in server.js
+
+// INITIALIZING AWS COMPREHEND CLIENT
 const comprehend = new AWS.Comprehend();
 
 projectRoutes
@@ -200,7 +202,7 @@ projectRoutes
     };
 
     try {
-      console.log("Sending request to AWS Comprehend:", params);
+      console.log("Sending request to AWS Comprehend:", params); // Log request to AWS Comprehend
 
       // AWS Comprehend to detect entities from email
       const data = await comprehend.batchDetectEntities(params).promise();

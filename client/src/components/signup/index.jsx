@@ -51,67 +51,62 @@ export default function SignUp({ handleSubmit }) {
             gap="30px"
             gridTemplateColumns="repeat(4, minmax(0, 1fr))"
             sx={{
-              "& > div": { gridColumn: isNonMobile ? undefined : "span 4" },
+              "& > div": { gridColumn: isNonMobile ? "span 2" : "span 4" },
             }}
           >
             <TextField
               margin="normal"
               type="text"
-              fullWidth
               label="First Name"
               name="fname"
               onBlur={handleBlur}
               onChange={(e) => setFieldValue("fname", e.target.value)} // Use setFieldValue to handle input
-              variant="outlined"
+              variant="filled"
               value={values.fname} // Controlled input
               error={!!touched.fname && !!errors.fname}
               helperText={touched.fname && errors.fname}
-              required
               sx={{ gridColumn: "span 2" }}
             />
             <TextField
               margin="normal"
               type="text"
-              fullWidth
+              // fullWidth
               label="Last Name"
               name="lname"
               onBlur={handleBlur}
               onChange={(e) => setFieldValue("lname", e.target.value)} // Use setFieldValue to handle input
-              variant="outlined"
+              variant="filled"
               value={values.lname} // Controlled input
               error={!!touched.lname && !!errors.lname}
               helperText={touched.lname && errors.lname}
-              required
               sx={{ gridColumn: "span 2" }}
             />
             <TextField
               margin="normal"
-              fullWidth
+              // fullWidth
               label="Email"
               name="email"
               type="email"
               onBlur={handleBlur}
               onChange={(e) => setFieldValue("email", e.target.value)} // Use setFieldValue to handle input
-              variant="outlined"
+              variant="filled"
               value={values.email} // Controlled input
               error={!!touched.email && !!errors.email}
               helperText={touched.email && errors.email}
-              required
               sx={{ gridColumn: "span 4" }}
             />
             <TextField
               margin="normal"
-              fullWidth
+              // fullWidth
               label="Password"
               name="password"
               type={showPassword ? "text" : "password"} // Toggle between 'text' and 'password'
               onBlur={handleBlur}
               onChange={(e) => setFieldValue("password", e.target.value)} // Use setFieldValue to handle input
-              variant="outlined"
+              variant="filled"
               value={values.password} // Controlled input
               error={!!touched.password && !!errors.password}
               helperText={touched.password && errors.password}
-              required
               sx={{ gridColumn: "span 4" }}
               InputProps={{
                 // Add the visibility toggle icon
@@ -125,13 +120,16 @@ export default function SignUp({ handleSubmit }) {
               }}
             />
           </Box>
-          <Box display="flex" justifyContent="end" mt="20px">
+          <Box display="flex" justifyItems="end" mt="20px">
             <Button
               type="submit"
               fullWidth
               variant="contained"
-              color="primary"
-              sx={{ marginTop: 3, marginBottom: 2 }}
+              color="warning"
+              sx={{
+                marginTop: 3,
+                marginBottom: 2,
+              }}
               disabled={isSubmitting}
             >
               Create User Account
