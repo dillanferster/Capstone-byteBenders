@@ -69,11 +69,11 @@ export default function Login({ handleSubmit }) {
             type="email"
             onBlur={handleBlur}
             onChange={(e) => setFieldValue("email", e.target.value)} // Use setFieldValue to handle input
-            variant="outlined"
+            variant="filled"
             value={values.email} // Controlled input
             error={!!touched.email && !!errors.email}
             helperText={touched.email && errors.email}
-            required
+            placeholder="Enter your email address"
           />
           <TextField
             margin="normal"
@@ -83,11 +83,11 @@ export default function Login({ handleSubmit }) {
             type={showPassword ? "text" : "password"} // Toggle between 'text' and 'password'
             onBlur={handleBlur}
             onChange={(e) => setFieldValue("password", e.target.value)} // Use setFieldValue to handle input
-            variant="outlined"
+            variant="filled"
             value={values.password} // Controlled input
             error={!!touched.password && !!errors.password}
             helperText={touched.password && errors.password}
-            required
+            placeholder="Enter your password"
             InputProps={{
               // Add the visibility toggle icon
               endAdornment: (
@@ -104,7 +104,7 @@ export default function Login({ handleSubmit }) {
               type="submit"
               fullWidth
               variant="contained"
-              color="primary"
+              color="info"
               sx={{ marginTop: 3, marginBottom: 2 }}
               disabled={isSubmitting}
             >
