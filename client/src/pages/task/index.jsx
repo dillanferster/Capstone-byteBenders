@@ -342,8 +342,9 @@ const TaskPage = () => {
     }
   }
 
-  //  calculate total hours
+  // calculate total hours
   // based on start, pause, resume, and completed
+  // Reference Claude.ai prompt, how can I calculate total time for UCT inputs in mongodb and react app
   function calculateTotalHours() {
     console.log("in calculate");
 
@@ -357,9 +358,21 @@ const TaskPage = () => {
     if (matchedTask && matchedTask.completeTime && matchedTask.startTime) {
       const completeTime = new Date(matchedTask.completeTime[0]);
       const startTime = new Date(matchedTask.startTime[0]);
+      let totalPause = 0;
 
       if (completeTime && startTime) {
-        const totalMilisec = completeTime - startTime;
+        const totalMilisec = completeTime - startTime - totalPause;
+
+        /// STILL NEED TO ADD ROLLING TIME ///
+
+        matchedTask.pauseTime.forEach((time) => {
+          let start = new Date(time.start);
+          let end = new Date(time.end);
+
+          totalPause += end - start;
+        });
+
+        console.log("total pause time", totalPause);
 
         const totalHours = (totalMilisec / (1000 * 60 * 60)).toFixed(2);
         const totalMin = (totalMilisec / (1000 * 60)).toFixed(2);
