@@ -10,6 +10,8 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@azure/msal-browser": "^3.26.1",
+    "@azure/msal-react": "^2.1.1",
     "@clerk/clerk-react": "^5.9.1",
     "@emotion/react": "^11.13.3",
     "@emotion/styled": "^11.13.0",
@@ -23,6 +25,7 @@
     "@fullcalendar/list": "^6.1.15",
     "@fullcalendar/react": "^6.1.15",
     "@fullcalendar/timegrid": "^6.1.15",
+    "@microsoft/microsoft-graph-client": "^3.0.7",
     "@mui/icons-material": "^6.0.2",
     "@mui/material": "^6.1.1",
     "@mui/x-data-grid": "^7.16.0",
@@ -42,8 +45,8 @@
     "react-bootstrap": "^2.10.4",
     "react-dom": "^18.3.1",
     "react-markdown": "^9.0.1",
-    "react-router-dom": "^6.26.2",
     "react-pro-sidebar": "^0.7.1",
+    "react-router-dom": "^6.26.2",
     "yup": "^1.4.0"
   },
   "devDependencies": {
