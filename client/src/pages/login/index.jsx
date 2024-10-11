@@ -16,7 +16,6 @@ export default function LoginPage() {
     setSubmitting(true);
     try {
       let tokenValue = await verifyUser(values);
-      console.log("Token received from backend:", tokenValue); // Gigi Debug log for token authentication -> remove before production
       if (tokenValue) {
         sessionStorage.setItem("User", tokenValue);
         axios.defaults.headers.common["Authorization"] = `Bearer ${tokenValue}`; // Bearer = authentication token formatting

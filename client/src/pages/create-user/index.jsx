@@ -8,16 +8,26 @@ import Header from "../../components/Header";
 
 export default function CreateUserPage() {
   async function handleSubmit(values, { setSubmitting }) {
+    const token = sessionStorage.getItem("User");
+    if (!token) {
+      alert("No token found, please log in.");
+      setSubmitting(false);
+      return;
+    }
+
     setSubmitting(true);
     try {
       let response = await apiCreateUser(values);
-      if (response.status !== 200) {
-        alert("User account could not be created");
-      } else {
+      if (response.status === 200) {
         alert("Account created for user " + values.email + "!");
       }
     } catch (error) {
-      console.log(error);
+      // Check if the error response exists and handle specific cases like 409
+      if (error.response && error.response.status === 409) {
+        alert("User already exists. Please register with another email.");
+      } else {
+        alert("Issue creating user account. Please try again later.");
+      }
     }
     setSubmitting(false);
   }

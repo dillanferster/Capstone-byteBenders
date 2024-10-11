@@ -12,7 +12,7 @@ import {
   InputAdornment,
   Typography,
 } from "@mui/material";
-import { Visibility, VisibilityOff } from "@mui/icons-material"; // Import visibility icons
+import { Label, Visibility, VisibilityOff } from "@mui/icons-material"; // Import visibility icons
 import * as yup from "yup";
 
 export default function SignUp({ handleSubmit }) {
@@ -31,6 +31,7 @@ export default function SignUp({ handleSubmit }) {
         lname: "",
         email: "",
         password: "",
+        role: "",
       }}
       validationSchema={checkoutSchema}
       onSubmit={handleSubmit} // Custom handleSubmit passed from props
@@ -64,7 +65,17 @@ export default function SignUp({ handleSubmit }) {
               variant="filled"
               value={values.fname} // Controlled input
               error={!!touched.fname && !!errors.fname}
-              helperText={touched.fname && errors.fname}
+              helperText={
+                touched.fname && errors.fname ? (
+                  <span
+                    dangerouslySetInnerHTML={{
+                      __html: errors.fname.replace(/\n/g, "<br/>"),
+                    }}
+                  />
+                ) : (
+                  ""
+                )
+              }
               sx={{ gridColumn: "span 2" }}
             />
             <TextField
@@ -78,7 +89,17 @@ export default function SignUp({ handleSubmit }) {
               variant="filled"
               value={values.lname} // Controlled input
               error={!!touched.lname && !!errors.lname}
-              helperText={touched.lname && errors.lname}
+              helperText={
+                touched.lname && errors.lname ? (
+                  <span
+                    dangerouslySetInnerHTML={{
+                      __html: errors.lname.replace(/\n/g, "<br/>"),
+                    }}
+                  />
+                ) : (
+                  ""
+                )
+              }
               sx={{ gridColumn: "span 2" }}
             />
             <TextField
@@ -95,9 +116,34 @@ export default function SignUp({ handleSubmit }) {
               helperText={touched.email && errors.email}
               sx={{ gridColumn: "span 4" }}
             />
+
             <TextField
               margin="normal"
-              // fullWidth
+              label="Role"
+              name="role"
+              select
+              value={values.role}
+              slotProps={{
+                select: {
+                  native: true,
+                },
+              }}
+              onBlur={handleBlur}
+              onChange={(e) => setFieldValue("role", e.target.value)}
+              variant="filled"
+              error={!!touched.role && !!errors.role}
+              helperText={touched.role && errors.role}
+              sx={{ gridColumn: "span 4" }}
+            >
+              <option key="user" value="user">
+                User
+              </option>
+              <option key="admin " value="admin">
+                Admin
+              </option>
+            </TextField>
+            <TextField
+              margin="normal"
               label="Password"
               name="password"
               type={showPassword ? "text" : "password"} // Toggle between 'text' and 'password'
@@ -108,15 +154,17 @@ export default function SignUp({ handleSubmit }) {
               error={!!touched.password && !!errors.password}
               helperText={touched.password && errors.password}
               sx={{ gridColumn: "span 4" }}
-              InputProps={{
-                // Add the visibility toggle icon
-                endAdornment: (
-                  <InputAdornment position="end">
-                    <IconButton onClick={handleClickShowPassword} edge="end">
-                      {showPassword ? <VisibilityOff /> : <Visibility />}
-                    </IconButton>
-                  </InputAdornment>
-                ),
+              slotProps={{
+                input: {
+                  // Add the visibility toggle icon
+                  endAdornment: (
+                    <InputAdornment position="end">
+                      <IconButton onClick={handleClickShowPassword} edge="end">
+                        {showPassword ? <VisibilityOff /> : <Visibility />}
+                      </IconButton>
+                    </InputAdornment>
+                  ),
+                },
               }}
             />
           </Box>
@@ -143,18 +191,38 @@ export default function SignUp({ handleSubmit }) {
 
 // Validation schema with password rules
 const checkoutSchema = yup.object().shape({
-  fname: yup.string().required("First name is required"),
-  lname: yup.string().required("Last name is required"),
+  fname: yup
+    .string()
+    .required("First name is required")
+    .matches(
+      /^[A-Za-z]+(?: [A-Za-z]+)*$/,
+      "- Only letters allowed.\n- No double spacing"
+    )
+    .min(2, "Must be at least 2 characters")
+    .max(50, "Must be less than 50 characters"),
+  lname: yup
+    .string()
+    .required("Last name is required")
+    .matches(
+      /^[A-Za-z]+(?: [A-Za-z]+)*$/,
+      "- Only letters allowed.\n- No double spacing"
+    )
+    .min(2, "Must be at least 2 characters")
+    .max(50, "Must be less than 50 characters"),
   email: yup
     .string()
-    .email("Invalid email. (example@example.com)")
-    .required("Email is required"),
+    .email("Invalid email. Use the format: example@example.com")
+    .required("Email is required")
+    .max(50, "Must be less than 50 characters")
+    .min(5, "Must be at least 5 characters"),
   password: yup
     .string()
-    .min(8, "Password must be at least 8 characters")
+    .required("Password is required")
+    .min(8, "Must be at least 8 characters")
+    .matches(/^(?=.*[A-Za-z])(?=.*\d)/, "Must contain both letters and numbers")
     .matches(
-      /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d@$!%*?&]{8,}$/,
-      "Password must contain letters and numbers"
-    )
-    .required("Password is required"),
+      /^[A-Za-z\d@^$!%*?&,.-]+$/,
+      "Only use letters, numbers, or these special characters: @ ^ $ ! % * ? & , . -"
+    ),
+  role: yup.string().required("Role is required"),
 });
