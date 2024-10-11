@@ -115,7 +115,7 @@ export default function TaskEditMenu({
   // logs current project id
   // creates a new object with the updated state variables from the inputs
   // calls update project , pass the project id and updated project object
-  const submitUpdatedTask = () => {
+  const submitUpdatedTask = async () => {
     setEditClicked(!editClicked);
 
     const updatedTask = {
@@ -134,21 +134,20 @@ export default function TaskEditMenu({
       chroniclesComplete: chroniclesComplete,
     };
 
-    updateTask(taskId, updatedTask).then((response) => {
-      console.log("updating task", taskId);
-
+    try {
+      const response = await updateTask(taskId, updatedTask);
       if (response.status === 200) {
+        updateTaskToProject(taskId, projectTask);
+
         toggleForm();
 
         reloadTheGrid();
 
         clearAddInputs();
       }
-
-      if (projectTask) {
-        updateTaskToProject(taskId, projectTask);
-      }
-    });
+    } catch (error) {
+      console.error("Error updating task:", error);
+    }
   };
 
   // function, async
@@ -166,7 +165,7 @@ export default function TaskEditMenu({
     const addedTask = {
       taskName: taskName,
       assignedTo: assignedTo,
-      taskStatus: taskStatus,
+      taskStatus: "Not Started",
       priority: priority,
       taskCategory: taskCategory,
       startDate: startDate,
@@ -189,7 +188,7 @@ export default function TaskEditMenu({
         console.log("New task ID:", newTaskId);
 
         // Update the project with the new task ID
-        await updateTaskToProject(newTaskId);
+        updateTaskToProject(newTaskId);
 
         reloadTheGrid();
         toggleForm();
@@ -258,7 +257,7 @@ export default function TaskEditMenu({
               <input
                 type="text"
                 id="taskName"
-                defaultValue={taskName}
+                value={taskName}
                 onChange={(e) => setTaskName(e.target.value)}
                 className="w-full px-4 py-2 bg-gray-700 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
                 disabled={viewClicked}
@@ -359,13 +358,11 @@ export default function TaskEditMenu({
               >
                 {addClicked && (
                   <option value="" disabled={addClicked}>
-                    --Select an option--
+                    Not Started
                   </option>
                 )}
-                <option value="In progress">In Progress</option>
-                <option value="Complete">Complete</option>
-                <option value="Not started">Not Started</option>
-                <option value="Storage">Storage</option>
+
+                <option value={taskStatus}>{taskStatus}</option>
               </select>
             </div>
           </div>
