@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import FullCalendar from "@fullcalendar/react";
 import { formatDate } from "@fullcalendar/core";
 import dayGridPlugin from "@fullcalendar/daygrid";
@@ -15,36 +15,83 @@ import {
 } from "@mui/material";
 import Header from "../../components/Header";
 import { tokens } from "../../theme";
+import EventModal from "../../components/EventModal";
 
 const Calendar = () => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
-  const [currentEvents, setCurrentEvents] = useState([]);
+  const [currentEvents, setCurrentEvents] = useState(() => {
+    try {
+      // Load events from local storage on page load
+      const storedEvents = JSON.parse(localStorage.getItem("calendarEvents"));
+      return Array.isArray(storedEvents) ? storedEvents : [];
+    } catch {
+      return [];
+    }
+  });
+  const [modalOpen, setModalOpen] = useState(false);
+  const [selectedDate, setSelectedDate] = useState(null);
+  const [defaultStart, setDefaultStart] = useState("");
+  const [defaultEnd, setDefaultEnd] = useState("");
+  const [selectedEvent, setSelectedEvent] = useState(null);
+
+  // Save events to local storage whenever currentEvents changes
+  useEffect(() => {
+    localStorage.setItem("calendarEvents", JSON.stringify(currentEvents));
+  }, [currentEvents]);
 
   const handleDateClick = (selected) => {
-    const title = prompt("Please enter a new title for your event");
-    const calendarApi = selected.view.calendar;
-    calendarApi.unselect();
+    // Parse the selected date
+    const startDateTime = new Date(selected.startStr);
+    // Set a default time for the event (e.g., 9:00 AM)
+    startDateTime.setHours(9, 0, 0, 0); // 9:00 AM
 
-    if (title) {
-      calendarApi.addEvent({
-        id: `${selected.dateStr}-${title}`,
-        title,
-        start: selected.startStr,
-        end: selected.endStr,
-        allDay: selected.allDay,
-      });
-    }
+    const endDateTime = new Date(startDateTime.getTime() + 60 * 60 * 1000); // 1 hour later
+
+    // Convert to 'YYYY-MM-DDTHH:MM' format for `datetime-local` input type
+    const startString = startDateTime.toLocaleString("sv-SE").replace(" ", "T");
+    const endString = endDateTime.toLocaleString("sv-SE").replace(" ", "T");
+    setDefaultStart(startString);
+    setDefaultEnd(endString);
+    setSelectedDate(selected);
+    setSelectedEvent(null); // No selected event for new events
+    setModalOpen(true);
   };
 
   const handleEventClick = (selected) => {
-    if (
-      window.confirm(
-        `Are you sure you want to delete the event '${selected.event.title}'`
+    setSelectedEvent(selected.event);
+    setModalOpen(true);
+  };
+
+  const handleAddEvent = (eventData) => {
+    const newEvent = {
+      id: `${selectedDate.dateStr}-${eventData.title}`,
+      title: eventData.title,
+      start: eventData.start,
+      end: eventData.end,
+      description: eventData.description,
+      meetingLink: eventData.meetingLink,
+      participants: eventData.participants,
+    };
+
+    setCurrentEvents((prevEvents) => [...prevEvents, newEvent]);
+    setModalOpen(false);
+  };
+
+  const handleUpdateEvent = (eventData) => {
+    setCurrentEvents((prevEvents) =>
+      prevEvents.map((event) =>
+        event.id === selectedEvent.id ? { ...event, ...eventData } : event
       )
-    ) {
-      selected.event.remove();
-    }
+    );
+    setModalOpen(false);
+  };
+
+  const handleDeleteEvent = () => {
+    setCurrentEvents((prevEvents) =>
+      prevEvents.filter((event) => event.id !== selectedEvent.id)
+    );
+    setModalOpen(false);
   };
 
   return (
@@ -52,7 +99,7 @@ const Calendar = () => {
     <Box m="20px" pt="40px">
       <Header title="CALENDAR" subtitle="Full Calendar Interactive Page" />
       <Box display="flex" justifyContent="space-between">
-        {/* CALENDAR SIDEBAR */}
+        {/* CALENDAR SIDEBAR*/}
         <Box
           flex="1 1 20%"
           backgroundColor={colors.primary[400]}
@@ -70,7 +117,6 @@ const Calendar = () => {
                   borderRadius: "2px",
                 }}
               >
-                {console.log(event)}
                 <ListItemText
                   primary={event.title}
                   secondary={
@@ -110,14 +156,22 @@ const Calendar = () => {
             dayMaxEvents={true}
             select={handleDateClick}
             eventClick={handleEventClick}
-            initialEvents={[
-              { id: "1234", title: "All Day Event", date: "2024-10-01" },
-              { id: "4321", title: "Timed Event", date: "2024-10-04" },
-            ]}
-            eventsSet={(events) => setCurrentEvents(events)}
+            events={currentEvents}
           />
         </Box>
       </Box>
+
+      {/* Event Modal */}
+      <EventModal
+        isOpen={modalOpen}
+        handleClose={() => setModalOpen(false)}
+        handleAddEvent={handleAddEvent}
+        handleUpdateEvent={handleUpdateEvent}
+        handleDeleteEvent={handleDeleteEvent}
+        defaultStart={defaultStart}
+        defaultEnd={defaultEnd}
+        selectedEvent={selectedEvent} // Pass selected event data for editing
+      />
     </Box>
   );
 };

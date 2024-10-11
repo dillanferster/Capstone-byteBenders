@@ -32,7 +32,6 @@ export async function getProjects() {
         Authorization: `Bearer ${token}`, // Attach the token in the Authorization header
       },
     });
-    console.log(response); // Gigi debug log for auth headers
     return response.data;
   } catch (error) {
     console.error("Error fetching projects:", error);
@@ -52,7 +51,6 @@ export async function getProject(id) {
         Authorization: `Bearer ${token}`, // Attach the token in the Authorization header
       },
     });
-    console.log(response); // Gigi debug log for auth headers
     if (response.status === 200) {
       return response.data;
     } else {
@@ -78,7 +76,6 @@ export async function createProject(project) {
         Authorization: `Bearer ${token}`, // Attach the token in the Authorization header
       },
     });
-    console.log(response); // Gigi debug log for auth headers
     return response;
   } catch (error) {
     console.error("Error creating project:", error);
@@ -99,7 +96,6 @@ export async function updateProject(id, project) {
         Authorization: `Bearer ${token}`, // Attach the token in the Authorization header
       },
     });
-    console.log(response); // Gigi debug log for auth headers
     return response;
   } catch (error) {
     console.error("Error updating project:", error);
@@ -124,7 +120,6 @@ export async function addTaskToProject(projectId, taskIdObject) {
         },
       }
     );
-    console.log(response); // Gigi debug log for auth headers
     return response;
   } catch (error) {
     console.error("Error updating project:", error);
@@ -171,7 +166,6 @@ export async function deleteProject(id) {
         Authorization: `Bearer ${token}`, // Attach the token in the Authorization header
       },
     });
-    console.log(response); // Gigi debug log for auth headers
     return response;
   } catch (error) {
     console.error("Error deleting project:", error);
@@ -208,7 +202,6 @@ export async function getTasks() {
         Authorization: `Bearer ${token}`, // Attach the token in the Authorization header
       },
     });
-    console.log(response); // Gigi debug log for auth headers
     return response.data;
   } catch (error) {
     console.error("Error fetching projects:", error);
@@ -243,7 +236,6 @@ export async function createTask(task) {
         Authorization: `Bearer ${token}`, // Attach the token in the Authorization header
       },
     });
-    console.log(response); // Gigi debug log for auth headers
     return response;
   } catch (error) {
     console.error("Error creating project:", error);
@@ -264,7 +256,6 @@ export async function updateTask(id, task) {
         Authorization: `Bearer ${token}`, // Attach the token in the Authorization header
       },
     });
-    console.log(response); // Gigi debug log for auth headers
     return response;
   } catch (error) {
     console.error("Error updating project:", error);
@@ -284,7 +275,6 @@ export async function deleteTask(id) {
         Authorization: `Bearer ${token}`, // Attach the token in the Authorization header
       },
     });
-    console.log(response); // Gigi debug log for auth headers
     return response;
   } catch (error) {
     console.error("Error deleting project:", error);
@@ -393,10 +383,9 @@ export async function createUser(user) {
         Authorization: `Bearer ${token}`, // Attach the token in the Authorization header
       },
     });
-    console.log(response); // Gigi debug log for auth headers
     return response;
   } catch (error) {
-    console.error("Error deleting project:", error);
+    console.error("Error creating user", error);
     throw error;
   }
 }
