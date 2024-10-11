@@ -16,7 +16,6 @@ const secretKey = process.env.SECRET_KEY;
 function verifyToken(request, response, next) {
   const authHeaders = request.headers["authorization"];
   const token = authHeaders && authHeaders.split(" ")[1]; // if authHeaders is found, extract token based on rules
-  console.log("Verify token received:", token); // Gigi Debug log for auth token verification -> remove before production
   if (!token) {
     return response
       .status(401)

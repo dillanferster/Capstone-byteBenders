@@ -6,7 +6,7 @@ import Login from "../../components/login/index.jsx";
 import { Box, Container, Paper, Typography } from "@mui/material";
 import { verifyUser } from "../../api.js";
 import axios from "axios";
-import logo from "../../assets/images/logo.png";
+import logomini from "../../assets/images/logomini.png";
 import { useNavigate } from "react-router-dom";
 
 export default function LoginPage() {
@@ -16,7 +16,6 @@ export default function LoginPage() {
     setSubmitting(true);
     try {
       let tokenValue = await verifyUser(values);
-      console.log("Token received from backend:", tokenValue); // Gigi Debug log for token authentication -> remove before production
       if (tokenValue) {
         sessionStorage.setItem("User", tokenValue);
         axios.defaults.headers.common["Authorization"] = `Bearer ${tokenValue}`; // Bearer = authentication token formatting
@@ -42,14 +41,17 @@ export default function LoginPage() {
         >
           {/* Logo */}
           <img
-            src={logo}
+            src={logomini}
             alt="Planzo Logo"
-            style={{ width: "300px", marginBottom: "20px" }}
+            style={{ width: "200px", height: "200px", marginBottom: "20px" }}
           />
-          <Typography component="h1" variant="h5" sx={{ marginBottom: 3 }}>
+          <Typography component="h1" variant="h2" sx={{ marginBottom: 4 }}>
             Sign In
           </Typography>
           <Login handleSubmit={handleSubmit} />
+          <Typography variant="body2" sx={{ marginTop: 3 }}>
+            @Planzo 2024. All rights reserved.
+          </Typography>
         </Box>
       </Paper>
     </Container>

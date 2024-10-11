@@ -40,6 +40,7 @@ const ObjectId = require("mongodb").ObjectId; // import from mongodb to convert 
 const bcrypt = require("bcrypt"); // bcrypt import for password hashing and comparison
 const jwt = require("jsonwebtoken"); // import for for token generation and verification
 require("dotenv").config({ path: "./.env" }); // import .env file for secret key
+const { verifyToken } = require("./middleware/auth"); // import verifyToken function from auth.js
 
 let userRoutes = express.Router(); // create router for user routes. What is Router??
 const SALT_ROUNDS = 10; // number of rounds to generate salt for password hashing
@@ -53,10 +54,10 @@ const secretKey = process.env.SECRET_KEY;
  * 2. Checks if the email is already registered in the database.
  * 3. If the email is unique, inserts the new user object into the database.
  *
- * @param {Object} request.body - Contains user registration information (fname, lname, email, password).
+ * @param {Object} request.body - Contains user registration information (fname, lname, email, password, role).
  * @param {Object} response - JSON response containing the newly created user object or error message.
  */
-userRoutes.route("/users").post(async (request, response) => {
+userRoutes.route("/users").post(verifyToken, async (request, response) => {
   let db = database.getDb();
 
   // Hash is algorithmically turning a password into ciphertext, or an irreversibly obfuscated version of itself that can be stored in a database
@@ -70,12 +71,12 @@ userRoutes.route("/users").post(async (request, response) => {
   const takenEmail = await db
     .collection("users")
     .findOne({ email: request.body.email });
-  console.log(takenEmail);
 
-  // If email exists, return a message indicating that the email is already taken
+  // If email exists, return a 409 status code with a message
   if (takenEmail) {
-    response.json({ message: "Email already taken" });
-    return;
+    return response
+      .status(409)
+      .json({ message: "Email already in use. Please enter another email." });
   } else {
     // Prepare the new user object with hashed password and the current date as joinDate
     let mongoObject = {
@@ -83,6 +84,7 @@ userRoutes.route("/users").post(async (request, response) => {
       lname: request.body.lname,
       email: request.body.email,
       password: hash,
+      role: request.body.role,
       joinDate: new Date(),
     };
     // Insert the user object into the MongoDB users collection
@@ -106,10 +108,9 @@ userRoutes.route("/users/login").post(async (request, response) => {
       user.password
     );
     if (confirmation) {
-      console.log("secretkey: ", secretKey); //  Gigi Debug log for token authentication -> remove before production
       // generate JWT token for this login session
       const token = jwt.sign(user, secretKey, { expiresIn: "1h" }); // token expires in 1 hour
-      response.json({ success: true, token }); // return token to client
+      response.json({ success: true, token, message: "User exists" }); // return token to client
     } else {
       response.json({ success: false, message: "Incorrect password" });
     }

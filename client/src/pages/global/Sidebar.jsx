@@ -11,7 +11,7 @@ import ReceiptOutlinedIcon from "@mui/icons-material/ReceiptOutlined";
 import PersonOutlinedIcon from "@mui/icons-material/PersonOutlined";
 import CalendarTodayOutlinedIcon from "@mui/icons-material/CalendarTodayOutlined";
 import MenuOutlinedIcon from "@mui/icons-material/MenuOutlined";
-
+import logomini from "../../assets/images/logomini.png";
 const Item = ({ title, to, icon, selected, setSelected }) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
@@ -78,7 +78,16 @@ const Sidebar = () => {
                 justifyContent="space-between"
                 alignItems="center"
                 ml="15px"
+                mb="10px"
               >
+                <img
+                  alt="planzo-logo"
+                  width="40px"
+                  height="40px"
+                  src={logomini}
+                  style={{ cursor: "pointer", borderRadius: "50%" }}
+                />
+
                 <Typography variant="h3" color={colors.grey[100]}>
                   PLANZO
                 </Typography>
@@ -184,6 +193,13 @@ const Sidebar = () => {
             <Item
               title="Analyze Email"
               to="/emailanalysis"
+              icon={<CalendarTodayOutlinedIcon />}
+              selected={selected}
+              setSelected={setSelected}
+            />
+            <Item
+              title="Outlook Email"
+              to="/email"
               icon={<CalendarTodayOutlinedIcon />}
               selected={selected}
               setSelected={setSelected}
