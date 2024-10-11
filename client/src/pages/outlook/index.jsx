@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from "react";
 import { fetchEmails } from "../../outlook/graphService";
 import { signIn, signOut } from "../../outlook/authService";
-
+import Button from "@mui/material/Button";
 const EmailPage = () => {
   const [emails, setEmails] = useState([]);
   const [loggedIn, setLoggedIn] = useState(false);
@@ -34,7 +34,9 @@ const EmailPage = () => {
     <div>
       <h1>Email Inbox</h1>
       {!loggedIn ? (
-        <button onClick={handleLogin}>Sign in with Outlook</button>
+        <Button variant="contained" color="warning" onClick={handleLogin}>
+          Sign in with Outlook
+        </Button>
       ) : (
         <button onClick={handleLogout}>Sign out</button>
       )}
