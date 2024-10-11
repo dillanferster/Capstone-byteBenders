@@ -71,8 +71,8 @@ const Dashboard = () => {
           justifyContent="center"
         >
           <StatBox
-            title="12,361"
-            subtitle="Emails Sent"
+            title="134"
+            subtitle="Total Ongoing Projects"
             progress="0.75"
             increase="+14%"
             icon={
@@ -90,10 +90,10 @@ const Dashboard = () => {
           justifyContent="center"
         >
           <StatBox
-            title="431,225"
-            subtitle="Sales Obtained"
+            title="5d 12h 23m"
+            subtitle="Average Project Time"
             progress="0.5"
-            increase="+21%"
+            increase="-21%"
             icon={
               <PointOfSaleIcon
                 sx={{ color: colors.greenAccent[600], fontSize: "26px" }}
@@ -109,8 +109,8 @@ const Dashboard = () => {
           justifyContent="center"
         >
           <StatBox
-            title="32,441"
-            subtitle="New Clients"
+            title="356"
+            subtitle="Total Ongoing Tasks"
             progress="0.30"
             increase="+5%"
             icon={
@@ -128,10 +128,10 @@ const Dashboard = () => {
           justifyContent="center"
         >
           <StatBox
-            title="1,325,134"
-            subtitle="Traffic Inbound"
+            title="4h 32m"
+            subtitle="Average Task Time"
             progress="0.80"
-            increase="+43%"
+            increase="-5%"
             icon={
               <TrafficIcon
                 sx={{ color: colors.greenAccent[600], fontSize: "26px" }}
@@ -142,7 +142,7 @@ const Dashboard = () => {
 
         {/* ROW 2 */}
         <Box
-          gridColumn="span 8"
+          gridColumn="span 7"
           gridRow="span 2"
           backgroundColor={colors.primary[400]}
         >
@@ -183,7 +183,7 @@ const Dashboard = () => {
         </Box>
         {/* TRANSACTIONS */}
         <Box
-          gridColumn="span 4"
+          gridColumn="span 5"
           gridRow="span 2"
           backgroundColor={colors.primary[400]}
           overflow="auto"

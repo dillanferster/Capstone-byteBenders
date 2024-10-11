@@ -6,6 +6,9 @@ const StatBox = ({ title, subtitle, icon, progress, increase }) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
 
+  const changeColor =
+    parseInt(increase) > 0 ? colors.redAccent[600] : colors.greenAccent[600];
+
   return (
     <Box width="100%" m="0 30px">
       <Box display="flex" justifyContent="space-between">
@@ -29,11 +32,7 @@ const StatBox = ({ title, subtitle, icon, progress, increase }) => {
           {subtitle}
         </Typography>
 
-        <Typography
-          variant="h5"
-          fontStyle="italic"
-          sx={{ color: colors.greenAccent[600] }}
-        >
+        <Typography variant="h5" fontStyle="italic" sx={{ color: changeColor }}>
           {increase}
         </Typography>
       </Box>
