@@ -14,8 +14,8 @@
  *
  */
 
-import React from "react";
-import { useState, useEffect, useMemo } from "react";
+import React, { useCallback } from "react";
+import { useState, useEffect, useMemo, useRef } from "react";
 
 // date formatter
 import { format } from "date-fns";
@@ -35,6 +35,7 @@ import {
   resumeTask,
   completeTask,
   taskStatusUpdate,
+  taskTotalTime,
   getProjects,
   addTaskToProject,
   deleteTaskFromProject,
@@ -50,6 +51,7 @@ import TaskEditMenu from "../../components/taskeditmenu/index.jsx";
 // filter: allows for column filtering
 // floating filter: displayed filter search bar
 // editable: sets to false, does not allow a double click to be able to edit the cell
+// References: https://www.ag-grid.com/react-data-grid/getting-started/
 const columns = [
   {
     field: "id",
@@ -115,6 +117,13 @@ const columns = [
     editable: false,
   },
   {
+    field: "totalTime",
+    headerName: "Time on Task",
+    filter: true,
+    floatingFilter: true,
+    editable: false,
+  },
+  {
     field: "projectStatus",
     headerName: "Project Status",
     filter: true,
@@ -154,10 +163,10 @@ const columns = [
 const TaskPage = () => {
   //* state
   const [tasks, setTasks] = useState([]); // Loaded projects from database
-  const [taskStatus, setTaskStatus] = useState([]); //
+
   const [projects, setProjects] = useState([]); // Loaded projects from database
   const [isLoading, setIsLoading] = useState(); // state for loading
-  const [selectedTask, setSelectedTask] = useState([]); // selected project array, when users click on projects in data table
+  const [selectedTask, setSelectedTask] = useState([]); // selected task array, when users click on projects in data table
   const [selectedIdForTimeCalc, setSelectedIdForTimeCalc] = useState(); // id for time calculation
   const [reloadGrid, setReloadGrid] = useState(false); // to update grid rows
   const [isOpen, setIsOpen] = useState(false); // for edit  menu
@@ -165,9 +174,7 @@ const TaskPage = () => {
   const [addClicked, setAddClicked] = useState(false); // for add button
   const [editClicked, setEditClicked] = useState(false); // for add button
 
-  // const [startedTask, setStartedTask] = useState(false); // for start task button
-  // const [pausedTask, setPausedTask] = useState(false); // for pause task button
-  // const [completedTask, setCompletedTask] = useState(false); // for complete task button
+  const [completeClicked, setCompleteClicked] = useState(false); // for complete task button
 
   //*
 
@@ -176,6 +183,7 @@ const TaskPage = () => {
   // rows is then passed into the datagrid component
   // useMemo so when the projectPage component reloads from state changes the rows dont reload with it, only when projects or reloadGrid state is changed
   // dependencies : projects, reloadGrid
+  // References: https://www.ag-grid.com/react-data-grid/getting-started/
   const rows = useMemo(
     () =>
       tasks.map((task) => ({
@@ -194,6 +202,7 @@ const TaskPage = () => {
         attachments: task.attachments,
         startTime: task.startTime,
         completeTime: task.completeTime,
+        totalTime: task.totalTime,
         chroniclesComplete: task.chroniclesComplete,
       })),
     [tasks]
@@ -203,6 +212,7 @@ const TaskPage = () => {
   // sortable : allows columns to be sorted
   // width: sets a column width
   // maxWidth: defines max width for columns
+  // References: https://www.ag-grid.com/react-data-grid/getting-started/
   const selectionColumnDef = useMemo(() => {
     return {
       sortable: true,
@@ -217,6 +227,7 @@ const TaskPage = () => {
   // headerCheckbox: false,   removes the checkbox selector
   // enableMultiSelectWithClick: true, allows mutlirow selection by clicking on the cells
   // enableClickSelection: true, allows selection by clicking on a cell
+  // References: https://www.ag-grid.com/react-data-grid/getting-started/
   const selection = useMemo(() => {
     return {
       mode: "multiRow",
@@ -318,6 +329,28 @@ const TaskPage = () => {
     }
   }
 
+  // Update Task total time in AG grid column table
+  async function updateTotalTime(selectedIdForTimeCalc, finalTime) {
+    console.log("in task total time");
+    console.log(finalTime);
+
+    const updatedTime = {
+      totalTime: finalTime,
+    };
+
+    try {
+      const response = await taskTotalTime(selectedIdForTimeCalc, updatedTime);
+      if (response.status === 200) {
+        reloadTheGrid();
+      }
+    } catch (error) {
+      console.error("Error updating task Status:", error);
+    }
+  }
+
+  // handles when complete is pressed,
+  // changes the status and calls the time calculation
+  // Reference Claude.ai prompt:  "why is my state variable for selected task not updating "
   async function handleButtonComplete() {
     await completeTask(selectedTask[0].id);
 
@@ -344,7 +377,7 @@ const TaskPage = () => {
 
   // calculate total hours
   // based on start, pause, resume, and completed
-  // Reference Claude.ai prompt, how can I calculate total time for UCT inputs in mongodb and react app
+  // Reference Claude.ai prompt:  "how can I calculate total time for UCT inputs in mongodb and react app"
   function calculateTotalHours() {
     console.log("in calculate");
 
@@ -362,7 +395,10 @@ const TaskPage = () => {
 
       if (completeTime && startTime) {
         const totalMilisec = completeTime - startTime - totalPause;
+        let finalTime = 0;
 
+        /// STILL NEED TO ADD ROLLING TIME ///
+        /// STILL NEED TO ADD ROLLING TIME ///
         /// STILL NEED TO ADD ROLLING TIME ///
 
         matchedTask.pauseTime.forEach((time) => {
@@ -374,11 +410,16 @@ const TaskPage = () => {
 
         console.log("total pause time", totalPause);
 
-        const totalHours = (totalMilisec / (1000 * 60 * 60)).toFixed(2);
         const totalMin = (totalMilisec / (1000 * 60)).toFixed(2);
 
-        console.log(`Total Time, Hours: ${totalHours} Min: ${totalMin}`);
-        return totalHours;
+        finalTime = `Minutes: ${totalMin}`;
+
+        updateTotalTime(selectedIdForTimeCalc, finalTime);
+
+        setCompleteClicked(false);
+
+        console.log(`Total Time, Min: ${totalMin}`);
+        return finalTime;
       } else {
         console.log("Either start or complete time is missing");
       }
@@ -444,11 +485,16 @@ const TaskPage = () => {
     setSelectedTask(checkedRows);
   };
 
+  // for total task time calculation
+  // runs when selection or completedClicked changes
+  // Reference ChatGpt , prompt : "How can i have an updated value after the state variable is set"
   useEffect(() => {
-    if (selectedIdForTimeCalc && tasks.length > 0) {
+    console.log("has calculate run");
+
+    if (completeClicked && selectedIdForTimeCalc) {
       calculateTotalHours();
     }
-  }, [selectedIdForTimeCalc, tasks]);
+  }, [selectedIdForTimeCalc, completeClicked]);
 
   // loads all projects from database into list
   // When app component renders loadAllProjects() is called asynchronously
@@ -470,7 +516,7 @@ const TaskPage = () => {
     loadAllProjects();
   }, []);
 
-  // loads all projects from database into list
+  // loads all TASKS from database into list
   // When app component renders loadAllProjects() is called asynchronously
   // so the rest on the program can still run when the function logic is being executed and returned some time in future
   // if data is returned , then setProjects state is updated with data
@@ -484,6 +530,9 @@ const TaskPage = () => {
       if (data) {
         setTasks(data);
         setIsLoading(false);
+
+        // for the total time calculation
+        setCompleteClicked(true);
       }
     }
 
