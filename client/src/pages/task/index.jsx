@@ -176,6 +176,8 @@ const TaskPage = () => {
 
   const [completeClicked, setCompleteClicked] = useState(false); // for complete task button
 
+  const [hasCalculateRan, setHasCalculateRan] = useState(false);
+
   //*
 
   // projects object array from the database
@@ -364,11 +366,11 @@ const TaskPage = () => {
       const response = await taskStatusUpdate(selectedTask[0].id, updatedTask);
       if (response.status === 200) {
         const selectedId = selectedTask[0].id;
-        setSelectedIdForTimeCalc(selectedId);
 
         console.log(" seleleted id in button complete", selectedId);
 
         await reloadTheGrid();
+        setSelectedIdForTimeCalc(selectedId);
       }
     } catch (error) {
       console.error("Error updating task Status:", error);
@@ -379,6 +381,7 @@ const TaskPage = () => {
   // based on start, pause, resume, and completed
   // Reference Claude.ai prompt:  "how can I calculate total time for UCT inputs in mongodb and react app"
   function calculateTotalHours() {
+    reloadTheGrid();
     console.log("in calculate");
 
     const matchedTask = tasks.find(
@@ -400,13 +403,14 @@ const TaskPage = () => {
         /// STILL NEED TO ADD ROLLING TIME ///
         /// STILL NEED TO ADD ROLLING TIME ///
         /// STILL NEED TO ADD ROLLING TIME ///
+        if (matchedTask.pauseTime) {
+          matchedTask.pauseTime.forEach((time) => {
+            let start = new Date(time.start);
+            let end = new Date(time.end);
 
-        matchedTask.pauseTime.forEach((time) => {
-          let start = new Date(time.start);
-          let end = new Date(time.end);
-
-          totalPause += end - start;
-        });
+            totalPause += end - start;
+          });
+        }
 
         console.log("total pause time", totalPause);
 
@@ -415,8 +419,6 @@ const TaskPage = () => {
         finalTime = `Minutes: ${totalMin}`;
 
         updateTotalTime(selectedIdForTimeCalc, finalTime);
-
-        setCompleteClicked(false);
 
         console.log(`Total Time, Min: ${totalMin}`);
         return finalTime;
