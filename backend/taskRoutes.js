@@ -228,15 +228,14 @@ taskRoutes
     response.json(data);
   });
 
-
-  // TOTAL TIME updated
-  taskRoutes
+// TOTAL TIME updated
+taskRoutes
   .route("/tasks/:id/totaltime")
   .put(verifyToken, async (request, response) => {
     console.log("inside of task total time");
     let db = database.getDb();
     let mongoObject = {
-      $push: { totalTime: request.body.totalTime },
+      $set: { totalTime: request.body.totalTime },
     };
     let data = await db
       .collection("tasks")

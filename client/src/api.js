@@ -223,7 +223,7 @@ export async function getTasks() {
 export async function getTask(id) {
   const response = await axios.get(`${URL}/tasks/${id}`);
   if (response.status === 200) {
-    return response;
+    return response.data;
   } else {
     console.log("issue with get", response.status);
     return;

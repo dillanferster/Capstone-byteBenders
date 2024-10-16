@@ -174,10 +174,6 @@ const TaskPage = () => {
   const [addClicked, setAddClicked] = useState(false); // for add button
   const [editClicked, setEditClicked] = useState(false); // for add button
 
-  const [completeClicked, setCompleteClicked] = useState(false); // for complete task button
-
-  const [hasCalculateRan, setHasCalculateRan] = useState(false);
-
   //*
 
   // projects object array from the database
@@ -259,8 +255,10 @@ const TaskPage = () => {
   }
 
   // updates grid usestate to cause a re-render
-  const reloadTheGrid = async () => {
-    setReloadGrid(!reloadGrid);
+  const reloadTheGrid = () => {
+    console.log("Starting grid reload");
+    setReloadGrid((prev) => !prev);
+    console.log("ReloadGrid state updated");
   };
 
   // function handles view button
@@ -332,28 +330,27 @@ const TaskPage = () => {
   }
 
   // Update Task total time in AG grid column table
-  async function updateTotalTime(selectedIdForTimeCalc, finalTime) {
-    console.log("in task total time");
-    console.log(finalTime);
+  async function updateTotalTime(completeTaskId, finalTime) {
+    console.log("in task total time", finalTime);
 
     const updatedTime = {
       totalTime: finalTime,
     };
 
     try {
-      const response = await taskTotalTime(selectedIdForTimeCalc, updatedTime);
-      if (response.status === 200) {
+      const response = await taskTotalTime(completeTaskId, updatedTime);
+      if (response && response.status === 200) {
         reloadTheGrid();
       }
     } catch (error) {
-      console.error("Error updating task Status:", error);
+      console.error("Error updating total time:", error);
     }
   }
 
   // handles when complete is pressed,
-  // changes the status and calls the time calculation
+  // logs complete time and changes the status in database,
   // Reference Claude.ai prompt:  "why is my state variable for selected task not updating "
-  async function handleButtonComplete() {
+  async function buttonComplete() {
     await completeTask(selectedTask[0].id);
 
     console.log("task completed");
@@ -370,7 +367,7 @@ const TaskPage = () => {
         console.log(" seleleted id in button complete", selectedId);
 
         await reloadTheGrid();
-        setSelectedIdForTimeCalc(selectedId);
+        return selectedId;
       }
     } catch (error) {
       console.error("Error updating task Status:", error);
@@ -380,20 +377,18 @@ const TaskPage = () => {
   // calculate total hours
   // based on start, pause, resume, and completed
   // Reference Claude.ai prompt:  "how can I calculate total time for UCT inputs in mongodb and react app"
-  function calculateTotalHours() {
-    reloadTheGrid();
+  function calculateTotalHours(completeTaskObject) {
     console.log("in calculate");
 
-    const matchedTask = tasks.find(
-      (task) => task._id === selectedIdForTimeCalc
-    );
+    console.log("selected id for calc ", completeTaskObject);
 
-    console.log("selected id for calc ", selectedIdForTimeCalc);
-    console.log("matched task ", matchedTask);
-
-    if (matchedTask && matchedTask.completeTime && matchedTask.startTime) {
-      const completeTime = new Date(matchedTask.completeTime[0]);
-      const startTime = new Date(matchedTask.startTime[0]);
+    if (
+      completeTaskObject &&
+      completeTaskObject.completeTime &&
+      completeTaskObject.startTime
+    ) {
+      const completeTime = new Date(completeTaskObject.completeTime[0]);
+      const startTime = new Date(completeTaskObject.startTime[0]);
       let totalPause = 0;
 
       if (completeTime && startTime) {
@@ -403,8 +398,8 @@ const TaskPage = () => {
         /// STILL NEED TO ADD ROLLING TIME ///
         /// STILL NEED TO ADD ROLLING TIME ///
         /// STILL NEED TO ADD ROLLING TIME ///
-        if (matchedTask.pauseTime) {
-          matchedTask.pauseTime.forEach((time) => {
+        if (completeTaskObject.pauseTime) {
+          completeTaskObject.pauseTime.forEach((time) => {
             let start = new Date(time.start);
             let end = new Date(time.end);
 
@@ -418,8 +413,6 @@ const TaskPage = () => {
 
         finalTime = `Minutes: ${totalMin}`;
 
-        updateTotalTime(selectedIdForTimeCalc, finalTime);
-
         console.log(`Total Time, Min: ${totalMin}`);
         return finalTime;
       } else {
@@ -427,6 +420,16 @@ const TaskPage = () => {
       }
     } else {
       console.log("No matching task found or required fields are missing");
+    }
+  }
+
+  // handle function for complete button click
+  async function handleCompleteandCalculate(params) {
+    const completeId = await buttonComplete();
+    if (completeId) {
+      const completeTaskObject = await getTask(completeId);
+      const finalTime = calculateTotalHours(completeTaskObject);
+      updateTotalTime(completeId, finalTime);
     }
   }
 
@@ -487,17 +490,6 @@ const TaskPage = () => {
     setSelectedTask(checkedRows);
   };
 
-  // for total task time calculation
-  // runs when selection or completedClicked changes
-  // Reference ChatGpt , prompt : "How can i have an updated value after the state variable is set"
-  useEffect(() => {
-    console.log("has calculate run");
-
-    if (completeClicked && selectedIdForTimeCalc) {
-      calculateTotalHours();
-    }
-  }, [selectedIdForTimeCalc, completeClicked]);
-
   // loads all projects from database into list
   // When app component renders loadAllProjects() is called asynchronously
   // so the rest on the program can still run when the function logic is being executed and returned some time in future
@@ -530,11 +522,9 @@ const TaskPage = () => {
     async function loadAllTasks() {
       const data = await getTasks();
       if (data) {
+        console.log("New task data received:", data);
         setTasks(data);
         setIsLoading(false);
-
-        // for the total time calculation
-        setCompleteClicked(true);
       }
     }
 
@@ -597,7 +587,7 @@ const TaskPage = () => {
                 <Button
                   variant="outlined"
                   color="error"
-                  onClick={() => handleButtonComplete()}
+                  onClick={() => handleCompleteandCalculate()}
                 >
                   Complete Task
                 </Button>
