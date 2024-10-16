@@ -173,7 +173,7 @@ const TaskPage = () => {
   const [viewClicked, setViewClicked] = useState(false); // for view button
   const [addClicked, setAddClicked] = useState(false); // for add button
   const [editClicked, setEditClicked] = useState(false); // for add button
-  const [deleteOpen, setDeleteOpen] = useState(false); // for add button
+  const [deleteOpen, setDeleteOpen] = useState(false); //for dlt btn
 
   //*
 
