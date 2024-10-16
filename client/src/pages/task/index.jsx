@@ -173,6 +173,7 @@ const TaskPage = () => {
   const [viewClicked, setViewClicked] = useState(false); // for view button
   const [addClicked, setAddClicked] = useState(false); // for add button
   const [editClicked, setEditClicked] = useState(false); // for add button
+  const [deleteOpen, setDeleteOpen] = useState(false); // for add button
 
   //*
 
@@ -439,6 +440,8 @@ const TaskPage = () => {
   // setReloadGrid to rerender row list with newly deleted item
   // Reference: GitHub copilot
   async function handleButtonDelete() {
+    setDeleteOpen((prev) => !prev);
+
     for (const task of selectedTask) {
       const response = await deleteTask(task.id);
 
@@ -596,8 +599,35 @@ const TaskPage = () => {
         </div>
 
         <div className="flex gap-4">
-          {" "}
-          {selectedTask.length === 1 && (
+          {deleteOpen && (
+            <div className="flex items-center justify-end gap-4 z-[5]  w-full ">
+              <p className="font-bold text-md">
+                Are you sure you want to delete ?
+              </p>
+              <div>
+                {" "}
+                <Button
+                  variant="contained"
+                  color="error"
+                  onClick={() => handleButtonDelete()}
+                >
+                  Delete
+                </Button>
+              </div>
+              <div>
+                {" "}
+                <Button
+                  variant="outlined"
+                  color="warning"
+                  onClick={() => setDeleteOpen((prev) => !prev)}
+                >
+                  Cancel
+                </Button>
+              </div>
+            </div>
+          )}
+
+          {selectedTask.length === 1 && !deleteOpen && (
             <div className="flex gap-4">
               <div>
                 <Button
@@ -620,13 +650,13 @@ const TaskPage = () => {
               </div>
             </div>
           )}
-          {selectedTask.length > 0 && (
+          {selectedTask.length > 0 && !deleteOpen && (
             <div>
               {" "}
               <Button
                 variant="contained"
                 color="error"
-                onClick={() => handleButtonDelete()}
+                onClick={() => setDeleteOpen((prev) => !prev)}
               >
                 Delete
               </Button>
