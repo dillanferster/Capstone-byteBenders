@@ -29,6 +29,8 @@ const ObjectId = require("mongodb").ObjectId;
 // awaits, goes into DB collection "projects" and finds all, returns as array, saves as data
 // check to make sure data  has a value then returns response in json, if not gives an error
 // Authenticated route, verifyToken middleware is called before the async function is executed
+// References for this file are from  https://www.youtube.com/watch?v=Jcs_2jNPgtE&t=8033s
+
 taskRoutes.route("/tasks").get(verifyToken, async (request, response) => {
   let db = database.getDb();
   let data = await db.collection("tasks").find({}).toArray();
@@ -49,6 +51,7 @@ taskRoutes.route("/tasks").get(verifyToken, async (request, response) => {
 // * new ObjectId(request.params.id), converts the id string in a MongoDb id
 // * (Object.keys(data.length > 0) , because object doesnt have a length need to grab its keys and see if there are more than 0
 // Authenticated route, verifyToken middleware is called before the async function is executed
+// References for this file are from  https://www.youtube.com/watch?v=Jcs_2jNPgtE&t=8033s
 taskRoutes.route("/tasks/:id").get(verifyToken, async (request, response) => {
   let db = database.getDb();
   let data = await db
@@ -69,6 +72,7 @@ taskRoutes.route("/tasks/:id").get(verifyToken, async (request, response) => {
 //  awaits, goes into DB collection "projects" and uses mongo insertOne function to add the MongoObject into the database
 // sends JSON response back to client
 // Authenticated route, verifyToken middleware is called before the async function is executed
+// References for this file are from  https://www.youtube.com/watch?v=Jcs_2jNPgtE&t=8033s
 taskRoutes.route("/tasks").post(verifyToken, async (request, response) => {
   let db = database.getDb();
   let mongoObject = {
@@ -99,6 +103,7 @@ taskRoutes.route("/tasks").post(verifyToken, async (request, response) => {
 // sends JSON response back to client
 // * new ObjectId(request.params.id), converts the id string in a MongoDb id
 // Authenticated route, verifyToken middleware is called before the async function is executed
+// References for this file are from  https://www.youtube.com/watch?v=Jcs_2jNPgtE&t=8033s
 taskRoutes.route("/tasks/:id").put(verifyToken, async (request, response) => {
   let db = database.getDb();
   let mongoObject = {
@@ -132,6 +137,7 @@ taskRoutes.route("/tasks/:id").put(verifyToken, async (request, response) => {
 // check to make sure data  has a value then returns response in json, if not gives an error
 // * new ObjectId(request.params.id), converts the id string in a MongoDb id
 // Authenticated route, verifyToken middleware is called before the async function is executed
+// References for this file are from  https://www.youtube.com/watch?v=Jcs_2jNPgtE&t=8033s
 taskRoutes
   .route("/tasks/:id")
   .delete(verifyToken, async (request, response) => {
@@ -144,6 +150,7 @@ taskRoutes
   });
 
 // Start task
+// logs a time stamp in the database
 taskRoutes
   .route("/tasks/:id/start")
   .put(verifyToken, async (request, response) => {
@@ -191,6 +198,7 @@ taskRoutes
   });
 
 // complete task
+// logs a end timestamp in the database
 taskRoutes
   .route("/tasks/:id/complete")
   .put(verifyToken, async (request, response) => {
@@ -205,6 +213,7 @@ taskRoutes
   });
 
 // update task status
+// updates the status field for the task
 taskRoutes
   .route("/tasks/:id/status")
   .put(verifyToken, async (request, response) => {
@@ -212,6 +221,21 @@ taskRoutes
     let db = database.getDb();
     let mongoObject = {
       $set: { taskStatus: request.body.taskStatus },
+    };
+    let data = await db
+      .collection("tasks")
+      .updateOne({ _id: new ObjectId(request.params.id) }, mongoObject);
+    response.json(data);
+  });
+
+// TOTAL TIME updated
+taskRoutes
+  .route("/tasks/:id/totaltime")
+  .put(verifyToken, async (request, response) => {
+    console.log("inside of task total time");
+    let db = database.getDb();
+    let mongoObject = {
+      $set: { totalTime: request.body.totalTime },
     };
     let data = await db
       .collection("tasks")

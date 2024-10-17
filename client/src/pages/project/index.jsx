@@ -120,6 +120,7 @@ const ProjectPage = () => {
   const [viewClicked, setViewClicked] = useState(false); // for view button
   const [addClicked, setAddClicked] = useState(false); // for add button
   const [editClicked, setEditClicked] = useState(false); // for add button
+  const [deleteOpen, setDeleteOpen] = useState(false); // for dlt btn
 
   //*
 
@@ -207,6 +208,7 @@ const ProjectPage = () => {
   // passes the id of selected project to the deleteProject function
   // setReloadGrid to rerender row list with newly deleted item
   function handleButtonDelete() {
+    setDeleteOpen((prev) => !prev);
     selectedProject.forEach((project) => {
       deleteProject(project.id).then((response) => {
         if (response.status === 200) {
@@ -265,8 +267,34 @@ const ProjectPage = () => {
           Add project
         </Button>
         <div className="flex gap-4">
-          {" "}
-          {selectedProject.length === 1 && (
+          {deleteOpen && (
+            <div className="flex items-center justify-end gap-4 z-[5]  w-full ">
+              <p className="font-bold text-md">
+                Are you sure you want to delete ?
+              </p>
+              <div>
+                {" "}
+                <Button
+                  variant="contained"
+                  color="error"
+                  onClick={() => handleButtonDelete()}
+                >
+                  Delete
+                </Button>
+              </div>
+              <div>
+                {" "}
+                <Button
+                  variant="outlined"
+                  color="warning"
+                  onClick={() => setDeleteOpen((prev) => !prev)}
+                >
+                  Cancel
+                </Button>
+              </div>
+            </div>
+          )}{" "}
+          {selectedProject.length === 1 && !deleteOpen && (
             <div className="flex gap-4">
               <div>
                 <Button
@@ -289,13 +317,13 @@ const ProjectPage = () => {
               </div>
             </div>
           )}
-          {selectedProject.length > 0 && (
+          {selectedProject.length > 0 && !deleteOpen && (
             <div>
               {" "}
               <Button
                 variant="contained"
                 color="error"
-                onClick={() => handleButtonDelete()}
+                onClick={() => setDeleteOpen((prev) => !prev)}
               >
                 Delete
               </Button>
