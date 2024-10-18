@@ -1,48 +1,33 @@
 import React, { useState, useEffect } from 'react';
 
 const NoteEditor = ({ currentNote, updateNote }) => {
-  const [noteContent, setNoteContent] = useState(currentNote?.content || '');
-  const [noteTitle, setNoteTitle] = useState(currentNote?.title || '');
+  const [note, setNote] = useState(currentNote || { title: '', content: '' });
 
   useEffect(() => {
-    setNoteTitle(currentNote?.title || '');
-    setNoteContent(currentNote?.content || '');
+    setNote(currentNote || { title: '', content: '' });
   }, [currentNote]);
 
   const handleSave = () => {
-    if (!currentNote) return;
-    const updatedNote = {
-      ...currentNote,
-      title: noteTitle,
-      content: noteContent,
+    updateNote({
+      ...note,
       updatedAt: Date.now(),
-    };
-    updateNote(updatedNote);
+    });
   };
 
   return (
-    <div className="note-editor-container">
-      <div className="editor-mode">
-        <input
-          type="text"
-          value={noteTitle}
-          onChange={(e) => setNoteTitle(e.target.value)}
-          placeholder="Untitled"
-        />
-        <textarea
-          value={noteContent}
-          onChange={(e) => setNoteContent(e.target.value)}
-          placeholder="Content..."
-        />
-        <button className="add-note-button" onClick={handleSave}>
-          Save
-        </button>
-      </div>
-      <div className="preview-mode">
-        <div className="preview-title">Preview</div>
-        <h2>{noteTitle || 'Untitled'}</h2>
-        <p>{noteContent || 'No content available...'}</p>
-      </div>
+    <div>
+      <input
+        type="text"
+        value={note.title}
+        onChange={(e) => setNote({ ...note, title: e.target.value })}
+        placeholder="Note title"
+      />
+      <textarea
+        value={note.content}
+        onChange={(e) => setNote({ ...note, content: e.target.value })}
+        placeholder="Note content"
+      />
+      <button onClick={handleSave} className="save-button">Save</button>
     </div>
   );
 };

@@ -1,184 +1,87 @@
-/* Container for the note page layout */
 .note-page {
   display: flex;
   height: 100vh;
+  background-color: #f5f5f5; /* Light background */
+}
+
+.note-sidebar {
+  width: 20%; /* Adjust width as necessary */
+  background-color: #2c2c54; /* Dark sidebar color */
+  color: white;
   padding: 20px;
-  margin: 20px;
-  /* background-color: #f8f9fa; */
-}
-
-/* Sidebar styling */
-.sidebar {
-  width: 250px;
-  /* background-color: #ffffff; */
-  border-right: 1px solid #ddd;
-  padding: 10px;
-}
-
-/* Header section with add icon */
-.header {
   display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 10px;
+  flex-direction: column;
 }
 
-/* Note list styling in the sidebar */
-.note-list {
-  margin-top: 10px;
-}
-
-.note-card {
-  padding: 10px;
-  /* background-color: #e9ecef; */
-  margin-bottom: 10px;
-  border-radius: 4px;
-  cursor: pointer;
-  position: relative;
-}
-
-.note-card.active {
-  background-color: #aacef1;
-  color: #fff;
-}
-
-.delete-icon {
-  position: absolute;
-  top: 10px;
-  right: 10px;
-  color: #dc3545;
-  cursor: pointer;
-  transition: color 0.2s ease-in-out;
-}
-
-.delete-icon:hover {
-  color: #c82333;
-}
-
-.add-icon {
-  color: #007bff;
-  cursor: pointer;
-  font-size: 20px;
-  transition: color 0.2s ease-in-out;
-}
-
-.add-icon:hover {
-  color: #0056b3;
-}
-
-/* Note editor styling */
 .note-editor {
-  flex: 1;
+  width: 80%; /* Adjust width to fit next to the sidebar */
+  padding: 20px;
+  background-color: white; /* Light background for contrast */
   display: flex;
   flex-direction: column;
-  gap: 10px;
-  margin-left: 20px;
-  padding: 50px;
-  border: 1px solid #ddd;
-  border-radius: 8px;
-  /* background-color: #ffffff; */
-  box-shadow: 0 2px 8px #e9ecef;
 }
-
-/* Edit mode styling */
-.editor-mode {
-  display: flex;
-  flex-direction: column;
-  color: #000;
-  gap: 10px;
-  width: 400px;
-  margin-top: 10px;
-}
-
-/* Preview mode styling with box and title */
-.preview-mode {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  padding: 15px;
-  border: 1px solid #ddd;
-  border-radius: 8px;
-  background-color: #f8f9fa;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  margin-top: 90px;
-}
-
-.preview-title {
-  font-size: 16px;
-  font-weight: bold;
-  color: #000;
-  margin-bottom: 10px;
-  border-bottom: 1px solid #ccc;
-  padding-bottom: 5px;
-  text-align: center;
-}
-
-/* Title input box styling */
-.note-editor input[type="text"] {
-  width: 100%;
-  height: 40px;
-  padding: 10px;
-  font-size: 16px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-}
-
-/* Content textarea styling */
-.note-editor textarea {
-  width: 100%;
-  height: 400px;
-  padding: 10px;
-  font-size: 16px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  resize: vertical;
-}
-
-/* Save button styling matching Add Note button */
-.note-editor button {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  padding: 20px 30px;
-  font-size: 16px;
-  color: #fff;
-  background-color: #007bff;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  transition: background-color 0.2s ease-in-out;
-}
-
-.note-editor button:hover {
-  background-color: #0056b3;
+.note-editor.dark-mode {
+  background-color: #2c2c54;
+  color: white;
 }
 
 .add-note-button {
-  padding: 10px 18px;
-  font-size: 14px;
-  cursor: pointer;
-  background-color: #007bff;
-  border: none;
-  border-radius: 4px;
+  background-color: #4CAF50;
   color: white;
-  transition: background-color 0.3s;
-  align-items: center;
-}
-
-.add-note-button:hover {
-  background-color: #0056b3;
-}
-
-/* Preview text styling */
-.preview-mode h2 {
-  font-size: 20px;
-  margin: 0 0 10px 0;
-  height: 50px;
+  border: none;
+  padding: 10px;
+  cursor: pointer;
+  margin-bottom: 20px;
   width: 100%;
 }
 
-.preview-mode p {
-  font-size: 16px;
-  color: #333;
-  margin: 0;
+.note-item {
+  padding: 10px;
+  margin: 10px 0;
+  background-color: #3c3c74;
+  cursor: pointer;
+  border-radius: 5px;
+  display: flex;
+  justify-content: space-between;
 }
+
+.note-item.active {
+  background-color: #4f4f8b; /* Highlight active note */
+}
+
+.delete-note-button {
+  background-color: red;
+  color: white;
+  border: none;
+  cursor: pointer;
+}
+
+.note-title {
+  flex-grow: 1;
+  color: black;
+}
+
+.note-editor input, .note-editor textarea {
+  margin-bottom: 20px;
+  padding: 10px;
+  font-size: 16px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+  width: 100%;
+  color: black;
+}
+
+.note-editor textarea {
+  height: 150px;
+  color: black;
+}
+
+.save-button {
+  background-color: #4CAF50;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  cursor: pointer;
+  align-self: flex-end;
+}
+
