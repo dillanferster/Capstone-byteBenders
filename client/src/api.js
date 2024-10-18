@@ -534,3 +534,42 @@ export async function deleteNote(id) {
   }
 }
 ///NOTES///
+
+// src/api.js
+// email login function
+export async function emailLogin() {
+  try {
+    window.location.href = `${URL}/email-inbox/login`;
+  } catch (error) {
+    console.error("Login initiation failed:", error);
+  }
+}
+
+// Function to fetch emails after login
+export async function fetchEmails() {
+  try {
+    const response = await axios.get(`${URL}/email-inbox/emails`, {
+      withCredentials: true,
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    console.log(
+      "Access token sent in request:",
+      response.config.headers.Authorization
+    );
+    return response.data;
+  } catch (error) {
+    console.error("Failed to fetch emails:", error);
+    throw error;
+  }
+}
+
+// Function to log out the user
+export async function logoutEmail() {
+  try {
+    window.location.href = `${URL}/email/logout`;
+  } catch (error) {
+    console.error("Logout initiation failed:", error);
+  }
+}
