@@ -32,7 +32,7 @@ const ObjectId = require("mongodb").ObjectId;
 // Authenticated route, verifyToken middleware is called before the async function is executed
 projectRoutes.route("/projects").get(verifyToken, async (request, response) => {
   let db = database.getDb();
-  let data = await db.collection("projects").find({}).toArray();
+  let data = await db.collection("Frank").find({}).toArray();
 
   if (data.length > 0) {
     response.json(data);
@@ -86,7 +86,7 @@ projectRoutes
       quickBaseLink: request.body.quickBaseLink,
       dateCreated: request.body.dateCreated,
     };
-    let data = await db.collection("projects").insertOne(mongoObject);
+    let data = await db.collection("Frank").insertOne(mongoObject);
     response.json(data);
   });
 
@@ -116,7 +116,7 @@ projectRoutes
       },
     };
     let data = await db
-      .collection("projects")
+      .collection("Frank")
       .updateOne({ _id: new ObjectId(request.params.id) }, mongoObject);
     response.json(data);
   });
@@ -134,7 +134,7 @@ projectRoutes
       $push: { TaskIdForProject: request.body.taskId },
     };
     let data = await db
-      .collection("projects")
+      .collection("Frank")
       .updateOne({ _id: new ObjectId(request.params.id) }, mongoObject);
     response.json(data);
   });
@@ -153,7 +153,7 @@ projectRoutes
       $pull: { TaskIdForProject: request.body.taskId },
     };
     let data = await db
-      .collection("projects")
+      .collection("Frank")
       .updateOne({ _id: new ObjectId(request.params.id) }, mongoObject);
     response.json(data);
   });
@@ -171,7 +171,7 @@ projectRoutes
   .delete(verifyToken, async (request, response) => {
     let db = database.getDb();
     let data = await db
-      .collection("projects")
+      .collection("Frank")
       .deleteOne({ _id: new ObjectId(request.params.id) });
 
     response.json(data);
