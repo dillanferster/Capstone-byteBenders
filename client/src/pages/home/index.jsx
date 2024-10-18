@@ -37,7 +37,7 @@ import { Select, MenuItem, FormControl, InputLabel } from "@mui/material";
 
 // database functions from api file
 import { getProjects, getProject, getTasks, getTask } from "../../api.js";
-import { set } from "date-fns";
+// import { set } from "date-fns";
 
 const Dashboard = () => {
   const navigate = useNavigate();
@@ -47,7 +47,7 @@ const Dashboard = () => {
   const [numbOfProjects, setNumbOfProjects] = useState("##");
   const [tasks, setTasks] = useState([]);
   const [numbOfTasks, setNumbOfTasks] = useState("##");
-  const [targetProject, setTargetProject] = useState("week"); // Change to projects later ***
+  const [targetProject, setTargetProject] = useState("week");
 
   useEffect(() => {
     // Load projects from database into useState variable
