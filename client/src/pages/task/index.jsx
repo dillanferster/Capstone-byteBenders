@@ -14,8 +14,8 @@
  *
  */
 
-import React from "react";
-import { useState, useEffect, useMemo } from "react";
+import React, { useCallback } from "react";
+import { useState, useEffect, useMemo, useRef } from "react";
 
 // date formatter
 import { format } from "date-fns";
@@ -35,6 +35,7 @@ import {
   resumeTask,
   completeTask,
   taskStatusUpdate,
+  taskTotalTime,
   getProjects,
   addTaskToProject,
   deleteTaskFromProject,
@@ -50,6 +51,7 @@ import TaskEditMenu from "../../components/taskeditmenu/index.jsx";
 // filter: allows for column filtering
 // floating filter: displayed filter search bar
 // editable: sets to false, does not allow a double click to be able to edit the cell
+// References: https://www.ag-grid.com/react-data-grid/getting-started/
 const columns = [
   {
     field: "id",
@@ -115,6 +117,13 @@ const columns = [
     editable: false,
   },
   {
+    field: "totalTime",
+    headerName: "Time on Task",
+    filter: true,
+    floatingFilter: true,
+    editable: false,
+  },
+  {
     field: "projectStatus",
     headerName: "Project Status",
     filter: true,
@@ -154,20 +163,17 @@ const columns = [
 const TaskPage = () => {
   //* state
   const [tasks, setTasks] = useState([]); // Loaded projects from database
-  const [taskStatus, setTaskStatus] = useState([]); //
+
   const [projects, setProjects] = useState([]); // Loaded projects from database
   const [isLoading, setIsLoading] = useState(); // state for loading
-  const [selectedTask, setSelectedTask] = useState([]); // selected project array, when users click on projects in data table
+  const [selectedTask, setSelectedTask] = useState([]); // selected task array, when users click on projects in data table
   const [selectedIdForTimeCalc, setSelectedIdForTimeCalc] = useState(); // id for time calculation
   const [reloadGrid, setReloadGrid] = useState(false); // to update grid rows
   const [isOpen, setIsOpen] = useState(false); // for edit  menu
   const [viewClicked, setViewClicked] = useState(false); // for view button
   const [addClicked, setAddClicked] = useState(false); // for add button
   const [editClicked, setEditClicked] = useState(false); // for add button
-
-  // const [startedTask, setStartedTask] = useState(false); // for start task button
-  // const [pausedTask, setPausedTask] = useState(false); // for pause task button
-  // const [completedTask, setCompletedTask] = useState(false); // for complete task button
+  const [deleteOpen, setDeleteOpen] = useState(false); //for dlt btn
 
   //*
 
@@ -176,6 +182,7 @@ const TaskPage = () => {
   // rows is then passed into the datagrid component
   // useMemo so when the projectPage component reloads from state changes the rows dont reload with it, only when projects or reloadGrid state is changed
   // dependencies : projects, reloadGrid
+  // References: https://www.ag-grid.com/react-data-grid/getting-started/
   const rows = useMemo(
     () =>
       tasks.map((task) => ({
@@ -194,6 +201,7 @@ const TaskPage = () => {
         attachments: task.attachments,
         startTime: task.startTime,
         completeTime: task.completeTime,
+        totalTime: task.totalTime,
         chroniclesComplete: task.chroniclesComplete,
       })),
     [tasks]
@@ -203,6 +211,7 @@ const TaskPage = () => {
   // sortable : allows columns to be sorted
   // width: sets a column width
   // maxWidth: defines max width for columns
+  // References: https://www.ag-grid.com/react-data-grid/getting-started/
   const selectionColumnDef = useMemo(() => {
     return {
       sortable: true,
@@ -217,6 +226,7 @@ const TaskPage = () => {
   // headerCheckbox: false,   removes the checkbox selector
   // enableMultiSelectWithClick: true, allows mutlirow selection by clicking on the cells
   // enableClickSelection: true, allows selection by clicking on a cell
+  // References: https://www.ag-grid.com/react-data-grid/getting-started/
   const selection = useMemo(() => {
     return {
       mode: "multiRow",
@@ -246,8 +256,10 @@ const TaskPage = () => {
   }
 
   // updates grid usestate to cause a re-render
-  const reloadTheGrid = async () => {
-    setReloadGrid(!reloadGrid);
+  const reloadTheGrid = () => {
+    console.log("Starting grid reload");
+    setReloadGrid((prev) => !prev);
+    console.log("ReloadGrid state updated");
   };
 
   // function handles view button
@@ -318,7 +330,28 @@ const TaskPage = () => {
     }
   }
 
-  async function handleButtonComplete() {
+  // Update Task total time in AG grid column table
+  async function updateTotalTime(completeTaskId, finalTime) {
+    console.log("in task total time", finalTime);
+
+    const updatedTime = {
+      totalTime: finalTime,
+    };
+
+    try {
+      const response = await taskTotalTime(completeTaskId, updatedTime);
+      if (response && response.status === 200) {
+        reloadTheGrid();
+      }
+    } catch (error) {
+      console.error("Error updating total time:", error);
+    }
+  }
+
+  // handles when complete is pressed,
+  // logs complete time and changes the status in database,
+  // Reference Claude.ai prompt:  "why is my state variable for selected task not updating "
+  async function buttonComplete() {
     await completeTask(selectedTask[0].id);
 
     console.log("task completed");
@@ -331,11 +364,11 @@ const TaskPage = () => {
       const response = await taskStatusUpdate(selectedTask[0].id, updatedTask);
       if (response.status === 200) {
         const selectedId = selectedTask[0].id;
-        setSelectedIdForTimeCalc(selectedId);
 
         console.log(" seleleted id in button complete", selectedId);
 
         await reloadTheGrid();
+        return selectedId;
       }
     } catch (error) {
       console.error("Error updating task Status:", error);
@@ -344,46 +377,60 @@ const TaskPage = () => {
 
   // calculate total hours
   // based on start, pause, resume, and completed
-  // Reference Claude.ai prompt, how can I calculate total time for UCT inputs in mongodb and react app
-  function calculateTotalHours() {
+  // Reference Claude.ai prompt:  "how can I calculate total time for UCT inputs in mongodb and react app"
+  function calculateTotalHours(completeTaskObject) {
     console.log("in calculate");
 
-    const matchedTask = tasks.find(
-      (task) => task._id === selectedIdForTimeCalc
-    );
+    console.log("selected id for calc ", completeTaskObject);
 
-    console.log("selected id for calc ", selectedIdForTimeCalc);
-    console.log("matched task ", matchedTask);
-
-    if (matchedTask && matchedTask.completeTime && matchedTask.startTime) {
-      const completeTime = new Date(matchedTask.completeTime[0]);
-      const startTime = new Date(matchedTask.startTime[0]);
+    if (
+      completeTaskObject &&
+      completeTaskObject.completeTime &&
+      completeTaskObject.startTime
+    ) {
+      const completeTime = new Date(completeTaskObject.completeTime[0]);
+      const startTime = new Date(completeTaskObject.startTime[0]);
       let totalPause = 0;
 
       if (completeTime && startTime) {
         const totalMilisec = completeTime - startTime - totalPause;
+        let finalTime = 0;
 
         /// STILL NEED TO ADD ROLLING TIME ///
+        /// STILL NEED TO ADD ROLLING TIME ///
+        /// STILL NEED TO ADD ROLLING TIME ///
+        if (completeTaskObject.pauseTime) {
+          completeTaskObject.pauseTime.forEach((time) => {
+            let start = new Date(time.start);
+            let end = new Date(time.end);
 
-        matchedTask.pauseTime.forEach((time) => {
-          let start = new Date(time.start);
-          let end = new Date(time.end);
-
-          totalPause += end - start;
-        });
+            totalPause += end - start;
+          });
+        }
 
         console.log("total pause time", totalPause);
 
-        const totalHours = (totalMilisec / (1000 * 60 * 60)).toFixed(2);
         const totalMin = (totalMilisec / (1000 * 60)).toFixed(2);
 
-        console.log(`Total Time, Hours: ${totalHours} Min: ${totalMin}`);
-        return totalHours;
+        finalTime = `Minutes: ${totalMin}`;
+
+        console.log(`Total Time, Min: ${totalMin}`);
+        return finalTime;
       } else {
         console.log("Either start or complete time is missing");
       }
     } else {
       console.log("No matching task found or required fields are missing");
+    }
+  }
+
+  // handle function for complete button click
+  async function handleCompleteandCalculate(params) {
+    const completeId = await buttonComplete();
+    if (completeId) {
+      const completeTaskObject = await getTask(completeId);
+      const finalTime = calculateTotalHours(completeTaskObject);
+      updateTotalTime(completeId, finalTime);
     }
   }
 
@@ -393,6 +440,8 @@ const TaskPage = () => {
   // setReloadGrid to rerender row list with newly deleted item
   // Reference: GitHub copilot
   async function handleButtonDelete() {
+    setDeleteOpen((prev) => !prev);
+
     for (const task of selectedTask) {
       const response = await deleteTask(task.id);
 
@@ -444,12 +493,6 @@ const TaskPage = () => {
     setSelectedTask(checkedRows);
   };
 
-  useEffect(() => {
-    if (selectedIdForTimeCalc && tasks.length > 0) {
-      calculateTotalHours();
-    }
-  }, [selectedIdForTimeCalc, tasks]);
-
   // loads all projects from database into list
   // When app component renders loadAllProjects() is called asynchronously
   // so the rest on the program can still run when the function logic is being executed and returned some time in future
@@ -470,7 +513,7 @@ const TaskPage = () => {
     loadAllProjects();
   }, []);
 
-  // loads all projects from database into list
+  // loads all TASKS from database into list
   // When app component renders loadAllProjects() is called asynchronously
   // so the rest on the program can still run when the function logic is being executed and returned some time in future
   // if data is returned , then setProjects state is updated with data
@@ -482,6 +525,7 @@ const TaskPage = () => {
     async function loadAllTasks() {
       const data = await getTasks();
       if (data) {
+        console.log("New task data received:", data);
         setTasks(data);
         setIsLoading(false);
       }
@@ -546,7 +590,7 @@ const TaskPage = () => {
                 <Button
                   variant="outlined"
                   color="error"
-                  onClick={() => handleButtonComplete()}
+                  onClick={() => handleCompleteandCalculate()}
                 >
                   Complete Task
                 </Button>
@@ -555,8 +599,35 @@ const TaskPage = () => {
         </div>
 
         <div className="flex gap-4">
-          {" "}
-          {selectedTask.length === 1 && (
+          {deleteOpen && (
+            <div className="flex items-center justify-end gap-4 z-[5]  w-full ">
+              <p className="font-bold text-md">
+                Are you sure you want to delete ?
+              </p>
+              <div>
+                {" "}
+                <Button
+                  variant="contained"
+                  color="error"
+                  onClick={() => handleButtonDelete()}
+                >
+                  Delete
+                </Button>
+              </div>
+              <div>
+                {" "}
+                <Button
+                  variant="outlined"
+                  color="warning"
+                  onClick={() => setDeleteOpen((prev) => !prev)}
+                >
+                  Cancel
+                </Button>
+              </div>
+            </div>
+          )}
+
+          {selectedTask.length === 1 && !deleteOpen && (
             <div className="flex gap-4">
               <div>
                 <Button
@@ -579,13 +650,13 @@ const TaskPage = () => {
               </div>
             </div>
           )}
-          {selectedTask.length > 0 && (
+          {selectedTask.length > 0 && !deleteOpen && (
             <div>
               {" "}
               <Button
                 variant="contained"
                 color="error"
-                onClick={() => handleButtonDelete()}
+                onClick={() => setDeleteOpen((prev) => !prev)}
               >
                 Delete
               </Button>

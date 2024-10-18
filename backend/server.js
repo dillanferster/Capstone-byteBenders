@@ -1,4 +1,4 @@
-/**
+/** backend/server.js
  *
  * This file creates the node server
  *
@@ -22,6 +22,12 @@ const tasks = require("./taskRoutes"); // imports projectRoutes file
 
 const users = require("./userRoutes"); // imports userRoutes file
 
+const notes = require("./noteRoutes"); // imports noteRoutes file
+
+const session = require("express-session"); // imports session management
+
+const emails = require("./emailRoutes"); // imports emailRoutes
+
 const AWS = require("aws-sdk"); // Import AWS SDK v2 (in maintenance mode). Migrate to AWS SDK for Javascript V3 later
 
 require("dotenv").config({ path: "./.env" }); // Load environment variables
@@ -30,7 +36,6 @@ const app = express(); // creates express application instance
 
 // specifies what port the server will listen for requests on
 const PORT = 3000;
-
 ////////////////////////// AWS Comprehend //////////////////////////
 // // AWS SDK configuration
 AWS.config.update({
@@ -43,7 +48,22 @@ const comprehend = new AWS.Comprehend(); // Initialize Comprehend
 ////////////////////////// AWS Comprehend //////////////////////////
 
 // deals with cors domain information
-app.use(cors());
+app.use(
+  cors({
+    origin: "http://localhost:5173", // Allow your frontend to communicate with backend
+    credentials: true, // Allow cookies and sessions
+  })
+);
+
+// Initialize session middleware
+app.use(
+  session({
+    secret: process.env.AZURE_CLIENT_SECRET,
+    resave: false,
+    saveUninitialized: true,
+    cookie: { secure: false }, // Set to true in production with HTTPS
+  })
+);
 
 // formats everything into json
 app.use(express.json());
@@ -54,9 +74,14 @@ app.use(projects);
 //mounting tasks, makes projects available to the rest of the app
 app.use(tasks);
 
+// mounting notes, makes notes available to the rest of the app
+app.use(notes);
 
 //mounting routes, makes users available to the rest of the app
 app.use(users);
+
+//mounting emailRoutes, makes emailRoutes available to the rest of the app
+app.use(emails);
 
 // creates the server and tells it to listen on PORT for requests
 // callback function runs the connect file once connection is established

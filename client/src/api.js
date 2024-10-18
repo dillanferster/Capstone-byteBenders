@@ -216,7 +216,7 @@ export async function getTasks() {
 export async function getTask(id) {
   const response = await axios.get(`${URL}/tasks/${id}`);
   if (response.status === 200) {
-    return response;
+    return response.data;
   } else {
     console.log("issue with get", response.status);
     return;
@@ -370,6 +370,27 @@ export async function taskStatusUpdate(id, updatedTask) {
   }
 }
 
+// task total time
+export async function taskTotalTime(id, updatedTime) {
+  try {
+    const token = sessionStorage.getItem("User"); // Retrieve the token
+    const response = await axios.put(
+      `${URL}/tasks/${id}/totaltime`,
+      updatedTime,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`, // Attach the token in the Authorization header
+        },
+      }
+    );
+    console.log(response); // Gigi debug log for auth headers
+    return response;
+  } catch (error) {
+    console.error("Error updating task total time :", error);
+    throw error; // Optionally, throw the error to handle it in the component
+  }
+}
+
 //// TASK TIME ////
 
 ///USER///
@@ -513,3 +534,42 @@ export async function deleteNote(id) {
   }
 }
 ///NOTES///
+
+// src/api.js
+// email login function
+export async function emailLogin() {
+  try {
+    window.location.href = `${URL}/email-inbox/login`;
+  } catch (error) {
+    console.error("Login initiation failed:", error);
+  }
+}
+
+// Function to fetch emails after login
+export async function fetchEmails() {
+  try {
+    const response = await axios.get(`${URL}/email-inbox/emails`, {
+      withCredentials: true,
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    console.log(
+      "Access token sent in request:",
+      response.config.headers.Authorization
+    );
+    return response.data;
+  } catch (error) {
+    console.error("Failed to fetch emails:", error);
+    throw error;
+  }
+}
+
+// Function to log out the user
+export async function logoutEmail() {
+  try {
+    window.location.href = `${URL}/email/logout`;
+  } catch (error) {
+    console.error("Logout initiation failed:", error);
+  }
+}

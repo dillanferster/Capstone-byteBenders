@@ -199,7 +199,7 @@ const Sidebar = () => {
             />
             <Item
               title="Outlook Email"
-              to="/email"
+              to="/email-inbox"
               icon={<CalendarTodayOutlinedIcon />}
               selected={selected}
               setSelected={setSelected}
