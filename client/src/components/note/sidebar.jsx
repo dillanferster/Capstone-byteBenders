@@ -5,25 +5,23 @@ import NoteCard from './noteCard'; // Ensure NoteCard displays each note in the 
 
 const Sidebar = ({ notes, addNote, deleteNote, currentNoteId, setCurrentNoteId }) => {
   return (
-    <div className="sidebar border-end justify-center">
-      <Stack direction="horizontal" className="p-3 border-bottom">
-        <h1 className='justify-center'>Notes</h1>
-        {/* // Add a button to add a new note with an icone  */}
-        <Button variant="primary" className="ms-auto" onClick={addNote}>
-          Add Note
-        </Button>
-      </Stack>
-      <Stack>
+    <div className="sidebar">
+      <div className="sidebar-header">
+        <h2>Notes</h2>
+        <button onClick={addNote} className="add-note-button">+ Add Note</button>
+      </div>
+      <div className="note-list">
         {notes.map(note => (
-          <NoteCard
+          <div
             key={note.id}
-            note={note}
-            deleteNote={deleteNote}
-            currentNoteId={currentNoteId}
-            setCurrentNoteId={setCurrentNoteId}
-          />
+            className={`note-item ${note.id === currentNoteId ? 'active' : ''}`}
+            onClick={() => setCurrentNoteId(note.id)}
+          >
+            <div className="note-title">{note.title}</div>
+            <button className="delete-note-button" onClick={() => deleteNote(note.id)}>Delete</button>
+          </div>
         ))}
-      </Stack>
+      </div>
     </div>
   );
 };

@@ -216,7 +216,7 @@ export async function getTasks() {
 export async function getTask(id) {
   const response = await axios.get(`${URL}/tasks/${id}`);
   if (response.status === 200) {
-    return response;
+    return response.data;
   } else {
     console.log("issue with get", response.status);
     return;
@@ -366,6 +366,27 @@ export async function taskStatusUpdate(id, updatedTask) {
     return response;
   } catch (error) {
     console.error("Error updating project:", error);
+    throw error; // Optionally, throw the error to handle it in the component
+  }
+}
+
+// task total time
+export async function taskTotalTime(id, updatedTime) {
+  try {
+    const token = sessionStorage.getItem("User"); // Retrieve the token
+    const response = await axios.put(
+      `${URL}/tasks/${id}/totaltime`,
+      updatedTime,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`, // Attach the token in the Authorization header
+        },
+      }
+    );
+    console.log(response); // Gigi debug log for auth headers
+    return response;
+  } catch (error) {
+    console.error("Error updating task total time :", error);
     throw error; // Optionally, throw the error to handle it in the component
   }
 }
