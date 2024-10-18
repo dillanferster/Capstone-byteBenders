@@ -1,3 +1,4 @@
+import React, { useState, useEffect } from "react";
 import {
   Box,
   Button,
@@ -20,12 +21,53 @@ import BarChart from "../../componentsFrank/BarChart";
 import GeographyChart from "../../componentsFrank/GeographyChart";
 import StatBox from "../../componentsFrank/StatBox";
 import ProgressCircle from "../../componentsFrank/ProgressCircle";
-import { isOverflown } from "@mui/x-data-grid/utils/domUtils";
+import { Select, MenuItem, FormControl, InputLabel } from "@mui/material";
+// import { isOverflown } from "@mui/x-data-grid/utils/domUtils"; // not sure what this is for
+
+// database functions from api file
+import { getProjects, getProject, getTasks, getTask } from "../../api.js";
+import { set } from "date-fns";
 
 const Dashboard = () => {
   const navigate = useNavigate();
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
+  const [projects, setProjects] = useState([]);
+  const [numbOfProjects, setNumbOfProjects] = useState("##");
+  const [tasks, setTasks] = useState([]);
+  const [numbOfTasks, setNumbOfTasks] = useState("##");
+  const [timeRange, setTimeRange] = useState("week"); // Change to projects later ***
+
+  useEffect(() => {
+    // Load projects from database into useState variable
+    async function loadProjects() {
+      const dataProjects = await getProjects();
+
+      if (dataProjects) {
+        setProjects(dataProjects);
+        setNumbOfProjects(dataProjects.length);
+      }
+    }
+
+    // Load tasks from database into useState variable
+    async function loadTasks() {
+      const dataTasks = await getTasks();
+
+      if (dataTasks) {
+        console.log(dataTasks);
+        setTasks(dataTasks);
+        setNumbOfTasks(dataTasks.length);
+      }
+    }
+
+    loadProjects();
+    loadTasks();
+  }, []);
+
+  // Change to projects later ***
+  const handleTimeRangeChange = (event) => {
+    setTimeRange(event.target.value);
+  };
 
   const handleLogout = () => {
     sessionStorage.removeItem("User");
@@ -71,7 +113,7 @@ const Dashboard = () => {
           justifyContent="center"
         >
           <StatBox
-            title="134"
+            title={numbOfProjects}
             subtitle="Total Ongoing Projects"
             progress="0.75"
             increase="+14%"
@@ -109,7 +151,7 @@ const Dashboard = () => {
           justifyContent="center"
         >
           <StatBox
-            title="356"
+            title={numbOfTasks}
             subtitle="Total Ongoing Tasks"
             progress="0.30"
             increase="+5%"
@@ -141,6 +183,8 @@ const Dashboard = () => {
         </Box>
 
         {/* ROW 2 */}
+
+        {/* PROJECTS - TASKS */}
         <Box
           gridColumn="span 7"
           gridRow="span 2"
@@ -159,29 +203,42 @@ const Dashboard = () => {
                 fontWeight="600"
                 color={colors.grey[100]}
               >
-                Revenue Generated
-              </Typography>
-              <Typography
-                variant="h3"
-                fontWeight="bold"
-                color={colors.greenAccent[500]}
-              >
-                $59,342.32
+                Projects - Tasks
               </Typography>
             </Box>
-            <Box>
-              <IconButton>
-                <DownloadOutlinedIcon
-                  sx={{ fontSize: "26px", color: colors.greenAccent[500] }}
-                />
-              </IconButton>
+            <Box display="flex" alignItems="center" gap={2}>
+              <FormControl size="small" sx={{ minWidth: 120 }}>
+                <Select
+                  value={timeRange}
+                  onChange={handleTimeRangeChange}
+                  displayEmpty
+                  sx={{
+                    color: colors.grey[100],
+                    ".MuiOutlinedInput-notchedOutline": {
+                      borderColor: colors.grey[100],
+                    },
+                    "&:hover .MuiOutlinedInput-notchedOutline": {
+                      borderColor: colors.grey[300],
+                    },
+                    "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                      borderColor: colors.grey[100],
+                    },
+                  }}
+                >
+                  <MenuItem value="week">This Week</MenuItem>
+                  <MenuItem value="month">This Month</MenuItem>
+                  <MenuItem value="quarter">This Quarter</MenuItem>
+                  <MenuItem value="year">This Year</MenuItem>
+                </Select>
+              </FormControl>
             </Box>
           </Box>
           <Box height="240px" mt="-20px">
             <LineChart isDashboard={true} />
           </Box>
         </Box>
-        {/* TRANSACTIONS */}
+
+        {/* CALENDAR EVENTS */}
         <Box
           gridColumn="span 5"
           gridRow="span 2"
@@ -197,7 +254,7 @@ const Dashboard = () => {
             p="15px"
           >
             <Typography color={colors.grey[100]} variant="h5" fontWeight="600">
-              Recent Transactions
+              Upcoming Events
             </Typography>
           </Box>
           {mockTransactions.map((transaction, i) => (
