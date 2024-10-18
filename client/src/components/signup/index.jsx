@@ -31,7 +31,7 @@ export default function SignUp({ handleSubmit }) {
         lname: "",
         email: "",
         password: "",
-        role: "",
+        role: "User",
       }}
       validationSchema={checkoutSchema}
       onSubmit={handleSubmit} // Custom handleSubmit passed from props
@@ -117,12 +117,13 @@ export default function SignUp({ handleSubmit }) {
               sx={{ gridColumn: "span 4" }}
             />
 
-            {/* TO FIX : ROLE DOES NOT WORK IF NOT CLICKED ON DURING REGISTRATION */}
+            {/* TO FIX : ROLE DOES NOT WORK IF NOT CLICKED ON DURING REGISTRATION - WORKS CURRENTLY BUT CHANGING initialValues ADDS THAT ONE TO DATABASE NOT OUR DROPDOWN VALUES */}
             <TextField
               margin="normal"
               label="Role"
               name="role"
               select
+              defaultValue="User"
               value={values.role}
               slotProps={{
                 select: {
