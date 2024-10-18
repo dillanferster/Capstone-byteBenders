@@ -1,3 +1,14 @@
+/*
+ * Home page for the dashboard
+ *
+ * Displays data from the database in a dashboard format
+ *
+ * Uses some mock data and some real data for now
+ *
+ * Refference: https://www.youtube.com/watch?v=wYpCWwD1oz0&t=3528s&ab_channel=EdRoh
+ *
+ */
+
 import React, { useState, useEffect } from "react";
 import {
   Box,
@@ -36,7 +47,7 @@ const Dashboard = () => {
   const [numbOfProjects, setNumbOfProjects] = useState("##");
   const [tasks, setTasks] = useState([]);
   const [numbOfTasks, setNumbOfTasks] = useState("##");
-  const [timeRange, setTimeRange] = useState("week"); // Change to projects later ***
+  const [targetProject, setTargetProject] = useState("week"); // Change to projects later ***
 
   useEffect(() => {
     // Load projects from database into useState variable
@@ -46,6 +57,7 @@ const Dashboard = () => {
       if (dataProjects) {
         setProjects(dataProjects);
         setNumbOfProjects(dataProjects.length);
+        setTargetProject(dataProjects[0].projectName);
       }
     }
 
@@ -65,8 +77,8 @@ const Dashboard = () => {
   }, []);
 
   // Change to projects later ***
-  const handleTimeRangeChange = (event) => {
-    setTimeRange(event.target.value);
+  const handleTargetProjectChange = (event) => {
+    setTargetProject(event.target.value);
   };
 
   const handleLogout = () => {
@@ -209,8 +221,8 @@ const Dashboard = () => {
             <Box display="flex" alignItems="center" gap={2}>
               <FormControl size="small" sx={{ minWidth: 120 }}>
                 <Select
-                  value={timeRange}
-                  onChange={handleTimeRangeChange}
+                  value={targetProject}
+                  onChange={handleTargetProjectChange}
                   displayEmpty
                   sx={{
                     color: colors.grey[100],
@@ -225,10 +237,15 @@ const Dashboard = () => {
                     },
                   }}
                 >
-                  <MenuItem value="week">This Week</MenuItem>
+                  {projects.map((project) => (
+                    <MenuItem value={project.projectName}>
+                      {project.projectName}
+                    </MenuItem>
+                  ))}
+                  {/* <MenuItem value="week">This Week</MenuItem>
                   <MenuItem value="month">This Month</MenuItem>
                   <MenuItem value="quarter">This Quarter</MenuItem>
-                  <MenuItem value="year">This Year</MenuItem>
+                  <MenuItem value="year">This Year</MenuItem> */}
                 </Select>
               </FormControl>
             </Box>

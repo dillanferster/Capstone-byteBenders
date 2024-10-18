@@ -1,3 +1,9 @@
+/* Not used in the project, just for reference
+ *
+ * Refference: https://www.youtube.com/watch?v=wYpCWwD1oz0&t=3528s&ab_channel=EdRoh
+ *
+ */
+
 import { useTheme } from "@mui/material";
 import { ResponsiveBar } from "@nivo/bar";
 import { tokens } from "../theme";

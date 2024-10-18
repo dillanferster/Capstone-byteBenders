@@ -1,3 +1,12 @@
+/*
+ * This page displays information in an accordion format
+ *
+ * Used for a wiki page of information for the company's users
+ *
+ * Refference: https://www.youtube.com/watch?v=wYpCWwD1oz0&t=3528s&ab_channel=EdRoh
+ *
+ */
+
 import { Box, useTheme, Typography } from "@mui/material";
 import Header from "../../components/Header";
 import Accordion from "@mui/material/Accordion";

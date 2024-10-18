@@ -1,3 +1,12 @@
+/*
+ * Sidenav bar component for the application
+ *
+ * This component is responsible for rendering the side navigation bar and ability to change pages
+ *
+ * Refference: https://www.youtube.com/watch?v=wYpCWwD1oz0&t=3528s&ab_channel=EdRoh
+ *
+ */
+
 import React, { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import {
