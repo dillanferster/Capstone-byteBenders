@@ -117,6 +117,7 @@ export default function SignUp({ handleSubmit }) {
               sx={{ gridColumn: "span 4" }}
             />
 
+            {/* TO FIX : ROLE DOES NOT WORK IF NOT CLICKED ON DURING REGISTRATION */}
             <TextField
               margin="normal"
               label="Role"
