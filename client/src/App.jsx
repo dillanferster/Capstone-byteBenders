@@ -86,7 +86,7 @@ const App = () => {
               <Route path="/documentation" element={<DocumentationPage />} />
               <Route path="/create-user" element={<CreateUserPage />} />
               <Route path="/emailanalysis" element={<EmailAnalysisForm />} />
-              <Route path="/email" element={<EmailPage />} />
+              <Route path="/email-inbox" element={<EmailPage />} />
             </Route>
           </Routes>
         </main>
