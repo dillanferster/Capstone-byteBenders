@@ -174,7 +174,8 @@ const TaskPage = () => {
   const [addClicked, setAddClicked] = useState(false); // for add button
   const [editClicked, setEditClicked] = useState(false); // for add button
   const [deleteOpen, setDeleteOpen] = useState(false); //for dlt btn
-  const [rollingTimeFirst, setRollingTimeFirst] = useState(0); // for rolling time calculation
+
+  const [accumulatedRollingTimes, setAccumulatedRollingTimes] = useState({});
 
   //*
 
@@ -424,6 +425,60 @@ const TaskPage = () => {
     }
   }
 
+  // function calculatePauseTime(completeTaskObject) {
+  //   if (
+  //     completeTaskObject &&
+  //     completeTaskObject.startTime &&
+  //     completeTaskObject.pauseTime &&
+  //     completeTaskObject.pauseTime.length > 1
+  //   ) {
+  //     const pauseList = completeTaskObject.pauseTime;
+
+  //     let totalPauseTime = 0;
+  //     let pauseStartTime = 0;
+  //     let pauseEndTime = 0;
+
+  //     for (let index = 0; index < pauseList.length; index++) {
+  //       const pauseItem = pauseList[index];
+
+  //       if (index === 0) {
+  //         pauseEndTime = new Date(pauseItem.end);
+  //       } else {
+  //         pauseStartTime = new Date(pauseItem.start);
+  //         const newPauseTime = pauseStartTime - pauseEndTime;
+  //         totalPauseTime += newPauseTime;
+
+  //         pauseEndTime = new Date(pauseItem.end);
+  //       }
+  //     }
+
+  //     const totalMin = (totalPauseTime / (1000 * 60)).toFixed(2);
+
+  //     const finalRollingTime = `Minutes: ${totalMin}`;
+
+  //     console.log("total rollling time", finalRollingTime);
+
+  //     return totalMin;
+  //   } else {
+  //     // calculate just start and first pause
+  //     const startTime = new Date(completeTaskObject.startTime[0]);
+  //     const pauseTime = new Date(completeTaskObject.pauseTime[0].start);
+
+  //     console.log("start time pause button", startTime);
+  //     console.log("pause time pause button", pauseTime);
+
+  //     let totalTime = pauseTime - startTime;
+
+  //     const totalMin = (totalTime / (1000 * 60)).toFixed(2);
+
+  //     const finalTime = `Minutes: ${totalMin}`;
+
+  //     setRollingTimeFirst(totalMin);
+
+  //     return finalTime;
+  //   }
+  // }
+
   function calculatePauseTime(completeTaskObject) {
     if (
       completeTaskObject &&
@@ -451,12 +506,8 @@ const TaskPage = () => {
         }
       }
 
-      const totalMin = (totalPauseTime / (1000 * 60)).toFixed(2);
-
-      const finalRollingTime = `Minutes: ${totalMin}`;
-
-      console.log("total rollling time", finalRollingTime);
-
+      const totalMin = parseFloat((totalPauseTime / (1000 * 60)).toFixed(2));
+      console.log("total rolling time", totalMin);
       return totalMin;
     } else {
       // calculate just start and first pause
@@ -467,17 +518,60 @@ const TaskPage = () => {
       console.log("pause time pause button", pauseTime);
 
       let totalTime = pauseTime - startTime;
-
-      const totalMin = (totalTime / (1000 * 60)).toFixed(2);
-
-      const finalTime = `Minutes: ${totalMin}`;
-
-      setRollingTimeFirst(totalMin);
-     
-
-      return finalTime;
+      const totalMin = parseFloat((totalTime / (1000 * 60)).toFixed(2));
+      return totalMin;
     }
   }
+
+  /// handle pause
+  // calculates rolling time for pause and resume
+  // Reference Cluade.ai prompt : "im making a rolling time calculator the times are working. On the first click the finalTime is returned in handelPauseAndCalculate and passed into updateTotal time this all works , now on sencond run the finaltime is returned again but i need a way to add it to the final tie in the first run through but not sure how. this is becase the first time it runs and every other time it runs the finalTime is caculateed different inside of calculatePauseTime."
+  async function handlePauseandCalculate() {
+    const taskId = selectedTask[0].id;
+
+    const completeId = await buttonPause();
+    if (completeId) {
+      const completeTaskObject = await getTask(completeId);
+      const newTime = calculatePauseTime(completeTaskObject);
+
+      // functional update, adds new rolling time to id , key value pair
+      // taskid: rolling time
+      // ... creates new array so we dont directly mutate the state
+      // prev makes sure we are using the most up to date value
+      setAccumulatedRollingTimes((prevTimes) => {
+        const updatedTime = (prevTimes[taskId] || 0) + newTime;
+        const formattedTime = `Minutes: ${updatedTime}`;
+
+        // Use setTimeout to ensure state has been updated before calling updateTotalTime
+        setTimeout(() => {
+          // console.log(
+          //   `After pause calc for task ${taskId}, new time: ${newTime}, total accumulated time: ${updatedTime}`
+          // );
+          updateTotalTime(completeId, formattedTime);
+        }, 0);
+
+        return {
+          ...prevTimes,
+          [taskId]: updatedTime,
+        };
+      });
+      reloadTheGrid();
+    }
+  }
+
+  // async function handlePauseandCalculate() {
+  //   const completeId = await buttonPause();
+  //   if (completeId) {
+  //     const completeTaskObject = await getTask(completeId);
+  //     const finalTime = calculatePauseTime(completeTaskObject);
+
+  //     console.log(
+  //       `after pause calc,  final time ${finalTime} rollingTimeFirst ${rollingTimeFirst}`
+  //     );
+
+  //     updateTotalTime(completeId, finalTime);
+  //   }
+  // }
 
   // handle function for complete button click
   async function handleCompleteandCalculate() {
@@ -485,22 +579,6 @@ const TaskPage = () => {
     if (completeId) {
       const completeTaskObject = await getTask(completeId);
       const finalTime = calculateTotalHours(completeTaskObject);
-      updateTotalTime(completeId, finalTime);
-    }
-  }
-
-  async function handlePauseandCalculate() {
-    const completeId = await buttonPause();
-    if (completeId) {
-      const completeTaskObject = await getTask(completeId);
-      const finalTime = calculatePauseTime(completeTaskObject);
-      
-      console.log(
-        `after pause calc,  final time ${finalTime} rollingTimeFirst ${rollingTimeFirst}`
-      );
-
-
-
       updateTotalTime(completeId, finalTime);
     }
   }
