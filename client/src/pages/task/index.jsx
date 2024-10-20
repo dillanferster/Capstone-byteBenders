@@ -174,6 +174,7 @@ const TaskPage = () => {
   const [addClicked, setAddClicked] = useState(false); // for add button
   const [editClicked, setEditClicked] = useState(false); // for add button
   const [deleteOpen, setDeleteOpen] = useState(false); //for dlt btn
+  const [rollingTimeFirst, setRollingTimeFirst] = useState(0); // for rolling time calculation
 
   //*
 
@@ -292,7 +293,7 @@ const TaskPage = () => {
 
   // handles button pause task
   // calls pauseTask route
-  async function handleButtonPause() {
+  async function buttonPause() {
     pauseTask(selectedTask[0].id);
     console.log("task Paused");
 
@@ -303,7 +304,9 @@ const TaskPage = () => {
     try {
       const response = await taskStatusUpdate(selectedTask[0].id, updatedTask);
       if (response.status === 200) {
+        const selectedId = selectedTask[0].id;
         reloadTheGrid();
+        return selectedId;
       }
     } catch (error) {
       console.error("Error updating task Status:", error);
@@ -396,9 +399,6 @@ const TaskPage = () => {
         const totalMilisec = completeTime - startTime - totalPause;
         let finalTime = 0;
 
-        /// STILL NEED TO ADD ROLLING TIME ///
-        /// STILL NEED TO ADD ROLLING TIME ///
-        /// STILL NEED TO ADD ROLLING TIME ///
         if (completeTaskObject.pauseTime) {
           completeTaskObject.pauseTime.forEach((time) => {
             let start = new Date(time.start);
@@ -424,12 +424,79 @@ const TaskPage = () => {
     }
   }
 
+  function calculatePauseTime(completeTaskObject) {
+    if (
+      completeTaskObject &&
+      completeTaskObject.startTime &&
+      completeTaskObject.pauseTime &&
+      completeTaskObject.pauseTime.length > 1
+    ) {
+      const pauseList = completeTaskObject.pauseTime;
+
+      let totalPauseTime = 0;
+      let pauseStartTime = 0;
+      let pauseEndTime = 0;
+
+      for (let index = 0; index < pauseList.length; index++) {
+        const pauseItem = pauseList[index];
+
+        if (index === 0) {
+          pauseEndTime = new Date(pauseItem.end);
+        } else {
+          pauseStartTime = new Date(pauseItem.start);
+          const newPauseTime = pauseStartTime - pauseEndTime;
+          totalPauseTime += newPauseTime;
+
+          pauseEndTime = new Date(pauseItem.end);
+        }
+      }
+
+      const totalMin = (totalPauseTime / (1000 * 60)).toFixed(2);
+
+      const finalRollingTime = `Minutes: ${totalMin}`;
+
+      console.log("total rollling time", finalRollingTime);
+
+      return totalMin;
+    } else {
+      // calculate just start and first pause
+      const startTime = new Date(completeTaskObject.startTime[0]);
+      const pauseTime = new Date(completeTaskObject.pauseTime[0].start);
+
+      console.log("start time pause button", startTime);
+      console.log("pause time pause button", pauseTime);
+
+      let totalTime = pauseTime - startTime;
+
+      const totalMin = (totalTime / (1000 * 60)).toFixed(2);
+
+      const finalTime = `Minutes: ${totalMin}`;
+
+      setRollingTimeFirst(totalMin);
+
+      return finalTime;
+    }
+  }
+
   // handle function for complete button click
-  async function handleCompleteandCalculate(params) {
+  async function handleCompleteandCalculate() {
     const completeId = await buttonComplete();
     if (completeId) {
       const completeTaskObject = await getTask(completeId);
       const finalTime = calculateTotalHours(completeTaskObject);
+      updateTotalTime(completeId, finalTime);
+    }
+  }
+
+  async function handlePauseandCalculate() {
+    const completeId = await buttonPause();
+    if (completeId) {
+      const completeTaskObject = await getTask(completeId);
+      const finalTime = calculatePauseTime(completeTaskObject);
+      console.log(
+        `after pause calc,  final time ${finalTime} rollingTimeFirst ${rollingTimeFirst}`
+      );
+
       updateTotalTime(completeId, finalTime);
     }
   }
@@ -567,7 +634,7 @@ const TaskPage = () => {
                   <Button
                     variant="outlined"
                     color="warning"
-                    onClick={() => handleButtonPause()}
+                    onClick={() => handlePauseandCalculate()}
                   >
                     Pause Task
                   </Button>

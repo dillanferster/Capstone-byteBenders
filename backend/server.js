@@ -54,7 +54,6 @@ app.use(projects);
 //mounting tasks, makes projects available to the rest of the app
 app.use(tasks);
 
-
 //mounting routes, makes users available to the rest of the app
 app.use(users);
 
