@@ -473,6 +473,7 @@ const TaskPage = () => {
       const finalTime = `Minutes: ${totalMin}`;
 
       setRollingTimeFirst(totalMin);
+     
 
       return finalTime;
     }
@@ -493,9 +494,12 @@ const TaskPage = () => {
     if (completeId) {
       const completeTaskObject = await getTask(completeId);
       const finalTime = calculatePauseTime(completeTaskObject);
+      
       console.log(
         `after pause calc,  final time ${finalTime} rollingTimeFirst ${rollingTimeFirst}`
       );
+
+
 
       updateTotalTime(completeId, finalTime);
     }
