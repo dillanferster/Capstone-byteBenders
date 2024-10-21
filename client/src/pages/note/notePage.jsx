@@ -4,59 +4,103 @@
 import React, { useState, useEffect } from 'react';
 import Sidebar from '../../components/note/sidebar';
 import NoteEditor from '../../components//note/noteEditor';
-import { nanoid } from 'nanoid';
 import './NotePage.css'; // Ensure to add your styles for layout
+import { getNotes, createNote, updateNote, deleteNote } from '../../api'; 
 
 const NotePage = () => {
-  // State to manage the notes
-  const [notes, setNotes] = useState(() => {
-    try {
-      const savedNotes = JSON.parse(localStorage.getItem('notes'));
-      return Array.isArray(savedNotes) ? savedNotes : [];
-    } catch {
-      return [];
-    }
-  });
+  // State to manage the notes retrieved from the database
+  const [notes, setNotes] = useState([]); // Initialize with an empty array
 
   // State to manage the current note being edited
-  const [currentNoteId, setCurrentNoteId] = useState(notes[0]?.id || null);
+  const [currentNoteId, setCurrentNoteId] = useState(null);
 
   // State to toggle between Edit and Preview modes
   const [isEditMode, setIsEditMode] = useState(true); // Default to edit mode
 
-  // Sync notes with localStorage whenever notes change
+  // Fetch notes from the database when the component mounts
   useEffect(() => {
-    localStorage.setItem('notes', JSON.stringify(notes));
-  }, [notes]);
+    const fetchNotesFromDB = async () => {
+      try {
+        const notesFromDB = await getNotes(); // Fetch notes
+        console.log('Fetched notes:', notesFromDB); // Log the fetched data for debugging
+        setNotes(notesFromDB);
+        setCurrentNoteId(notesFromDB[0]?._id || null); // Set first note as current
+      } catch (error) {
+        console.error('Error fetching notes:', error); // Log any error that occurs during fetch
+      }
+    };
+    fetchNotesFromDB();
+  }, []);
 
   // Function to add a new note
-  const addNote = () => {
+  const addNote = async () => {
     const newNote = {
-      id: nanoid(),
       title: 'Untitled',
       content: '',
       updatedAt: Date.now(),
     };
-    setNotes(prevNotes => [newNote, ...prevNotes]);
-    setCurrentNoteId(newNote.id);
-    setIsEditMode(true); // Switch to edit mode when adding a new note
+    try {
+      const savedNote = await createNote(newNote); // Save new note to the database
+      console.log('Created note:', savedNote); // Add this log to debug new note creation
+      setNotes(prevNotes => [savedNote, ...prevNotes]);
+      setCurrentNoteId(savedNote._id); // Ensure _id is used, not id
+      setIsEditMode(true); // Switch to edit mode
+    } catch (error) {
+      console.error('Error creating note:', error);
+    }
   };
 
   // Function to update the content of a note
-  const updateNote = (updatedNote) => {
-    setNotes(prevNotes =>
-      prevNotes.map(note => (note.id === updatedNote.id ? updatedNote : note))
-    );
+  const updateNoteContent = async (updatedNote) => {
+    try {
+      const savedNote = await updateNote(updatedNote._id, updatedNote); // Update note in DB
+      setNotes(prevNotes =>
+        prevNotes.map(note => (note._id === savedNote._id ? savedNote : note))
+      );
+    } catch (error) {
+      console.error('Error updating note:', error);
+    }
   };
 
   // Function to delete a note
-  const deleteNote = (noteId) => {
-    setNotes(prevNotes => prevNotes.filter(note => note.id !== noteId));
-    setCurrentNoteId(prevNotes => prevNotes[0]?.id || null);
+  const deleteNoteById = async (noteId) => {
+    if (!noteId) {
+      console.error('No noteId provided for deletion');
+      return;
+    }
+  
+    try {
+      await deleteNote(noteId);
+      setNotes(prevNotes => prevNotes.filter(note => note._id !== noteId));
+      setCurrentNoteId(prevNotes[0]?._id || null); // Set to the first note if exists
+    } catch (error) {
+      console.error('Error deleting note:', error);
+    }
   };
 
   // Get the current note based on currentNoteId
-  const getCurrentNote = () => notes.find(note => note.id === currentNoteId);
+  const getCurrentNote = () => notes.find(note => note._id === currentNoteId);
+
+  //save the note
+  const saveNote = async (updatedNote) => {
+    try {
+      if (updatedNote._id) {
+        // If the note already exists, update it
+        const savedNote = await updateNote(updatedNote._id, updatedNote);
+        setNotes(prevNotes =>
+          prevNotes.map(note => (note._id === savedNote._id ? savedNote : note))
+        );
+      } else {
+        // If it's a new note, create it
+        const newNote = await createNote(updatedNote); // Ensure this note is passed with title, content, and createdBy
+        setNotes(prevNotes => [newNote, ...prevNotes]);
+        setCurrentNoteId(newNote._id);
+      }
+      setIsEditMode(false); // Switch to preview mode after saving
+    } catch (error) {
+      console.error('Error saving note:', error);
+    }
+  };
 
   return (
     <div className="note-page">
@@ -65,21 +109,21 @@ const NotePage = () => {
         <Sidebar
           notes={notes}
           addNote={addNote}
-          deleteNote={deleteNote}
+          deleteNote={deleteNoteById}
           currentNoteId={currentNoteId}
           setCurrentNoteId={setCurrentNoteId}
+          saveNote={saveNote}
         />
       </div>
       {/* Editor section */}
-      <div className="note-editor">
+      <div className="note-editor" color='black'>
         <div className="editor-header">
           <button
             onClick={() => setIsEditMode(true)}
-            className={isEditMode ? 'active-tab' : ''}
+            className={isEditMode ? 'active-tab' : ''} 
           >
-            Edit
+            Edit          
           </button>
-          <br />
           <button
             onClick={() => setIsEditMode(false)}
             className={!isEditMode ? 'active-tab' : ''}
@@ -91,7 +135,9 @@ const NotePage = () => {
         {isEditMode ? (
           <NoteEditor
             currentNote={getCurrentNote()}
-            updateNote={updateNote}
+            updateNote={updateNoteContent}
+            saveNote={saveNote}
+            deleteNote={deleteNoteById}
           />
         ) : (
           <div className="note-preview">
