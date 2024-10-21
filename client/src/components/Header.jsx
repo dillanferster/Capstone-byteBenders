@@ -1,3 +1,10 @@
+/*
+ * Header Component for pages
+ *
+ * Refference: https://www.youtube.com/watch?v=wYpCWwD1oz0&t=3528s&ab_channel=EdRoh
+ *
+ */
+
 import { Typography, Box, useTheme } from "@mui/material";
 import { tokens } from "../theme";
 

@@ -17,8 +17,6 @@ const Item = ({ title, to, icon, selected, setSelected }) => {
   const colors = tokens(theme.palette.mode);
   const activeTab = selected === title;
 
-  console.log("activeTab: ", activeTab);
-
   return (
     <MenuItem
       active={selected === title}
@@ -201,7 +199,7 @@ const Sidebar = () => {
             />
             <Item
               title="Outlook Email"
-              to="/email"
+              to="/email-inbox"
               icon={<CalendarTodayOutlinedIcon />}
               selected={selected}
               setSelected={setSelected}

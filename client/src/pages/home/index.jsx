@@ -1,3 +1,14 @@
+/*
+ * Home page for the dashboard
+ *
+ * Displays data from the database in a dashboard format
+ *
+ * Uses some mock data and some real data for now
+ *
+ * Refference: https://www.youtube.com/watch?v=wYpCWwD1oz0&t=3528s&ab_channel=EdRoh
+ */
+
+import React, { useState, useEffect } from "react";
 import {
   Box,
   Button,
@@ -20,12 +31,54 @@ import BarChart from "../../componentsFrank/BarChart";
 import GeographyChart from "../../componentsFrank/GeographyChart";
 import StatBox from "../../componentsFrank/StatBox";
 import ProgressCircle from "../../componentsFrank/ProgressCircle";
-import { isOverflown } from "@mui/x-data-grid/utils/domUtils";
+import { Select, MenuItem, FormControl, InputLabel } from "@mui/material";
+// import { isOverflown } from "@mui/x-data-grid/utils/domUtils"; // not sure what this is for
+
+// database functions from api file
+import { getProjects, getProject, getTasks, getTask } from "../../api.js";
+// import { set } from "date-fns";
 
 const Dashboard = () => {
   const navigate = useNavigate();
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
+  const [projects, setProjects] = useState([]);
+  const [numbOfProjects, setNumbOfProjects] = useState("##");
+  const [tasks, setTasks] = useState([]);
+  const [numbOfTasks, setNumbOfTasks] = useState("##");
+  const [targetProject, setTargetProject] = useState("week");
+
+  useEffect(() => {
+    // Load projects from database into useState variable
+    async function loadProjects() {
+      const dataProjects = await getProjects();
+
+      if (dataProjects) {
+        setProjects(dataProjects);
+        setNumbOfProjects(dataProjects.length);
+        setTargetProject(dataProjects[0].projectName);
+      }
+    }
+
+    // Load tasks from database into useState variable
+    async function loadTasks() {
+      const dataTasks = await getTasks();
+
+      if (dataTasks) {
+        console.log(dataTasks);
+        setTasks(dataTasks);
+        setNumbOfTasks(dataTasks.length);
+      }
+    }
+
+    loadProjects();
+    loadTasks();
+  }, []);
+
+  // Change to projects later ***
+  const handleTargetProjectChange = (event) => {
+    setTargetProject(event.target.value);
+  };
 
   const handleLogout = () => {
     sessionStorage.removeItem("User");
@@ -71,8 +124,8 @@ const Dashboard = () => {
           justifyContent="center"
         >
           <StatBox
-            title="12,361"
-            subtitle="Emails Sent"
+            title={numbOfProjects}
+            subtitle="Total Ongoing Projects"
             progress="0.75"
             increase="+14%"
             icon={
@@ -90,10 +143,10 @@ const Dashboard = () => {
           justifyContent="center"
         >
           <StatBox
-            title="431,225"
-            subtitle="Sales Obtained"
+            title="5d 12h 23m"
+            subtitle="Average Project Time"
             progress="0.5"
-            increase="+21%"
+            increase="-21%"
             icon={
               <PointOfSaleIcon
                 sx={{ color: colors.greenAccent[600], fontSize: "26px" }}
@@ -109,8 +162,8 @@ const Dashboard = () => {
           justifyContent="center"
         >
           <StatBox
-            title="32,441"
-            subtitle="New Clients"
+            title={numbOfTasks}
+            subtitle="Total Ongoing Tasks"
             progress="0.30"
             increase="+5%"
             icon={
@@ -128,10 +181,10 @@ const Dashboard = () => {
           justifyContent="center"
         >
           <StatBox
-            title="1,325,134"
-            subtitle="Traffic Inbound"
+            title="4h 32m"
+            subtitle="Average Task Time"
             progress="0.80"
-            increase="+43%"
+            increase="-5%"
             icon={
               <TrafficIcon
                 sx={{ color: colors.greenAccent[600], fontSize: "26px" }}
@@ -141,8 +194,10 @@ const Dashboard = () => {
         </Box>
 
         {/* ROW 2 */}
+
+        {/* PROJECTS - TASKS */}
         <Box
-          gridColumn="span 8"
+          gridColumn="span 7"
           gridRow="span 2"
           backgroundColor={colors.primary[400]}
         >
@@ -159,31 +214,49 @@ const Dashboard = () => {
                 fontWeight="600"
                 color={colors.grey[100]}
               >
-                Revenue Generated
-              </Typography>
-              <Typography
-                variant="h3"
-                fontWeight="bold"
-                color={colors.greenAccent[500]}
-              >
-                $59,342.32
+                Projects - Tasks
               </Typography>
             </Box>
-            <Box>
-              <IconButton>
-                <DownloadOutlinedIcon
-                  sx={{ fontSize: "26px", color: colors.greenAccent[500] }}
-                />
-              </IconButton>
+            <Box display="flex" alignItems="center" gap={2}>
+              <FormControl size="small" sx={{ minWidth: 120 }}>
+                <Select
+                  value={targetProject}
+                  onChange={handleTargetProjectChange}
+                  displayEmpty
+                  sx={{
+                    color: colors.grey[100],
+                    ".MuiOutlinedInput-notchedOutline": {
+                      borderColor: colors.grey[100],
+                    },
+                    "&:hover .MuiOutlinedInput-notchedOutline": {
+                      borderColor: colors.grey[300],
+                    },
+                    "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                      borderColor: colors.grey[100],
+                    },
+                  }}
+                >
+                  {projects.map((project) => (
+                    <MenuItem value={project.projectName}>
+                      {project.projectName}
+                    </MenuItem>
+                  ))}
+                  {/* <MenuItem value="week">This Week</MenuItem>
+                  <MenuItem value="month">This Month</MenuItem>
+                  <MenuItem value="quarter">This Quarter</MenuItem>
+                  <MenuItem value="year">This Year</MenuItem> */}
+                </Select>
+              </FormControl>
             </Box>
           </Box>
           <Box height="240px" mt="-20px">
             <LineChart isDashboard={true} />
           </Box>
         </Box>
-        {/* TRANSACTIONS */}
+
+        {/* CALENDAR EVENTS */}
         <Box
-          gridColumn="span 4"
+          gridColumn="span 5"
           gridRow="span 2"
           backgroundColor={colors.primary[400]}
           overflow="auto"
@@ -197,7 +270,7 @@ const Dashboard = () => {
             p="15px"
           >
             <Typography color={colors.grey[100]} variant="h5" fontWeight="600">
-              Recent Transactions
+              Upcoming Events
             </Typography>
           </Box>
           {mockTransactions.map((transaction, i) => (

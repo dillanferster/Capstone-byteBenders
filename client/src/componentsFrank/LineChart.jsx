@@ -1,3 +1,10 @@
+/*
+ * Will not be used in the project, just for reference
+ *
+ * Refference: https://www.youtube.com/watch?v=wYpCWwD1oz0&t=3528s&ab_channel=EdRoh
+ *
+ */
+
 import { ResponsiveLine } from "@nivo/line";
 import { tokens } from "../theme";
 import { useTheme } from "@mui/material";
