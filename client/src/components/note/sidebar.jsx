@@ -17,6 +17,7 @@ const Sidebar = ({ notes, addNote, deleteNote, currentNoteId, setCurrentNoteId }
             className={`note-item ${note.id === currentNoteId ? 'active' : ''}`}
             onClick={() => setCurrentNoteId(note.id)}
           >
+            {note.title || 'Untitled'}
             <div className="note-title">{note.title}</div>
             <button className="delete-note-button" onClick={() => deleteNote(note.id)}>Delete</button>
           </div>
