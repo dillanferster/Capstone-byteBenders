@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
 
 const NoteEditor = ({ currentNote, updateNote }) => {
-  const [note, setNote] = useState(currentNote || { title: '', content: '' });
+  const [note, setNote] = useState(currentNote || { title: '', content: '',createdBy: '' });
 
   useEffect(() => {
-    setNote(currentNote || { title: '', content: '' });
+    setNote(currentNote || { title: '', content: '' ,createdBy: ''});
   }, [currentNote]);
 
   const handleSave = () => {

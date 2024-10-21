@@ -24,6 +24,8 @@ const users = require("./userRoutes"); // imports userRoutes file
 
 const AWS = require("aws-sdk"); // Import AWS SDK v2 (in maintenance mode). Migrate to AWS SDK for Javascript V3 later
 
+const noteRoutes = require("./noteRoutes"); // imports noteRoutes file
+
 require("dotenv").config({ path: "./.env" }); // Load environment variables
 
 const app = express(); // creates express application instance
@@ -57,6 +59,9 @@ app.use(tasks);
 
 //mounting routes, makes users available to the rest of the app
 app.use(users);
+
+//mounting noteRoutes, makes notes available to the rest of the app
+app.use(noteRoutes);
 
 // creates the server and tells it to listen on PORT for requests
 // callback function runs the connect file once connection is established
