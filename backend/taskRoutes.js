@@ -30,7 +30,6 @@ const ObjectId = require("mongodb").ObjectId;
 // check to make sure data  has a value then returns response in json, if not gives an error
 // Authenticated route, verifyToken middleware is called before the async function is executed
 // References for this file are from  https://www.youtube.com/watch?v=Jcs_2jNPgtE&t=8033s
-
 taskRoutes.route("/tasks").get(verifyToken, async (request, response) => {
   let db = database.getDb();
   let data = await db.collection("tasks").find({}).toArray();
@@ -182,6 +181,7 @@ taskRoutes
 // Reference Claude AI, prompt : "Resuming a task, can you explain this in more detail please"
 // chekcs to see if any of the pauseTime object DO NOT have a property called "end" if they dont
 // it adds that poperty to the object, in this case it will create an object pair {start: date end: date}
+// reference Cluade AI prompt " how can i log pause and resume time into mongodb collection"
 taskRoutes
   .route("/tasks/:id/resume")
   .put(verifyToken, async (request, response) => {
@@ -191,7 +191,7 @@ taskRoutes
 
     let data = await db.collection("tasks").updateOne(
       { _id: new ObjectId(request.params.id) }, // match the document by ID
-      { $set: { "pauseTime.$[elem].end": new Date() } }, // update the 'end' field
+      { $set: { "pauseTime.$[elem].end": new Date() } }, // update the 'end' field, $ is positional operator
       { arrayFilters: [{ "elem.end": { $exists: false } }] } // filter array elements with no 'end' field
     );
     response.json(data);

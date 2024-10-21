@@ -1,3 +1,12 @@
+/*
+ * This page displays information in an accordion format for events
+ *
+ *
+ *
+ * Refference: https://www.youtube.com/watch?v=wYpCWwD1oz0&t=3528s&ab_channel=EdRoh
+ *
+ */
+
 import { useState, useEffect } from "react";
 import FullCalendar from "@fullcalendar/react";
 import { formatDate } from "@fullcalendar/core";
