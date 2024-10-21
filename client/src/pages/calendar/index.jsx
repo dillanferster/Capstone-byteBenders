@@ -109,9 +109,9 @@ const Calendar = () => {
       // console.log(eventData);
       const response = await createCalendarEvent(eventData);
 
-      console.log(response);
+      console.log("RESPONSE: " + response);
 
-      if (!response.ok) throw new Error("Failed to create event");
+      if (!response.status === 200) throw new Error("Failed to create event");
 
       showAlert("Event created successfully");
       setModalOpen(false);

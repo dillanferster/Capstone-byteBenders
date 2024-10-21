@@ -54,14 +54,15 @@ calendarRoutes.route("/events").post(verifyToken, async (request, response) => {
       end: request.body.end,
       description: request.body.description,
       meetingLink: request.body.meetingLink,
-      participants: requestBody.participants,
+      participants: request.body.participants,
       // createdBy: request.user.id, // Assuming user info is added by auth middleware
       // dateCreated: new Date(),
     };
-    console.log("TEST: ", eventObject);
+    console.log("TESTING IF IT CAME OUT: ", eventObject);
     let data = await db.collection("calendar").insertOne(eventObject);
     response.json(data);
   } catch (error) {
+    console.log("IN CATCH BLOCK: ", error);
     response.status(500).json({ error: "Failed to create event" });
   }
 });
