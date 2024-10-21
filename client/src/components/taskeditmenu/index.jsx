@@ -10,6 +10,7 @@
  */
 
 import { useEffect, useState } from "react";
+import taskSchema from "../../validations/taskValidation";
 
 export default function TaskEditMenu({
   toggleForm,
@@ -116,8 +117,6 @@ export default function TaskEditMenu({
   // creates a new object with the updated state variables from the inputs
   // calls update project , pass the project id and updated project object
   const submitUpdatedTask = async () => {
-    setEditClicked(!editClicked);
-
     const updatedTask = {
       taskName: taskName,
       assignedTo: assignedTo,
@@ -135,18 +134,25 @@ export default function TaskEditMenu({
     };
 
     try {
-      const response = await updateTask(taskId, updatedTask);
-      if (response.status === 200) {
-        updateTaskToProject(taskId, projectTask);
+      const isValid = await taskSchema.validate(updatedTask);
+      if (isValid) {
+        console.log("data is valid");
+        try {
+          const response = await updateTask(taskId, updatedTask);
+          if (response.status === 200) {
+            updateTaskToProject(taskId, projectTask);
 
-        toggleForm();
-
-        reloadTheGrid();
-
-        clearAddInputs();
+            reloadTheGrid();
+            toggleForm();
+            clearAddInputs();
+            setEditClicked(!editClicked);
+          }
+        } catch (error) {
+          console.error("Error updating task:", error);
+        }
       }
-    } catch (error) {
-      console.error("Error updating task:", error);
+    } catch (err) {
+      alert(err.errors);
     }
   };
 
@@ -196,7 +202,6 @@ export default function TaskEditMenu({
       }
     } catch (error) {
       console.error("Error adding task:", error);
-      // Handle the error appropriately (e.g., show an error message to the user)
     }
   };
 
