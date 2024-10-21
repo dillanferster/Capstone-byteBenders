@@ -28,6 +28,8 @@ const session = require("express-session"); // imports session management
 
 const emails = require("./emailRoutes"); // imports emailRoutes
 
+const events = require("./calendarRoutes"); // imports calendarRoutes
+
 const AWS = require("aws-sdk"); // Import AWS SDK v2 (in maintenance mode). Migrate to AWS SDK for Javascript V3 later
 
 require("dotenv").config({ path: "./.env" }); // Load environment variables
@@ -82,6 +84,9 @@ app.use(users);
 
 //mounting emailRoutes, makes emailRoutes available to the rest of the app
 app.use(emails);
+
+//mounting calendarRoutes, makes calendarRoutes available to the rest of the app
+app.use(events);
 
 // creates the server and tells it to listen on PORT for requests
 // callback function runs the connect file once connection is established
