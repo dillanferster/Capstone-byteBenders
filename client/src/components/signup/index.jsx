@@ -31,7 +31,7 @@ export default function SignUp({ handleSubmit }) {
         lname: "",
         email: "",
         password: "",
-        role: "",
+        role: "User",
       }}
       validationSchema={checkoutSchema}
       onSubmit={handleSubmit} // Custom handleSubmit passed from props
@@ -122,6 +122,7 @@ export default function SignUp({ handleSubmit }) {
               label="Role"
               name="role"
               select
+              defaultValue="User"
               value={values.role}
               slotProps={{
                 select: {

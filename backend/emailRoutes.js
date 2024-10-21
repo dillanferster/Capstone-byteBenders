@@ -60,6 +60,9 @@ emailRoutes.route("/email-inbox/callback").get(async (req, res) => {
     console.log("Token response:", response); // Log token response to check if it's acquired properly
     req.session.accessToken = response.accessToken; // Store access token in session
     res.redirect("http://localhost:5173/email-inbox/"); // Redirect to frontend after authentication
+
+    // Send the accessToken to the client (in JSON format, for example)
+    // res.json({ accessToken });
   } catch (error) {
     console.error("Error acquiring token:", error);
     res.status(500).send("Authentication failed");
@@ -102,7 +105,7 @@ emailRoutes.route("/email-inbox/emails").get(async (req, res) => {
       );
     }
 
-    const data = await response.json(); // Parse response data in jason format
+    const data = await response.json(); // Parse response data in json format
     res.json(data.value); // Return values of data object to the client side
   } catch (error) {
     console.error(
@@ -123,7 +126,7 @@ emailRoutes.route("/email/logout").get((req, res) => {
     }
 
     console.log("User session cleared via front-channel logout");
-    res.redirect("http://localhost:5173/"); // Redirect to the login page or home page after logout
+    res.redirect("http://localhost:5173/home"); // Redirect to the login page or home page after logout
   });
 });
 
