@@ -85,6 +85,7 @@ app.use(notes);
 //mounting routes, makes users available to the rest of the app
 app.use(users);
 
+
 //mounting emailRoutes, makes emailRoutes available to the rest of the app
 app.use(emails);
 
@@ -93,6 +94,7 @@ app.use((err, req, res, next) => {
   console.error(err.stack);
   res.status(500).send("Something broke!");
 });
+
 
 // creates the server and tells it to listen on PORT for requests
 // callback function runs the connect file once connection is established

@@ -431,20 +431,22 @@ export async function verifyUser(user) {
 // if the response sent back is good "200" the function returns the data, else console.logs issue
 export async function getNotes() {
   try {
-    const token = sessionStorage.getItem("User"); // Retrieve the token
+    const token = sessionStorage.getItem("User"); // Make sure token is valid if you're using authentication
     const response = await axios.get(`${URL}/notes`, {
       headers: {
-        Authorization: `Bearer ${token}`, // Attach the token in the Authorization header
+        Authorization: `Bearer ${token}`, // Add your token if needed
+        'Cache-Control': 'no-cache',      // Prevent caching by the browser
+        'Pragma': 'no-cache',             // HTTP 1.0 backward compatibility
+        'Expires': '0',                   // Expire immediately
       },
+      params: {
+        timestamp: new Date().getTime()    // Add a query parameter to prevent caching
+      }
     });
-    if (response.status === 200) {
-      return response.data;
-    } else {
-      console.log("Issue with get", response.status);
-    }
+    return response.data;                  // Return the fresh data
   } catch (error) {
-    console.error("Error fetching notes:", error);
-    throw error; // Optionally, throw the error to handle it in the component
+    console.error("Error fetching notes:", error); // Log any errors for debugging
+    throw error;
   }
 }
 
@@ -480,10 +482,11 @@ export async function getNote(id) {
 // returns the response object
 export async function createNote(note) {
   try {
-    const token = sessionStorage.getItem("User"); // Retrieve the token
+    const token = sessionStorage.getItem("User");
     const response = await axios.post(`${URL}/notes`, note, {
       headers: {
-        Authorization: `Bearer ${token}`, // Attach the token in the Authorization header
+        Authorization: `Bearer ${token}`,
+        'Content-Type': 'application/json',
       },
     });
     return response.data;
