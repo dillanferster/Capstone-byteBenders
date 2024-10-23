@@ -30,6 +30,7 @@ const emails = require("./emailRoutes"); // imports emailRoutes
 
 const AWS = require("aws-sdk"); // Import AWS SDK v2 (in maintenance mode). Migrate to AWS SDK for Javascript V3 later
 
+const cookieParser = require("cookie-parser"); // Import cookie-parser
 
 require("dotenv").config({ path: "./.env" }); // Load environment variables
 
@@ -51,7 +52,7 @@ const comprehend = new AWS.Comprehend(); // Initialize Comprehend
 // deals with cors domain information
 app.use(
   cors({
-    origin: "http://localhost:5173", // Allow your frontend to communicate with backend
+    origin: "http://localhost:5173", // Allow frontend to communicate with backend
     credentials: true, // Allow cookies and sessions
   })
 );
@@ -65,6 +66,9 @@ app.use(
     cookie: { secure: false }, // Set to true in production with HTTPS
   })
 );
+
+// Use cookie-parser middleware
+app.use(cookieParser());
 
 // formats everything into json
 app.use(express.json());
@@ -84,6 +88,12 @@ app.use(users);
 
 //mounting emailRoutes, makes emailRoutes available to the rest of the app
 app.use(emails);
+
+// error handling middleware
+app.use((err, req, res, next) => {
+  console.error(err.stack);
+  res.status(500).send("Something broke!");
+});
 
 
 // creates the server and tells it to listen on PORT for requests

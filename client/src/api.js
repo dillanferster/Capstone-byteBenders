@@ -538,7 +538,7 @@ export async function deleteNote(id) {
 }
 ///NOTES///
 
-// src/api.js
+// client/src/api.js
 // email login function
 export async function emailLogin() {
   try {
@@ -551,27 +551,82 @@ export async function emailLogin() {
 // Function to fetch emails after login
 export async function fetchEmails() {
   try {
+    console.log("All cookies:", document.cookie);
+    const accessToken = document.cookie
+      .split("; ")
+      .find((row) => row.startsWith("accessToken="))
+      ?.split("=")[1];
+    console.log("Fetching emails with access token:", accessToken);
+
+    if (!accessToken) {
+      console.error("Access token not found in cookies");
+    }
     const response = await axios.get(`${URL}/email-inbox/emails`, {
       withCredentials: true,
       headers: {
-        "Content-Type": "application/json",
+        Authorization: `Bearer ${accessToken}`,
       },
     });
-    console.log(
-      "Access token sent in request:",
-      response.config.headers.Authorization
-    );
+    console.log("Emails response:", response.data);
     return response.data;
   } catch (error) {
     console.error("Failed to fetch emails:", error);
+    if (error.response) {
+      console.error("Error response:", error.response.data);
+      console.error("Error status:", error.response.status);
+    }
     throw error;
+  }
+}
+
+// Function to refresh access token using the refresh token
+async function refreshAccessToken() {
+  try {
+    const refreshToken = localStorage.getItem("refreshToken"); // Retrieve refresh token from localStorage
+    if (!refreshToken) {
+      console.error("No refresh token found, user needs to re-login");
+      return false;
+    }
+
+    const response = await axios.post(
+      `${URL}/auth/refresh-token`,
+      {
+        refresh_token: refreshToken,
+      },
+      {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+
+    // Save the new access and refresh tokens
+    localStorage.setItem("accessToken", response.data.access_token);
+    localStorage.setItem("refreshToken", response.data.refresh_token);
+    console.log("Access token refreshed successfully");
+    return true;
+  } catch (error) {
+    console.error("Failed to refresh access token:", error);
+    logoutEmail(); // Log the user out if refresh fails
+    return false;
   }
 }
 
 // Function to log out the user
 export async function logoutEmail() {
   try {
+    // Redirect to the server-side logout route
     window.location.href = `${URL}/email/logout`;
+
+    // Clear tokens in localStorage or sessionStorage
+    localStorage.removeItem("accessToken");
+    localStorage.removeItem("refreshToken");
+    sessionStorage.removeItem("accessToken");
+    sessionStorage.removeItem("refreshToken");
+
+    // Clear cookies (if used)
+    document.cookie =
+      "accessToken=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
   } catch (error) {
     console.error("Logout initiation failed:", error);
   }
