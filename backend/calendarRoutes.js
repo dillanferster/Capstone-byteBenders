@@ -76,8 +76,8 @@ calendarRoutes
       let eventObject = {
         $set: {
           title: request.body.title,
-          start: new Date(request.body.start),
-          end: new Date(request.body.end),
+          start: request.body.start,
+          end: request.body.end,
           description: request.body.description,
           meetingLink: request.body.meetingLink,
           participants: request.body.participants,

@@ -617,7 +617,7 @@ export async function updateCalendarEvent(id, event) {
         Authorization: `Bearer ${token}`,
       },
     });
-    return response.data;
+    return response;
   } catch (error) {
     console.error("Error updating calendar event:", error);
     throw error;

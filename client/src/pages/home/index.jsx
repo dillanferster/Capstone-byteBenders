@@ -37,6 +37,7 @@ import { Select, MenuItem, FormControl, InputLabel } from "@mui/material";
 
 // database functions from api file
 import { getProjects, getProject, getTasks, getTask } from "../../api.js";
+import { getCalendarEvents } from "../../api.js";
 // import { set } from "date-fns";
 
 const Dashboard = () => {
@@ -47,7 +48,8 @@ const Dashboard = () => {
   const [numbOfProjects, setNumbOfProjects] = useState("##");
   const [tasks, setTasks] = useState([]);
   const [numbOfTasks, setNumbOfTasks] = useState("##");
-  const [targetProject, setTargetProject] = useState("week");
+  const [targetProject, setTargetProject] = useState("***");
+  const [calendarEvents, setCalendarEvents] = useState([]);
 
   useEffect(() => {
     // Load projects from database into useState variable
@@ -74,6 +76,33 @@ const Dashboard = () => {
 
     loadProjects();
     loadTasks();
+  }, []);
+
+  // Load calendar events from database into useState variable
+  useEffect(() => {
+    const fetchEvents = async () => {
+      try {
+        const data = await getCalendarEvents();
+
+        if (!data) throw new Error("Failed to fetch events");
+
+        const events = data.map((event) => ({
+          id: event._id,
+          title: event.title,
+          start: event.start,
+          end: event.end,
+          description: event.description,
+          meetingLink: event.meetingLink,
+          participants: event.participants,
+        }));
+
+        setCalendarEvents(events);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    fetchEvents();
   }, []);
 
   // Change to projects later ***
@@ -274,9 +303,9 @@ const Dashboard = () => {
               Upcoming Events
             </Typography>
           </Box>
-          {mockTransactions.map((transaction, i) => (
+          {calendarEvents.map((event) => (
             <Box
-              key={`${transaction.txId}-${i}`}
+              key={`${event.id}`}
               display="flex"
               justifyContent="space-between"
               alignItems="center"
@@ -289,19 +318,33 @@ const Dashboard = () => {
                   variant="h5"
                   fontWeight="600"
                 >
-                  {transaction.txId}
+                  {event.title}
                 </Typography>
                 <Typography color={colors.grey[100]}>
-                  {transaction.user}
+                  {formatDate(event.start, event.end)}
+                </Typography>
+                <Typography color={colors.grey[100]}>
+                  {event.participants.length} participants
                 </Typography>
               </Box>
-              <Box color={colors.grey[100]}>{transaction.date}</Box>
+              <Box color={colors.grey[100]}>
+                <Typography
+                  color={colors.greenAccent[500]}
+                  variant="h5"
+                  fontWeight="400"
+                >
+                  Description
+                </Typography>
+                <Typography color={colors.grey[100]}>
+                  {event.description}
+                </Typography>
+              </Box>
               <Box
                 backgroundColor={colors.greenAccent[500]}
                 p="5px 10px"
                 borderRadius="4px"
               >
-                ${transaction.cost}
+                Join Meeting
               </Box>
             </Box>
           ))}
@@ -373,3 +416,46 @@ const Dashboard = () => {
 };
 
 export default Dashboard;
+
+// Helper function to format date and time
+// *** NEED TO ADD END DATE IF DATE IS NOT SAME DATE OR MAKE IT NOT ALLOWED WHEN ENTERING DATE ***
+const formatDate = (isoString1, isoString2) => {
+  const date1 = new Date(isoString1);
+  const date2 = new Date(isoString2);
+  // Get month name
+  const month = date1.toLocaleString("en-US", { month: "short" });
+
+  // Get day with ordinal suffix (1st, 2nd, 3rd,...)
+  const day = date1.getDate();
+  const ordinal = (d) => {
+    if (d > 3 && d < 21) return "th";
+    switch (d % 10) {
+      case 1:
+        return "st";
+      case 2:
+        return "nd";
+      case 3:
+        return "rd";
+      default:
+        return "th";
+    }
+  };
+
+  // Get time in AM/PM format
+  const time = date1
+    .toLocaleString("en-US", {
+      hour: "numeric",
+      minute: "numeric",
+      hour12: true,
+    })
+    .toLowerCase();
+  const time2 = date2
+    .toLocaleString("en-US", {
+      hour: "numeric",
+      minute: "numeric",
+      hour12: true,
+    })
+    .toLowerCase();
+
+  return `${month} ${day}${ordinal(day)} @ ${time}-${time2}`;
+};

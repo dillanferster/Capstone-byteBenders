@@ -122,16 +122,9 @@ const Calendar = () => {
 
   const handleUpdateEvent = async (eventData) => {
     try {
-      const response = await fetch(`/api/events/${selectedEvent.id}`, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${sessionStorage.getItem("token")}`,
-        },
-        body: JSON.stringify(eventData),
-      });
+      const response = await updateCalendarEvent(selectedEvent.id, eventData);
 
-      if (!response.ok) throw new Error("Failed to update event");
+      if (!response === 200) throw new Error("Failed to update event");
 
       setCurrentEvents((prev) =>
         prev.map((event) =>
@@ -155,14 +148,9 @@ const Calendar = () => {
 
   const handleDeleteEvent = async () => {
     try {
-      const response = await fetch(`/api/events/${selectedEvent.id}`, {
-        method: "DELETE",
-        headers: {
-          Authorization: `Bearer ${sessionStorage.getItem("token")}`,
-        },
-      });
+      const response = await deleteCalendarEvent(selectedEvent.id);
 
-      if (!response.ok) throw new Error("Failed to delete event");
+      if (!response.status === 200) throw new Error("Failed to delete event");
 
       setCurrentEvents((prev) =>
         prev.filter((event) => event.id !== selectedEvent.id)
