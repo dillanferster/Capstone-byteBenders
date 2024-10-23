@@ -1,27 +1,347 @@
 [
-    {"_id":{"$oid":"67120f2294fe762a4a99b73b"},"projectName":"Project 1","projectDesc":"Description for project 1","caseId":"1001","dataClassification":"type 1","assignedTo":"Dillan","projectStatus":"Complete","quickBaseLink":"link 1","dateCreated":"2024-10-10","TaskIdForProject":[]},
-    {"_id":{"$oid":"67120f2294fe762a4a99b73c"},"projectName":"Project 2","projectDesc":"Description for project 2","caseId":"1002","dataClassification":"type 2","assignedTo":"Alex","projectStatus":"In Progress","quickBaseLink":"link 2","dateCreated":"2024-10-10","TaskIdForProject":[]},
-    {"_id":{"$oid":"67120f2294fe762a4a99b73d"},"projectName":"Project 3","projectDesc":"Description for project 3","caseId":"1003","dataClassification":"type 3","assignedTo":"Jamie","projectStatus":"Not Started","quickBaseLink":"link 3","dateCreated":"2024-10-10","TaskIdForProject":[]},
-    {"_id":{"$oid":"67120f2294fe762a4a99b73e"},"projectName":"Project 4","projectDesc":"Description for project 4","caseId":"1004","dataClassification":"type 4","assignedTo":"Jordan","projectStatus":"Complete","quickBaseLink":"link 4","dateCreated":"2024-10-10","TaskIdForProject":[]},
-    {"_id":{"$oid":"67120f2294fe762a4a99b73f"},"projectName":"Project 5","projectDesc":"Description for project 5","caseId":"1005","dataClassification":"type 5","assignedTo":"Taylor","projectStatus":"In Progress","quickBaseLink":"link 5","dateCreated":"2024-10-10","TaskIdForProject":[]},
-    {"_id":{"$oid":"67120f2294fe762a4a99b740"},"projectName":"Project 6","projectDesc":"Description for project 6","caseId":"1006","dataClassification":"type 1","assignedTo":"Morgan","projectStatus":"Not Started","quickBaseLink":"link 6","dateCreated":"2024-10-10","TaskIdForProject":[]},
-    {"_id":{"$oid":"67120f2294fe762a4a99b741"},"projectName":"Project 7","projectDesc":"Description for project 7","caseId":"1007","dataClassification":"type 2","assignedTo":"Chris","projectStatus":"Complete","quickBaseLink":"link 7","dateCreated":"2024-10-10","TaskIdForProject":[]},
-    {"_id":{"$oid":"67120f2294fe762a4a99b742"},"projectName":"Project 8","projectDesc":"Description for project 8","caseId":"1008","dataClassification":"type 3","assignedTo":"Casey","projectStatus":"Storage","quickBaseLink":"link 8","dateCreated":"2024-10-10","TaskIdForProject":[]},
-    {"_id":{"$oid":"67120f2294fe762a4a99b743"},"projectName":"Project 9","projectDesc":"Description for project 9","caseId":"1009","dataClassification":"type 4","assignedTo":"Riley","projectStatus":"In Progress","quickBaseLink":"link 9","dateCreated":"2024-10-10","TaskIdForProject":[]},
-    {"_id":{"$oid":"67120f2294fe762a4a99b744"},"projectName":"Project 10","projectDesc":"Description for project 10","caseId":"1010","dataClassification":"type 5","assignedTo":"Avery","projectStatus":"Not Started","quickBaseLink":"link 10","dateCreated":"2024-10-10","TaskIdForProject":[]},
-    {"_id":{"$oid":"67120f2294fe762a4a99b745"},"projectName":"Project 11","projectDesc":"Description for project 11","caseId":"1011","dataClassification":"type 1","assignedTo":"Skylar","projectStatus":"Complete","quickBaseLink":"link 11","dateCreated":"2024-10-10","TaskIdForProject":[]},
-    {"_id":{"$oid":"67120f2294fe762a4a99b746"},"projectName":"Project 12","projectDesc":"Description for project 12","caseId":"1012","dataClassification":"type 2","assignedTo":"Quinn","projectStatus":"In Progress","quickBaseLink":"link 12","dateCreated":"2024-10-10","TaskIdForProject":[]},
-    {"_id":{"$oid":"67120f2294fe762a4a99b747"},"projectName":"Project 13","projectDesc":"Description for project 13","caseId":"1013","dataClassification":"type 3","assignedTo":"Drew","projectStatus":"Not Started","quickBaseLink":"link 13","dateCreated":"2024-10-10","TaskIdForProject":[]},
-    {"_id":{"$oid":"67120f2294fe762a4a99b748"},"projectName":"Project 14","projectDesc":"Description for project 14","caseId":"1014","dataClassification":"type 4","assignedTo":"Rowan","projectStatus":"Complete","quickBaseLink":"link 14","dateCreated":"2024-10-10","TaskIdForProject":[]},
-    {"_id":{"$oid":"67120f2294fe762a4a99b749"},"projectName":"Project 15","projectDesc":"Description for project 15","caseId":"1015","dataClassification":"type 5","assignedTo":"Emerson","projectStatus":"In Progress","quickBaseLink":"link 15","dateCreated":"2024-10-10","TaskIdForProject":[]},
-    {"_id":{"$oid":"67120f2294fe762a4a99b74a"},"projectName":"Project 16","projectDesc":"Description for project 16","caseId":"1016","dataClassification":"type 1","assignedTo":"Finley","projectStatus":"Storage","quickBaseLink":"link 16","dateCreated":"2024-10-10","TaskIdForProject":[]},
-    {"_id":{"$oid":"67120f2294fe762a4a99b74b"},"projectName":"Project 17","projectDesc":"Description for project 17","caseId":"1017","dataClassification":"type 2","assignedTo":"Reese","projectStatus":"Not Started","quickBaseLink":"link 17","dateCreated":"2024-10-10","TaskIdForProject":[]},
-    {"_id":{"$oid":"67120f2294fe762a4a99b74c"},"projectName":"Project 18","projectDesc":"Description for project 18","caseId":"1018","dataClassification":"type 3","assignedTo":"Jaden","projectStatus":"In Progress","quickBaseLink":"link 18","dateCreated":"2024-10-10","TaskIdForProject":[]},
-    {"_id":{"$oid":"67120f2294fe762a4a99b74d"},"projectName":"Project 19","projectDesc":"Description for project 19","caseId":"1019","dataClassification":"type 4","assignedTo":"Peyton","projectStatus":"Complete","quickBaseLink":"link 19","dateCreated":"2024-10-10","TaskIdForProject":[]},
-    {"_id":{"$oid":"67120f2294fe762a4a99b74e"},"projectName":"Project 20","projectDesc":"Description for project 20","caseId":"1020","dataClassification":"type 5","assignedTo":"Sawyer","projectStatus":"Not Started","quickBaseLink":"link 20","dateCreated":"2024-10-10","TaskIdForProject":[]},
-    {"_id":{"$oid":"67120f2294fe762a4a99b74f"},"projectName":"Project 21","projectDesc":"Description for project 21","caseId":"1021","dataClassification":"type 1","assignedTo":"Alexis","projectStatus":"In Progress","quickBaseLink":"link 21","dateCreated":"2024-10-10","TaskIdForProject":[]},
-    {"_id":{"$oid":"67120f2294fe762a4a99b750"},"projectName":"Project 22","projectDesc":"Description for project 22","caseId":"1022","dataClassification":"type 2","assignedTo":"Sage","projectStatus":"Complete","quickBaseLink":"link 22","dateCreated":"2024-10-10","TaskIdForProject":[]},
-    {"_id":{"$oid":"67120f2294fe762a4a99b751"},"projectName":"Project 23","projectDesc":"Description for project 23","caseId":"1023","dataClassification":"type 3","assignedTo":"Cameron","projectStatus":"Not Started","quickBaseLink":"link 23","dateCreated":"2024-10-10","TaskIdForProject":[]},
-    {"_id":{"$oid":"67120f2294fe762a4a99b752"},"projectName":"Project 24","projectDesc":"Description for project 24","caseId":"1024","dataClassification":"type 4","assignedTo":"Kendall","projectStatus":"In Progress","quickBaseLink":"link 24","dateCreated":"2024-10-10","TaskIdForProject":[]},
-    {"_id":{"$oid":"67120f2294fe762a4a99b753"},"projectName":"Project 25","projectDesc":"Description for project 25","caseId":"1025","dataClassification":"type 5","assignedTo":"Taylor","projectStatus":"Storage","quickBaseLink":"link 25","dateCreated":"2024-10-10","TaskIdForProject":[]}
+    {
+        "_id": {"$oid": "67120f2294fe762a4a99b73b"},
+        "projectName": "Project 1",
+        "projectDesc": "Description for project 1",
+        "caseId": "1001",
+        "dataClassification": "type 1",
+        "assignedTo": "Dillan",
+        "projectStatus": "Complete",
+        "quickBaseLink": "link 1",
+        "dateCreated": "2024-10-10",
+        "TaskIdForProject": [
+            {"$oid": "67188f7d7fc68276ca0d10ed"},
+            {"$oid": "67188f7d7fc68276ca0d10ee"}
+        ]
+    },
+    {
+        "_id": {"$oid": "67120f2294fe762a4a99b73c"},
+        "projectName": "Project 2",
+        "projectDesc": "Description for project 2",
+        "caseId": "1002",
+        "dataClassification": "type 2",
+        "assignedTo": "Alex",
+        "projectStatus": "In Progress",
+        "quickBaseLink": "link 2",
+        "dateCreated": "2024-10-10",
+        "TaskIdForProject": [
+            {"$oid": "67188f7d7fc68276ca0d10ef"},
+            {"$oid": "67188f7d7fc68276ca0d10f0"}
+        ]
+    },
+    {
+        "_id": {"$oid": "67120f2294fe762a4a99b73d"},
+        "projectName": "Project 3",
+        "projectDesc": "Description for project 3",
+        "caseId": "1003",
+        "dataClassification": "type 3",
+        "assignedTo": "Jamie",
+        "projectStatus": "Not Started",
+        "quickBaseLink": "link 3",
+        "dateCreated": "2024-10-10",
+        "TaskIdForProject": []
+    },
+    {
+        "_id": {"$oid": "67120f2294fe762a4a99b73e"},
+        "projectName": "Project 4",
+        "projectDesc": "Description for project 4",
+        "caseId": "1004",
+        "dataClassification": "type 4",
+        "assignedTo": "Jordan",
+        "projectStatus": "Complete",
+        "quickBaseLink": "link 4",
+        "dateCreated": "2024-10-10",
+        "TaskIdForProject": [
+            {"$oid": "67188f7d7fc68276ca0d10f1"},
+            {"$oid": "67188f7d7fc68276ca0d10f2"}
+        ]
+    },
+    {
+        "_id": {"$oid": "67120f2294fe762a4a99b73f"},
+        "projectName": "Project 5",
+        "projectDesc": "Description for project 5",
+        "caseId": "1005",
+        "dataClassification": "type 5",
+        "assignedTo": "Taylor",
+        "projectStatus": "In Progress",
+        "quickBaseLink": "link 5",
+        "dateCreated": "2024-10-10",
+        "TaskIdForProject": [
+            {"$oid": "67188f7d7fc68276ca0d10f3"},
+            {"$oid": "67188f7d7fc68276ca0d10f4"}
+        ]
+    },
+    {
+        "_id": {"$oid": "67120f2294fe762a4a99b740"},
+        "projectName": "Project 6",
+        "projectDesc": "Description for project 6",
+        "caseId": "1006",
+        "dataClassification": "type 1",
+        "assignedTo": "Morgan",
+        "projectStatus": "Not Started",
+        "quickBaseLink": "link 6",
+        "dateCreated": "2024-10-10",
+        "TaskIdForProject": []
+    },
+    {
+        "_id": {"$oid": "67120f2294fe762a4a99b741"},
+        "projectName": "Project 7",
+        "projectDesc": "Description for project 7",
+        "caseId": "1007",
+        "dataClassification": "type 2",
+        "assignedTo": "Chris",
+        "projectStatus": "Complete",
+        "quickBaseLink": "link 7",
+        "dateCreated": "2024-10-10",
+        "TaskIdForProject": [
+            {"$oid": "67188f7d7fc68276ca0d10f5"},
+            {"$oid": "67188f7d7fc68276ca0d10f6"}
+        ]
+    },
+    {
+        "_id": {"$oid": "67120f2294fe762a4a99b742"},
+        "projectName": "Project 8",
+        "projectDesc": "Description for project 8",
+        "caseId": "1008",
+        "dataClassification": "type 3",
+        "assignedTo": "Casey",
+        "projectStatus": "Storage",
+        "quickBaseLink": "link 8",
+        "dateCreated": "2024-10-10",
+        "TaskIdForProject": []
+    },
+    {
+        "_id": {"$oid": "67120f2294fe762a4a99b743"},
+        "projectName": "Project 9",
+        "projectDesc": "Description for project 9",
+        "caseId": "1009",
+        "dataClassification": "type 4",
+        "assignedTo": "Riley",
+        "projectStatus": "In Progress",
+        "quickBaseLink": "link 9",
+        "dateCreated": "2024-10-10",
+        "TaskIdForProject": [
+            {"$oid": "67188f7d7fc68276ca0d10f7"},
+            {"$oid": "67188f7d7fc68276ca0d10f8"}
+        ]
+    },
+    {
+        "_id": {"$oid": "67120f2294fe762a4a99b744"},
+        "projectName": "Project 10",
+        "projectDesc": "Description for project 10",
+        "caseId": "1010",
+        "dataClassification": "type 5",
+        "assignedTo": "Avery",
+        "projectStatus": "Not Started",
+        "quickBaseLink": "link 10",
+        "dateCreated": "2024-10-10",
+        "TaskIdForProject": []
+    },
+    {
+        "_id": {"$oid": "67120f2294fe762a4a99b745"},
+        "projectName": "Project 11",
+        "projectDesc": "Description for project 11",
+        "caseId": "1011",
+        "dataClassification": "type 1",
+        "assignedTo": "Skylar",
+        "projectStatus": "Complete",
+        "quickBaseLink": "link 11",
+        "dateCreated": "2024-10-10",
+        "TaskIdForProject": [
+            {"$oid": "67188f7d7fc68276ca0d10f9"},
+            {"$oid": "67188f7d7fc68276ca0d10fa"}
+        ]
+    },
+    {
+        "_id": {"$oid": "67120f2294fe762a4a99b746"},
+        "projectName": "Project 12",
+        "projectDesc": "Description for project 12",
+        "caseId": "1012",
+        "dataClassification": "type 2",
+        "assignedTo": "Quinn",
+        "projectStatus": "In Progress",
+        "quickBaseLink": "link 12",
+        "dateCreated": "2024-10-10",
+        "TaskIdForProject": [
+            {"$oid": "67188f7d7fc68276ca0d10fb"},
+            {"$oid": "67188f7d7fc68276ca0d10fc"}
+        ]
+    },
+    {
+        "_id": {"$oid": "67120f2294fe762a4a99b747"},
+        "projectName": "Project 13",
+        "projectDesc": "Description for project 13",
+        "caseId": "1013",
+        "dataClassification": "type 3",
+        "assignedTo": "Drew",
+        "projectStatus": "Not Started",
+        "quickBaseLink": "link 13",
+        "dateCreated": "2024-10-10",
+        "TaskIdForProject": []
+    },
+    {
+        "_id": {"$oid": "67120f2294fe762a4a99b748"},
+        "projectName": "Project 14",
+        "projectDesc": "Description for project 14",
+        "caseId": "1014",
+        "dataClassification": "type 4",
+        "assignedTo": "Rowan",
+        "projectStatus": "Complete",
+        "quickBaseLink": "link 14",
+        "dateCreated": "2024-10-10",
+        "TaskIdForProject": [
+            {"$oid": "67188f7d7fc68276ca0d10fd"},
+            {"$oid": "67188f7d7fc68276ca0d10fe"}
+        ]
+    },
+    {
+        "_id": {"$oid": "67120f2294fe762a4a99b749"},
+        "projectName": "Project 15",
+        "projectDesc": "Description for project 15",
+        "caseId": "1015",
+        "dataClassification": "type 5",
+        "assignedTo": "Emerson",
+        "projectStatus": "In Progress",
+        "quickBaseLink": "link 15",
+        "dateCreated": "2024-10-10",
+        "TaskIdForProject": [
+            {"$oid": "67188f7d7fc68276ca0d10ff"},
+            {"$oid": "67188f7d7fc68276ca0d110"}
+        ]
+    },
+    {
+        "_id": {"$oid": "67120f2294fe762a4a99b74a"},
+        "projectName": "Project 16",
+        "projectDesc": "Description for project 16",
+        "caseId": "1016",
+        "dataClassification": "type 1",
+        "assignedTo": "Finley",
+        "projectStatus": "Storage",
+        "quickBaseLink": "link 16",
+        "dateCreated": "2024-10-10",
+        "TaskIdForProject": []
+    },
+    {
+        "_id": {"$oid": "67120f2294fe762a4a99b74b"},
+        "projectName": "Project 17",
+        "projectDesc": "Description for project 17",
+        "caseId": "1017",
+        "dataClassification": "type 2",
+        "assignedTo": "Reese",
+        "projectStatus": "Not Started",
+        "quickBaseLink": "link 17",
+        "dateCreated": "2024-10-10",
+        "TaskIdForProject": []
+    },
+    {
+        "_id": {"$oid": "67120f2294fe762a4a99b74c"},
+        "projectName": "Project 18",
+        "projectDesc": "Description for project 18",
+        "caseId": "1018",
+        "dataClassification": "type 3",
+        "assignedTo": "Jaden",
+        "projectStatus": "In Progress",
+        "quickBaseLink": "link 18",
+        "dateCreated": "2024-10-10",
+        "TaskIdForProject": [
+            {"$oid": "67188f7d7fc68276ca0d111"},
+            {"$oid": "67188f7d7fc68276ca0d112"}
+        ]
+    },
+    {
+        "_id": {"$oid": "67120f2294fe762a4a99b74d"},
+        "projectName": "Project 19",
+        "projectDesc": "Description for project 19",
+        "caseId": "1019",
+        "dataClassification": "type 4",
+        "assignedTo": "Peyton",
+        "projectStatus": "Complete",
+        "quickBaseLink": "link 19",
+        "dateCreated": "2024-10-10",
+        "TaskIdForProject": [
+            {"$oid": "67188f7d7fc68276ca0d113"},
+            {"$oid": "67188f7d7fc68276ca0d114"}
+        ]
+    },
+    {
+        "_id": {"$oid": "67120f2294fe762a4a99b74e"},
+        "projectName": "Project 20",
+        "projectDesc": "Description for project 20",
+        "caseId": "1020",
+        "dataClassification": "type 5",
+        "assignedTo": "Sawyer",
+        "projectStatus": "Not Started",
+        "quickBaseLink": "link 20",
+        "dateCreated": "2024-10-10",
+        "TaskIdForProject": []
+    },
+    {
+        "_id": {"$oid": "67120f2294fe762a4a99b74f"},
+        "projectName": "Project 21",
+        "projectDesc": "Description for project 21",
+        "caseId": "1021",
+        "dataClassification": "type 1",
+        "assignedTo": "Alexis",
+        "projectStatus": "In Progress",
+        "quickBaseLink": "link 21",
+        "dateCreated": "2024-10-10",
+        "TaskIdForProject": [
+            {"$oid": "67188f7d7fc68276ca0d115"},
+            {"$oid": "67188f7d7fc68276ca0d116"}
+        ]
+    },
+    {
+        "_id": {"$oid": "67120f2294fe762a4a99b750"},
+        "projectName": "Project 22",
+        "projectDesc": "Description for project 22",
+        "caseId": "1022",
+        "dataClassification": "type 2",
+        "assignedTo": "Sage",
+        "projectStatus": "Complete",
+        "quickBaseLink": "link 22",
+        "dateCreated": "2024-10-10",
+        "TaskIdForProject": [
+            {"$oid": "67188f7d7fc68276ca0d117"},
+            {"$oid": "67188f7d7fc68276ca0d118"}
+        ]
+    },
+    {
+        "_id": {"$oid": "67120f2294fe762a4a99b751"},
+        "projectName": "Project 23",
+        "projectDesc": "Description for project 23",
+        "caseId": "1023",
+        "dataClassification": "type 3",
+        "assignedTo": "Cameron",
+        "projectStatus": "Not Started",
+        "quickBaseLink": "link 23",
+        "dateCreated": "2024-10-10",
+        "TaskIdForProject": []
+    },
+    {
+        "_id": {"$oid": "67120f2294fe762a4a99b752"},
+        "projectName": "Project 24",
+        "projectDesc": "Description for project 24",
+        "caseId": "1024",
+        "dataClassification": "type 4",
+        "assignedTo": "Kendall",
+        "projectStatus": "In Progress",
+        "quickBaseLink": "link 24",
+        "dateCreated": "2024-10-10",
+        "TaskIdForProject": [
+            {"$oid": "67188f7d7fc68276ca0d119"},
+            {"$oid": "67188f7d7fc68276ca0d11a"}
+        ]
+    },
+    {
+        "_id": {"$oid": "67120f2294fe762a4a99b753"},
+        "projectName": "Project 25",
+        "projectDesc": "Description for project 25",
+        "caseId": "1025",
+        "dataClassification": "type 5",
+        "assignedTo": "Taylor",
+        "projectStatus": "Storage",
+        "quickBaseLink": "link 25",
+        "dateCreated": "2024-10-10",
+        "TaskIdForProject": []
+    }
 ]
