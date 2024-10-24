@@ -142,16 +142,7 @@ export default function EditMenu({
       dateCreated: dateCreated,
     };
 
-    // createProject(addedProject).then((response) => {
-    //   console.log("adding project", response);
-
-    //   if (response.status === 200) {
-    //     reloadTheGrid();
-    //     toggleForm();
-    //     clearAddInputs();
-    //   }
-    // });
-
+    ///// Refereance, Claude.AI prompt: "Can you help make yup form validation schema for react app form"
     try {
       const isValid = await projectSchema.validate(addedProject, {
         abortEarly: false,
