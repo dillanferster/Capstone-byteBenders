@@ -12,6 +12,7 @@ const emailRoutes = express.Router(); // Create a new expess router object
 const cca = require("./middleware/azureAuthConfig"); // import MSAL client
 require("dotenv").config({ path: "./.env" });
 // const axios = require("axios");
+
 /**
  * Route to initiate email authentication. 
  * This route generates an authentication URL using cca.getAuthCodeUrl() for the user to log in via Azure AD.
@@ -36,49 +37,6 @@ emailRoutes.route("/email-inbox/login").get(async (req, res) => {
     res.status(500).send("Failed to initiate authentication");
   }
 });
-
-/**
- * Retry mechanism for acquiring token
- */
-// async function acquireTokenWithRetry(tokenRequest) {
-//   let retry = 0;
-//   const maxRetries = 3;
-
-//   while (retry < maxRetries) {
-//     try {
-//       const response = await axios.post(
-//         "https://login.microsoftonline.com/consumers/oauth2/v2.0/token",
-//         null,
-//         {
-//           headers: {
-//             "Content-Type": "application/x-www-form-urlencoded",
-//           },
-//           params: tokenRequest,
-//         }
-//       );
-
-//       console.log("Token acquired:", response.data);
-//       return response.data; // Return the token response if successful
-//     } catch (error) {
-//       // Retry on network-related errors
-//       if (
-//         error.code === "ECONNRESET" ||
-//         error.code === "ENOTFOUND" ||
-//         error.response?.status >= 500
-//       ) {
-//         console.log(
-//           `Network error encountered, retrying... (${retry + 1}/${maxRetries})`
-//         );
-//         retry++;
-//         await new Promise((resolve) => setTimeout(resolve, 1000)); // Wait for 1 second before retrying
-//       } else {
-//         // If it's not a network error, throw the error immediately
-//         throw error;
-//       }
-//     }
-//   }
-//   throw new Error("Failed to acquire token after multiple attempts");
-// }
 
 /**
  * Callback route to handle the response from Azure AD after authentication.
@@ -194,40 +152,42 @@ emailRoutes.route("/auth/refresh-token").post(async (req, res) => {
   }
 });
 
-/// Route to handle the front-channel logout from Azure AD
-emailRoutes.route("/email/logout").get((req, res) => {
-  // Check if this is a front-channel logout request
-  const logoutToken = req.query.logout_token;
+/// Route to handle the front-channel logout from Azure AD (DO NOT USE)
+/// This route is not used in the Planzo app
+/// Only applicable to let Azure AD handle user-initiated logouts on all applications linked to the same account
+// emailRoutes.route("/email/logout").get((req, res) => {
+//   // Check if this is a front-channel logout request
+//   const logoutToken = req.query.logout_token;
 
-  // Clear the MSAL cache
-  cca
-    .getTokenCache()
-    .clear()
-    .then(() => {
-      console.log("MSAL token cache cleared");
-    })
-    .catch((error) => {
-      console.error("Error clearing MSAL token cache:", error);
-    });
+//   // Clear the MSAL cache
+//   cca
+//     .getTokenCache()
+//     .clear()
+//     .then(() => {
+//       console.log("MSAL token cache cleared");
+//     })
+//     .catch((error) => {
+//       console.error("Error clearing MSAL token cache:", error);
+//     });
 
-  // Clear the user session
-  req.session.destroy((err) => {
-    if (err) {
-      console.error("Error clearing session during logout:", err);
-      return res.status(500).send("Logout failed");
-    }
+//   // Clear the user session
+//   req.session.destroy((err) => {
+//     if (err) {
+//       console.error("Error clearing session during logout:", err);
+//       return res.status(500).send("Logout failed");
+//     }
 
-    console.log("User session cleared");
+//     console.log("User session cleared");
 
-    // If it's a front-channel logout request, send a 200 OK response
-    if (logoutToken) {
-      return res.status(200).send("Logout successful");
-    }
+//     // If it's a front-channel logout request, send a 200 OK response
+//     if (logoutToken) {
+//       return res.status(200).send("Logout successful");
+//     }
 
-    // For manual logout, redirect to the login page or home page
-    res.redirect("http://localhost:5173/email-inbox/");
-  });
-});
+//     // For manual logout, redirect to the login page or home page
+//     res.redirect("http://localhost:5173/email-inbox/");
+//   });
+// });
 
 // Route to send an email reply
 emailRoutes.route("/email-inbox/reply").post(async (req, res) => {
@@ -350,6 +310,46 @@ emailRoutes.route("/email-inbox/send").post(async (req, res) => {
   } catch (error) {
     console.error("Error sending email:", error.message);
     res.status(500).send("Failed to send email");
+  }
+});
+
+// Manual Sign Out Route to sign out from Microsoft account
+// The Planzo appn primarily handles user-initiated logouts
+emailRoutes.route("/email-inbox/signout").get(async (req, res) => {
+  try {
+    const tokenCache = cca.getTokenCache();
+    const accounts = await tokenCache.getAllAccounts();
+
+    for (const account of accounts) {
+      await tokenCache.removeAccount(account);
+    }
+
+    console.log("MSAL token cache cleared");
+
+    // Clear the user session
+    req.session.destroy((err) => {
+      if (err) {
+        console.error("Error clearing session during logout:", err);
+        return res.status(500).send("Logout failed");
+      }
+
+      console.log("User session cleared");
+
+      // Clear the access token cookie
+      res.clearCookie("accessToken");
+
+      // Redirect to Microsoft logout endpoint
+      // const logoutUrl = `https://login.microsoftonline.com/common/oauth2/v2.0/logout?post_logout_redirect_uri=${encodeURIComponent(
+      // "http://localhost:3000/email-inbox/"
+      // )}`;
+      // res.redirect(logoutUrl);
+
+      // For manual logout, redirect to the login page or home page
+      res.redirect("http://localhost:5173/email-inbox/");
+    });
+  } catch (error) {
+    console.error("Error during signout:", error);
+    res.status(500).send("Signout failed");
   }
 });
 

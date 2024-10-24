@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import {
   fetchEmails,
+  logoutEmail,
   deleteEmail,
   sendEmailReply,
   sendEmail,
@@ -73,7 +74,7 @@ const EmailPage = () => {
 
   const handleLogout = () => {
     try {
-      // logoutEmail();
+      logoutEmail();
       setLoggedIn(false);
       setEmails([]);
       setError(null);
@@ -171,7 +172,9 @@ const EmailPage = () => {
             sx={{ mr: 2, width: 300 }}
           />
           {loggedIn ? (
-            <Button color="inherit">Sign out</Button>
+            <Button color="inherit" onClick={handleLogout}>
+              Sign out
+            </Button>
           ) : (
             <LoginButton />
           )}

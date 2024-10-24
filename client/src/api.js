@@ -613,24 +613,14 @@ async function refreshAccessToken() {
 }
 
 // Function to log out the user (old ver)
-// export async function logoutEmail() {
-//   try {
-//     // Redirect to the server-side logout route
-//     window.location.href = `${URL}/email/logout`;
-
-//     // Clear tokens in localStorage or sessionStorage
-//     localStorage.removeItem("accessToken");
-//     localStorage.removeItem("refreshToken");
-//     sessionStorage.removeItem("accessToken");
-//     sessionStorage.removeItem("refreshToken");
-
-//     // Clear cookies (if used)
-//     document.cookie =
-//       "accessToken=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
-//   } catch (error) {
-//     console.error("Logout initiation failed:", error);
-//   }
-// }
+export async function logoutEmail() {
+  try {
+    // Redirect to the server-side logout route
+    window.location.href = `${URL}/email-inbox/signout`;
+  } catch (error) {
+    console.error("Logout initiation failed:", error);
+  }
+}
 
 // Function to send an email reply
 export async function sendEmailReply(messageId, comment) {
