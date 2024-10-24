@@ -45,7 +45,7 @@ const EmailPage = () => {
   const [error, setError] = useState(null);
   const [selectedEmail, setSelectedEmail] = useState(null);
   const [openDialog, setOpenDialog] = useState(false);
-  const [isComposing, setIsComposing] = useState(false); // New state for composing email
+  const [isComposing, setIsComposing] = useState(false);
   const [newEmail, setNewEmail] = useState({
     to: "",
     cc: "",
@@ -53,10 +53,13 @@ const EmailPage = () => {
     content: "",
   });
 
+  // hook heck login status when the component mounts
+  // This is to ensure that the user is logged in before fetching emails
   useEffect(() => {
     checkLoginStatus();
   }, []);
 
+  // Function to check login status
   const checkLoginStatus = async () => {
     setLoading(true);
     try {
@@ -72,6 +75,7 @@ const EmailPage = () => {
     }
   };
 
+  // Function to handle logout
   const handleLogout = () => {
     try {
       logoutEmail();
@@ -88,13 +92,15 @@ const EmailPage = () => {
     setSelectedEmail(email);
   };
 
+  // Function to close the Email Compose dialog
   const handleCloseDialog = () => {
     setOpenDialog(false);
     setIsComposing(false); // Close composing dialog
   };
 
+  // Function to handle reply
   const handleReply = async () => {
-    if (!selectedEmail) return;
+    if (!selectedEmail) return; // If there are no email selected at all, return nothing
 
     const comment = prompt("Enter your reply:"); // Simple prompt for reply text
     if (!comment) return;
@@ -107,6 +113,7 @@ const EmailPage = () => {
     }
   };
 
+  // Function to handle delete
   const handleDelete = async () => {
     if (!selectedEmail) return;
 
@@ -125,11 +132,13 @@ const EmailPage = () => {
     }
   };
 
+  // Function to handle compose email
   const handleCompose = () => {
     setIsComposing(true);
     setOpenDialog(true);
   };
 
+  // Function to handle send new email
   const handleSendEmail = async () => {
     try {
       await sendEmail(
@@ -138,7 +147,7 @@ const EmailPage = () => {
         newEmail.subject,
         newEmail.content
       );
-      alert(`Email sent successfully to ${newEmail.to} !`);
+      alert(`Email sent successfully to ${newEmail.to} !`); // Alert the user that the email was sent successfully
       setNewEmail({ to: "", cc: "", subject: "", content: "" }); // Reset the form
       setOpenDialog(false);
       setIsComposing(false);
@@ -147,8 +156,23 @@ const EmailPage = () => {
     }
   };
 
+  // If the emails are still loading, show a loading message
   if (loading) {
-    return <Typography>Loading...</Typography>;
+    return (
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          height: "100vh",
+        }}
+      >
+        <CircularProgress />
+        <Typography variant="h6" sx={{ ml: 2 }}>
+          Loading your emails...
+        </Typography>
+      </Box>
+    );
   }
 
   return (

@@ -623,15 +623,18 @@ export async function fetchEmails() {
 //   }
 // }
 
-// // Function to log out the user (manual logout)
-// export async function logoutEmail() {
-//   try {
-//     // Redirect to the server-side logout route
-//     window.location.href = `${URL}/email-inbox/signout`;
-//   } catch (error) {
-//     console.error("Logout initiation failed:", error);
-//   }
-// }
+/**
+ * Logout Email Function
+ * @returns void
+ */
+export async function logoutEmail() {
+  try {
+    // Redirect to the server-side logout route
+    window.location.href = `${URL}/email-inbox/signout`;
+  } catch (error) {
+    console.error("Logout initiation failed:", error);
+  }
+}
 
 /**
  * Send Email Reply Function
