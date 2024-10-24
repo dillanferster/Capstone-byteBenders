@@ -11,7 +11,7 @@ const express = require("express"); // Import express module
 const emailRoutes = express.Router(); // Create a new expess router object
 const cca = require("./middleware/azureAuthConfig"); // import MSAL client
 require("dotenv").config({ path: "./.env" });
-
+// const axios = require("axios");
 /**
  * Route to initiate email authentication. 
  * This route generates an authentication URL using cca.getAuthCodeUrl() for the user to log in via Azure AD.
@@ -24,7 +24,12 @@ emailRoutes.route("/email-inbox/login").get(async (req, res) => {
       // getAuthCodeUrl method from MSAL Library
       scopes: ["https://graph.microsoft.com/.default"], // set scope (access to all Microsoft Graph API endpoints)
       redirectUri: process.env.AZURE_REDIRECT_URI, // the URL where the user will be redirected after authentication
+      prompt: "consent",
     });
+
+    // Log the redirect URI for debugging
+    console.log("Redirect URI:", process.env.AZURE_REDIRECT_URI);
+
     res.redirect(authUrl); // Redirect user to Azure login page
   } catch (error) {
     console.error("Error generating auth URL:", error);
@@ -33,51 +38,105 @@ emailRoutes.route("/email-inbox/login").get(async (req, res) => {
 });
 
 /**
+ * Retry mechanism for acquiring token
+ */
+// async function acquireTokenWithRetry(tokenRequest) {
+//   let retry = 0;
+//   const maxRetries = 3;
+
+//   while (retry < maxRetries) {
+//     try {
+//       const response = await axios.post(
+//         "https://login.microsoftonline.com/consumers/oauth2/v2.0/token",
+//         null,
+//         {
+//           headers: {
+//             "Content-Type": "application/x-www-form-urlencoded",
+//           },
+//           params: tokenRequest,
+//         }
+//       );
+
+//       console.log("Token acquired:", response.data);
+//       return response.data; // Return the token response if successful
+//     } catch (error) {
+//       // Retry on network-related errors
+//       if (
+//         error.code === "ECONNRESET" ||
+//         error.code === "ENOTFOUND" ||
+//         error.response?.status >= 500
+//       ) {
+//         console.log(
+//           `Network error encountered, retrying... (${retry + 1}/${maxRetries})`
+//         );
+//         retry++;
+//         await new Promise((resolve) => setTimeout(resolve, 1000)); // Wait for 1 second before retrying
+//       } else {
+//         // If it's not a network error, throw the error immediately
+//         throw error;
+//       }
+//     }
+//   }
+//   throw new Error("Failed to acquire token after multiple attempts");
+// }
+
+/**
  * Callback route to handle the response from Azure AD after authentication.
  * Once the user is authenticated, Azure AD redirects to this route with an authorization code.
  * For more info, visit:
  * https://github.com/AzureAD/microsoft-authentication-library-for-js/tree/dev/samples/msal-node-samples/auth-code
  */
 emailRoutes.route("/email-inbox/callback").get(async (req, res) => {
-  const authorizationCode = req.query.code; // This is the auth code received from Azure
+  const authorizationCode = req.query.code;
   console.log("Authorization code:", authorizationCode);
+
+  if (!authorizationCode) {
+    return res.status(400).send("Authorization code is missing");
+  }
   // Request token using the authorization code from the query parameters
   // and the redirect URI used in the initial authentication request
   const tokenRequest = {
     code: authorizationCode,
-    scopes: [
-      "https://graph.microsoft.com/Mail.Read",
-      "https://graph.microsoft.com/Mail.ReadWrite",
-      "https://graph.microsoft.com/Mail.Send",
-      "https://graph.microsoft.com/User.Read",
-    ],
-    redirectUri: process.env.AZURE_REDIRECT_URI, // Ensure this matches what is in Azure App Registration
+    scopes: ["https://graph.microsoft.com/.default"],
+    redirectUri: process.env.AZURE_REDIRECT_URI,
   };
 
-  // Acquire token using the authorization code
+  console.log("Token request:", JSON.stringify(tokenRequest, null, 2));
+
   try {
     const response = await cca.acquireTokenByCode(tokenRequest);
-    console.log("Token response:", response); // Log token response to check if it's acquired properly
-    req.session.accessToken = response.accessToken; // Store access token in session
-    res.redirect("http://localhost:5173/email-inbox/"); // Redirect to frontend after authentication
+    console.log("Token response:", JSON.stringify(response, null, 2));
+
+    // Store the access token in a secure HttpOnly cookie
+    res.cookie("accessToken", response.accessToken, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "strict",
+      maxAge: 3600000, // 1 hour
+    });
+
+    res.redirect("http://localhost:5173/email-inbox/");
   } catch (error) {
     console.error("Error acquiring token:", error);
-    res.status(500).send("Authentication failed");
+    if (error.errorCode) {
+      console.error("Error code:", error.errorCode);
+      console.error("Error message:", error.errorMessage);
+      console.error("Correlation ID:", error.correlationId);
+    }
+    if (error.response) {
+      console.error("Response Error:", error.response.data);
+    }
+    res.status(500).send("Failed to acquire token");
   }
 });
 
 // fetch emails route
 emailRoutes.route("/email-inbox/emails").get(async (req, res) => {
-  // Get access token from session
-  const accessToken = req.session.accessToken;
-  console.log("Access token:", accessToken); // Access token debugging
+  const accessToken = req.cookies.accessToken; // Get the access token from the cookie
+  console.log("Access token in /email-inbox/emails route:", accessToken);
 
-  // Token check
-  // If access token is missing, return 401 error
   if (!accessToken) {
-    return res
-      .status(401)
-      .send("User not authenticated or access token mising");
+    return res.status(401).send("Access token missing");
   }
 
   try {
@@ -92,18 +151,18 @@ emailRoutes.route("/email-inbox/emails").get(async (req, res) => {
         },
       }
     );
+    const data = await response.json();
 
-    // Check if response is successful
+    console.log("Graph API response status:", response.status);
+    console.log("Graph API response data:", JSON.stringify(data, null, 2));
+
     if (!response.ok) {
-      // Return a more detailed error message
-      const errorMessage = await response.text();
       throw new Error(
-        `Failed to fetch emails: ${errorMessage}, status code: ${response.status}`
+        `Graph API error: ${response.status} ${response.statusText}`
       );
     }
 
-    const data = await response.json(); // Parse response data in jason format
-    res.json(data.value); // Return values of data object to the client side
+    res.json(data.value);
   } catch (error) {
     console.error(
       "Error fetching emails from Microsoft Graph API:",
@@ -113,17 +172,60 @@ emailRoutes.route("/email-inbox/emails").get(async (req, res) => {
   }
 });
 
-// Route to handle the front-channel logout from Azure AD
+// Refresh token route
+emailRoutes.route("/auth/refresh-token").post(async (req, res) => {
+  const { refresh_token } = req.body;
+  const tokenRequest = {
+    refreshToken: refresh_token,
+    scopes: ["https://graph.microsoft.com/.default"],
+    clientId: process.env.AZURE_CLIENT_ID,
+    clientSecret: process.env.AZURE_CLIENT_SECRET,
+  };
+
+  try {
+    const response = await cca.acquireTokenByRefreshToken(tokenRequest);
+    res.json({
+      access_token: response.accessToken,
+      refresh_token: response.refreshToken,
+    });
+  } catch (error) {
+    console.error("Failed to refresh token:", error);
+    res.status(401).send("Failed to refresh token");
+  }
+});
+
+/// Route to handle the front-channel logout from Azure AD
 emailRoutes.route("/email/logout").get((req, res) => {
-  // Clear the user session when Azure logs out
+  // Check if this is a front-channel logout request
+  const logoutToken = req.query.logout_token;
+
+  // Clear the MSAL cache
+  cca
+    .getTokenCache()
+    .clear()
+    .then(() => {
+      console.log("MSAL token cache cleared");
+    })
+    .catch((error) => {
+      console.error("Error clearing MSAL token cache:", error);
+    });
+
+  // Clear the user session
   req.session.destroy((err) => {
     if (err) {
-      console.error("Error clearing session during front-channel logout:", err);
+      console.error("Error clearing session during logout:", err);
       return res.status(500).send("Logout failed");
     }
 
-    console.log("User session cleared via front-channel logout");
-    res.redirect("http://localhost:5173/"); // Redirect to the login page or home page after logout
+    console.log("User session cleared");
+
+    // If it's a front-channel logout request, send a 200 OK response
+    if (logoutToken) {
+      return res.status(200).send("Logout successful");
+    }
+
+    // For manual logout, redirect to the login page or home page
+    res.redirect("http://localhost:5173/email-inbox/");
   });
 });
 
