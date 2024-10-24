@@ -229,4 +229,128 @@ emailRoutes.route("/email/logout").get((req, res) => {
   });
 });
 
+// Route to send an email reply
+emailRoutes.route("/email-inbox/reply").post(async (req, res) => {
+  const accessToken = req.cookies.accessToken; // Get the access token from the cookie
+  const { messageId, comment } = req.body; // Get the message ID and comment from the request body
+
+  if (!accessToken) {
+    return res.status(401).send("Access token missing");
+  }
+
+  try {
+    // Send the reply using Microsoft Graph API
+    const response = await fetch(
+      `https://graph.microsoft.com/v1.0/me/messages/${messageId}/reply`,
+      {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          comment: comment,
+        }),
+      }
+    );
+
+    if (!response.ok) {
+      throw new Error(
+        `Graph API error: ${response.status} ${response.statusText}`
+      );
+    }
+
+    res.status(200).send("Reply sent successfully");
+  } catch (error) {
+    console.error("Error sending email reply:", error.message);
+    res.status(500).send("Failed to send email reply");
+  }
+});
+
+// Route to delete an email
+emailRoutes.route("/email-inbox/delete").delete(async (req, res) => {
+  const accessToken = req.cookies.accessToken; // Get the access token from the cookie
+  const { messageId } = req.body; // Get the message ID from the request body
+
+  if (!accessToken) {
+    return res.status(401).send("Access token missing");
+  }
+
+  try {
+    // Delete the email using Microsoft Graph API
+    const response = await fetch(
+      `https://graph.microsoft.com/v1.0/me/messages/${messageId}`,
+      {
+        method: "DELETE",
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+          "Content-Type": "application/json",
+        },
+      }
+    );
+
+    if (!response.ok) {
+      throw new Error(
+        `Graph API error: ${response.status} ${response.statusText}`
+      );
+    }
+
+    res.status(200).send("Email deleted successfully");
+  } catch (error) {
+    console.error("Error deleting email:", error.message);
+    res.status(500).send("Failed to delete email");
+  }
+});
+
+// Route to send a new email
+emailRoutes.route("/email-inbox/send").post(async (req, res) => {
+  const accessToken = req.cookies.accessToken; // Get the access token from the cookie
+  const { to, cc, subject, content } = req.body; // Get the email details from the request body
+
+  if (!accessToken) {
+    return res.status(401).send("Access token missing");
+  }
+
+  try {
+    // Send the email using Microsoft Graph API
+    const response = await fetch(
+      `https://graph.microsoft.com/v1.0/me/sendMail`,
+      {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          message: {
+            subject: subject,
+            body: {
+              contentType: "HTML",
+              content: content,
+            },
+            toRecipients: to
+              .split(",")
+              .map((email) => ({ emailAddress: { address: email.trim() } })),
+            ccRecipients: cc
+              .split(",")
+              .map((email) => ({ emailAddress: { address: email.trim() } })),
+          },
+          saveToSentItems: "true",
+        }),
+      }
+    );
+
+    if (!response.ok) {
+      throw new Error(
+        `Graph API error: ${response.status} ${response.statusText}`
+      );
+    }
+
+    res.status(200).send("Email sent successfully");
+  } catch (error) {
+    console.error("Error sending email:", error.message);
+    res.status(500).send("Failed to send email");
+  }
+});
+
 module.exports = emailRoutes;
