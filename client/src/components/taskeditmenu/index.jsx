@@ -9,7 +9,7 @@
  * need to wait for db confirmation before reloading the grid
  */
 
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import taskSchema from "../../validations/taskValidation";
 
 export default function TaskEditMenu({
@@ -44,6 +44,8 @@ export default function TaskEditMenu({
   const [attachments, setAttachments] = useState("");
   const [taskDesc, setTaskDesc] = useState("");
   const [chroniclesComplete, setChroniclesComplete] = useState("");
+
+  const [errors, setErrors] = useState({});
 
   //*
 
@@ -134,9 +136,12 @@ export default function TaskEditMenu({
     };
 
     try {
-      const isValid = await taskSchema.validate(updatedTask);
+      const isValid = await taskSchema.validate(updatedTask, {
+        abortEarly: false,
+      });
       if (isValid) {
         console.log("data is valid");
+        setErrors({});
         try {
           const response = await updateTask(taskId, updatedTask);
           if (response.status === 200) {
@@ -152,7 +157,15 @@ export default function TaskEditMenu({
         }
       }
     } catch (err) {
-      alert(err.errors);
+      const errorMessages = {};
+      err.inner.forEach((error) => {
+        errorMessages[error.path] = error.message;
+      });
+
+      console.log(errorMessages.taskName);
+      console.log(errorMessages);
+
+      setErrors((prev) => ({ ...errorMessages }));
     }
   };
 
@@ -229,7 +242,7 @@ export default function TaskEditMenu({
           isOpen ? "translate-x-0" : "translate-x-full"
         }`}
       >
-        <h2 className="text-3xl font-bold mb-8 text-white">Add New Task</h2>
+        {/* <h2 className="text-3xl font-bold mb-4 text-white">Task</h2> */}
 
         <form className="space-y-6">
           <div className="flex justify-between">
@@ -252,13 +265,14 @@ export default function TaskEditMenu({
                 }
               />
             </div>
-            <div className="w-[18rem]">
+            <div className="w-[18rem] ">
               <label
                 htmlFor="taskName"
                 className="block text-sm font-medium mb-2 text-gray-300"
               >
                 Task Name
               </label>
+
               <input
                 type="text"
                 id="taskName"
@@ -268,6 +282,9 @@ export default function TaskEditMenu({
                 disabled={viewClicked}
                 placeholder={addClicked ? "Add task name" : ""}
               />
+              {errors.taskName && (
+                <div className="text-red-600">{errors.taskName}</div>
+              )}
             </div>
           </div>
 
@@ -345,6 +362,9 @@ export default function TaskEditMenu({
                 placeholder="Assign"
                 disabled={viewClicked}
               />
+              {errors.assignedTo && (
+                <div className="text-red-600">{errors.assignedTo}</div>
+              )}
             </div>
 
             <div className="w-[18rem]">
@@ -415,6 +435,9 @@ export default function TaskEditMenu({
                 placeholder="Enter Category"
                 disabled={viewClicked}
               />
+              {errors.taskCategory && (
+                <div className="text-red-600">{errors.taskCategory}</div>
+              )}
             </div>
           </div>
 
@@ -436,6 +459,9 @@ export default function TaskEditMenu({
                 required
                 disabled={viewClicked}
               />
+              {errors.startDate && (
+                <div className="text-red-600">{errors.startDate}</div>
+              )}
             </div>
             <div className="w-[18rem]">
               <label
@@ -453,6 +479,9 @@ export default function TaskEditMenu({
                 required
                 disabled={viewClicked}
               />
+              {errors.dueDate && (
+                <div className="text-red-600">{errors.dueDate}</div>
+              )}
             </div>
           </div>
 
@@ -475,6 +504,9 @@ export default function TaskEditMenu({
                 placeholder="Add Chronicles"
                 disabled={viewClicked}
               />
+              {errors.addChronicles && (
+                <div className="text-red-600">{errors.addChronicles}</div>
+              )}
             </div>
             <div className="w-[18rem]">
               <label
@@ -492,6 +524,9 @@ export default function TaskEditMenu({
                 placeholder="Chronicles Completes"
                 disabled={viewClicked}
               />
+              {errors.chroniclesComplete && (
+                <div className="text-red-600">{errors.chroniclesComplete}</div>
+              )}
             </div>
           </div>
 
@@ -511,6 +546,9 @@ export default function TaskEditMenu({
               placeholder="Enter Desc"
               disabled={viewClicked}
             />
+            {errors.taskDesc && (
+              <div className="text-red-600">{errors.taskDesc}</div>
+            )}
           </div>
 
           <div>
@@ -529,6 +567,9 @@ export default function TaskEditMenu({
               placeholder="Enter Attachments"
               disabled={viewClicked}
             />
+            {errors.attachments && (
+              <div className="text-red-600">{errors.attachments}</div>
+            )}
           </div>
 
           {viewClicked && (

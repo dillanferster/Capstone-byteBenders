@@ -4,18 +4,21 @@ import * as Yup from "yup";
 /// Claude.AI prompt: "Can you help make yup form validation schema for react app form"
 const taskSchema = Yup.object().shape({
   taskName: Yup.string()
-    .matches(
-      /^[a-zA-Z0-9\s]+$/,
-      "Only alphanumeric characters and spaces are allowed"
-    )
-    .max(100, "Task name must not exceed 100 characters")
+    .matches(/^[a-zA-Z0-9\s]+$/, "Only letters and spaces are allowed")
+    .max(100, " Task name must not exceed 100 characters")
     .required("Task name is required"),
   assignedTo: Yup.string()
-    .matches(/^[a-zA-Z\s]+$/, "Only letters and spaces are allowed")
+    .matches(
+      /^[a-zA-Z\s]+$/,
+      "Assigned To Error: Only letters and spaces are allowed"
+    )
     .max(50, "Assigned to must not exceed 50 characters")
     .required("Assigned to is required"),
   taskStatus: Yup.string()
-    .matches(/^[a-zA-Z\s]+$/, "Only letters and spaces are allowed")
+    .matches(
+      /^[a-zA-Z\s]+$/,
+      "Task Status Error: Only letters and spaces are allowed"
+    )
     .max(20, "Task status must not exceed 20 characters")
     .required("Task status is required"),
   priority: Yup.string()
