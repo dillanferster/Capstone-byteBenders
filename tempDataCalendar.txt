@@ -1,0 +1,92 @@
+[
+  {
+    "_id": {"$oid": "671ac51d0a8c26c8598c6d01"},
+    "title": "Q4 Sales Strategy Review",
+    "start": "2024-10-24T09:00",
+    "end": "2024-10-24T10:30",
+    "description": "Quarterly review of sales performance and planning for end-of-year targets",
+    "meetingLink": "https://teams.microsoft.com/l/meetup-join/sales-q4-rev-19%40thread.v2",
+    "participants": ["Sarah C.", "Mike R.", "Aisha P.", "David K."]
+  },
+  {
+    "_id": {"$oid": "671ac51d0a8c26c8598c6d02"},
+    "title": "Sprint Planning Meeting",
+    "start": "2024-10-24T11:00",
+    "end": "2024-10-24T12:00",
+    "description": "Planning session for Sprint 24 - focus on new feature implementation",
+    "meetingLink": "https://teams.microsoft.com/l/meetup-join/sprint24-plan-28%40thread.v2",
+    "participants": ["James W.", "Elena S.", "Raj S.", "Lisa M."]
+  },
+  {
+    "_id": {"$oid": "671ac51d0a8c26c8598c6d03"},
+    "title": "Client Onboarding - TechCorp",
+    "start": "2024-10-24T13:30",
+    "end": "2024-10-24T14:00",
+    "description": "Initial onboarding meeting with TechCorp team to discuss implementation timeline",
+    "meetingLink": "https://teams.microsoft.com/l/meetup-join/techcorp-onboard-31%40thread.v2",
+    "participants": ["Emma T.", "John D.", "Maria G."]
+  },
+  {
+    "_id": {"$oid": "671ac51d0a8c26c8598c6d04"},
+    "title": "UI/UX Design Workshop",
+    "start": "2024-10-24T14:30",
+    "end": "2024-10-24T16:30",
+    "description": "Collaborative workshop to finalize the new dashboard design",
+    "meetingLink": "https://teams.microsoft.com/l/meetup-join/uiux-workshop-44%40thread.v2",
+    "participants": ["Alex W.", "Nina P.", "Carlos R.", "Sophie M."]
+  },
+  {
+    "_id": {"$oid": "671ac51d0a8c26c8598c6d05"},
+    "title": "Budget Review FY25",
+    "start": "2024-10-25T10:00",
+    "end": "2024-10-25T11:30",
+    "description": "Annual budget planning session with finance team",
+    "meetingLink": "https://teams.microsoft.com/l/meetup-join/budget-fy25-52%40thread.v2",
+    "participants": ["Robert C.", "Amanda J.", "Hassan A."]
+  },
+  {
+    "_id": {"$oid": "671ac51d0a8c26c8598c6d06"},
+    "title": "Team Weekly Sync",
+    "start": "2024-10-25T13:00",
+    "end": "2024-10-25T13:30",
+    "description": "Regular team sync to discuss ongoing projects and blockers",
+    "meetingLink": "https://teams.microsoft.com/l/meetup-join/team-sync-61%40thread.v2",
+    "participants": ["Tom W.", "Sarah P.", "Raj M.", "Lucy C."]
+  },
+  {
+    "_id": {"$oid": "671ac51d0a8c26c8598c6d07"},
+    "title": "Product Launch Planning",
+    "start": "2024-10-25T15:00",
+    "end": "2024-10-25T16:00",
+    "description": "Coordination meeting for November product launch",
+    "meetingLink": "https://teams.microsoft.com/l/meetup-join/prod-launch-73%40thread.v2",
+    "participants": ["Michelle L.", "Brian T.", "Priya S.", "Kevin O."]
+  },
+  {
+    "_id": {"$oid": "671ac51d0a8c26c8598c6d08"},
+    "title": "Security Audit Review",
+    "start": "2024-10-26T09:30",
+    "end": "2024-10-26T10:30",
+    "description": "Monthly security compliance and audit review",
+    "meetingLink": "https://teams.microsoft.com/l/meetup-join/security-audit-82%40thread.v2",
+    "participants": ["Frank R.", "Diana W.", "Samuel J."]
+  },
+  {
+    "_id": {"$oid": "671ac51d0a8c26c8598c6d09"},
+    "title": "Customer Feedback Session",
+    "start": "2024-10-26T11:00",
+    "end": "2024-10-26T12:00",
+    "description": "Monthly customer feedback review and action items planning",
+    "meetingLink": "https://teams.microsoft.com/l/meetup-join/cust-feedback-91%40thread.v2",
+    "participants": ["Lisa C.", "Mark T.", "Aisha K.", "Jordan S."]
+  },
+  {
+    "_id": {"$oid": "671ac51d0a8c26c8598c6d10"},
+    "title": "Infrastructure Migration Planning",
+    "start": "2024-10-26T14:00",
+    "end": "2024-10-26T15:30",
+    "description": "Technical planning session for cloud migration project",
+    "meetingLink": "https://teams.microsoft.com/l/meetup-join/infra-migrate-103%40thread.v2",
+    "participants": ["Derek C.", "Maya P.", "Chris W.", "Anna K."]
+  }
+]
