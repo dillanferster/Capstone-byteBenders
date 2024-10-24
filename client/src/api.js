@@ -435,15 +435,15 @@ export async function getNotes() {
     const response = await axios.get(`${URL}/notes`, {
       headers: {
         Authorization: `Bearer ${token}`, // Add your token if needed
-        'Cache-Control': 'no-cache',      // Prevent caching by the browser
-        'Pragma': 'no-cache',             // HTTP 1.0 backward compatibility
-        'Expires': '0',                   // Expire immediately
+        "Cache-Control": "no-cache", // Prevent caching by the browser
+        Pragma: "no-cache", // HTTP 1.0 backward compatibility
+        Expires: "0", // Expire immediately
       },
       params: {
-        timestamp: new Date().getTime()    // Add a query parameter to prevent caching
-      }
+        timestamp: new Date().getTime(), // Add a query parameter to prevent caching
+      },
     });
-    return response.data;                  // Return the fresh data
+    return response.data; // Return the fresh data
   } catch (error) {
     console.error("Error fetching notes:", error); // Log any errors for debugging
     throw error;
@@ -486,7 +486,7 @@ export async function createNote(note) {
     const response = await axios.post(`${URL}/notes`, note, {
       headers: {
         Authorization: `Bearer ${token}`,
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json",
       },
     });
     return response.data;
@@ -612,22 +612,84 @@ async function refreshAccessToken() {
   }
 }
 
-// Function to log out the user
-export async function logoutEmail() {
+// Function to log out the user (old ver)
+// export async function logoutEmail() {
+//   try {
+//     // Redirect to the server-side logout route
+//     window.location.href = `${URL}/email/logout`;
+
+//     // Clear tokens in localStorage or sessionStorage
+//     localStorage.removeItem("accessToken");
+//     localStorage.removeItem("refreshToken");
+//     sessionStorage.removeItem("accessToken");
+//     sessionStorage.removeItem("refreshToken");
+
+//     // Clear cookies (if used)
+//     document.cookie =
+//       "accessToken=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+//   } catch (error) {
+//     console.error("Logout initiation failed:", error);
+//   }
+// }
+
+// Function to send an email reply
+export async function sendEmailReply(messageId, comment) {
   try {
-    // Redirect to the server-side logout route
-    window.location.href = `${URL}/email/logout`;
+    const response = await axios.post(
+      `${URL}/email-inbox/reply`,
+      {
+        messageId,
+        comment,
+      },
+      {
+        withCredentials: true,
+      }
+    );
 
-    // Clear tokens in localStorage or sessionStorage
-    localStorage.removeItem("accessToken");
-    localStorage.removeItem("refreshToken");
-    sessionStorage.removeItem("accessToken");
-    sessionStorage.removeItem("refreshToken");
-
-    // Clear cookies (if used)
-    document.cookie =
-      "accessToken=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+    console.log("Reply sent successfully:", response.data);
+    return response.data;
   } catch (error) {
-    console.error("Logout initiation failed:", error);
+    console.error("Failed to send email reply:", error);
+    throw error;
+  }
+}
+
+// Function to delete an email
+export async function deleteEmail(messageId) {
+  try {
+    const response = await axios.delete(`${URL}/email-inbox/delete`, {
+      data: { messageId },
+      withCredentials: true,
+    });
+
+    console.log("Email deleted successfully:", response.data);
+    return response.data;
+  } catch (error) {
+    console.error("Failed to delete email:", error);
+    throw error;
+  }
+}
+
+// Function to send a new email
+export async function sendEmail(to, cc, subject, content) {
+  try {
+    const response = await axios.post(
+      `${URL}/email-inbox/send`,
+      {
+        to,
+        cc,
+        subject,
+        content,
+      },
+      {
+        withCredentials: true,
+      }
+    );
+
+    console.log("Email sent successfully:", response.data);
+    return response.data;
+  } catch (error) {
+    console.error("Failed to send email:", error);
+    throw error;
   }
 }
