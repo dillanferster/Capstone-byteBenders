@@ -36,6 +36,7 @@ export default function EditMenu({
   const [projectStatus, setProjectStatus] = useState("");
   const [quickBaseLink, setQuickBaseLink] = useState("");
   const [projectDescription, setProjectDescription] = useState("");
+  const [errors, setErrors] = useState({});
 
   //*
 
@@ -158,7 +159,7 @@ export default function EditMenu({
           isOpen ? "translate-x-0" : "translate-x-full"
         }`}
       >
-        <h2 className="text-3xl font-bold mb-8 text-white">Add New Project</h2>
+        <h2 className="text-3xl font-bold mb-8 text-white">Project</h2>
 
         <form className="space-y-6">
           <div className="flex justify-between">

@@ -179,8 +179,6 @@ export default function TaskEditMenu({
   // then we call reloadGrid which reloads the rows, toggleFrom closes menu, and clearInputs
   // Reference : PHIND , prompt : "how is that different from using .then like how i have it"
   const submitAddedTask = async () => {
-    setAddClicked(!addClicked);
-
     const addedTask = {
       taskName: taskName,
       assignedTo: assignedTo,
@@ -198,23 +196,41 @@ export default function TaskEditMenu({
     };
 
     try {
-      const response = await createTask(addedTask);
-      console.log("Task created:", response);
+      const isValid = await taskSchema.validate(addedTask, {
+        abortEarly: false,
+      });
+      if (isValid) {
+        console.log("data is valid");
+        setErrors({});
+        try {
+          const response = await createTask(addedTask);
+          if (response.status === 200) {
+            // Now we have the new task ID
+            const newTaskId = response.data.insertedId;
+            console.log("New task ID:", newTaskId);
 
-      if (response.status === 200) {
-        // Now we have the new task ID
-        const newTaskId = response.data.insertedId;
-        console.log("New task ID:", newTaskId);
+            // Update the project with the new task ID
+            updateTaskToProject(newTaskId);
 
-        // Update the project with the new task ID
-        updateTaskToProject(newTaskId);
-
-        reloadTheGrid();
-        toggleForm();
-        clearAddInputs();
+            reloadTheGrid();
+            toggleForm();
+            clearAddInputs();
+            setAddClicked(!addClicked);
+          }
+        } catch (error) {
+          console.error("Error updating task:", error);
+        }
       }
-    } catch (error) {
-      console.error("Error adding task:", error);
+    } catch (err) {
+      const errorMessages = {};
+      err.inner.forEach((error) => {
+        errorMessages[error.path] = error.message;
+      });
+
+      console.log(errorMessages.taskName);
+      console.log(errorMessages);
+
+      setErrors((prev) => ({ ...errorMessages }));
     }
   };
 
