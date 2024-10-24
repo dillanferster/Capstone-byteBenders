@@ -46,8 +46,10 @@ const Dashboard = () => {
   const colors = tokens(theme.palette.mode);
   const [projects, setProjects] = useState([]);
   const [numbOfProjects, setNumbOfProjects] = useState("##");
+  const [avgTimeProject, setAvgTimeProject] = useState("##");
   const [tasks, setTasks] = useState([]);
   const [numbOfTasks, setNumbOfTasks] = useState("##");
+  const [avgTimeTask, setAvgTimeTask] = useState("##");
   const [targetProject, setTargetProject] = useState("***");
   const [calendarEvents, setCalendarEvents] = useState([]);
 
@@ -60,6 +62,15 @@ const Dashboard = () => {
         setProjects(dataProjects);
         setNumbOfProjects(dataProjects.length);
         setTargetProject(dataProjects[0].projectName);
+
+        // Calculate average project time
+        let totalProjectTime = 0;
+        dataProjects.map((project) => {
+          // console.log(project.projectTime);
+          totalProjectTime += project.projectTime;
+        });
+        // console.log("TOTAL:" + totalProjectTime);
+        setAvgTimeProject(totalProjectTime / dataProjects.length);
       }
     }
 
@@ -68,9 +79,21 @@ const Dashboard = () => {
       const dataTasks = await getTasks();
 
       if (dataTasks) {
-        console.log(dataTasks);
         setTasks(dataTasks);
         setNumbOfTasks(dataTasks.length);
+
+        // Calculate average task time
+        let totalTaskTime = 0;
+        dataTasks.map((task) => {
+          // Extract only the number from strings like "Minutes: 35"
+          const minutes = parseInt(task.totalTime.split(": ")[1]);
+          if (!isNaN(minutes)) {
+            // Make sure we got a valid number
+            totalTaskTime += minutes;
+          }
+        });
+        console.log("TOTAL:" + totalTaskTime);
+        setAvgTimeTask(Math.round(totalTaskTime / dataTasks.length));
       }
     }
 
@@ -173,7 +196,7 @@ const Dashboard = () => {
           justifyContent="center"
         >
           <StatBox
-            title="5d 12h 23m"
+            title={avgTimeProject}
             subtitle="Average Project Time"
             progress="0.5"
             increase="-21%"
@@ -211,7 +234,7 @@ const Dashboard = () => {
           justifyContent="center"
         >
           <StatBox
-            title="4h 32m"
+            title={avgTimeTask}
             subtitle="Average Task Time"
             progress="0.80"
             increase="-5%"

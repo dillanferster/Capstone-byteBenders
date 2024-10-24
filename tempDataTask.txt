@@ -275,7 +275,7 @@
     ],
     "completeTime": [{"$date": {"$numberLong": "1729317802055"}}],
     "totalTime": "Minutes: 45"
-  }
+  },
   {
     "_id": {"$oid": "67188f7d7fc68276ca0d10f9"},
     "projectId": {"$oid": "67120f2294fe762a4a99b745"},
@@ -344,7 +344,7 @@
     ],
     "completeTime": [{"$date": {"$numberLong": "1729324602055"}}],
     "totalTime": "Minutes: 38"
-  }
+  },
   {
     "_id": {"$oid": "67188f7d7fc68276ca0d10fc"},
     "projectId": {"$oid": "67120f2294fe762a4a99b746"},

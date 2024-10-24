@@ -33,7 +33,7 @@ const ObjectId = require("mongodb").ObjectId;
 
 taskRoutes.route("/tasks").get(verifyToken, async (request, response) => {
   let db = database.getDb();
-  let data = await db.collection("tasks").find({}).toArray();
+  let data = await db.collection("FrankTask").find({}).toArray();
 
   if (data.length > 0) {
     response.json(data);
@@ -55,7 +55,7 @@ taskRoutes.route("/tasks").get(verifyToken, async (request, response) => {
 taskRoutes.route("/tasks/:id").get(verifyToken, async (request, response) => {
   let db = database.getDb();
   let data = await db
-    .collection("tasks")
+    .collection("FrankTask")
     .findOne({ _id: new ObjectId(request.params.id) });
   if (Object.keys(data.length > 0)) {
     response.json(data);
@@ -90,7 +90,7 @@ taskRoutes.route("/tasks").post(verifyToken, async (request, response) => {
     attachments: request.body.attachments,
     chroniclesComplete: request.body.chroniclesComplete,
   };
-  let data = await db.collection("tasks").insertOne(mongoObject);
+  let data = await db.collection("FrankTask").insertOne(mongoObject);
   response.json(data);
 });
 
@@ -124,7 +124,7 @@ taskRoutes.route("/tasks/:id").put(verifyToken, async (request, response) => {
     },
   };
   let data = await db
-    .collection("tasks")
+    .collection("FrankTask")
     .updateOne({ _id: new ObjectId(request.params.id) }, mongoObject);
   response.json(data);
 });
@@ -143,7 +143,7 @@ taskRoutes
   .delete(verifyToken, async (request, response) => {
     let db = database.getDb();
     let data = await db
-      .collection("tasks")
+      .collection("FrankTask")
       .deleteOne({ _id: new ObjectId(request.params.id) });
 
     response.json(data);
@@ -159,7 +159,7 @@ taskRoutes
       $push: { startTime: new Date() },
     };
     let data = await db
-      .collection("tasks")
+      .collection("FrankTask")
       .updateOne({ _id: new ObjectId(request.params.id) }, mongoObject);
     response.json(data);
   });
@@ -173,7 +173,7 @@ taskRoutes
       $push: { pauseTime: { start: new Date() } },
     };
     let data = await db
-      .collection("tasks")
+      .collection("FrankTask")
       .updateOne({ _id: new ObjectId(request.params.id) }, mongoObject);
     response.json(data);
   });
@@ -189,7 +189,7 @@ taskRoutes
 
     let db = database.getDb();
 
-    let data = await db.collection("tasks").updateOne(
+    let data = await db.collection("FrankTask").updateOne(
       { _id: new ObjectId(request.params.id) }, // match the document by ID
       { $set: { "pauseTime.$[elem].end": new Date() } }, // update the 'end' field
       { arrayFilters: [{ "elem.end": { $exists: false } }] } // filter array elements with no 'end' field
@@ -207,7 +207,7 @@ taskRoutes
       $push: { completeTime: new Date() },
     };
     let data = await db
-      .collection("tasks")
+      .collection("FrankTask")
       .updateOne({ _id: new ObjectId(request.params.id) }, mongoObject);
     response.json(data);
   });
@@ -223,7 +223,7 @@ taskRoutes
       $set: { taskStatus: request.body.taskStatus },
     };
     let data = await db
-      .collection("tasks")
+      .collection("FrankTask")
       .updateOne({ _id: new ObjectId(request.params.id) }, mongoObject);
     response.json(data);
   });
@@ -238,7 +238,7 @@ taskRoutes
       $set: { totalTime: request.body.totalTime },
     };
     let data = await db
-      .collection("tasks")
+      .collection("FrankTask")
       .updateOne({ _id: new ObjectId(request.params.id) }, mongoObject);
     response.json(data);
   });
