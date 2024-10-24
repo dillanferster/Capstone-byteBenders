@@ -5,33 +5,27 @@ import * as Yup from "yup";
 const projectSchema = Yup.object().shape({
   projectName: Yup.string()
     .matches(/^[a-zA-Z0-9\s]+$/, "Only letters and spaces are allowed")
-    .max(100, " Task name must not exceed 100 characters")
-    .required("Task name is required"),
+    .max(100, "must not exceed 100 characters")
+    .required("required"),
   assignedTo: Yup.string()
-    .matches(
-      /^[a-zA-Z\s]+$/,
-      "Assigned To Error: Only letters and spaces are allowed"
-    )
-    .max(50, "Assigned to must not exceed 50 characters")
-    .required("Assigned to is required"),
+    .matches(/^[a-zA-Z\s]+$/, "Only letters and spaces are allowed")
+    .max(50, "must not exceed 50 characters")
+    .required("required"),
   caseId: Yup.string()
     .matches(/^[a-zA-Z0-9]+$/, "Only letters and numbers are allowed")
-    .max(50, "Assigned to must not exceed 50 characters")
-    .required("Assigned to is required"),
+    .max(50, "must not exceed 50 characters")
+    .required("required"),
   dataClassification: Yup.string()
-    .matches(
-      /^[a-zA-Z\s]+$/,
-      "Assigned To Error: Only letters and spaces are allowed"
-    )
-    .max(50, "Assigned to must not exceed 50 characters")
-    .required("Assigned to is required"),
+    .matches(/^[a-zA-Z0-9\s]+$/, "Only letters and spaces are allowed")
+    .max(50, "must not exceed 50 characters")
+    .required("required"),
   projectStatus: Yup.string()
     .matches(
       /^[a-zA-Z\s]+$/,
       "Task Status Error: Only letters and spaces are allowed"
     )
-    .max(20, "Task status must not exceed 20 characters")
-    .required("Task status is required"),
+    .max(20, "must not exceed 20 characters")
+    .required("required"),
 
   dateCreated: Yup.date()
     .default(() => new Date())
@@ -39,20 +33,20 @@ const projectSchema = Yup.object().shape({
 
   quickBaseLink: Yup.string()
     .matches(/^[a-zA-Z0-9]+$/, "Only letters and numbers are allowed")
-    .max(100, "Project task must not exceed 100 characters")
-    .required("Project task is required"),
+    .max(100, "must not exceed 100 characters")
+    .required("required"),
   projectStatus: Yup.string()
     .matches(/^[a-zA-Z\s]+$/, "Only letters and spaces are allowed")
-    .max(20, "Project status must not exceed 20 characters")
-    .required("Project status is required"),
+    .max(20, "must not exceed 20 characters")
+    .required("required"),
 
   projectDesc: Yup.string()
     .matches(
       /^[a-zA-Z0-9\s.,!?()-]+$/,
       "Only alphanumeric characters, spaces, and basic punctuation are allowed"
     )
-    .max(500, "Task description must not exceed 500 characters")
-    .required("Task description is required"),
+    .max(500, "must not exceed 500 characters")
+    .required("required"),
 });
 
 export default projectSchema;
