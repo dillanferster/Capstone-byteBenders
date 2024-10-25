@@ -445,21 +445,21 @@ export async function verifyUser(user) {
 // if the response sent back is good "200" the function returns the data, else console.logs issue
 export async function getNotes() {
   try {
-    const token = sessionStorage.getItem("User"); // Make sure token is valid if you're using authentication
+    const token = sessionStorage.getItem("User"); // Ensure the token is valid
     const response = await axios.get(`${URL}/notes`, {
       headers: {
-        Authorization: `Bearer ${token}`, // Add your token if needed
-        "Cache-Control": "no-cache", // Prevent caching by the browser
-        Pragma: "no-cache", // HTTP 1.0 backward compatibility
-        Expires: "0", // Expire immediately
+        Authorization: `Bearer ${token}`, // Pass token if authentication is needed
+        "Cache-Control": "no-cache",
+        Pragma: "no-cache",
+        Expires: "0",
       },
       params: {
-        timestamp: new Date().getTime(), // Add a query parameter to prevent caching
+        timestamp: new Date().getTime(), // Prevent caching
       },
     });
-    return response.data; // Return the fresh data
+    return response.data; // Return the fetched notes data
   } catch (error) {
-    console.error("Error fetching notes:", error); // Log any errors for debugging
+    console.error("Error fetching notes:", error); // Log any errors for easier debugging
     throw error;
   }
 }
@@ -658,6 +658,106 @@ export async function logoutEmail() {
     console.error("Logout initiation failed:", error);
   }
 }
+
+///CALENDAR///
+// gets all calendar events
+export async function getCalendarEvents() {
+  try {
+    const token = sessionStorage.getItem("User"); // Retrieve the token
+    const response = await axios.get(`${URL}/events/`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching calendar events:", error);
+  }
+}
+
+// creates a new calendar event
+export async function createCalendarEvent(event) {
+  console.log("IN CREATE EVENT API.JS");
+  try {
+    const token = sessionStorage.getItem("User");
+    const response = await axios.post(`${URL}/events`, event, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    return response;
+  } catch (error) {
+    console.error("Error creating calendar event:", error);
+    throw error;
+  }
+}
+
+// updates a calendar event
+export async function updateCalendarEvent(id, event) {
+  try {
+    const token = sessionStorage.getItem("User");
+    const response = await axios.put(`${URL}/events/${id}`, event, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    return response;
+  } catch (error) {
+    console.error("Error updating calendar event:", error);
+    throw error;
+  }
+}
+
+// deletes a calendar event
+export async function deleteCalendarEvent(id) {
+  try {
+    const token = sessionStorage.getItem("User");
+    const response = await axios.delete(`${URL}/events/${id}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    return response.data;
+  } catch (error) {
+    console.error("Error deleting calendar event:", error);
+  }
+}
+// get events by date range
+export async function getCalendarEventsByRange(startDate, endDate) {
+  try {
+    const token = sessionStorage.getItem("User");
+    const response = await axios.get(`${URL}/events/range`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+      params: {
+        start: startDate,
+        end: endDate,
+      },
+    });
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching calendar events by range:", error);
+    throw error;
+  }
+}
+
+// get events by participant
+export async function getCalendarEventsByParticipant(email) {
+  try {
+    const token = sessionStorage.getItem("User");
+    const response = await axios.get(`${URL}/events/participant/${email}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching calendar events by participant:", error);
+    throw error;
+  }
+}
+///^CALENDAR^///
 
 /**
  * Send Email Reply Function

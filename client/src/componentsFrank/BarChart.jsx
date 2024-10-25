@@ -1,26 +1,47 @@
-/* Not used in the project, just for reference
- *
- * Refference: https://www.youtube.com/watch?v=wYpCWwD1oz0&t=3528s&ab_channel=EdRoh
- *
- */
-
 import { useTheme } from "@mui/material";
 import { ResponsiveBar } from "@nivo/bar";
 import { tokens } from "../theme";
-import { mockBarData as data } from "../data/mockData";
 
-const BarChart = ({ isDashboard = false }) => {
+const BarChart = ({ data, isDashboard = false }) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
 
+  // Transform projects data into the format needed for the bar chart
+  const chartData = [
+    {
+      status: "Complete",
+      count: data.filter((project) => project.projectStatus === "Complete")
+        .length,
+      color: colors.greenAccent[500],
+    },
+    {
+      status: "In Progress",
+      count: data.filter((project) => project.projectStatus === "In Progress")
+        .length,
+      color: colors.blueAccent[400],
+    },
+    {
+      status: "Not Started",
+      count: data.filter((project) => project.projectStatus === "Not Started")
+        .length,
+      color: colors.redAccent[400],
+    },
+    {
+      status: "Storage",
+      count: data.filter((project) => project.projectStatus === "Storage")
+        .length,
+      color: colors.grey[500],
+    },
+  ];
+
   return (
     <ResponsiveBar
-      data={data}
+      data={chartData}
       theme={{
         axis: {
           domain: {
             line: {
-              stoke: colors.grey[100],
+              stroke: colors.grey[100],
             },
           },
           legend: {
@@ -38,53 +59,27 @@ const BarChart = ({ isDashboard = false }) => {
             },
           },
         },
-        legends: {
+        tooltip: {
+          container: {
+            background: colors.primary[400],
+            color: colors.grey[100],
+          },
+        },
+        labels: {
           text: {
+            fontSize: 16, // Increase the font size here
             fill: colors.grey[100],
           },
         },
       }}
-      keys={["hot dog", "burger", "sandwich", "kebab", "fries", "donut"]}
-      indexBy="country"
-      margin={{ top: 50, right: 130, bottom: 50, left: 60 }}
+      keys={["count"]}
+      indexBy="status"
+      margin={{ top: 20, right: 20, bottom: 40, left: 60 }}
       padding={0.3}
       valueScale={{ type: "linear" }}
       indexScale={{ type: "band", round: true }}
-      colors={{ scheme: "nivo" }}
-      defs={[
-        {
-          id: "dots",
-          type: "patternDots",
-          background: "inherit",
-          color: "#38bcb2",
-          size: 4,
-          padding: 1,
-          stagger: true,
-        },
-        {
-          id: "lines",
-          type: "patternLines",
-          background: "inherit",
-          color: "#eed312",
-          rotation: -45,
-          lineWidth: 6,
-          spacing: 10,
-        },
-      ]}
-      fill={[
-        {
-          match: {
-            id: "fries",
-          },
-          id: "dots",
-        },
-        {
-          match: {
-            id: "sandwich",
-          },
-          id: "lines",
-        },
-      ]}
+      colors={({ data }) => data.color}
+      borderRadius={2}
       borderColor={{
         from: "color",
         modifiers: [["darker", 1.6]],
@@ -95,7 +90,7 @@ const BarChart = ({ isDashboard = false }) => {
         tickSize: 5,
         tickPadding: 5,
         tickRotation: 0,
-        legend: isDashboard ? undefined : "country",
+        legend: isDashboard ? undefined : "Status",
         legendPosition: "middle",
         legendOffset: 32,
         truncateTickAt: 0,
@@ -104,47 +99,19 @@ const BarChart = ({ isDashboard = false }) => {
         tickSize: 5,
         tickPadding: 5,
         tickRotation: 0,
-        legend: isDashboard ? undefined : "food",
+        legend: isDashboard ? undefined : "Number of Projects",
         legendPosition: "middle",
         legendOffset: -40,
         truncateTickAt: 0,
       }}
-      enableLabel={false}
+      enableLabel={true}
+      label={(d) => d.value}
       labelSkipWidth={12}
       labelSkipHeight={12}
-      labelTextColor={{
-        from: "color",
-        modifiers: [["darker", 1.6]],
-      }}
-      legends={[
-        {
-          dataFrom: "keys",
-          anchor: "bottom-right",
-          direction: "column",
-          justify: false,
-          translateX: 120,
-          translateY: 0,
-          itemsSpacing: 2,
-          itemWidth: 100,
-          itemHeight: 20,
-          itemDirection: "left-to-right",
-          itemOpacity: 0.85,
-          symbolSize: 20,
-          effects: [
-            {
-              on: "hover",
-              style: {
-                itemOpacity: 1,
-              },
-            },
-          ],
-        },
-      ]}
+      labelTextColor="black"
       role="application"
-      ariaLabel="Nivo bar chart demo"
-      barAriaLabel={(e) =>
-        e.id + ": " + e.formattedValue + " in country: " + e.indexValue
-      }
+      ariaLabel="Project Status Distribution"
+      barAriaLabel={(e) => `${e.indexValue}: ${e.value} projects`}
     />
   );
 };
