@@ -384,7 +384,7 @@ emailRoutes.route("/email-inbox/signout").get(async (req, res) => {
       const microsoftLogoutUrl = `https://login.microsoftonline.com/common/oauth2/v2.0/logout?post_logout_redirect_uri=${encodeURIComponent(
         "http://localhost:5173/email-inbox/"
       )}`;
-      res.json({ redirectUrl: microsoftLogoutUrl });
+      res.redirect(microsoftLogoutUrl);
     });
   } catch (error) {
     console.error("Error during signout:", error);

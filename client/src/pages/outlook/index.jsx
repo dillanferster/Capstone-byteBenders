@@ -70,6 +70,7 @@ const EmailPage = () => {
       const emailData = await fetchEmails();
       setEmails(emailData);
       setLoggedIn(true);
+      setSelectedEmail(null);
     } catch (error) {
       console.error("Failed to fetch emails:", error);
       setError("Failed to load emails. Please try again.");

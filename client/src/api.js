@@ -633,18 +633,13 @@ export async function logoutEmail() {
       withCredentials: true, // This is important for sending cookies with the request
     });
 
-    if (response.status === 200) {
-      // If the server responds with a redirect URL, use it
-      if (response.data && response.data.redirectUrl) {
-        window.location.href = response.data.redirectUrl;
-      } else {
-        // Otherwise, redirect to a default location (e.g., login page)
-        window.location.href = "/login"; // Adjust this to your login route
-      }
-    } else {
-      console.error("Logout failed:", response.data);
-      // Handle logout failure (e.g., show an error message to the user)
-    }
+    // if (response.status === 200) {
+    //   // If the server responds with a redirect URL, use it
+    //   window.location.href = "http://localhost:5173/email-inbox/";
+    // } else {
+    //   console.error("Logout failed:", response.data);
+    //   // Handle logout failure (e.g., show an error message to the user)
+    // }
   } catch (error) {
     console.error("Logout initiation failed:", error);
   }
