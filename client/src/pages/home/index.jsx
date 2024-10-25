@@ -36,6 +36,7 @@ import { Select, MenuItem, FormControl, InputLabel } from "@mui/material";
 
 // database functions from api file
 import { getProjects, getProject, getTasks, getTask } from "../../api.js";
+import { getCalendarEvents } from "../../api.js";
 // import { set } from "date-fns";
 
 const Dashboard = () => {
@@ -44,35 +45,125 @@ const Dashboard = () => {
   const colors = tokens(theme.palette.mode);
   const [projects, setProjects] = useState([]);
   const [numbOfProjects, setNumbOfProjects] = useState("##");
+  const [avgTimeProject, setAvgTimeProject] = useState("##");
   const [tasks, setTasks] = useState([]);
   const [numbOfTasks, setNumbOfTasks] = useState("##");
-  const [targetProject, setTargetProject] = useState("week");
+  const [avgTimeTask, setAvgTimeTask] = useState("##");
+  const [targetProject, setTargetProject] = useState("***");
+  const [calendarEvents, setCalendarEvents] = useState([]);
 
   useEffect(() => {
     // Load projects from database into useState variable
-    async function loadProjects() {
+    async function loadProjTask() {
       const dataProjects = await getProjects();
+      const dataTasks = await getTasks();
 
-      if (dataProjects) {
+      if (dataProjects && dataTasks) {
+        // LOADING PROJECT IN THE STATE
         setProjects(dataProjects);
         setNumbOfProjects(dataProjects.length);
         setTargetProject(dataProjects[0].projectName);
-      }
-    }
 
-    // Load tasks from database into useState variable
-    async function loadTasks() {
-      const dataTasks = await getTasks();
+        // Calculate average project time
+        // Inside your existing useEffect, after setting projects and before setting tasks:
 
-      if (dataTasks) {
-        console.log(dataTasks);
+        // Filter completed projects and calculate their average time
+        const completedProjects = dataProjects.filter(
+          (project) => project.projectStatus === "Complete"
+        );
+
+        let totalProjectTime = 0;
+        let completedProjectsWithTasks = 0;
+
+        // For each completed project
+        for (const project of completedProjects) {
+          let projectTotalTime = 0;
+          let hasValidTasks = false;
+
+          // Create a Set of task IDs for this project
+          const projectTaskIds = new Set(
+            project.TaskIdForProject.map((taskId) => taskId.toString())
+          );
+
+          // Get only the tasks that belong to this project
+          const projectTasks = dataTasks.filter((task) =>
+            projectTaskIds.has(task._id.toString())
+          );
+
+          // Calculate total time for all tasks in this project
+          for (const task of projectTasks) {
+            if (task.totalTime) {
+              const minutes = parseInt(task.totalTime.split(": ")[1]);
+              if (!isNaN(minutes)) {
+                projectTotalTime += minutes;
+                hasValidTasks = true;
+              }
+            }
+          }
+
+          // Only count this project if it has valid tasks with time
+          if (hasValidTasks) {
+            totalProjectTime += projectTotalTime;
+            completedProjectsWithTasks++;
+          }
+        }
+
+        // Calculate the average time (in minutes)
+        const averageTime =
+          completedProjectsWithTasks > 0
+            ? Math.round(totalProjectTime / completedProjectsWithTasks)
+            : 0;
+
+        setAvgTimeProject(averageTime);
+
+        // LOADING TASKS IN THE STATE
         setTasks(dataTasks);
         setNumbOfTasks(dataTasks.length);
+
+        // Calculate average task time
+        let totalTaskTime = 0;
+        dataTasks.map((task) => {
+          // Extract only the number from strings like "Minutes: 35"
+          const minutes = parseInt(task.totalTime.split(": ")[1]);
+          if (!isNaN(minutes)) {
+            // Make sure we got a valid number
+            totalTaskTime += minutes;
+          }
+        });
+        console.log("TOTAL:" + totalTaskTime);
+        setAvgTimeTask(Math.round(totalTaskTime / dataTasks.length));
       }
     }
 
-    loadProjects();
-    loadTasks();
+    loadProjTask();
+    // loadTasks();
+  }, []);
+
+  // Load calendar events from database into useState variable
+  useEffect(() => {
+    const fetchEvents = async () => {
+      try {
+        const data = await getCalendarEvents();
+
+        if (!data) throw new Error("Failed to fetch events");
+
+        const events = data.map((event) => ({
+          id: event._id,
+          title: event.title,
+          start: event.start,
+          end: event.end,
+          description: event.description,
+          meetingLink: event.meetingLink,
+          participants: event.participants,
+        }));
+
+        setCalendarEvents(events);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    fetchEvents();
   }, []);
 
   // Change to projects later ***
@@ -143,7 +234,7 @@ const Dashboard = () => {
           justifyContent="center"
         >
           <StatBox
-            title="5d 12h 23m"
+            title={avgTimeProject}
             subtitle="Average Project Time"
             progress="0.5"
             increase="-21%"
@@ -181,7 +272,7 @@ const Dashboard = () => {
           justifyContent="center"
         >
           <StatBox
-            title="4h 32m"
+            title={avgTimeTask}
             subtitle="Average Task Time"
             progress="0.80"
             increase="-5%"
@@ -220,6 +311,7 @@ const Dashboard = () => {
             <Box display="flex" alignItems="center" gap={2}>
               <FormControl size="small" sx={{ minWidth: 120 }}>
                 <Select
+                  key={projects.length}
                   value={targetProject}
                   onChange={handleTargetProjectChange}
                   displayEmpty
@@ -273,9 +365,9 @@ const Dashboard = () => {
               Upcoming Events
             </Typography>
           </Box>
-          {mockTransactions.map((transaction, i) => (
+          {calendarEvents.map((event) => (
             <Box
-              key={`${transaction.txId}-${i}`}
+              key={`${event.id}`}
               display="flex"
               justifyContent="space-between"
               alignItems="center"
@@ -288,19 +380,33 @@ const Dashboard = () => {
                   variant="h5"
                   fontWeight="600"
                 >
-                  {transaction.txId}
+                  {event.title}
                 </Typography>
                 <Typography color={colors.grey[100]}>
-                  {transaction.user}
+                  {formatDate(event.start, event.end)}
+                </Typography>
+                <Typography color={colors.grey[100]}>
+                  {event.participants.length} participants
                 </Typography>
               </Box>
-              <Box color={colors.grey[100]}>{transaction.date}</Box>
+              <Box color={colors.grey[100]}>
+                <Typography
+                  color={colors.greenAccent[500]}
+                  variant="h5"
+                  fontWeight="400"
+                >
+                  Description
+                </Typography>
+                <Typography color={colors.grey[100]}>
+                  {event.description}
+                </Typography>
+              </Box>
               <Box
                 backgroundColor={colors.greenAccent[500]}
                 p="5px 10px"
                 borderRadius="4px"
               >
-                ${transaction.cost}
+                Join Meeting
               </Box>
             </Box>
           ))}
@@ -372,3 +478,46 @@ const Dashboard = () => {
 };
 
 export default Dashboard;
+
+// Helper function to format date and time
+// *** NEED TO ADD END DATE IF DATE IS NOT SAME DATE OR MAKE IT NOT ALLOWED WHEN ENTERING DATE ***
+const formatDate = (isoString1, isoString2) => {
+  const date1 = new Date(isoString1);
+  const date2 = new Date(isoString2);
+  // Get month name
+  const month = date1.toLocaleString("en-US", { month: "short" });
+
+  // Get day with ordinal suffix (1st, 2nd, 3rd,...)
+  const day = date1.getDate();
+  const ordinal = (d) => {
+    if (d > 3 && d < 21) return "th";
+    switch (d % 10) {
+      case 1:
+        return "st";
+      case 2:
+        return "nd";
+      case 3:
+        return "rd";
+      default:
+        return "th";
+    }
+  };
+
+  // Get time in AM/PM format
+  const time = date1
+    .toLocaleString("en-US", {
+      hour: "numeric",
+      minute: "numeric",
+      hour12: true,
+    })
+    .toLowerCase();
+  const time2 = date2
+    .toLocaleString("en-US", {
+      hour: "numeric",
+      minute: "numeric",
+      hour12: true,
+    })
+    .toLowerCase();
+
+  return `${month} ${day}${ordinal(day)} @ ${time}-${time2}`;
+};

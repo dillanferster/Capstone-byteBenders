@@ -21,49 +21,81 @@ import {
   ListItemText,
   Typography,
   useTheme,
+  Alert,
+  Snackbar,
 } from "@mui/material";
 import Header from "../../components/Header";
 import { tokens } from "../../theme";
 import EventModal from "../../components/EventModal";
+import {
+  getCalendarEvents,
+  createCalendarEvent,
+  updateCalendarEvent,
+  deleteCalendarEvent,
+} from "../../api";
 
 const Calendar = () => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
-  const [currentEvents, setCurrentEvents] = useState(() => {
-    try {
-      // Load events from local storage on page load
-      const storedEvents = JSON.parse(localStorage.getItem("calendarEvents"));
-      return Array.isArray(storedEvents) ? storedEvents : [];
-    } catch {
-      return [];
-    }
-  });
+  const [currentEvents, setCurrentEvents] = useState([]);
   const [modalOpen, setModalOpen] = useState(false);
   const [selectedDate, setSelectedDate] = useState(null);
   const [defaultStart, setDefaultStart] = useState("");
   const [defaultEnd, setDefaultEnd] = useState("");
   const [selectedEvent, setSelectedEvent] = useState(null);
+  const [alert, setAlert] = useState({
+    open: false,
+    message: "",
+    severity: "success",
+  });
 
-  // Save events to local storage whenever currentEvents changes
+  // Fetch events from the backend
+  const fetchEvents = async () => {
+    try {
+      const data = await getCalendarEvents();
+
+      if (!data) throw new Error("Failed to fetch events");
+
+      // Convert date strings to Date objects for FullCalendar
+      const formattedEvents = data.map((event) => ({
+        id: event._id,
+        title: event.title,
+        start: new Date(event.start),
+        end: new Date(event.end),
+        description: event.description,
+        meetingLink: event.meetingLink,
+        participants: event.participants,
+      }));
+
+      setCurrentEvents(formattedEvents);
+    } catch (error) {
+      showAlert("Failed to load events", "error");
+    }
+  };
+
+  // Load events on component mount
   useEffect(() => {
-    localStorage.setItem("calendarEvents", JSON.stringify(currentEvents));
-  }, [currentEvents]);
+    fetchEvents();
+  }, []);
+
+  const showAlert = (message, severity = "success") => {
+    setAlert({ open: true, message, severity });
+  };
 
   const handleDateClick = (selected) => {
     // Parse the selected date
     const startDateTime = new Date(selected.startStr);
-    // Set a default time for the event (e.g., 9:00 AM)
-    startDateTime.setHours(9, 0, 0, 0); // 9:00 AM
-
-    const endDateTime = new Date(startDateTime.getTime() + 60 * 60 * 1000); // 1 hour later
+    startDateTime.setHours(9, 0, 0, 0);
+    const endDateTime = new Date(startDateTime.getTime() + 60 * 60 * 1000);
 
     // Convert to 'YYYY-MM-DDTHH:MM' format for `datetime-local` input type
     const startString = startDateTime.toLocaleString("sv-SE").replace(" ", "T");
     const endString = endDateTime.toLocaleString("sv-SE").replace(" ", "T");
+
     setDefaultStart(startString);
     setDefaultEnd(endString);
     setSelectedDate(selected);
-    setSelectedEvent(null); // No selected event for new events
+    setSelectedEvent(null);
     setModalOpen(true);
   };
 
@@ -72,35 +104,62 @@ const Calendar = () => {
     setModalOpen(true);
   };
 
-  const handleAddEvent = (eventData) => {
-    const newEvent = {
-      id: `${selectedDate.dateStr}-${eventData.title}`,
-      title: eventData.title,
-      start: eventData.start,
-      end: eventData.end,
-      description: eventData.description,
-      meetingLink: eventData.meetingLink,
-      participants: eventData.participants,
-    };
+  const handleAddEvent = async (eventData) => {
+    try {
+      // console.log(eventData);
+      const response = await createCalendarEvent(eventData);
 
-    setCurrentEvents((prevEvents) => [...prevEvents, newEvent]);
-    setModalOpen(false);
+      console.log("RESPONSE: " + response);
+
+      if (!response.status === 200) throw new Error("Failed to create event");
+
+      showAlert("Event created successfully");
+      setModalOpen(false);
+    } catch (error) {
+      showAlert("Failed to create event", "error");
+    }
   };
 
-  const handleUpdateEvent = (eventData) => {
-    setCurrentEvents((prevEvents) =>
-      prevEvents.map((event) =>
-        event.id === selectedEvent.id ? { ...event, ...eventData } : event
-      )
-    );
-    setModalOpen(false);
+  const handleUpdateEvent = async (eventData) => {
+    try {
+      const response = await updateCalendarEvent(selectedEvent.id, eventData);
+
+      if (!response === 200) throw new Error("Failed to update event");
+
+      setCurrentEvents((prev) =>
+        prev.map((event) =>
+          event.id === selectedEvent.id
+            ? {
+                ...event,
+                ...eventData,
+                start: new Date(eventData.start),
+                end: new Date(eventData.end),
+              }
+            : event
+        )
+      );
+
+      showAlert("Event updated successfully");
+      setModalOpen(false);
+    } catch (error) {
+      showAlert("Failed to update event", "error");
+    }
   };
 
-  const handleDeleteEvent = () => {
-    setCurrentEvents((prevEvents) =>
-      prevEvents.filter((event) => event.id !== selectedEvent.id)
-    );
-    setModalOpen(false);
+  const handleDeleteEvent = async () => {
+    try {
+      const response = await deleteCalendarEvent(selectedEvent.id);
+
+      if (!response.status === 200) throw new Error("Failed to delete event");
+
+      setCurrentEvents((prev) =>
+        prev.filter((event) => event.id !== selectedEvent.id)
+      );
+      showAlert("Event deleted successfully");
+      setModalOpen(false);
+    } catch (error) {
+      showAlert("Failed to delete event", "error");
+    }
   };
 
   return (
@@ -108,7 +167,7 @@ const Calendar = () => {
     <Box m="20px" pt="40px">
       <Header title="CALENDAR" subtitle="Full Calendar Interactive Page" />
       <Box display="flex" justifyContent="space-between">
-        {/* CALENDAR SIDEBAR*/}
+        {/* CALENDAR SIDEBAR */}
         <Box
           flex="1 1 20%"
           backgroundColor={colors.primary[400]}
@@ -145,6 +204,48 @@ const Calendar = () => {
 
         {/* CALENDAR */}
         <Box flex="1 1 100%" ml="15px">
+          <style>
+            {`
+              /* List view container */
+              .fc-list {
+                background-color: ${colors.primary[400]} !important;
+              }
+
+              /* List view header */
+              .fc .fc-list-sticky .fc-list-day > * {
+                background-color: ${colors.primary[500]} !important;
+                color: ${colors.grey[100]} !important;
+              }
+
+              /* List view items */
+              .fc-list-event {
+                background-color: ${colors.primary[400]} !important;
+                border-color: ${colors.primary[500]} !important;
+              }
+
+              /* List view item hover */
+              .fc-list-event:hover td {
+                background-color: ${colors.primary[500]} !important;
+              }
+
+              /* List view text */
+              .fc-list-event-title a,
+              .fc-list-event-title {
+                color: ${colors.grey[100]} !important;
+              }
+
+              /* List view time */
+              .fc-list-event-time {
+                color: ${colors.greenAccent[500]} !important;
+              }
+
+              /* Empty list view message */
+              .fc-list-empty {
+                background-color: ${colors.primary[400]} !important;
+                color: ${colors.grey[100]} !important;
+              }
+            `}
+          </style>
           <FullCalendar
             height="75vh"
             plugins={[
@@ -179,8 +280,23 @@ const Calendar = () => {
         handleDeleteEvent={handleDeleteEvent}
         defaultStart={defaultStart}
         defaultEnd={defaultEnd}
-        selectedEvent={selectedEvent} // Pass selected event data for editing
+        selectedEvent={selectedEvent}
       />
+
+      {/* Alert Snackbar */}
+      <Snackbar
+        open={alert.open}
+        autoHideDuration={6000}
+        onClose={() => setAlert({ ...alert, open: false })}
+      >
+        <Alert
+          onClose={() => setAlert({ ...alert, open: false })}
+          severity={alert.severity}
+          sx={{ width: "100%" }}
+        >
+          {alert.message}
+        </Alert>
+      </Snackbar>
     </Box>
   );
 };

@@ -659,6 +659,106 @@ export async function logoutEmail() {
   }
 }
 
+///CALENDAR///
+// gets all calendar events
+export async function getCalendarEvents() {
+  try {
+    const token = sessionStorage.getItem("User"); // Retrieve the token
+    const response = await axios.get(`${URL}/events/`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching calendar events:", error);
+  }
+}
+
+// creates a new calendar event
+export async function createCalendarEvent(event) {
+  console.log("IN CREATE EVENT API.JS");
+  try {
+    const token = sessionStorage.getItem("User");
+    const response = await axios.post(`${URL}/events`, event, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    return response;
+  } catch (error) {
+    console.error("Error creating calendar event:", error);
+    throw error;
+  }
+}
+
+// updates a calendar event
+export async function updateCalendarEvent(id, event) {
+  try {
+    const token = sessionStorage.getItem("User");
+    const response = await axios.put(`${URL}/events/${id}`, event, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    return response;
+  } catch (error) {
+    console.error("Error updating calendar event:", error);
+    throw error;
+  }
+}
+
+// deletes a calendar event
+export async function deleteCalendarEvent(id) {
+  try {
+    const token = sessionStorage.getItem("User");
+    const response = await axios.delete(`${URL}/events/${id}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    return response.data;
+  } catch (error) {
+    console.error("Error deleting calendar event:", error);
+  }
+}
+// get events by date range
+export async function getCalendarEventsByRange(startDate, endDate) {
+  try {
+    const token = sessionStorage.getItem("User");
+    const response = await axios.get(`${URL}/events/range`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+      params: {
+        start: startDate,
+        end: endDate,
+      },
+    });
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching calendar events by range:", error);
+    throw error;
+  }
+}
+
+// get events by participant
+export async function getCalendarEventsByParticipant(email) {
+  try {
+    const token = sessionStorage.getItem("User");
+    const response = await axios.get(`${URL}/events/participant/${email}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching calendar events by participant:", error);
+    throw error;
+  }
+}
+///^CALENDAR^///
+
 /**
  * Send Email Reply Function
  * @param {string} messageId - The ID of the email message to reply to

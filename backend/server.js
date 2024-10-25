@@ -28,6 +28,8 @@ const session = require("express-session"); // imports session management
 
 const emails = require("./emailRoutes"); // imports emailRoutes
 
+const events = require("./calendarRoutes"); // imports calendarRoutes
+
 const AWS = require("aws-sdk"); // Import AWS SDK v2 (in maintenance mode). Migrate to AWS SDK for Javascript V3 later
 
 const cookieParser = require("cookie-parser"); // Import cookie-parser
@@ -85,16 +87,17 @@ app.use(notes);
 //mounting routes, makes users available to the rest of the app
 app.use(users);
 
-
 //mounting emailRoutes, makes emailRoutes available to the rest of the app
 app.use(emails);
+
+//mounting calendarRoutes, makes calendarRoutes available to the rest of the app
+app.use(events);
 
 // error handling middleware
 app.use((err, req, res, next) => {
   console.error(err.stack);
   res.status(500).send("Something broke!");
 });
-
 
 // creates the server and tells it to listen on PORT for requests
 // callback function runs the connect file once connection is established
