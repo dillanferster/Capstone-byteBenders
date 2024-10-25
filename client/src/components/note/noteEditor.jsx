@@ -1,42 +1,46 @@
 import React, { useState, useEffect } from 'react';
 
-const NoteEditor = ({ currentNote, updateNote, saveNote }) => {
-  const [note, setNote] = useState(currentNote || { title: '', content: '' });
+const NoteEditor = ({ currentNote, saveNote }) => {
+  const [note, setNote] = useState(currentNote || { noteTitle: '', noteContent: '' });
 
-  // Update note state when currentNote changes
+  // Update state when the current note changes
   useEffect(() => {
-    setNote(currentNote || { title: '', content: '' });
+    setNote(currentNote || { noteTitle: '', noteContent: '' });
   }, [currentNote]);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setNote(prevNote => ({
+    setNote((prevNote) => ({
       ...prevNote,
-      [name]: value,  // Update either title or content
+      [name]: value,
+      dateUpdated: new Date().toISOString(),  // Update the timestamp when note changes
     }));
   };
 
-  const handleSave = () => {
-    saveNote(note);  // Pass the updated note to be saved
+  const handleSaveClick = () => {
+    saveNote(note); // Call the saveNote function with the updated note
   };
 
   return (
     <div className="note-editor">
       <input
-        name="title"
-        className="note-title-input"
-        value={note.title}
+        type="text"
+        name="noteTitle"
+        value={note.noteTitle || ''}
         placeholder="Note Title"
-        onChange={handleInputChange}  // Handle title change
+        onChange={handleInputChange}
+        className="note-title-input"
       />
       <textarea
-        name="content"
-        className="note-content-textarea"
-        value={note.content}
+        name="noteContent"
+        value={note.noteContent || ''}
         placeholder="Write your note here..."
-        onChange={handleInputChange}  // Handle content change
+        onChange={handleInputChange}
+        className="note-content-textarea"
       />
-      <button onClick={handleSave}>Save Note</button>
+      <button onClick={handleSaveClick} className="save-button">
+        Save Note
+      </button>
     </div>
   );
 };

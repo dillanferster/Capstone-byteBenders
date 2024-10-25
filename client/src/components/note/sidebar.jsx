@@ -1,31 +1,26 @@
-// Sidebar.jsx
-import React from "react";
-import { deleteNote } from "../../api";
+import React from 'react';
+import NoteCard from './noteCard';
 
-const Sidebar = ({ notes, setCurrentNoteId, addNote, deleteNoteById }) => {
+const Sidebar = ({ notes, currentNoteId, setCurrentNoteId, addNote, deleteNoteById }) => {
   return (
     <div className="sidebar">
       <button className="add-note-button" onClick={addNote}>
-        + Add Note
+        + Create Note
       </button>
-      {notes.map((note) => (
-        <div
-          key={note._id}  // Ensure each note has a unique key
-          className="note-card"
-          onClick={() => setCurrentNoteId(note._id)}
-        >
-          <div className="note-title">{note.noteTitle || 'Untitled'}</div>
-          <button
-            className="delete-button"
-            onClick={(e) => {
-              e.stopPropagation();  // Prevent the click event from triggering parent div's onClick
-              deleteNoteById(note._id);  // Pass the note ID correctly
-            }}
-          >
-            Delete
-          </button>
-        </div>
-      ))}
+      <div className="notes-list">
+        {notes.map((note) => (
+          <NoteCard
+            key={note._id} // Using MongoDB's _id as the unique key
+            note={note}
+            isActive={note._id === currentNoteId}
+            onClick={() => setCurrentNoteId(note._id)}
+            onDelete={deleteNoteById}
+          />
+        ))}
+        {notes.length === 0 && (
+          <div className="empty-notes">No notes yet. Create one!</div>
+        )}
+      </div>
     </div>
   );
 };
