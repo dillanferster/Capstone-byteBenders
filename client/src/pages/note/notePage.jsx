@@ -16,12 +16,9 @@ const NotePage = () => {
   const fetchNotes = async () => {
     try {
       const notesFromDB = await getNotes();
-      if (notesFromDB && notesFromDB.length > 0) {
-        setNotes(notesFromDB);
-        setCurrentNoteId(notesFromDB[0]._id); // Automatically select the first note
-      }
+      setNotes(notesFromDB || []);  // Handle cases where no notes exist yet
     } catch (error) {
-      console.error('Error fetching notes:', error);
+      console.error("Error fetching notes:", error);
     }
   };
 
@@ -30,16 +27,13 @@ const NotePage = () => {
       if (noteData._id) {
         // Update existing note
         const savedNote = await updateNote(noteData._id, noteData);
-        setNotes(prevNotes =>
-          prevNotes.map(note => (note._id === savedNote._id ? savedNote : note))
-        );
+        setNotes(prevNotes => prevNotes.map(note => note._id === savedNote._id ? savedNote : note));
       } else {
-        // Create new note
+        // Create a new note
         const savedNote = await createNote(noteData);
-        setNotes([savedNote, ...notes]); // Add the new note to the beginning
-        setCurrentNoteId(savedNote._id); // Automatically select the new note
+        setNotes(prevNotes => [savedNote, ...prevNotes]);
+        setCurrentNoteId(savedNote._id);  // Update the current note ID to the newly created one
       }
-      setIsEditMode(true); // Switch to edit mode after saving
     } catch (error) {
       console.error('Error saving note:', error);
     }
@@ -53,10 +47,11 @@ const NotePage = () => {
         dateCreated: new Date().toISOString(),
         dateUpdated: new Date().toISOString(),
       };
-      const savedNote = await createNote(newNote);
-      setNotes([savedNote, ...notes]); // Prepend new note to the notes array
-      setCurrentNoteId(savedNote._id); // Select the newly created note
-      setIsEditMode(true); // Switch to edit mode to allow immediate editing
+  
+      const savedNote = await createNote(newNote);  // Save the new note to the DB
+      setNotes(prevNotes => [savedNote, ...prevNotes]);  // Add the new note to the notes list
+      setCurrentNoteId(savedNote._id);  // Automatically select the new note for editing
+      setIsEditMode(true);  // Switch to edit mode immediately
     } catch (error) {
       console.error('Error creating new note:', error);
     }
@@ -74,9 +69,7 @@ const NotePage = () => {
     }
   };
 
-  const getCurrentNote = () => {
-    return notes.find(note => note._id === currentNoteId);
-  };
+  const getCurrentNote = () => notes.find(note => note._id === currentNoteId);
 
   return (
     <div className="note-page">
@@ -85,11 +78,10 @@ const NotePage = () => {
           notes={notes}
           currentNoteId={currentNoteId}
           setCurrentNoteId={setCurrentNoteId}
-          addNote={handleAddNote} // This creates a new note when clicked
+          addNote={handleAddNote}
           deleteNoteById={handleDeleteNote}
         />
       </div>
-
       <div className="note-editor">
         <div className="editor-header">
           <button
@@ -107,17 +99,19 @@ const NotePage = () => {
         </div>
 
         {isEditMode ? (
-          <NoteEditor
-            currentNote={getCurrentNote()}
-            saveNote={handleSaveNote}
-            autoSave={true} // Enable auto-saving while editing
-          />
+          <NoteEditor currentNote={getCurrentNote()} saveNote={handleSaveNote} />
         ) : (
           <div className="note-preview">
-            <h2>{getCurrentNote()?.noteTitle || 'Untitled'}</h2>
-            <div className="content">
-              {getCurrentNote()?.noteContent || 'No content available...'}
-            </div>
+            {currentNoteId ? (
+              <>
+                <h2>{getCurrentNote()?.noteTitle || 'Untitled'}</h2>
+                <div className="content">
+                  {getCurrentNote()?.noteContent || 'No content available...'}
+                </div>
+              </>
+            ) : (
+              <div className="no-note">Please select a note or create a new one.</div>
+            )}
           </div>
         )}
       </div>

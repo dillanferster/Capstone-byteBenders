@@ -1,16 +1,16 @@
 import React from 'react';
-import NoteCard from './noteCard';
+import NoteCard from '../../components/note/noteCard';
 
 const Sidebar = ({ notes, currentNoteId, setCurrentNoteId, addNote, deleteNoteById }) => {
   return (
     <div className="sidebar">
       <button className="add-note-button" onClick={addNote}>
-        + Create Note
+        + Add Note
       </button>
       <div className="notes-list">
         {notes.map((note) => (
           <NoteCard
-            key={note._id} // Using MongoDB's _id as the unique key
+            key={note._id}  // Unique key for each note
             note={note}
             isActive={note._id === currentNoteId}
             onClick={() => setCurrentNoteId(note._id)}
