@@ -51,11 +51,11 @@ const EmailAnalysisForm = () => {
         color: colors.grey[100], // Text color from tokens
       }}
     >
-      <Typography variant="h5" color={colors.greenAccent[500]} gutterBottom>
+      <Typography variant="h4" color={colors.greenAccent[500]} gutterBottom>
         Generate New Project From Email
       </Typography>
       <Typography
-        variant="h6"
+        variant="h5"
         color={colors.grey[600]} // Use grey for description
         gutterBottom
       >
@@ -81,6 +81,9 @@ const EmailAnalysisForm = () => {
             backgroundColor: colors.grey[900], // Using background from the theme
             color: colors.grey[100], // Text color from tokens
             borderColor: colors.grey[700], // Border based on tokens
+            "& .MuiInputBase-input": {
+              fontSize: "1.2rem", // Increase font size for input
+            },
           }}
           InputProps={{
             style: { color: colors.grey[100] }, // Input text color
@@ -92,6 +95,7 @@ const EmailAnalysisForm = () => {
           sx={{
             backgroundColor: colors.blueAccent[500],
             color: colors.primary[100],
+            fontSize: "1.2rem", // Increase font size for button
             "&:hover": {
               backgroundColor: colors.blueAccent[700], // Hover effect
             },
@@ -103,7 +107,7 @@ const EmailAnalysisForm = () => {
       {error && (
         <Typography
           color={theme.palette.error.main}
-          variant="body2"
+          variant="h6"
           sx={{ marginTop: 2 }}
         >
           {error}
@@ -112,26 +116,26 @@ const EmailAnalysisForm = () => {
       {project && (
         <Box sx={{ marginTop: 3, marginBottom: 3 }}>
           <Box sx={{ paddingBottom: 1 }}>
-            <Typography variant="h6" color={colors.greenAccent[500]}>
+            <Typography variant="h5" color={colors.greenAccent[500]}>
               <strong>Generated Project</strong>
             </Typography>
-            <Typography variant="body1" color={colors.grey[600]}>
+            <Typography variant="h6" color={colors.grey[600]}>
               <strong>Project Name:</strong> {project.projectName || "N/A"}
             </Typography>
-            <Typography variant="body1" color={colors.grey[600]}>
+            <Typography variant="h6" color={colors.grey[600]}>
               <strong>Description:</strong> {project.projectDesc || "N/A"}
             </Typography>
-            <Typography variant="body1" color={colors.grey[600]}>
+            <Typography variant="h6" color={colors.grey[600]}>
               <strong>Assigned Staff:</strong> {project.assignedTo || "N/A"}
             </Typography>
-            <Typography variant="body1" color={colors.grey[600]}>
+            <Typography variant="h6" color={colors.grey[600]}>
               <strong>Project Date:</strong> {project.startDate || "N/A"}
             </Typography>
-            <Typography variant="body1" color={colors.grey[600]}>
+            <Typography variant="h6" color={colors.grey[600]}>
               <strong>Project Quantity:</strong>{" "}
               {project.projectNumber || "N/A"}
             </Typography>
-            <Typography variant="body1" color={colors.grey[600]}>
+            <Typography variant="h6" color={colors.grey[600]}>
               <strong>Project Client:</strong> {project.projectClient || "N/A"}
             </Typography>
           </Box>
@@ -140,6 +144,7 @@ const EmailAnalysisForm = () => {
             sx={{
               backgroundColor: colors.redAccent[500],
               color: colors.primary[100],
+              fontSize: "1.2rem", // Increase font size for button
               "&:hover": {
                 backgroundColor: colors.blueAccent[700], // Hover effect
               },

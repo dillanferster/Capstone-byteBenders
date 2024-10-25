@@ -25,6 +25,7 @@ import {
   Grid,
   TextField,
   Tooltip,
+  CircularProgress,
 } from "@mui/material";
 import {
   Delete,
@@ -37,8 +38,10 @@ import {
   Search,
 } from "@mui/icons-material";
 import LoginButton from "../../components/OutlookLoginButton";
+import { useNavigate } from "react-router-dom";
 
 const EmailPage = () => {
+  const navigate = useNavigate();
   const [emails, setEmails] = useState([]);
   const [loading, setLoading] = useState(true);
   const [loggedIn, setLoggedIn] = useState(false);
@@ -52,15 +55,16 @@ const EmailPage = () => {
     subject: "",
     content: "",
   });
+  // const [currentFolder, setCurrentFolder] = useState("inbox");
 
   // hook heck login status when the component mounts
   // This is to ensure that the user is logged in before fetching emails
   useEffect(() => {
-    checkLoginStatus();
+    handleGetEmails();
   }, []);
 
   // Function to check login status
-  const checkLoginStatus = async () => {
+  const handleGetEmails = async () => {
     setLoading(true);
     try {
       const emailData = await fetchEmails();
@@ -82,7 +86,6 @@ const EmailPage = () => {
       setLoggedIn(false);
       setEmails([]);
       setError(null);
-      navigate("/email-inbox");
     } catch (error) {
       console.error("Logout failed:", error);
     }
@@ -108,6 +111,7 @@ const EmailPage = () => {
     try {
       await sendEmailReply(selectedEmail.id, comment);
       alert("Reply sent successfully!");
+      handleGetEmails();
     } catch (error) {
       alert("Failed to send reply. Please try again.");
     }
@@ -115,7 +119,10 @@ const EmailPage = () => {
 
   // Function to handle delete
   const handleDelete = async () => {
-    if (!selectedEmail) return;
+    if (!selectedEmail) {
+      alert("No email selected. Please select an email to delete.");
+      return;
+    }
 
     const confirmDelete = window.confirm(
       "Are you sure you want to delete this email?"
@@ -127,6 +134,7 @@ const EmailPage = () => {
       alert("Email deleted successfully!");
       setEmails(emails.filter((email) => email.id !== selectedEmail.id)); // Remove the deleted email from the list
       setSelectedEmail(null); // Clear the selected email
+      handleGetEmails();
     } catch (error) {
       alert("Failed to delete email. Please try again.");
     }
@@ -151,10 +159,26 @@ const EmailPage = () => {
       setNewEmail({ to: "", cc: "", subject: "", content: "" }); // Reset the form
       setOpenDialog(false);
       setIsComposing(false);
+      handleGetEmails();
     } catch (error) {
-      alert("Failed to send email. Please try again.");
+      alert("Failed to send email. Please try again." + error);
     }
   };
+
+  // // Function to handle folder change
+  // const handleFolderChange = (folder) => {
+  //   setCurrentFolder(folder);
+  // };
+
+  // // Filter emails based on current folder
+  // const filteredEmails = emails.filter((email) => {
+  //   if (currentFolder === "inbox") {
+  //     return !email.isSent;
+  //   } else if (currentFolder === "sent") {
+  //     return email.isSent;
+  //   }
+  //   return true; // For 'drafts' or any other folder, show all emails
+  // });
 
   // If the emails are still loading, show a loading message
   if (loading) {
@@ -214,7 +238,7 @@ const EmailPage = () => {
                 sx={{
                   bgcolor: "primary.main",
                   color: "white",
-                  "&:hover": { bgcolor: "primary.dark" },
+                  "&:hover": { bgcolor: "info.main" },
                   marginRight: 2,
                 }}
               >
@@ -224,6 +248,7 @@ const EmailPage = () => {
                 color="inherit"
                 aria-label="refresh"
                 startIcon={<Refresh />}
+                onClick={() => handleGetEmails()}
                 sx={{ marginRight: 2 }}
               >
                 Refresh
@@ -233,6 +258,7 @@ const EmailPage = () => {
                 aria-label="delete"
                 startIcon={<Delete />}
                 sx={{ marginRight: 2 }}
+                onClick={handleDelete}
               >
                 Delete
               </Button>
@@ -389,7 +415,19 @@ const EmailPage = () => {
                       </Typography>
                     </Tooltip>
                     <Typography variant="subtitle1" color="text.secondary">
-                      Date sent: {selectedEmail.sentDateTime || "Unknown Date"}
+                      Date:{" "}
+                      {selectedEmail.receivedDateTime
+                        ? new Date(
+                            selectedEmail.receivedDateTime
+                          ).toLocaleString("en-US", {
+                            day: "numeric",
+                            month: "short",
+                            year: "numeric",
+                            hour: "numeric",
+                            minute: "numeric",
+                            hour12: true,
+                          })
+                        : "Unknown Date and Time"}
                     </Typography>
                   </Box>
                   {/* Email Operation Buttons */}
@@ -400,6 +438,28 @@ const EmailPage = () => {
                       startIcon={<Send />}
                     >
                       Reply
+                    </Button>
+                    <Button
+                      color="primary"
+                      onClick={() => {
+                        const emailContent =
+                          selectedEmail?.body.content.replace(/<[^>]+>/g, "");
+                        navigator.clipboard
+                          .writeText(emailContent)
+                          .then(() => {
+                            console.log("Email content copied to clipboard");
+                            navigate("/emailanalysis");
+                          })
+                          .catch((err) => {
+                            console.error("Failed to copy text: ", err);
+                            alert(
+                              "Failed to copy email content. Please try again."
+                            );
+                          });
+                      }}
+                      startIcon={<Create />}
+                    >
+                      Create Project
                     </Button>
                     <Button
                       color="error"
@@ -434,7 +494,7 @@ const EmailPage = () => {
         </Typography>
       )}
 
-      {/* Email Dialog Popup */}
+      {/* Email ComposeDialog Popup */}
       <Dialog
         open={openDialog}
         onClose={handleCloseDialog}
@@ -518,7 +578,6 @@ const EmailPage = () => {
               <Button onClick={handleDelete} startIcon={<Delete />}>
                 Delete
               </Button>
-              <Button startIcon={<Refresh />}>Refresh</Button>
               <Button onClick={handleReply} startIcon={<Send />}>
                 Reply
               </Button>
@@ -527,6 +586,7 @@ const EmailPage = () => {
         </DialogActions>
       </Dialog>
 
+      {/* Compose Email Button Icon */}
       <IconButton
         color="primary"
         aria-label="compose email"

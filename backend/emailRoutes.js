@@ -322,8 +322,10 @@ emailRoutes.route("/email-inbox/send").post(async (req, res) => {
               .split(",")
               .map((email) => ({ emailAddress: { address: email.trim() } })),
             ccRecipients: cc
-              .split(",")
-              .map((email) => ({ emailAddress: { address: email.trim() } })),
+              ? cc
+                  .split(",")
+                  .map((email) => ({ emailAddress: { address: email.trim() } }))
+              : [],
           },
           saveToSentItems: "true",
         }),
@@ -338,8 +340,13 @@ emailRoutes.route("/email-inbox/send").post(async (req, res) => {
 
     res.status(200).send("Email sent successfully");
   } catch (error) {
-    console.error("Error sending email:", error.message);
-    res.status(500).send("Failed to send email");
+    console.error("Error sending email:", error);
+    if (error.response) {
+      console.error("Response data:", error.response.data);
+      console.error("Response status:", error.response.status);
+      console.error("Response headers:", error.response.headers);
+    }
+    res.status(500).send(`Failed to send email: ${error.message}`);
   }
 });
 
@@ -373,18 +380,15 @@ emailRoutes.route("/email-inbox/signout").get(async (req, res) => {
       // Clear the access token cookie
       res.clearCookie("accessToken");
 
-      // Redirect to Microsoft logout endpoint
-      // const logoutUrl = `https://login.microsoftonline.com/common/oauth2/v2.0/logout?post_logout_redirect_uri=${encodeURIComponent(
-      // "http://localhost:3000/email-inbox/"
-      // )}`;
-      // res.redirect(logoutUrl);
-
-      // For manual logout, redirect to the login page or home page
-      res.redirect("http://localhost:5173/email-inbox/");
+      // After successful logout
+      const microsoftLogoutUrl = `https://login.microsoftonline.com/common/oauth2/v2.0/logout?post_logout_redirect_uri=${encodeURIComponent(
+        "http://localhost:5173/email-inbox/"
+      )}`;
+      res.json({ redirectUrl: microsoftLogoutUrl });
     });
   } catch (error) {
     console.error("Error during signout:", error);
-    res.status(500).send("Signout failed");
+    res.status(500).json({ error: "Signout failed" });
   }
 });
 
