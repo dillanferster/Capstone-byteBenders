@@ -181,10 +181,24 @@ export async function deleteProject(id) {
 // // passes in the text object as the request
 // // returns the response object
 export async function getNLP(text) {
-  const response = await axios.post(`${URL}/analyze-email`, {
-    emailText: text,
-  });
-  return response;
+  try {
+    const token = sessionStorage.getItem("User"); // Retrieve the token
+
+    const response = await axios.post(
+      `${URL}/analyze-email`,
+      { emailText: text },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`, // Attach the token in the Authorization header
+        },
+      }
+    );
+
+    return response;
+  } catch (error) {
+    console.error("Error analyzing email:", error);
+    throw error;
+  }
 }
 ////////////////////////// AWS Comprehend //////////////////////////
 
