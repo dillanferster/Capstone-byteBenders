@@ -445,21 +445,21 @@ export async function verifyUser(user) {
 // if the response sent back is good "200" the function returns the data, else console.logs issue
 export async function getNotes() {
   try {
-    const token = sessionStorage.getItem("User"); // Make sure token is valid if you're using authentication
+    const token = sessionStorage.getItem("User"); // Ensure the token is valid
     const response = await axios.get(`${URL}/notes`, {
       headers: {
-        Authorization: `Bearer ${token}`, // Add your token if needed
-        "Cache-Control": "no-cache", // Prevent caching by the browser
-        Pragma: "no-cache", // HTTP 1.0 backward compatibility
-        Expires: "0", // Expire immediately
+        Authorization: `Bearer ${token}`, // Pass token if authentication is needed
+        "Cache-Control": "no-cache",
+        Pragma: "no-cache",
+        Expires: "0",
       },
       params: {
-        timestamp: new Date().getTime(), // Add a query parameter to prevent caching
+        timestamp: new Date().getTime(), // Prevent caching
       },
     });
-    return response.data; // Return the fresh data
+    return response.data; // Return the fetched notes data
   } catch (error) {
-    console.error("Error fetching notes:", error); // Log any errors for debugging
+    console.error("Error fetching notes:", error); // Log any errors for easier debugging
     throw error;
   }
 }
