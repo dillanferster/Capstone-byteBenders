@@ -22,7 +22,7 @@ const Item = ({ title, to, icon, selected, setSelected }) => {
       active={selected === title}
       style={{
         color: activeTab ? colors.blueAccent[200] : colors.grey[100],
-        backgroundColor: activeTab ? colors.primary[800] : colors.primary[400],
+        backgroundColor: activeTab ? colors.primary[500] : colors.primary[400],
         borderRadius: "25px",
         marginRight: "20px",
       }}
