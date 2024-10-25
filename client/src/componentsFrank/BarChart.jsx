@@ -1,26 +1,36 @@
-/* Not used in the project, just for reference
- *
- * Refference: https://www.youtube.com/watch?v=wYpCWwD1oz0&t=3528s&ab_channel=EdRoh
- *
- */
-
 import { useTheme } from "@mui/material";
 import { ResponsiveBar } from "@nivo/bar";
 import { tokens } from "../theme";
-import { mockBarData as data } from "../data/mockData";
 
-const BarChart = ({ isDashboard = false }) => {
+const BarChart = ({ data, isDashboard = false }) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
 
+  // Transform projects data into the format needed for the bar chart
+  const chartData = [
+    {
+      status: "Project Status",
+      Complete: data.filter((project) => project.projectStatus === "Complete")
+        .length,
+      "In Progress": data.filter(
+        (project) => project.projectStatus === "In Progress"
+      ).length,
+      "Not Started": data.filter(
+        (project) => project.projectStatus === "Not Started"
+      ).length,
+      Storage: data.filter((project) => project.projectStatus === "Storage")
+        .length,
+    },
+  ];
+
   return (
     <ResponsiveBar
-      data={data}
+      data={chartData}
       theme={{
         axis: {
           domain: {
             line: {
-              stoke: colors.grey[100],
+              stroke: colors.grey[100],
             },
           },
           legend: {
@@ -43,78 +53,48 @@ const BarChart = ({ isDashboard = false }) => {
             fill: colors.grey[100],
           },
         },
+        tooltip: {
+          container: {
+            background: colors.primary[400],
+            color: colors.grey[100],
+          },
+        },
       }}
-      keys={["hot dog", "burger", "sandwich", "kebab", "fries", "donut"]}
-      indexBy="country"
-      margin={{ top: 50, right: 130, bottom: 50, left: 60 }}
+      keys={["Complete", "In Progress", "Not Started", "Storage"]}
+      indexBy="status"
+      margin={{ top: 20, right: 130, bottom: 20, left: 50 }}
       padding={0.3}
       valueScale={{ type: "linear" }}
       indexScale={{ type: "band", round: true }}
-      colors={{ scheme: "nivo" }}
-      defs={[
-        {
-          id: "dots",
-          type: "patternDots",
-          background: "inherit",
-          color: "#38bcb2",
-          size: 4,
-          padding: 1,
-          stagger: true,
-        },
-        {
-          id: "lines",
-          type: "patternLines",
-          background: "inherit",
-          color: "#eed312",
-          rotation: -45,
-          lineWidth: 6,
-          spacing: 10,
-        },
+      colors={[
+        colors.greenAccent[500],
+        colors.blueAccent[400],
+        colors.redAccent[400],
+        colors.grey[500],
       ]}
-      fill={[
-        {
-          match: {
-            id: "fries",
-          },
-          id: "dots",
-        },
-        {
-          match: {
-            id: "sandwich",
-          },
-          id: "lines",
-        },
-      ]}
+      borderRadius={2}
       borderColor={{
         from: "color",
         modifiers: [["darker", 1.6]],
       }}
       axisTop={null}
       axisRight={null}
-      axisBottom={{
-        tickSize: 5,
-        tickPadding: 5,
-        tickRotation: 0,
-        legend: isDashboard ? undefined : "country",
-        legendPosition: "middle",
-        legendOffset: 32,
-        truncateTickAt: 0,
-      }}
+      axisBottom={null}
       axisLeft={{
         tickSize: 5,
         tickPadding: 5,
         tickRotation: 0,
-        legend: isDashboard ? undefined : "food",
+        legend: isDashboard ? undefined : "Count",
         legendPosition: "middle",
         legendOffset: -40,
         truncateTickAt: 0,
       }}
-      enableLabel={false}
+      enableLabel={true}
       labelSkipWidth={12}
       labelSkipHeight={12}
       labelTextColor={{
         from: "color",
-        modifiers: [["darker", 1.6]],
+        modifiers: [["darker", 3]],
       }}
       legends={[
         {
@@ -129,7 +109,7 @@ const BarChart = ({ isDashboard = false }) => {
           itemHeight: 20,
           itemDirection: "left-to-right",
           itemOpacity: 0.85,
-          symbolSize: 20,
+          symbolSize: 10,
           effects: [
             {
               on: "hover",
@@ -141,10 +121,8 @@ const BarChart = ({ isDashboard = false }) => {
         },
       ]}
       role="application"
-      ariaLabel="Nivo bar chart demo"
-      barAriaLabel={(e) =>
-        e.id + ": " + e.formattedValue + " in country: " + e.indexValue
-      }
+      ariaLabel="Project Status Distribution"
+      barAriaLabel={(e) => `${e.id}: ${e.formattedValue} projects`}
     />
   );
 };

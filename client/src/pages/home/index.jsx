@@ -347,13 +347,13 @@ const Dashboard = () => {
             </Box>
           </Box>
           <Box
-            height="240px"
-            m="10px 0 20px -8px"
+            height="185px"
+            m="5px 0 20px -8px"
             sx={{
               overflowX: "auto",
               overflowY: "hidden",
               display: "flex",
-              alignItems: "stretch",
+              alignItems: "center",
               "&::-webkit-scrollbar": {
                 height: "8px",
               },
@@ -366,11 +366,13 @@ const Dashboard = () => {
               },
             }}
           >
-            {tasks
-              .filter((task) => task.projectId.$oid === targetProject._id.$oid)
-              .map((task) => (
-                <TaskCard key={task._id.$oid} task={task} />
-              ))}
+            <Box sx={{ display: "flex", padding: "20px 0" }}>
+              {tasks
+                .filter((task) => task.projectId === targetProject._id)
+                .map((task) => (
+                  <TaskCard key={task._id} task={task} />
+                ))}
+            </Box>
           </Box>
         </Box>
 
@@ -448,29 +450,16 @@ const Dashboard = () => {
 
         {/* ROW 3 */}
         <Box
-          gridColumn="span 4"
+          gridColumn="span 7"
           gridRow="span 2"
           backgroundColor={colors.primary[400]}
           p="30px"
         >
           <Typography variant="h5" fontWeight="600">
-            Campaign
+            Project Status Distribution
           </Typography>
-          <Box
-            display="flex"
-            flexDirection="column"
-            alignItems="center"
-            mt="25px"
-          >
-            <ProgressCircle size="125" />
-            <Typography
-              variant="h5"
-              color={colors.greenAccent[500]}
-              sx={{ mt: "15px" }}
-            >
-              $48,352 revenue generated
-            </Typography>
-            <Typography>Includes extra misc expenditures and costs</Typography>
+          <Box height="220px">
+            <BarChart isDashboard={true} data={projects} />
           </Box>
         </Box>
 
