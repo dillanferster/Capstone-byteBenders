@@ -5,21 +5,21 @@ const Sidebar = ({ notes, currentNoteId, setCurrentNoteId, addNote, deleteNoteBy
   return (
     <div className="sidebar">
       <button className="add-note-button" onClick={addNote}>
-        + Add Note
+        + Create Note
       </button>
+
       <div className="notes-list">
         {notes.map((note) => (
           <NoteCard
-            key={note._id}  // Unique key for each note
+            key={note._id} // Ensure each note has a unique key
             note={note}
             isActive={note._id === currentNoteId}
             onClick={() => setCurrentNoteId(note._id)}
             onDelete={deleteNoteById}
           />
         ))}
-        {notes.length === 0 && (
-          <div className="empty-notes">No notes yet. Create one!</div>
-        )}
+
+        {notes.length === 0 && <div className="empty-notes">No notes yet. Create one!</div>}
       </div>
     </div>
   );
