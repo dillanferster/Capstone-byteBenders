@@ -129,6 +129,7 @@ const ProjectPage = () => {
   // rows is then passed into the datagrid component
   // useMemo so when the projectPage component reloads from state changes the rows dont reload with it, only when projects or reloadGrid state is changed
   // dependencies : projects, reloadGrid
+  // reference https://www.ag-grid.com/react-data-grid/row-selection-multi-row/
   const rows = useMemo(
     () =>
       projects.map((project) => ({
@@ -149,6 +150,7 @@ const ProjectPage = () => {
   // sortable : allows columns to be sorted
   // width: sets a column width
   // maxWidth: defines max width for columns
+  // reference https://www.ag-grid.com/react-data-grid/row-selection-multi-row/
   const selectionColumnDef = useMemo(() => {
     return {
       sortable: true,
@@ -163,6 +165,7 @@ const ProjectPage = () => {
   // headerCheckbox: false,   removes the checkbox selector
   // enableMultiSelectWithClick: true, allows mutlirow selection by clicking on the cells
   // enableClickSelection: true, allows selection by clicking on a cell
+  // reference https://www.ag-grid.com/react-data-grid/row-selection-multi-row/
   const selection = useMemo(() => {
     return {
       mode: "multiRow",

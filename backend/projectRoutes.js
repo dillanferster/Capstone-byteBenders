@@ -30,6 +30,7 @@ const ObjectId = require("mongodb").ObjectId;
 // awaits, goes into DB collection "projects" and finds all, returns as array, saves as data
 // check to make sure data  has a value then returns response in json, if not gives an error
 // Authenticated route, verifyToken middleware is called before the async function is executed
+// reference  https://www.youtube.com/watch?v=Jcs_2jNPgtE&t=8033s
 projectRoutes.route("/projects").get(verifyToken, async (request, response) => {
   let db = database.getDb();
   let data = await db.collection("Frank").find({}).toArray();
@@ -50,6 +51,7 @@ projectRoutes.route("/projects").get(verifyToken, async (request, response) => {
 // * new ObjectId(request.params.id), converts the id string in a MongoDb id
 // * (Object.keys(data.length > 0) , because object doesnt have a length need to grab its keys and see if there are more than 0
 // Authenticated route, verifyToken middleware is called before the async function is executed
+// reference  https://www.youtube.com/watch?v=Jcs_2jNPgtE&t=8033s
 projectRoutes
   .route("/projects/:id")
   .get(verifyToken, async (request, response) => {
@@ -72,6 +74,7 @@ projectRoutes
 //  awaits, goes into DB collection "projects" and uses mongo insertOne function to add the MongoObject into the database
 // sends JSON response back to client
 // Authenticated route, verifyToken middleware is called before the async function is executed
+// reference  https://www.youtube.com/watch?v=Jcs_2jNPgtE&t=8033s
 projectRoutes
   .route("/projects")
   .post(verifyToken, async (request, response) => {
@@ -99,6 +102,7 @@ projectRoutes
 // sends JSON response back to client
 // * new ObjectId(request.params.id), converts the id string in a MongoDb id
 // Authenticated route, verifyToken middleware is called before the async function is executed
+// reference  https://www.youtube.com/watch?v=Jcs_2jNPgtE&t=8033s
 projectRoutes
   .route("/projects/:id")
   .put(verifyToken, async (request, response) => {

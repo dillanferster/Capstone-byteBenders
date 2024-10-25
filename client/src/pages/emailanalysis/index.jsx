@@ -1,69 +1,75 @@
 import React, { useState } from "react";
 import { getNLP } from "../../api.js";
-import { Button, TextField, Box, Typography, useTheme } from "@mui/material";
+import {
+  Button,
+  TextField,
+  Box,
+  Typography,
+  useTheme,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+} from "@mui/material";
 import { tokens } from "../../theme";
+import { Formik, Field } from "formik";
 
 const EmailAnalysisForm = () => {
   const [emailText, setEmailText] = useState("");
   const [project, setProject] = useState(null);
   const [error, setError] = useState(null);
-  const theme = useTheme(); // Accessing the current theme
-  const colors = tokens(theme.palette.mode); // Accessing the color tokens
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [openDialog, setOpenDialog] = useState(false);
+  const theme = useTheme();
+  const colors = tokens(theme.palette.mode);
 
-  // Handle form submission
   async function handleSubmit(e) {
-    e.preventDefault(); // Prevent the default form submission behavior
-    setError(null); // Clear any existing errors before making the request
-    setProject(null); // Reset project data before making a new request
+    e.preventDefault();
+    setError(null);
+    setProject(null);
 
-    if (!emailText || emailText.trim().length === 0) {
-      setError("Email content cannot be empty."); // Handle empty email content
+    if (!emailText.trim()) {
+      setError("Email content cannot be empty.");
       return;
     }
 
+    setIsSubmitting(true);
     try {
-      // Call the API function to get analyzed email data
       const response = await getNLP(emailText);
-      console.log("Response from getNLP:", response); // Log the response for debugging
-      // Check if the response contains valid project data
       if (response.data.success) {
-        setProject(response.data.project); // Set project data from response
+        setProject(response.data.project);
+        setOpenDialog(true);
       } else {
-        setError("Project does not exist."); // Handle invalid response
+        setError("Project does not exist.");
       }
     } catch (error) {
-      setError("An error occurred while analyzing the email."); // Handle API errors
-      console.log("Error analyzing email:", error); // Log the error for debugging
+      setError(error.message || "An error occurred while analyzing the email.");
+      console.error("Error analyzing email:", error);
+    } finally {
+      setIsSubmitting(false);
     }
-  }
-
-  function handleChange(e) {
-    setEmailText(e.target.value);
   }
 
   return (
     <Box
       sx={{
-        backgroundColor: colors.primary[500], // Background color based on theme
+        backgroundColor: colors.primary[500],
         padding: 2,
         borderRadius: 2,
         boxShadow: 3,
-        color: colors.grey[100], // Text color from tokens
+        color: colors.grey[100],
       }}
     >
-      <Typography variant="h5" color={colors.greenAccent[500]} gutterBottom>
+      <Typography variant="h4" color={colors.greenAccent[500]} gutterBottom>
         Generate New Project From Email
       </Typography>
-      <Typography
-        variant="h6"
-        color={colors.grey[600]} // Use grey for description
-        gutterBottom
-      >
+      <Typography variant="h5" color={colors.grey[600]} gutterBottom>
         This function can categorize text containing AWS Comprehend predefined
         entities such as{" "}
         <strong>Person, Title, Quantity, Date, and more</strong>. Try analyzing
-        an email or text below.<br></br>
-        <br></br>
+        an email or text below.
+        <br />
+        <br />
         Example: George Clooney played in the movie Ocean Twelve by Paramount in
         2011 which sold millions of DVD copies.
       </Typography>
@@ -75,79 +81,119 @@ const EmailAnalysisForm = () => {
           fullWidth
           variant="outlined"
           value={emailText}
-          onChange={handleChange}
+          onChange={(e) => setEmailText(e.target.value)}
           sx={{
             marginBottom: 2,
-            backgroundColor: colors.grey[900], // Using background from the theme
-            color: colors.grey[100], // Text color from tokens
-            borderColor: colors.grey[700], // Border based on tokens
+            backgroundColor: colors.grey[900],
+            color: colors.grey[100],
+            borderColor: colors.grey[700],
+            "& .MuiInputBase-input": { fontSize: "1.2rem" },
           }}
-          InputProps={{
-            style: { color: colors.grey[100] }, // Input text color
-          }}
+          InputProps={{ style: { color: colors.grey[100] } }}
         />
         <Button
           variant="contained"
           type="submit"
+          disabled={isSubmitting}
           sx={{
             backgroundColor: colors.blueAccent[500],
             color: colors.primary[100],
-            "&:hover": {
-              backgroundColor: colors.blueAccent[700], // Hover effect
-            },
+            fontSize: "1.2rem",
+            "&:hover": { backgroundColor: colors.blueAccent[700] },
           }}
         >
-          Analyze Email
+          {isSubmitting ? "Analyzing..." : "Analyze Email"}
         </Button>
       </form>
       {error && (
         <Typography
           color={theme.palette.error.main}
-          variant="body2"
+          variant="h6"
           sx={{ marginTop: 2 }}
         >
           {error}
         </Typography>
       )}
       {project && (
-        <Box sx={{ marginTop: 3, marginBottom: 3 }}>
-          <Box sx={{ paddingBottom: 1 }}>
-            <Typography variant="h6" color={colors.greenAccent[500]}>
-              <strong>Generated Project</strong>
-            </Typography>
-            <Typography variant="body1" color={colors.grey[600]}>
-              <strong>Project Name:</strong> {project.projectName || "N/A"}
-            </Typography>
-            <Typography variant="body1" color={colors.grey[600]}>
-              <strong>Description:</strong> {project.projectDesc || "N/A"}
-            </Typography>
-            <Typography variant="body1" color={colors.grey[600]}>
-              <strong>Assigned Staff:</strong> {project.assignedTo || "N/A"}
-            </Typography>
-            <Typography variant="body1" color={colors.grey[600]}>
-              <strong>Project Date:</strong> {project.startDate || "N/A"}
-            </Typography>
-            <Typography variant="body1" color={colors.grey[600]}>
-              <strong>Project Quantity:</strong>{" "}
-              {project.projectNumber || "N/A"}
-            </Typography>
-            <Typography variant="body1" color={colors.grey[600]}>
-              <strong>Project Client:</strong> {project.projectClient || "N/A"}
-            </Typography>
-          </Box>
-          <Button
-            variant="contained"
-            sx={{
-              backgroundColor: colors.redAccent[500],
-              color: colors.primary[100],
-              "&:hover": {
-                backgroundColor: colors.blueAccent[700], // Hover effect
-              },
+        <Dialog open={openDialog} onClose={() => setOpenDialog(false)}>
+          <DialogTitle variant="h4">Create New Project</DialogTitle>
+          <Formik
+            initialValues={{
+              projectName: project.projectName || "",
+              projectDesc: project.projectDesc || "",
+              assignedTo: project.assignedTo || "",
+              startDate: project.startDate || "",
+              projectNumber: project.projectNumber || "",
+              projectClient: project.projectClient || "",
+            }}
+            onSubmit={(values, { setSubmitting }) => {
+              console.log(values);
+              setSubmitting(false);
+              setOpenDialog(false);
+              // Here you would typically update the project state or send the updated data to an API
             }}
           >
-            Create Project
-          </Button>
-        </Box>
+            {({ handleSubmit, isSubmitting }) => (
+              <form onSubmit={handleSubmit}>
+                <DialogContent>
+                  <Field
+                    name="projectName"
+                    as={TextField}
+                    label="Project Name"
+                    fullWidth
+                    margin="normal"
+                  />
+                  <Field
+                    name="projectDesc"
+                    as={TextField}
+                    label="Description"
+                    fullWidth
+                    margin="normal"
+                  />
+                  <Field
+                    name="assignedTo"
+                    as={TextField}
+                    label="Assigned Staff"
+                    fullWidth
+                    margin="normal"
+                  />
+                  <Field
+                    name="startDate"
+                    as={TextField}
+                    label="Project Date"
+                    fullWidth
+                    margin="normal"
+                  />
+                  <Field
+                    name="projectNumber"
+                    as={TextField}
+                    label="Project Quantity"
+                    fullWidth
+                    margin="normal"
+                  />
+                  <Field
+                    name="projectClient"
+                    as={TextField}
+                    label="Project Client"
+                    fullWidth
+                    margin="normal"
+                  />
+                </DialogContent>
+                <DialogActions>
+                  <Button onClick={() => setOpenDialog(false)}>Cancel</Button>
+                  <Button
+                    type="submit"
+                    variant="contained"
+                    color="primary"
+                    disabled={isSubmitting}
+                  >
+                    Save
+                  </Button>
+                </DialogActions>
+              </form>
+            )}
+          </Formik>
+        </Dialog>
       )}
     </Box>
   );

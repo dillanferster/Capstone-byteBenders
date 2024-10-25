@@ -431,20 +431,22 @@ export async function verifyUser(user) {
 // if the response sent back is good "200" the function returns the data, else console.logs issue
 export async function getNotes() {
   try {
-    const token = sessionStorage.getItem("User"); // Retrieve the token
+    const token = sessionStorage.getItem("User"); // Make sure token is valid if you're using authentication
     const response = await axios.get(`${URL}/notes`, {
       headers: {
-        Authorization: `Bearer ${token}`, // Attach the token in the Authorization header
+        Authorization: `Bearer ${token}`, // Add your token if needed
+        "Cache-Control": "no-cache", // Prevent caching by the browser
+        Pragma: "no-cache", // HTTP 1.0 backward compatibility
+        Expires: "0", // Expire immediately
+      },
+      params: {
+        timestamp: new Date().getTime(), // Add a query parameter to prevent caching
       },
     });
-    if (response.status === 200) {
-      return response.data;
-    } else {
-      console.log("Issue with get", response.status);
-    }
+    return response.data; // Return the fresh data
   } catch (error) {
-    console.error("Error fetching notes:", error);
-    throw error; // Optionally, throw the error to handle it in the component
+    console.error("Error fetching notes:", error); // Log any errors for debugging
+    throw error;
   }
 }
 
@@ -480,10 +482,11 @@ export async function getNote(id) {
 // returns the response object
 export async function createNote(note) {
   try {
-    const token = sessionStorage.getItem("User"); // Retrieve the token
+    const token = sessionStorage.getItem("User");
     const response = await axios.post(`${URL}/notes`, note, {
       headers: {
-        Authorization: `Bearer ${token}`, // Attach the token in the Authorization header
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
       },
     });
     return response.data;
@@ -535,40 +538,108 @@ export async function deleteNote(id) {
 }
 ///NOTES///
 
-// src/api.js
-// email login function
+/**
+ * EMAIL INBOX
+ * Author: Gigi Vu (gigi-vu2804)
+ *
+ */
+
+/**
+ * Email Login Function
+ * @returns void
+ */
 export async function emailLogin() {
   try {
-    window.location.href = `${URL}/email-inbox/login`;
+    window.location.href = `${URL}/email-inbox/login`; // Redirect to the login route on the backend
   } catch (error) {
     console.error("Login initiation failed:", error);
   }
 }
 
-// Function to fetch emails after login
+/**
+ * Fetch Emails Function
+ * @returns emails
+ */
 export async function fetchEmails() {
   try {
+    console.log("All cookies:", document.cookie);
+    const accessToken = document.cookie
+      .split("; ")
+      .find((row) => row.startsWith("accessToken="))
+      ?.split("=")[1];
+    console.log("Fetching emails with access token:", accessToken);
+
+    if (!accessToken) {
+      console.error("Access token not found in cookies");
+    }
     const response = await axios.get(`${URL}/email-inbox/emails`, {
       withCredentials: true,
       headers: {
-        "Content-Type": "application/json",
+        Authorization: `Bearer ${accessToken}`,
       },
     });
-    console.log(
-      "Access token sent in request:",
-      response.config.headers.Authorization
-    );
+    console.log("Emails response:", response.data);
     return response.data;
   } catch (error) {
     console.error("Failed to fetch emails:", error);
+    if (error.response) {
+      console.error("Error response:", error.response.data);
+      console.error("Error status:", error.response.status);
+    }
     throw error;
   }
 }
 
-// Function to log out the user
+// // Function to refresh access token using the refresh token
+// async function refreshAccessToken() {
+//   try {
+//     const refreshToken = localStorage.getItem("refreshToken"); // Retrieve refresh token from localStorage
+//     if (!refreshToken) {
+//       console.error("No refresh token found, user needs to re-login");
+//       return false;
+//     }
+
+//     const response = await axios.post(
+//       `${URL}/auth/refresh-token`,
+//       {
+//         refresh_token: refreshToken,
+//       },
+//       {
+//         headers: {
+//           "Content-Type": "application/json",
+//         },
+//       }
+//     );
+
+//     // Save the new access and refresh tokens
+//     localStorage.setItem("accessToken", response.data.access_token);
+//     localStorage.setItem("refreshToken", response.data.refresh_token);
+//     console.log("Access token refreshed successfully");
+//     return true;
+//   } catch (error) {
+//     console.error("Failed to refresh access token:", error);
+//     logoutEmail(); // Log the user out if refresh fails
+//     return false;
+//   }
+// }
+
+/**
+ * Logout Email Function
+ * @returns void
+ */
 export async function logoutEmail() {
   try {
-    window.location.href = `${URL}/email/logout`;
+    const response = await axios.get(`${URL}/email-inbox/signout`, {
+      withCredentials: true, // This is important for sending cookies with the request
+    });
+
+    // if (response.status === 200) {
+    //   // If the server responds with a redirect URL, use it
+    //   window.location.href = "http://localhost:5173/email-inbox/";
+    // } else {
+    //   console.error("Logout failed:", response.data);
+    //   // Handle logout failure (e.g., show an error message to the user)
+    // }
   } catch (error) {
     console.error("Logout initiation failed:", error);
   }
@@ -587,7 +658,6 @@ export async function getCalendarEvents() {
     return response.data;
   } catch (error) {
     console.error("Error fetching calendar events:", error);
-    throw error;
   }
 }
 
@@ -636,10 +706,8 @@ export async function deleteCalendarEvent(id) {
     return response.data;
   } catch (error) {
     console.error("Error deleting calendar event:", error);
-    throw error;
   }
 }
-
 // get events by date range
 export async function getCalendarEventsByRange(startDate, endDate) {
   try {
@@ -675,4 +743,82 @@ export async function getCalendarEventsByParticipant(email) {
     throw error;
   }
 }
-///CALENDAR///
+///^CALENDAR^///
+
+/**
+ * Send Email Reply Function
+ * @param {string} messageId - The ID of the email message to reply to
+ * @param {string} comment - The reply content
+ * @returns response
+ */
+export async function sendEmailReply(messageId, comment) {
+  try {
+    const response = await axios.post(
+      `${URL}/email-inbox/reply`, // Route to send an email reply
+      {
+        messageId, // The ID of the email message to reply to
+        comment, // The reply content
+      },
+      {
+        withCredentials: true, // Send credentials with the request
+      }
+    );
+
+    console.log("Reply sent successfully:", response.data);
+    return response.data;
+  } catch (error) {
+    console.error("Failed to send email reply:", error);
+    throw error;
+  }
+}
+
+/**
+ * Delete Email Function
+ * @param {string} messageId - The ID of the email message to delete
+ * @returns response
+ */
+export async function deleteEmail(messageId) {
+  try {
+    const response = await axios.delete(`${URL}/email-inbox/delete`, {
+      // Route to delete an email
+      data: { messageId }, // The ID of the email message to delete
+      withCredentials: true, // Send credentials with the request
+    });
+
+    console.log("Email deleted successfully:", response.data);
+    return response.data;
+  } catch (error) {
+    console.error("Failed to delete email:", error);
+    throw error;
+  }
+}
+
+/**
+ * Send Email Function
+ * @param {string} to - The recipient email address
+ * @param {string} cc - The CC email address
+ * @param {string} subject - The email subject
+ * @param {string} content - The email content
+ * @returns response
+ */
+export async function sendEmail(to, cc, subject, content) {
+  try {
+    const response = await axios.post(
+      `${URL}/email-inbox/send`, // Route to send a new email
+      {
+        to, // The recipient email address
+        cc, // The CC email address
+        subject, // The email subject
+        content, // The email content
+      },
+      {
+        withCredentials: true, // Send credentials with the request
+      }
+    );
+    console.log("Email sent successfully:", response.data);
+    return response.data;
+  } catch (error) {
+    console.error("Failed to send email:", error);
+    throw error;
+  }
+}

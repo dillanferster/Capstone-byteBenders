@@ -6,7 +6,6 @@
  * Uses some mock data and some real data for now
  *
  * Refference: https://www.youtube.com/watch?v=wYpCWwD1oz0&t=3528s&ab_channel=EdRoh
- *
  */
 
 import React, { useState, useEffect } from "react";

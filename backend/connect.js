@@ -5,7 +5,7 @@
  *  Exports as  projectRoutes
  *
  *  References for this connection file are from
- *  https://www.youtube.com/watch?v=Jcs_2jNPgtE&t=8033s
+ * c
  *
  *  */
 
@@ -13,6 +13,7 @@ const { MongoClient, ServerApiVersion } = require("mongodb");
 require("dotenv").config({ path: "./.env" }); // imports dotenv , loads the environment variables from .env file
 
 // Create a MongoClient with a MongoClientOptions object to set the Stable API version
+// reference  https://www.youtube.com/watch?v=Jcs_2jNPgtE&t=8033s
 const client = new MongoClient(process.env.ATLAS_URI, {
   serverApi: {
     version: ServerApiVersion.v1,
