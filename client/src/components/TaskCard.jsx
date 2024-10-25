@@ -3,27 +3,28 @@ import { Box, Typography } from "@mui/material";
 
 const TaskCard = ({ task }) => {
   const calculateCurrentTime = () => {
-    if (task.totalTime) return task.totalTime;
+    if (task.totalTime) return `${task.totalTime.split(": ")[1]} Minutes`;
 
-    let totalMinutes = 0;
-    const now = new Date().getTime();
+    // *** NOT CURRENTLY IMPLEMENTED BUT COULD BE USEFUL LATER ***
+    // let totalMinutes = 0;
+    // const now = new Date().getTime();
 
-    if (task.startTime && task.startTime.length > 0) {
-      const startTime = new Date(task.startTime[0].$date.$numberLong).getTime();
-      totalMinutes = Math.floor((now - startTime) / (1000 * 60));
+    // if (task.startTime && task.startTime.length > 0) {
+    //   const startTime = new Date(task.startTime[0].$date.$numberLong).getTime();
+    //   totalMinutes = Math.floor((now - startTime) / (1000 * 60));
 
-      if (task.pauseTime) {
-        task.pauseTime.forEach((pause) => {
-          const pauseStart = new Date(pause.start.$date.$numberLong).getTime();
-          const pauseEnd = pause.end
-            ? new Date(pause.end.$date.$numberLong).getTime()
-            : now;
-          totalMinutes -= Math.floor((pauseEnd - pauseStart) / (1000 * 60));
-        });
-      }
-    }
-
-    return `Minutes: ${totalMinutes}`;
+    //   if (task.pauseTime) {
+    //     task.pauseTime.forEach((pause) => {
+    //       const pauseStart = new Date(pause.start.$date.$numberLong).getTime();
+    //       const pauseEnd = pause.end
+    //         ? new Date(pause.end.$date.$numberLong).getTime()
+    //         : now;
+    //       totalMinutes -= Math.floor((pauseEnd - pauseStart) / (1000 * 60));
+    //     });
+    //   }
+    // }
+    // console.log(totalMinutes);
+    return `${totalMinutes} Minutes`;
   };
 
   const getPriorityColor = (priority) => {

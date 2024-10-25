@@ -168,7 +168,6 @@ const Dashboard = () => {
     let project = projects.find(
       (project) => project.projectName === event.target.value
     );
-    console.log("Project: " + project);
     setTargetProject(project);
   };
 
