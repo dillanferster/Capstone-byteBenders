@@ -55,30 +55,69 @@ const Dashboard = () => {
 
   useEffect(() => {
     // Load projects from database into useState variable
-    async function loadProjects() {
+    async function loadProjTask() {
       const dataProjects = await getProjects();
+      const dataTasks = await getTasks();
 
-      if (dataProjects) {
+      if (dataProjects && dataTasks) {
+        // LOADING PROJECT IN THE STATE
         setProjects(dataProjects);
         setNumbOfProjects(dataProjects.length);
         setTargetProject(dataProjects[0].projectName);
 
         // Calculate average project time
+        // Inside your existing useEffect, after setting projects and before setting tasks:
+
+        // Filter completed projects and calculate their average time
+        const completedProjects = dataProjects.filter(
+          (project) => project.projectStatus === "Complete"
+        );
+
         let totalProjectTime = 0;
-        dataProjects.map((project) => {
-          // console.log(project.projectTime);
-          totalProjectTime += project.projectTime;
-        });
-        // console.log("TOTAL:" + totalProjectTime);
-        setAvgTimeProject(totalProjectTime / dataProjects.length);
-      }
-    }
+        let completedProjectsWithTasks = 0;
 
-    // Load tasks from database into useState variable
-    async function loadTasks() {
-      const dataTasks = await getTasks();
+        // For each completed project
+        for (const project of completedProjects) {
+          let projectTotalTime = 0;
+          let hasValidTasks = false;
 
-      if (dataTasks) {
+          // Create a Set of task IDs for this project
+          const projectTaskIds = new Set(
+            project.TaskIdForProject.map((taskId) => taskId.toString())
+          );
+
+          // Get only the tasks that belong to this project
+          const projectTasks = dataTasks.filter((task) =>
+            projectTaskIds.has(task._id.toString())
+          );
+
+          // Calculate total time for all tasks in this project
+          for (const task of projectTasks) {
+            if (task.totalTime) {
+              const minutes = parseInt(task.totalTime.split(": ")[1]);
+              if (!isNaN(minutes)) {
+                projectTotalTime += minutes;
+                hasValidTasks = true;
+              }
+            }
+          }
+
+          // Only count this project if it has valid tasks with time
+          if (hasValidTasks) {
+            totalProjectTime += projectTotalTime;
+            completedProjectsWithTasks++;
+          }
+        }
+
+        // Calculate the average time (in minutes)
+        const averageTime =
+          completedProjectsWithTasks > 0
+            ? Math.round(totalProjectTime / completedProjectsWithTasks)
+            : 0;
+
+        setAvgTimeProject(averageTime);
+
+        // LOADING TASKS IN THE STATE
         setTasks(dataTasks);
         setNumbOfTasks(dataTasks.length);
 
@@ -97,8 +136,8 @@ const Dashboard = () => {
       }
     }
 
-    loadProjects();
-    loadTasks();
+    loadProjTask();
+    // loadTasks();
   }, []);
 
   // Load calendar events from database into useState variable
@@ -273,6 +312,7 @@ const Dashboard = () => {
             <Box display="flex" alignItems="center" gap={2}>
               <FormControl size="small" sx={{ minWidth: 120 }}>
                 <Select
+                  key={projects.length}
                   value={targetProject}
                   onChange={handleTargetProjectChange}
                   displayEmpty

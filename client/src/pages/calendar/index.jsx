@@ -204,6 +204,48 @@ const Calendar = () => {
 
         {/* CALENDAR */}
         <Box flex="1 1 100%" ml="15px">
+          <style>
+            {`
+              /* List view container */
+              .fc-list {
+                background-color: ${colors.primary[400]} !important;
+              }
+
+              /* List view header */
+              .fc .fc-list-sticky .fc-list-day > * {
+                background-color: ${colors.primary[500]} !important;
+                color: ${colors.grey[100]} !important;
+              }
+
+              /* List view items */
+              .fc-list-event {
+                background-color: ${colors.primary[400]} !important;
+                border-color: ${colors.primary[500]} !important;
+              }
+
+              /* List view item hover */
+              .fc-list-event:hover td {
+                background-color: ${colors.primary[500]} !important;
+              }
+
+              /* List view text */
+              .fc-list-event-title a,
+              .fc-list-event-title {
+                color: ${colors.grey[100]} !important;
+              }
+
+              /* List view time */
+              .fc-list-event-time {
+                color: ${colors.greenAccent[500]} !important;
+              }
+
+              /* Empty list view message */
+              .fc-list-empty {
+                background-color: ${colors.primary[400]} !important;
+                color: ${colors.grey[100]} !important;
+              }
+            `}
+          </style>
           <FullCalendar
             height="75vh"
             plugins={[

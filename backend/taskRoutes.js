@@ -57,10 +57,20 @@ taskRoutes.route("/tasks/:id").get(verifyToken, async (request, response) => {
   let data = await db
     .collection("FrankTask")
     .findOne({ _id: new ObjectId(request.params.id) });
-  if (Object.keys(data.length > 0)) {
+
+  try {
+    let db = database.getDb();
+    let data = await db
+      .collection("FrankTask")
+      .findOne({ _id: new ObjectId(request.params.id) });
+
+    if (!data) {
+      return response.status(404).json({ error: "Task not found" });
+    }
+
     response.json(data);
-  } else {
-    throw new Error("data was not found");
+  } catch (error) {
+    response.status(500).json({ error: error.message });
   }
 });
 
