@@ -1,5 +1,10 @@
 import React, { useState, useEffect } from "react";
-import { fetchEmails, logoutEmail } from "../../api.js";
+import {
+  fetchEmails,
+  deleteEmail,
+  sendEmailReply,
+  sendEmail,
+} from "../../api.js";
 import {
   Button,
   AppBar,
@@ -39,6 +44,13 @@ const EmailPage = () => {
   const [error, setError] = useState(null);
   const [selectedEmail, setSelectedEmail] = useState(null);
   const [openDialog, setOpenDialog] = useState(false);
+  const [isComposing, setIsComposing] = useState(false); // New state for composing email
+  const [newEmail, setNewEmail] = useState({
+    to: "",
+    cc: "",
+    subject: "",
+    content: "",
+  });
 
   useEffect(() => {
     checkLoginStatus();
@@ -61,7 +73,7 @@ const EmailPage = () => {
 
   const handleLogout = () => {
     try {
-      logoutEmail();
+      // logoutEmail();
       setLoggedIn(false);
       setEmails([]);
       setError(null);
@@ -73,11 +85,65 @@ const EmailPage = () => {
 
   const handleEmailClick = (email) => {
     setSelectedEmail(email);
-    setOpenDialog(false); // set to true later
   };
 
   const handleCloseDialog = () => {
     setOpenDialog(false);
+    setIsComposing(false); // Close composing dialog
+  };
+
+  const handleReply = async () => {
+    if (!selectedEmail) return;
+
+    const comment = prompt("Enter your reply:"); // Simple prompt for reply text
+    if (!comment) return;
+
+    try {
+      await sendEmailReply(selectedEmail.id, comment);
+      alert("Reply sent successfully!");
+    } catch (error) {
+      alert("Failed to send reply. Please try again.");
+    }
+  };
+
+  const handleDelete = async () => {
+    if (!selectedEmail) return;
+
+    const confirmDelete = window.confirm(
+      "Are you sure you want to delete this email?"
+    );
+    if (!confirmDelete) return;
+
+    try {
+      await deleteEmail(selectedEmail.id);
+      alert("Email deleted successfully!");
+      setEmails(emails.filter((email) => email.id !== selectedEmail.id)); // Remove the deleted email from the list
+      setSelectedEmail(null); // Clear the selected email
+    } catch (error) {
+      alert("Failed to delete email. Please try again.");
+    }
+  };
+
+  const handleCompose = () => {
+    setIsComposing(true);
+    setOpenDialog(true);
+  };
+
+  const handleSendEmail = async () => {
+    try {
+      await sendEmail(
+        newEmail.to,
+        newEmail.cc,
+        newEmail.subject,
+        newEmail.content
+      );
+      alert(`Email sent successfully to ${newEmail.to} !`);
+      setNewEmail({ to: "", cc: "", subject: "", content: "" }); // Reset the form
+      setOpenDialog(false);
+      setIsComposing(false);
+    } catch (error) {
+      alert("Failed to send email. Please try again.");
+    }
   };
 
   if (loading) {
@@ -86,9 +152,13 @@ const EmailPage = () => {
 
   return (
     <Box sx={{ flexGrow: 1, height: "100vh", overflow: "hidden" }}>
-      <AppBar position="static" color="default" elevation={0}>
+      <AppBar position="static" color="default" elevation={1}>
         <Toolbar>
-          <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
+          <Typography
+            variant="h3"
+            component="div"
+            sx={{ flexGrow: 1, fontWeight: "bold" }}
+          >
             Outlook
           </Typography>
           <TextField
@@ -106,6 +176,44 @@ const EmailPage = () => {
             <LoginButton />
           )}
         </Toolbar>
+        {loggedIn ? (
+          <Toolbar sx={{ justifyContent: "space-between", padding: "0 16px" }}>
+            <Box sx={{ display: "flex", alignItems: "center" }}>
+              <Button
+                color="primary"
+                aria-label="compose email"
+                onClick={handleCompose}
+                startIcon={<Create />}
+                sx={{
+                  bgcolor: "primary.main",
+                  color: "white",
+                  "&:hover": { bgcolor: "primary.dark" },
+                  marginRight: 2,
+                }}
+              >
+                New Email
+              </Button>
+              <Button
+                color="inherit"
+                aria-label="refresh"
+                startIcon={<Refresh />}
+                sx={{ marginRight: 2 }}
+              >
+                Refresh
+              </Button>
+              <Button
+                color="inherit"
+                aria-label="delete"
+                startIcon={<Delete />}
+                sx={{ marginRight: 2 }}
+              >
+                Delete
+              </Button>
+            </Box>
+          </Toolbar>
+        ) : (
+          ""
+        )}
       </AppBar>
 
       {loggedIn ? (
@@ -190,26 +298,101 @@ const EmailPage = () => {
               ))}
             </List>
           </Grid>
-          <Grid item xs={6} sx={{ p: 2, overflowY: "auto" }}>
+          <Grid item xs={6} sx={{ p: 2, overflowY: "scroll" }}>
             {selectedEmail ? (
-              <Paper elevation={0} sx={{ p: 2 }}>
+              <Paper elevation={1} sx={{ p: 2 }}>
+                {/* Email Header */}
                 <Typography variant="h5" fontWeight="bold" gutterBottom>
                   {selectedEmail.subject}
                 </Typography>
-                <Tooltip
-                  title={
-                    selectedEmail.from?.emailAddress?.address || "Unknown Email"
-                  }
+                <Box
+                  display="flex"
+                  justifyContent="space-between"
+                  alignItems="center"
                 >
-                  <Typography variant="subtitle1" color="text.secondary">
-                    From:{" "}
-                    {selectedEmail.from?.emailAddress?.name || "Unknown Sender"}
-                  </Typography>
-                </Tooltip>
+                  <Box>
+                    <Tooltip
+                      title={
+                        selectedEmail.from?.emailAddress?.address ||
+                        "Unknown Email"
+                      }
+                    >
+                      <Typography
+                        variant="subtitle1"
+                        color="text.secondary"
+                        sx={{
+                          "&:hover": {
+                            backgroundColor: "action.hover",
+                          },
+                        }}
+                      >
+                        From:{" "}
+                        {selectedEmail.from?.emailAddress?.name ||
+                          "Unknown Sender"}
+                      </Typography>
+                    </Tooltip>
+                    {selectedEmail.ccRecipients.length > 0 && (
+                      <Tooltip
+                        title={
+                          selectedEmail.ccRecipients
+                            .map((recipient) => recipient.emailAddress.address)
+                            .join(", ") || "Unknown CC"
+                        }
+                      >
+                        <Typography variant="subtitle1" color="text.secondary">
+                          CC:{" "}
+                          {selectedEmail.ccRecipients
+                            .map((recipient) => recipient.emailAddress.address)
+                            .join(", ")}
+                        </Typography>
+                      </Tooltip>
+                    )}
+                    <Tooltip
+                      title={
+                        selectedEmail.toRecipients
+                          .map((recipient) => recipient.emailAddress.address)
+                          .join(", ") || "Unknown To"
+                      }
+                    >
+                      <Typography variant="subtitle1" color="text.secondary">
+                        To:{" "}
+                        {selectedEmail.toRecipients
+                          .map((recipient) => recipient.emailAddress.address)
+                          .join(", ")}
+                      </Typography>
+                    </Tooltip>
+                    <Typography variant="subtitle1" color="text.secondary">
+                      Date sent: {selectedEmail.sentDateTime || "Unknown Date"}
+                    </Typography>
+                  </Box>
+                  {/* Email Operation Buttons */}
+                  <Box>
+                    <Button
+                      color="info"
+                      onClick={handleReply}
+                      startIcon={<Send />}
+                    >
+                      Reply
+                    </Button>
+                    <Button
+                      color="error"
+                      onClick={handleDelete}
+                      startIcon={<Delete />}
+                    >
+                      Delete
+                    </Button>
+                  </Box>
+                </Box>
                 <Divider sx={{ my: 2 }} />
-                <Typography variant="body1">
-                  {selectedEmail.bodyPreview}
-                </Typography>
+
+                {/* Email Body */}
+                <div
+                  style={{ maxHeight: "500px" }}
+                  dangerouslySetInnerHTML={{
+                    __html: selectedEmail?.body.content,
+                  }}
+                />
+                {/* End of Email Body */}
               </Paper>
             ) : (
               <Typography align="center" color="text.secondary">
@@ -224,6 +407,7 @@ const EmailPage = () => {
         </Typography>
       )}
 
+      {/* Email Dialog Popup */}
       <Dialog
         open={openDialog}
         onClose={handleCloseDialog}
@@ -232,7 +416,7 @@ const EmailPage = () => {
       >
         <DialogTitle>
           <Typography variant="h6" fontWeight="bold">
-            {selectedEmail?.subject}
+            {isComposing ? "Compose Email" : selectedEmail?.subject}
           </Typography>
           <IconButton
             aria-label="close"
@@ -243,34 +427,90 @@ const EmailPage = () => {
           </IconButton>
         </DialogTitle>
         <DialogContent dividers>
-          <Tooltip
-            title={
-              selectedEmail?.from?.emailAddress?.address || "Unknown Email"
-            }
-          >
-            <Typography gutterBottom>
-              From:{" "}
-              {selectedEmail?.from?.emailAddress?.name || "Unknown Sender"}
-            </Typography>
-          </Tooltip>
-          <Typography gutterBottom>{selectedEmail?.bodyPreview}</Typography>
+          {isComposing ? (
+            <Box component="form" noValidate autoComplete="off">
+              <TextField
+                fullWidth
+                label="To"
+                value={newEmail.to}
+                onChange={(e) =>
+                  setNewEmail({ ...newEmail, to: e.target.value })
+                }
+                margin="normal"
+              />
+              <TextField
+                fullWidth
+                label="CC"
+                value={newEmail.cc}
+                onChange={(e) =>
+                  setNewEmail({ ...newEmail, cc: e.target.value })
+                }
+                margin="normal"
+              />
+              <TextField
+                fullWidth
+                label="Subject"
+                value={newEmail.subject}
+                onChange={(e) =>
+                  setNewEmail({ ...newEmail, subject: e.target.value })
+                }
+                margin="normal"
+              />
+              <TextField
+                fullWidth
+                label="Content"
+                value={newEmail.content}
+                onChange={(e) =>
+                  setNewEmail({ ...newEmail, content: e.target.value })
+                }
+                margin="normal"
+                multiline
+                rows={4}
+              />
+            </Box>
+          ) : (
+            <Tooltip
+              title={
+                selectedEmail?.from?.emailAddress?.address || "Unknown Email"
+              }
+            >
+              <Typography gutterBottom>
+                From:{" "}
+                {selectedEmail?.from?.emailAddress?.name || "Unknown Sender"}
+              </Typography>
+            </Tooltip>
+          )}
         </DialogContent>
         <DialogActions>
-          <Button startIcon={<Delete />}>Delete</Button>
-          <Button startIcon={<Refresh />}>Refresh</Button>
+          {isComposing ? (
+            <Button onClick={handleSendEmail} startIcon={<Send />}>
+              Send
+            </Button>
+          ) : (
+            <>
+              <Button onClick={handleDelete} startIcon={<Delete />}>
+                Delete
+              </Button>
+              <Button startIcon={<Refresh />}>Refresh</Button>
+              <Button onClick={handleReply} startIcon={<Send />}>
+                Reply
+              </Button>
+            </>
+          )}
         </DialogActions>
       </Dialog>
 
       <IconButton
         color="primary"
         aria-label="compose email"
+        onClick={handleCompose}
         sx={{
           position: "fixed",
           bottom: 16,
-          right: 16,
+          right: 14,
           bgcolor: "primary.main",
           color: "white",
-          "&:hover": { bgcolor: "primary.dark" },
+          "&:hover": { bgcolor: "blue" },
         }}
       >
         <Create />

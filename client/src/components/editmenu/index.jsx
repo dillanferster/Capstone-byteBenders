@@ -10,6 +10,7 @@
  */
 
 import { useEffect, useState } from "react";
+import projectSchema from "../../validations/projectValidation";
 
 export default function EditMenu({
   toggleForm,
@@ -36,6 +37,7 @@ export default function EditMenu({
   const [projectStatus, setProjectStatus] = useState("");
   const [quickBaseLink, setQuickBaseLink] = useState("");
   const [projectDescription, setProjectDescription] = useState("");
+  const [errors, setErrors] = useState({});
 
   //*
 
@@ -79,9 +81,7 @@ export default function EditMenu({
   // creates a new object with the updated state variables from the inputs
   // calls update project , pass the project id and updated project object
   // .then makes sure response returned from database operation was successful before reloading grid
-  const submitUpdatedProject = () => {
-    setEditClicked(!editClicked);
-
+  const submitUpdatedProject = async () => {
     const updatedProject = {
       projectName: projectName,
       projectDesc: projectDescription,
@@ -93,15 +93,36 @@ export default function EditMenu({
       dateCreated: dateCreated,
     };
 
-    updateProject(projectId, updatedProject).then((response) => {
-      console.log("updating project", projectId);
-
-      if (response.status === 200) {
-        reloadTheGrid();
-        toggleForm();
-        clearAddInputs();
+    try {
+      const isValid = await projectSchema.validate(updatedProject, {
+        abortEarly: false,
+      });
+      if (isValid) {
+        console.log("data is valid");
+        setErrors({});
+        try {
+          const response = await updateProject(projectId, updatedProject);
+          if (response.status === 200) {
+            reloadTheGrid();
+            toggleForm();
+            clearAddInputs();
+            setEditClicked(!editClicked);
+          }
+        } catch (error) {
+          console.error("Error updating task:", error);
+        }
       }
-    });
+    } catch (err) {
+      const errorMessages = {};
+      err.inner.forEach((error) => {
+        errorMessages[error.path] = error.message;
+      });
+
+      console.log(errorMessages.taskName);
+      console.log(errorMessages);
+
+      setErrors((prev) => ({ ...errorMessages }));
+    }
   };
 
   // handles the submit from add button
@@ -109,9 +130,7 @@ export default function EditMenu({
   // creates a new object with the updated state variables from the inputs
   // calls update project , pass the project id and updated project object
   // .then makes sure response returned from database operation was successful before reloading grid
-  const submitAddedProject = () => {
-    setAddClicked(!addClicked);
-
+  const submitAddedProject = async () => {
     const addedProject = {
       projectName: projectName,
       projectDesc: projectDescription,
@@ -123,15 +142,37 @@ export default function EditMenu({
       dateCreated: dateCreated,
     };
 
-    createProject(addedProject).then((response) => {
-      console.log("adding project", response);
-
-      if (response.status === 200) {
-        reloadTheGrid();
-        toggleForm();
-        clearAddInputs();
+    ///// Refereance, Claude.AI prompt: "Can you help make yup form validation schema for react app form"
+    try {
+      const isValid = await projectSchema.validate(addedProject, {
+        abortEarly: false,
+      });
+      if (isValid) {
+        console.log("data is valid");
+        setErrors({});
+        try {
+          const response = await createProject(addedProject);
+          if (response.status === 200) {
+            reloadTheGrid();
+            toggleForm();
+            clearAddInputs();
+            setAddClicked(!addClicked);
+          }
+        } catch (error) {
+          console.error("Error updating task:", error);
+        }
       }
-    });
+    } catch (err) {
+      const errorMessages = {};
+      err.inner.forEach((error) => {
+        errorMessages[error.path] = error.message;
+      });
+
+      console.log(errorMessages.taskName);
+      console.log(errorMessages);
+
+      setErrors((prev) => ({ ...errorMessages }));
+    }
   };
 
   // handles click off menu
@@ -158,7 +199,7 @@ export default function EditMenu({
           isOpen ? "translate-x-0" : "translate-x-full"
         }`}
       >
-        <h2 className="text-3xl font-bold mb-8 text-white">Add New Project</h2>
+        <h2 className="text-3xl font-bold mb-8 text-white">Project</h2>
 
         <form className="space-y-6">
           <div className="flex justify-between">
@@ -197,6 +238,9 @@ export default function EditMenu({
                 placeholder="Enter Project name"
                 disabled={viewClicked}
               />
+              {errors.projectName && (
+                <div className="text-red-600">{errors.projectName}</div>
+              )}
             </div>
           </div>
           <div className="flex justify-between">
@@ -217,6 +261,9 @@ export default function EditMenu({
                 placeholder="Assign Project"
                 disabled={viewClicked}
               />
+              {errors.assignedTo && (
+                <div className="text-red-600">{errors.assignedTo}</div>
+              )}
             </div>
 
             <div className="w-[18rem]">
@@ -262,6 +309,9 @@ export default function EditMenu({
               required
               disabled={viewClicked}
             />
+            {errors.dateCreated && (
+              <div className="text-red-600">{errors.dateCreated}</div>
+            )}
           </div>
           <div className="flex justify-between">
             <div className="w-[18rem]">
@@ -281,6 +331,9 @@ export default function EditMenu({
                 placeholder="Enter Case Id"
                 disabled={viewClicked}
               />
+              {errors.caseId && (
+                <div className="text-red-600">{errors.caseId}</div>
+              )}
             </div>
 
             <div className="w-[18rem]">
@@ -300,6 +353,9 @@ export default function EditMenu({
                 placeholder="Enter QuickBase Link"
                 disabled={viewClicked}
               />
+              {errors.quickBaseLink && (
+                <div className="text-red-600">{errors.quickBaseLink}</div>
+              )}
             </div>
           </div>
 
@@ -320,6 +376,9 @@ export default function EditMenu({
               placeholder="Enter data classification"
               disabled={viewClicked}
             />
+            {errors.dataClassification && (
+              <div className="text-red-600">{errors.dataClassification}</div>
+            )}
           </div>
 
           <div>
@@ -338,6 +397,9 @@ export default function EditMenu({
               placeholder="Enter Description"
               disabled={viewClicked}
             />
+            {errors.projectDesc && (
+              <div className="text-red-600">{errors.projectDesc}</div>
+            )}
           </div>
 
           {viewClicked && (
