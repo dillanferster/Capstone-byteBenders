@@ -1,48 +1,42 @@
 import React, { useState, useEffect } from 'react';
 
-const NoteEditor = ({ currentNote, saveNote }) => {
-  const [note, setNote] = useState({
-    title: currentNote?.title || '',        // Default to an empty string
-    content: currentNote?.content || '',    // Default to an empty string
-    createdBy: currentNote?.createdBy || '',// Default to an empty string
-  });
+const NoteEditor = ({ currentNote, updateNote, saveNote }) => {
+  const [note, setNote] = useState(currentNote || { title: '', content: '' });
 
-  // Update the note state when the currentNote prop changes
+  // Update note state when currentNote changes
   useEffect(() => {
-    setNote({
-      title: currentNote?.title || '',
-      content: currentNote?.content || '',
-      createdBy: currentNote?.createdBy || '',
-    });
+    setNote(currentNote || { title: '', content: '' });
   }, [currentNote]);
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setNote(prevNote => ({
+      ...prevNote,
+      [name]: value,  // Update either title or content
+    }));
+  };
+
   const handleSave = () => {
-    if (!note.title && !note.content && !note.createdBy) {
-      console.error('All fields are empty. Please enter values.');
-      return;
-    }
-    saveNote(note); // Send the updated note to the parent component
+    saveNote(note);  // Pass the updated note to be saved
   };
 
   return (
-    <div>
-          <input
-            type="text"
-            value={note.title || ''}
-            onChange={(e) => setNote({ ...note, title: e.target.value })}
-            placeholder="Note Title"
-          />
-          <textarea
-            value={note.content || ''}
-            onChange={(e) => setNote({ ...note, content: e.target.value })}
-            placeholder="Note Content"
-          />
-          <input
-            type="text"
-            value={note.createdBy || ''}
-            onChange={(e) => setNote({ ...note, createdBy: e.target.value })}
-            placeholder="Created By"
-          />
-      <button onClick={handleSave}>Save</button>
+    <div className="note-editor">
+      <input
+        name="title"
+        className="note-title-input"
+        value={note.title}
+        placeholder="Note Title"
+        onChange={handleInputChange}  // Handle title change
+      />
+      <textarea
+        name="content"
+        className="note-content-textarea"
+        value={note.content}
+        placeholder="Write your note here..."
+        onChange={handleInputChange}  // Handle content change
+      />
+      <button onClick={handleSave}>Save Note</button>
     </div>
   );
 };

@@ -1,28 +1,31 @@
 // Sidebar.jsx
-import React from 'react';
-import { Stack, Button } from 'react-bootstrap';
-import NoteCard from './noteCard'; // Ensure NoteCard displays each note in the list
+import React from "react";
+import { deleteNote } from "../../api";
 
-const Sidebar = ({ notes, addNote, deleteNote, currentNoteId, setCurrentNoteId }) => {
+const Sidebar = ({ notes, setCurrentNoteId, addNote, deleteNoteById }) => {
   return (
     <div className="sidebar">
-      <div className="sidebar-header">
-        <h2>Notes</h2>
-        <button onClick={addNote} className="add-note-button">+ Add Note</button>
-      </div>
-      <div className="note-list">
-        {notes.map(note => (
-          <div
-            key={note.id}
-            className={`note-item ${note.id === currentNoteId ? 'active' : ''}`}
-            onClick={() => setCurrentNoteId(note.id)}
+      <button className="add-note-button" onClick={addNote}>
+        + Add Note
+      </button>
+      {notes.map((note) => (
+        <div
+          key={note._id}  // Ensure each note has a unique key
+          className="note-card"
+          onClick={() => setCurrentNoteId(note._id)}
+        >
+          <div className="note-title">{note.noteTitle || 'Untitled'}</div>
+          <button
+            className="delete-button"
+            onClick={(e) => {
+              e.stopPropagation();  // Prevent the click event from triggering parent div's onClick
+              deleteNoteById(note._id);  // Pass the note ID correctly
+            }}
           >
-            {note.title || 'Untitled'}
-            <div className="note-title">{note.title}</div>
-            <button className="delete-note-button" onClick={() => deleteNote(note.id)}>Delete</button>
-          </div>
-        ))}
-      </div>
+            Delete
+          </button>
+        </div>
+      ))}
     </div>
   );
 };
