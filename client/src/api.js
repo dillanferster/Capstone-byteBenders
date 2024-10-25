@@ -538,17 +538,28 @@ export async function deleteNote(id) {
 }
 ///NOTES///
 
-// client/src/api.js
-// email login function
+/**
+ * EMAIL INBOX
+ * Author: Gigi Vu (gigi-vu2804)
+ *
+ */
+
+/**
+ * Email Login Function
+ * @returns void
+ */
 export async function emailLogin() {
   try {
-    window.location.href = `${URL}/email-inbox/login`;
+    window.location.href = `${URL}/email-inbox/login`; // Redirect to the login route on the backend
   } catch (error) {
     console.error("Login initiation failed:", error);
   }
 }
 
-// Function to fetch emails after login
+/**
+ * Fetch Emails Function
+ * @returns emails
+ */
 export async function fetchEmails() {
   try {
     console.log("All cookies:", document.cookie);
@@ -579,70 +590,77 @@ export async function fetchEmails() {
   }
 }
 
-// Function to refresh access token using the refresh token
-async function refreshAccessToken() {
-  try {
-    const refreshToken = localStorage.getItem("refreshToken"); // Retrieve refresh token from localStorage
-    if (!refreshToken) {
-      console.error("No refresh token found, user needs to re-login");
-      return false;
-    }
-
-    const response = await axios.post(
-      `${URL}/auth/refresh-token`,
-      {
-        refresh_token: refreshToken,
-      },
-      {
-        headers: {
-          "Content-Type": "application/json",
-        },
-      }
-    );
-
-    // Save the new access and refresh tokens
-    localStorage.setItem("accessToken", response.data.access_token);
-    localStorage.setItem("refreshToken", response.data.refresh_token);
-    console.log("Access token refreshed successfully");
-    return true;
-  } catch (error) {
-    console.error("Failed to refresh access token:", error);
-    logoutEmail(); // Log the user out if refresh fails
-    return false;
-  }
-}
-
-// Function to log out the user (old ver)
-// export async function logoutEmail() {
+// // Function to refresh access token using the refresh token
+// async function refreshAccessToken() {
 //   try {
-//     // Redirect to the server-side logout route
-//     window.location.href = `${URL}/email/logout`;
+//     const refreshToken = localStorage.getItem("refreshToken"); // Retrieve refresh token from localStorage
+//     if (!refreshToken) {
+//       console.error("No refresh token found, user needs to re-login");
+//       return false;
+//     }
 
-//     // Clear tokens in localStorage or sessionStorage
-//     localStorage.removeItem("accessToken");
-//     localStorage.removeItem("refreshToken");
-//     sessionStorage.removeItem("accessToken");
-//     sessionStorage.removeItem("refreshToken");
+//     const response = await axios.post(
+//       `${URL}/auth/refresh-token`,
+//       {
+//         refresh_token: refreshToken,
+//       },
+//       {
+//         headers: {
+//           "Content-Type": "application/json",
+//         },
+//       }
+//     );
 
-//     // Clear cookies (if used)
-//     document.cookie =
-//       "accessToken=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+//     // Save the new access and refresh tokens
+//     localStorage.setItem("accessToken", response.data.access_token);
+//     localStorage.setItem("refreshToken", response.data.refresh_token);
+//     console.log("Access token refreshed successfully");
+//     return true;
 //   } catch (error) {
-//     console.error("Logout initiation failed:", error);
+//     console.error("Failed to refresh access token:", error);
+//     logoutEmail(); // Log the user out if refresh fails
+//     return false;
 //   }
 // }
 
-// Function to send an email reply
+/**
+ * Logout Email Function
+ * @returns void
+ */
+export async function logoutEmail() {
+  try {
+    const response = await axios.get(`${URL}/email-inbox/signout`, {
+      withCredentials: true, // This is important for sending cookies with the request
+    });
+
+    // if (response.status === 200) {
+    //   // If the server responds with a redirect URL, use it
+    //   window.location.href = "http://localhost:5173/email-inbox/";
+    // } else {
+    //   console.error("Logout failed:", response.data);
+    //   // Handle logout failure (e.g., show an error message to the user)
+    // }
+  } catch (error) {
+    console.error("Logout initiation failed:", error);
+  }
+}
+
+/**
+ * Send Email Reply Function
+ * @param {string} messageId - The ID of the email message to reply to
+ * @param {string} comment - The reply content
+ * @returns response
+ */
 export async function sendEmailReply(messageId, comment) {
   try {
     const response = await axios.post(
-      `${URL}/email-inbox/reply`,
+      `${URL}/email-inbox/reply`, // Route to send an email reply
       {
-        messageId,
-        comment,
+        messageId, // The ID of the email message to reply to
+        comment, // The reply content
       },
       {
-        withCredentials: true,
+        withCredentials: true, // Send credentials with the request
       }
     );
 
@@ -654,12 +672,17 @@ export async function sendEmailReply(messageId, comment) {
   }
 }
 
-// Function to delete an email
+/**
+ * Delete Email Function
+ * @param {string} messageId - The ID of the email message to delete
+ * @returns response
+ */
 export async function deleteEmail(messageId) {
   try {
     const response = await axios.delete(`${URL}/email-inbox/delete`, {
-      data: { messageId },
-      withCredentials: true,
+      // Route to delete an email
+      data: { messageId }, // The ID of the email message to delete
+      withCredentials: true, // Send credentials with the request
     });
 
     console.log("Email deleted successfully:", response.data);
@@ -670,22 +693,28 @@ export async function deleteEmail(messageId) {
   }
 }
 
-// Function to send a new email
+/**
+ * Send Email Function
+ * @param {string} to - The recipient email address
+ * @param {string} cc - The CC email address
+ * @param {string} subject - The email subject
+ * @param {string} content - The email content
+ * @returns response
+ */
 export async function sendEmail(to, cc, subject, content) {
   try {
     const response = await axios.post(
-      `${URL}/email-inbox/send`,
+      `${URL}/email-inbox/send`, // Route to send a new email
       {
-        to,
-        cc,
-        subject,
-        content,
+        to, // The recipient email address
+        cc, // The CC email address
+        subject, // The email subject
+        content, // The email content
       },
       {
-        withCredentials: true,
+        withCredentials: true, // Send credentials with the request
       }
     );
-
     console.log("Email sent successfully:", response.data);
     return response.data;
   } catch (error) {
