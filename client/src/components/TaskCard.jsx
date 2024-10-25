@@ -46,9 +46,9 @@ const TaskCard = ({ task }) => {
 
   return (
     <Box
-      className={`w-full p-4 rounded-lg mb-4 ${getPriorityColor(
+      className={`h-full p-4 rounded-lg ${getPriorityColor(
         task.priority
-      )} bg-opacity-20`}
+      )} bg-opacity-20 flex flex-col min-w-[200px] mx-2`}
     >
       <div className="flex justify-between items-start mb-2">
         <Typography className="text-lg font-semibold">
@@ -63,7 +63,7 @@ const TaskCard = ({ task }) => {
         </span>
       </div>
 
-      <Typography className="text-sm mb-2 text-gray-200">
+      <Typography className="text-sm mb-2 text-gray-200 flex-grow">
         {task.taskDesc}
       </Typography>
 

@@ -346,14 +346,31 @@ const Dashboard = () => {
               </FormControl>
             </Box>
           </Box>
-          <Box height="240px" mt="10px">
-            <Box height="240px" mt="10px" sx={{ overflowY: "auto" }}>
-              {tasks
-                .filter((task) => task.projectId === targetProject._id)
-                .map((task) => (
-                  <TaskCard key={task._id} task={task} />
-                ))}
-            </Box>
+          <Box
+            height="240px"
+            m="10px 0 20px -8px"
+            sx={{
+              overflowX: "auto",
+              overflowY: "hidden",
+              display: "flex",
+              alignItems: "stretch",
+              "&::-webkit-scrollbar": {
+                height: "8px",
+              },
+              "&::-webkit-scrollbar-track": {
+                background: colors.primary[400],
+              },
+              "&::-webkit-scrollbar-thumb": {
+                background: colors.grey[100],
+                borderRadius: "4px",
+              },
+            }}
+          >
+            {tasks
+              .filter((task) => task.projectId.$oid === targetProject._id.$oid)
+              .map((task) => (
+                <TaskCard key={task._id.$oid} task={task} />
+              ))}
           </Box>
         </Box>
 
