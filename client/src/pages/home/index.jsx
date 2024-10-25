@@ -32,6 +32,7 @@ import GeographyChart from "../../componentsFrank/GeographyChart";
 import StatBox from "../../componentsFrank/StatBox";
 import ProgressCircle from "../../componentsFrank/ProgressCircle";
 import { Select, MenuItem, FormControl, InputLabel } from "@mui/material";
+import TaskCard from "../../components/TaskCard";
 // import { isOverflown } from "@mui/x-data-grid/utils/domUtils"; // not sure what this is for
 
 // database functions from api file
@@ -62,7 +63,7 @@ const Dashboard = () => {
         // LOADING PROJECT IN THE STATE
         setProjects(dataProjects);
         setNumbOfProjects(dataProjects.length);
-        setTargetProject(dataProjects[0].projectName);
+        setTargetProject(dataProjects[0]);
 
         // Calculate average project time
         // Inside your existing useEffect, after setting projects and before setting tasks:
@@ -130,7 +131,6 @@ const Dashboard = () => {
             totalTaskTime += minutes;
           }
         });
-        console.log("TOTAL:" + totalTaskTime);
         setAvgTimeTask(Math.round(totalTaskTime / dataTasks.length));
       }
     }
@@ -166,14 +166,12 @@ const Dashboard = () => {
     fetchEvents();
   }, []);
 
-  // Change to projects later ***
   const handleTargetProjectChange = (event) => {
-    setTargetProject(event.target.value);
-  };
-
-  const handleLogout = () => {
-    sessionStorage.removeItem("User");
-    navigate("/");
+    let project = projects.find(
+      (project) => project.projectName === event.target.value
+    );
+    console.log("Project: " + project);
+    setTargetProject(project);
   };
 
   return (
@@ -182,7 +180,7 @@ const Dashboard = () => {
         <Header title="DASHBOARD" subtitle="Welcome to your dashboard" />
 
         <Box>
-          <Button
+          {/* <Button
             sx={{
               backgroundColor: colors.blueAccent[700],
               color: colors.grey[100],
@@ -193,17 +191,28 @@ const Dashboard = () => {
           >
             <DownloadOutlinedIcon sx={{ mr: "10px" }} />
             Download Reports
-          </Button>
-          <Button variant="contained" onClick={handleLogout}>
+          </Button> */}
+          {/* <Button
+            variant="contained"
+            onClick={handleLogout}
+            sx={{
+              backgroundColor: colors.blueAccent[700],
+              color: colors.grey[100],
+              fontSize: "14px",
+              fontWeight: "bold",
+              padding: "5px 10px",
+              borderRadius: "20px",
+            }}
+          >
             Log out
-          </Button>
+          </Button> */}
         </Box>
       </Box>
       {/* GRID & CHARTS */}
       <Box
         display="grid"
         gridTemplateColumns="repeat(12, 1fr)"
-        gridAutoRows="130px"
+        gridAutoRows="120px"
         gap="20px"
       >
         {/* ROW 1 */}
@@ -290,11 +299,11 @@ const Dashboard = () => {
         <Box
           gridColumn="span 7"
           gridRow="span 2"
+          p="0 30px"
           backgroundColor={colors.primary[400]}
         >
           <Box
             mt="25px"
-            p="0 30px"
             display="flex"
             justifyContent="space-between"
             alignItems="center"
@@ -311,8 +320,8 @@ const Dashboard = () => {
             <Box display="flex" alignItems="center" gap={2}>
               <FormControl size="small" sx={{ minWidth: 120 }}>
                 <Select
-                  key={projects.length}
-                  value={targetProject}
+                  key={targetProject._id}
+                  value={targetProject.projectName}
                   onChange={handleTargetProjectChange}
                   displayEmpty
                   sx={{
@@ -333,10 +342,6 @@ const Dashboard = () => {
                       {project.projectName}
                     </MenuItem>
                   ))}
-                  {/* <MenuItem value="week">This Week</MenuItem>
-                  <MenuItem value="month">This Month</MenuItem>
-                  <MenuItem value="quarter">This Quarter</MenuItem>
-                  <MenuItem value="year">This Year</MenuItem> */}
                 </Select>
               </FormControl>
             </Box>
@@ -349,7 +354,7 @@ const Dashboard = () => {
         {/* CALENDAR EVENTS */}
         <Box
           gridColumn="span 5"
-          gridRow="span 2"
+          gridRow="span 4"
           backgroundColor={colors.primary[400]}
           overflow="auto"
         >
@@ -374,7 +379,8 @@ const Dashboard = () => {
               borderBottom={`4px solid ${colors.primary[500]}`}
               p="15px"
             >
-              <Box>
+              {/* Title Section - 33% */}
+              <Box flex="1 1 33%">
                 <Typography
                   color={colors.greenAccent[500]}
                   variant="h5"
@@ -389,7 +395,9 @@ const Dashboard = () => {
                   {event.participants.length} participants
                 </Typography>
               </Box>
-              <Box color={colors.grey[100]}>
+
+              {/* Description Section - ~50% */}
+              <Box flex="1 1 50%" px="20px">
                 <Typography
                   color={colors.greenAccent[500]}
                   variant="h5"
@@ -401,12 +409,15 @@ const Dashboard = () => {
                   {event.description}
                 </Typography>
               </Box>
+
+              {/* Join Meeting Button - remaining space */}
               <Box
+                flex="0 0 auto"
                 backgroundColor={colors.greenAccent[500]}
                 p="5px 10px"
                 borderRadius="4px"
               >
-                Join Meeting
+                Join
               </Box>
             </Box>
           ))}
@@ -440,7 +451,7 @@ const Dashboard = () => {
           </Box>
         </Box>
 
-        <Box
+        {/* <Box
           gridColumn="span 4"
           gridRow="span 2"
           backgroundColor={colors.primary[400]}
@@ -469,7 +480,7 @@ const Dashboard = () => {
           <Box height="190px">
             <GeographyChart isDashboard="true" />
           </Box>
-        </Box>
+        </Box> */}
 
         {/*  */}
       </Box>

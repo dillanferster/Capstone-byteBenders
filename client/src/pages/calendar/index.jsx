@@ -163,8 +163,7 @@ const Calendar = () => {
   };
 
   return (
-    // Added padding 40 top and to fit until fix the sidebar and header
-    <Box m="20px" pt="40px">
+    <Box m="20px">
       <Header title="CALENDAR" subtitle="Full Calendar Interactive Page" />
       <Box display="flex" justifyContent="space-between">
         {/* CALENDAR SIDEBAR */}
@@ -173,33 +172,79 @@ const Calendar = () => {
           backgroundColor={colors.primary[400]}
           p="15px"
           borderRadius="4px"
+          display="flex"
+          flexDirection="column"
+          sx={{
+            maxHeight: "calc(100vh - 190px)", // Adjust this value based on your layout
+          }}
         >
-          <Typography variant="h5">Events</Typography>
-          <List>
-            {currentEvents.map((event) => (
-              <ListItem
-                key={event.id}
-                sx={{
-                  backgroundColor: colors.greenAccent[500],
-                  margin: "10px 0",
-                  borderRadius: "2px",
-                }}
-              >
-                <ListItemText
-                  primary={event.title}
-                  secondary={
-                    <Typography>
-                      {formatDate(event.start, {
-                        year: "numeric",
-                        month: "short",
-                        day: "numeric",
-                      })}
-                    </Typography>
-                  }
-                />
-              </ListItem>
-            ))}
-          </List>
+          <Typography variant="h5" mb={2}>
+            Events
+          </Typography>
+
+          {/* Scrollable container for the list */}
+          <Box
+            sx={{
+              overflowY: "auto",
+              flex: 1,
+              pr: "8px",
+              // Optional: Custom scrollbar styling
+              "&::-webkit-scrollbar": {
+                width: "8px",
+              },
+              "&::-webkit-scrollbar-track": {
+                background: colors.primary[400],
+              },
+              "&::-webkit-scrollbar-thumb": {
+                background: colors.greenAccent[500],
+                borderRadius: "4px",
+              },
+              "&::-webkit-scrollbar-thumb:hover": {
+                background: colors.greenAccent[400],
+              },
+            }}
+          >
+            <List>
+              {currentEvents.map((event) => (
+                <ListItem
+                  key={event.id}
+                  sx={{
+                    backgroundColor: colors.greenAccent[600],
+                    margin: "10px 0",
+                    borderRadius: "2px",
+                  }}
+                >
+                  <ListItemText
+                    primary={
+                      <Typography sx={{ fontWeight: "bold" }}>
+                        {event.title}
+                      </Typography>
+                    }
+                    secondary={
+                      <Typography
+                        sx={{
+                          fontSize: "12px",
+                        }}
+                      >
+                        {formatDate(event.start, {
+                          year: "numeric",
+                          month: "short",
+                          day: "numeric",
+                          hour: "numeric",
+                          minute: "2-digit",
+                        })}
+                        {" - "}
+                        {formatDate(event.end, {
+                          hour: "2-digit",
+                          minute: "2-digit",
+                        })}
+                      </Typography>
+                    }
+                  />
+                </ListItem>
+              ))}
+            </List>
+          </Box>
         </Box>
 
         {/* CALENDAR */}
