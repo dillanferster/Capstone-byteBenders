@@ -259,7 +259,7 @@ export default function TaskEditMenu({
           isOpen ? "translate-x-0" : "translate-x-full"
         }`}
       >
-        {/* <h2 className="text-3xl font-bold mb-4 text-white">Task</h2> */}
+        <h2 className="text-2xl font-bold mb-4 text-white">Task</h2>
 
         <form className="space-y-6">
           <div className="flex justify-between">
