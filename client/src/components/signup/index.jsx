@@ -76,7 +76,13 @@ export default function SignUp({ handleSubmit }) {
                   ""
                 )
               }
-              sx={{ gridColumn: "span 2" }}
+              sx={{
+                gridColumn: "span 2",
+                // *** POTENTIAL FIX FOR FLOATING LABEL COLOR ***
+                // "& .MuiInputLabel-root.Mui-focused": {
+                //   color: "white",
+                // },
+              }}
             />
             <TextField
               margin="normal"
