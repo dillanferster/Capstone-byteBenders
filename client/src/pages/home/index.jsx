@@ -346,8 +346,14 @@ const Dashboard = () => {
               </FormControl>
             </Box>
           </Box>
-          <Box height="240px" mt="-20px">
-            <LineChart isDashboard={true} />
+          <Box height="240px" mt="10px">
+            <Box height="240px" mt="10px" sx={{ overflowY: "auto" }}>
+              {tasks
+                .filter((task) => task.projectId === targetProject._id)
+                .map((task) => (
+                  <TaskCard key={task._id} task={task} />
+                ))}
+            </Box>
           </Box>
         </Box>
 
