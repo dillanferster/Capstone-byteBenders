@@ -17,7 +17,6 @@ import {
   Typography,
   useTheme,
 } from "@mui/material";
-import { useNavigate } from "react-router-dom";
 import { tokens } from "../../theme";
 import Header from "../../components/Header";
 import { mockTransactions } from "../../data/mockData";
@@ -41,7 +40,6 @@ import { getCalendarEvents } from "../../api.js";
 // import { set } from "date-fns";
 
 const Dashboard = () => {
-  const navigate = useNavigate();
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   const [projects, setProjects] = useState([]);
@@ -456,7 +454,7 @@ const Dashboard = () => {
           p="30px"
         >
           <Typography variant="h5" fontWeight="600">
-            Project Status Distribution
+            Project Status Distribution This Month
           </Typography>
           <Box height="220px">
             <BarChart isDashboard={true} data={projects} />

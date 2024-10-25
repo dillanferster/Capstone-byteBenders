@@ -9,17 +9,28 @@ const BarChart = ({ data, isDashboard = false }) => {
   // Transform projects data into the format needed for the bar chart
   const chartData = [
     {
-      status: "Project Status",
-      Complete: data.filter((project) => project.projectStatus === "Complete")
+      status: "Complete",
+      count: data.filter((project) => project.projectStatus === "Complete")
         .length,
-      "In Progress": data.filter(
-        (project) => project.projectStatus === "In Progress"
-      ).length,
-      "Not Started": data.filter(
-        (project) => project.projectStatus === "Not Started"
-      ).length,
-      Storage: data.filter((project) => project.projectStatus === "Storage")
+      color: colors.greenAccent[500],
+    },
+    {
+      status: "In Progress",
+      count: data.filter((project) => project.projectStatus === "In Progress")
         .length,
+      color: colors.blueAccent[400],
+    },
+    {
+      status: "Not Started",
+      count: data.filter((project) => project.projectStatus === "Not Started")
+        .length,
+      color: colors.redAccent[400],
+    },
+    {
+      status: "Storage",
+      count: data.filter((project) => project.projectStatus === "Storage")
+        .length,
+      color: colors.grey[500],
     },
   ];
 
@@ -48,30 +59,26 @@ const BarChart = ({ data, isDashboard = false }) => {
             },
           },
         },
-        legends: {
-          text: {
-            fill: colors.grey[100],
-          },
-        },
         tooltip: {
           container: {
             background: colors.primary[400],
             color: colors.grey[100],
           },
         },
+        labels: {
+          text: {
+            fontSize: 16, // Increase the font size here
+            fill: colors.grey[100],
+          },
+        },
       }}
-      keys={["Complete", "In Progress", "Not Started", "Storage"]}
+      keys={["count"]}
       indexBy="status"
-      margin={{ top: 20, right: 130, bottom: 20, left: 50 }}
+      margin={{ top: 20, right: 20, bottom: 40, left: 60 }}
       padding={0.3}
       valueScale={{ type: "linear" }}
       indexScale={{ type: "band", round: true }}
-      colors={[
-        colors.greenAccent[500],
-        colors.blueAccent[400],
-        colors.redAccent[400],
-        colors.grey[500],
-      ]}
+      colors={({ data }) => data.color}
       borderRadius={2}
       borderColor={{
         from: "color",
@@ -79,50 +86,32 @@ const BarChart = ({ data, isDashboard = false }) => {
       }}
       axisTop={null}
       axisRight={null}
-      axisBottom={null}
+      axisBottom={{
+        tickSize: 5,
+        tickPadding: 5,
+        tickRotation: 0,
+        legend: isDashboard ? undefined : "Status",
+        legendPosition: "middle",
+        legendOffset: 32,
+        truncateTickAt: 0,
+      }}
       axisLeft={{
         tickSize: 5,
         tickPadding: 5,
         tickRotation: 0,
-        legend: isDashboard ? undefined : "Count",
+        legend: isDashboard ? undefined : "Number of Projects",
         legendPosition: "middle",
         legendOffset: -40,
         truncateTickAt: 0,
       }}
       enableLabel={true}
+      label={(d) => d.value}
       labelSkipWidth={12}
       labelSkipHeight={12}
-      labelTextColor={{
-        from: "color",
-        modifiers: [["darker", 3]],
-      }}
-      legends={[
-        {
-          dataFrom: "keys",
-          anchor: "bottom-right",
-          direction: "column",
-          justify: false,
-          translateX: 120,
-          translateY: 0,
-          itemsSpacing: 2,
-          itemWidth: 100,
-          itemHeight: 20,
-          itemDirection: "left-to-right",
-          itemOpacity: 0.85,
-          symbolSize: 10,
-          effects: [
-            {
-              on: "hover",
-              style: {
-                itemOpacity: 1,
-              },
-            },
-          ],
-        },
-      ]}
+      labelTextColor="black"
       role="application"
       ariaLabel="Project Status Distribution"
-      barAriaLabel={(e) => `${e.id}: ${e.formattedValue} projects`}
+      barAriaLabel={(e) => `${e.indexValue}: ${e.value} projects`}
     />
   );
 };
