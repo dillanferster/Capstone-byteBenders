@@ -2,7 +2,6 @@ import React from "react";
 import { Box, Typography } from "@mui/material";
 
 const TaskCard = ({ task }) => {
-  // Calculate current time spent if task is in progress
   const calculateCurrentTime = () => {
     if (task.totalTime) return task.totalTime;
 
@@ -13,7 +12,6 @@ const TaskCard = ({ task }) => {
       const startTime = new Date(task.startTime[0].$date.$numberLong).getTime();
       totalMinutes = Math.floor((now - startTime) / (1000 * 60));
 
-      // Subtract pause periods
       if (task.pauseTime) {
         task.pauseTime.forEach((pause) => {
           const pauseStart = new Date(pause.start.$date.$numberLong).getTime();
@@ -28,7 +26,6 @@ const TaskCard = ({ task }) => {
     return `Minutes: ${totalMinutes}`;
   };
 
-  // Determine background color based on priority
   const getPriorityColor = (priority) => {
     switch (priority.toLowerCase()) {
       case "low":
@@ -46,24 +43,24 @@ const TaskCard = ({ task }) => {
 
   return (
     <Box
-      className={`h-full p-4 rounded-lg ${getPriorityColor(
+      className={`flex-shrink-0 p-4 rounded-lg ${getPriorityColor(
         task.priority
-      )} bg-opacity-20 flex flex-col min-w-[200px] mx-2`}
+      )} bg-opacity-20 flex flex-col min-w-[200px] h-[200px] mx-2 mb-2`}
     >
-      <div className="flex justify-between items-start mb-2">
-        <Typography className="text-lg font-semibold">
+      <div className="flex justify-between items-start mb-2 mt-2">
+        <Typography className="text-lg font-semibold truncate flex-1 mr-2">
           {task.taskName}
         </Typography>
         <span
           className={`px-2 py-1 rounded text-sm ${
             task.taskStatus === "Completed" ? "bg-green-500" : "bg-blue-500"
-          } text-white`}
+          } text-white whitespace-nowrap`}
         >
           {task.taskStatus}
         </span>
       </div>
 
-      <Typography className="text-sm mb-2 text-gray-200 flex-grow">
+      <Typography className="text-sm mb-2 text-gray-200 flex-grow overflow-auto">
         {task.taskDesc}
       </Typography>
 
