@@ -632,9 +632,9 @@ const TaskPage = () => {
   }, [reloadGrid]);
 
   return (
-    <div className="px-[1rem] pt-[.5rem]">
+    <div className="px-[1rem] pt-[.5rem] w-full h-4/5">
       {" "}
-      <div className="flex border w-[8rem] py-[.3rem] rounded-md text-white justify-around transition-all duration-100">
+      <div className="flex border w-[8rem] mb-[1rem] py-[.3rem] rounded-md text-white justify-around transition-all duration-100">
         <button
           className={`p-1 rounded-md w-[3rem] transition-all duration-100 ${
             listToggled ? "bg-[#3E4396]" : ""
@@ -656,7 +656,7 @@ const TaskPage = () => {
         <TaskBoard />
       ) : (
         <div>
-          <div className=" py-[1rem] flex justify-between w-full ">
+          <div className=" pb-[1rem] flex justify-between w-full ">
             <div className="flex gap-8">
               <div>
                 <Button
