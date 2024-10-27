@@ -425,60 +425,6 @@ const TaskPage = () => {
     }
   }
 
-  // function calculatePauseTime(completeTaskObject) {
-  //   if (
-  //     completeTaskObject &&
-  //     completeTaskObject.startTime &&
-  //     completeTaskObject.pauseTime &&
-  //     completeTaskObject.pauseTime.length > 1
-  //   ) {
-  //     const pauseList = completeTaskObject.pauseTime;
-
-  //     let totalPauseTime = 0;
-  //     let pauseStartTime = 0;
-  //     let pauseEndTime = 0;
-
-  //     for (let index = 0; index < pauseList.length; index++) {
-  //       const pauseItem = pauseList[index];
-
-  //       if (index === 0) {
-  //         pauseEndTime = new Date(pauseItem.end);
-  //       } else {
-  //         pauseStartTime = new Date(pauseItem.start);
-  //         const newPauseTime = pauseStartTime - pauseEndTime;
-  //         totalPauseTime += newPauseTime;
-
-  //         pauseEndTime = new Date(pauseItem.end);
-  //       }
-  //     }
-
-  //     const totalMin = (totalPauseTime / (1000 * 60)).toFixed(2);
-
-  //     const finalRollingTime = `Minutes: ${totalMin}`;
-
-  //     console.log("total rollling time", finalRollingTime);
-
-  //     return totalMin;
-  //   } else {
-  //     // calculate just start and first pause
-  //     const startTime = new Date(completeTaskObject.startTime[0]);
-  //     const pauseTime = new Date(completeTaskObject.pauseTime[0].start);
-
-  //     console.log("start time pause button", startTime);
-  //     console.log("pause time pause button", pauseTime);
-
-  //     let totalTime = pauseTime - startTime;
-
-  //     const totalMin = (totalTime / (1000 * 60)).toFixed(2);
-
-  //     const finalTime = `Minutes: ${totalMin}`;
-
-  //     setRollingTimeFirst(totalMin);
-
-  //     return finalTime;
-  //   }
-  // }
-
   function calculatePauseTime(completeTaskObject) {
     if (
       completeTaskObject &&
@@ -558,20 +504,6 @@ const TaskPage = () => {
       reloadTheGrid();
     }
   }
-
-  // async function handlePauseandCalculate() {
-  //   const completeId = await buttonPause();
-  //   if (completeId) {
-  //     const completeTaskObject = await getTask(completeId);
-  //     const finalTime = calculatePauseTime(completeTaskObject);
-
-  //     console.log(
-  //       `after pause calc,  final time ${finalTime} rollingTimeFirst ${rollingTimeFirst}`
-  //     );
-
-  //     updateTotalTime(completeId, finalTime);
-  //   }
-  // }
 
   // handle function for complete button click
   async function handleCompleteandCalculate() {
