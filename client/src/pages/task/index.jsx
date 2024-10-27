@@ -42,6 +42,7 @@ import {
 } from "../../api.js";
 import ProjectGrid from "../../components/projectgrid/index.jsx";
 import TaskEditMenu from "../../components/taskeditmenu/index.jsx";
+import TaskBoard from "../../components/taskboard/index.jsx";
 
 //
 
@@ -631,180 +632,185 @@ const TaskPage = () => {
   }, [reloadGrid]);
 
   return (
-    <div className=" p-[1rem]">
-      <div className=" px-[1rem]">
-        <div className="flex border w-[8rem] py-[.3rem] rounded-md text-white justify-around transition-all duration-100">
-          <button
-            className={`p-1 rounded-md w-[3rem] transition-all duration-100 ${
-              listToggled ? "bg-[#3E4396]" : ""
-            }`}
-            onClick={() => handleListClick()}
-          >
-            List
-          </button>
-          <button
-            className={`p-1 rounded-md w-[3rem] transition-all duration-100 ${
-              boardToggled ? "bg-[#3E4396]" : ""
-            }`}
-            onClick={() => handleBoardClick()}
-          >
-            Board
-          </button>
-        </div>
+    <div className="px-[1rem] pt-[.5rem]">
+      {" "}
+      <div className="flex border w-[8rem] py-[.3rem] rounded-md text-white justify-around transition-all duration-100">
+        <button
+          className={`p-1 rounded-md w-[3rem] transition-all duration-100 ${
+            listToggled ? "bg-[#3E4396]" : ""
+          }`}
+          onClick={() => handleListClick()}
+        >
+          List
+        </button>
+        <button
+          className={`p-1 rounded-md w-[3rem] transition-all duration-100 ${
+            boardToggled ? "bg-[#3E4396]" : ""
+          }`}
+          onClick={() => handleBoardClick()}
+        >
+          Board
+        </button>
       </div>
-      <div className=" p-[1rem] flex justify-between w-full ">
-        <div className="flex gap-8">
-          <div>
-            <Button
-              variant="contained"
-              color="success"
-              onClick={() => handleButtonAdd()}
-            >
-              Add Task
-            </Button>
-          </div>
-
-          <div className="flex gap-4">
-            {selectedTask.length === 1 &&
-              selectedTask[0].taskStatus === "Not Started" && (
+      {taskBoardOpen ? (
+        <TaskBoard />
+      ) : (
+        <div>
+          <div className=" py-[1rem] flex justify-between w-full ">
+            <div className="flex gap-8">
+              <div>
                 <Button
-                  variant="outlined"
+                  variant="contained"
                   color="success"
-                  onClick={() => handleButtonStart()}
+                  onClick={() => handleButtonAdd()}
                 >
-                  Start Task
+                  Add Task
                 </Button>
+              </div>
+
+              <div className="flex gap-4">
+                {selectedTask.length === 1 &&
+                  selectedTask[0].taskStatus === "Not Started" && (
+                    <Button
+                      variant="outlined"
+                      color="success"
+                      onClick={() => handleButtonStart()}
+                    >
+                      Start Task
+                    </Button>
+                  )}
+                {selectedTask.length === 1 &&
+                  (selectedTask[0].taskStatus === "Started" ||
+                    selectedTask[0].taskStatus === "In progress") && (
+                    <div>
+                      {" "}
+                      <Button
+                        variant="outlined"
+                        color="warning"
+                        onClick={() => handlePauseandCalculate()}
+                      >
+                        Pause Task
+                      </Button>
+                    </div>
+                  )}{" "}
+                {selectedTask.length === 1 &&
+                  selectedTask[0].taskStatus === "Paused" && (
+                    <div>
+                      <Button
+                        variant="outlined"
+                        color="info"
+                        onClick={() => handleButtonResume()}
+                      >
+                        Resume Task
+                      </Button>
+                    </div>
+                  )}
+                {selectedTask.length === 1 &&
+                  selectedTask[0].taskStatus !== "Completed" && (
+                    <Button
+                      variant="outlined"
+                      color="error"
+                      onClick={() => handleCompleteandCalculate()}
+                    >
+                      Complete Task
+                    </Button>
+                  )}
+              </div>
+            </div>
+
+            <div className="flex gap-4">
+              {deleteOpen && (
+                <div className="flex items-center justify-end gap-4 z-[5]  w-full ">
+                  <p className="font-bold text-md">
+                    Are you sure you want to delete ?
+                  </p>
+                  <div>
+                    {" "}
+                    <Button
+                      variant="contained"
+                      color="error"
+                      onClick={() => handleButtonDelete()}
+                    >
+                      Delete
+                    </Button>
+                  </div>
+                  <div>
+                    {" "}
+                    <Button
+                      variant="outlined"
+                      color="warning"
+                      onClick={() => setDeleteOpen((prev) => !prev)}
+                    >
+                      Cancel
+                    </Button>
+                  </div>
+                </div>
               )}
-            {selectedTask.length === 1 &&
-              (selectedTask[0].taskStatus === "Started" ||
-                selectedTask[0].taskStatus === "In progress") && (
+
+              {selectedTask.length === 1 && !deleteOpen && (
+                <div className="flex gap-4">
+                  <div>
+                    <Button
+                      variant="outlined"
+                      color="info"
+                      onClick={() => handleButtonView()}
+                    >
+                      View
+                    </Button>
+                  </div>
+                  <div>
+                    {" "}
+                    <Button
+                      variant="outlined"
+                      color="warning"
+                      onClick={() => handleButtonEdit()}
+                    >
+                      Edit
+                    </Button>
+                  </div>
+                </div>
+              )}
+              {selectedTask.length > 0 && !deleteOpen && (
                 <div>
                   {" "}
                   <Button
-                    variant="outlined"
-                    color="warning"
-                    onClick={() => handlePauseandCalculate()}
+                    variant="contained"
+                    color="error"
+                    onClick={() => setDeleteOpen((prev) => !prev)}
                   >
-                    Pause Task
-                  </Button>
-                </div>
-              )}{" "}
-            {selectedTask.length === 1 &&
-              selectedTask[0].taskStatus === "Paused" && (
-                <div>
-                  <Button
-                    variant="outlined"
-                    color="info"
-                    onClick={() => handleButtonResume()}
-                  >
-                    Resume Task
+                    Delete
                   </Button>
                 </div>
               )}
-            {selectedTask.length === 1 &&
-              selectedTask[0].taskStatus !== "Completed" && (
-                <Button
-                  variant="outlined"
-                  color="error"
-                  onClick={() => handleCompleteandCalculate()}
-                >
-                  Complete Task
-                </Button>
-              )}
+            </div>
           </div>
+
+          <ProjectGrid
+            rows={rows}
+            columns={columns}
+            selection={selection}
+            selectionColumnDef={selectionColumnDef}
+            onSelectionChanged={handleOnSelectionChanged}
+          ></ProjectGrid>
+          <TaskEditMenu
+            isOpen={isOpen}
+            setIsOpen={setIsOpen}
+            toggleForm={toggleForm}
+            selectedTask={selectedTask}
+            updateTask={updateTask}
+            createTask={createTask}
+            viewClicked={viewClicked}
+            setViewClicked={setViewClicked}
+            addClicked={addClicked}
+            setAddClicked={setAddClicked}
+            editClicked={editClicked}
+            setEditClicked={setEditClicked}
+            reloadTheGrid={reloadTheGrid}
+            projects={projects}
+            addTaskToProject={addTaskToProject}
+          ></TaskEditMenu>
         </div>
-
-        <div className="flex gap-4">
-          {deleteOpen && (
-            <div className="flex items-center justify-end gap-4 z-[5]  w-full ">
-              <p className="font-bold text-md">
-                Are you sure you want to delete ?
-              </p>
-              <div>
-                {" "}
-                <Button
-                  variant="contained"
-                  color="error"
-                  onClick={() => handleButtonDelete()}
-                >
-                  Delete
-                </Button>
-              </div>
-              <div>
-                {" "}
-                <Button
-                  variant="outlined"
-                  color="warning"
-                  onClick={() => setDeleteOpen((prev) => !prev)}
-                >
-                  Cancel
-                </Button>
-              </div>
-            </div>
-          )}
-
-          {selectedTask.length === 1 && !deleteOpen && (
-            <div className="flex gap-4">
-              <div>
-                <Button
-                  variant="outlined"
-                  color="info"
-                  onClick={() => handleButtonView()}
-                >
-                  View
-                </Button>
-              </div>
-              <div>
-                {" "}
-                <Button
-                  variant="outlined"
-                  color="warning"
-                  onClick={() => handleButtonEdit()}
-                >
-                  Edit
-                </Button>
-              </div>
-            </div>
-          )}
-          {selectedTask.length > 0 && !deleteOpen && (
-            <div>
-              {" "}
-              <Button
-                variant="contained"
-                color="error"
-                onClick={() => setDeleteOpen((prev) => !prev)}
-              >
-                Delete
-              </Button>
-            </div>
-          )}
-        </div>
-      </div>
-
-      <ProjectGrid
-        rows={rows}
-        columns={columns}
-        selection={selection}
-        selectionColumnDef={selectionColumnDef}
-        onSelectionChanged={handleOnSelectionChanged}
-      ></ProjectGrid>
-      <TaskEditMenu
-        isOpen={isOpen}
-        setIsOpen={setIsOpen}
-        toggleForm={toggleForm}
-        selectedTask={selectedTask}
-        updateTask={updateTask}
-        createTask={createTask}
-        viewClicked={viewClicked}
-        setViewClicked={setViewClicked}
-        addClicked={addClicked}
-        setAddClicked={setAddClicked}
-        editClicked={editClicked}
-        setEditClicked={setEditClicked}
-        reloadTheGrid={reloadTheGrid}
-        projects={projects}
-        addTaskToProject={addTaskToProject}
-      ></TaskEditMenu>
+      )}
     </div>
   );
 };

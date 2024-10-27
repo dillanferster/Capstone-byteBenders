@@ -4,7 +4,7 @@ const Column = ({ title, headingColor, cards, setCards }) => {
   return <div className="w-56 shrink-0">column</div>;
 };
 
-const taskBoard = () => {
+const TaskBoard = () => {
   const [cards, setCards] = useState();
 
   return (
@@ -34,4 +34,4 @@ const taskBoard = () => {
   );
 };
 
-export default taskBoard;
+export default TaskBoard;
