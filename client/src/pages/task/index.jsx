@@ -174,8 +174,11 @@ const TaskPage = () => {
   const [addClicked, setAddClicked] = useState(false); // for add button
   const [editClicked, setEditClicked] = useState(false); // for add button
   const [deleteOpen, setDeleteOpen] = useState(false); //for dlt btn
-
   const [accumulatedRollingTimes, setAccumulatedRollingTimes] = useState({});
+
+  const [taskBoardOpen, setTaskBoardOpen] = useState(false);
+  const [listToggled, setListToggled] = useState(true);
+  const [boardToggled, setBoardToggled] = useState(false);
 
   //*
 
@@ -574,6 +577,18 @@ const TaskPage = () => {
     setSelectedTask(checkedRows);
   };
 
+  const handleListClick = (params) => {
+    setBoardToggled((prev) => !prev);
+    setListToggled((prev) => !prev);
+    setTaskBoardOpen((prev) => !prev);
+  };
+
+  const handleBoardClick = (params) => {
+    setListToggled((prev) => !prev);
+    setBoardToggled((prev) => !prev);
+    setTaskBoardOpen((prev) => !prev);
+  };
+
   // loads all projects from database into list
   // When app component renders loadAllProjects() is called asynchronously
   // so the rest on the program can still run when the function logic is being executed and returned some time in future
@@ -616,8 +631,28 @@ const TaskPage = () => {
   }, [reloadGrid]);
 
   return (
-    <div className=" p-[1rem] ">
-      <div className=" p-[1rem] flex justify-between w-full">
+    <div className=" p-[1rem]">
+      <div className=" px-[1rem]">
+        <div className="flex border w-[8rem] py-[.3rem] rounded-md text-white justify-around transition-all duration-100">
+          <button
+            className={`p-1 rounded-md w-[3rem] transition-all duration-100 ${
+              listToggled ? "bg-[#3E4396]" : ""
+            }`}
+            onClick={() => handleListClick()}
+          >
+            List
+          </button>
+          <button
+            className={`p-1 rounded-md w-[3rem] transition-all duration-100 ${
+              boardToggled ? "bg-[#3E4396]" : ""
+            }`}
+            onClick={() => handleBoardClick()}
+          >
+            Board
+          </button>
+        </div>
+      </div>
+      <div className=" p-[1rem] flex justify-between w-full ">
         <div className="flex gap-8">
           <div>
             <Button
