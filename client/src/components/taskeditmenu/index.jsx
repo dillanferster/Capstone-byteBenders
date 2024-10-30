@@ -293,6 +293,7 @@ export default function TaskEditMenu({
               <input
                 type="text"
                 id="taskName"
+                data-testid="taskName"
                 value={taskName}
                 onChange={(e) => setTaskName(e.target.value)}
                 className="w-full px-4 py-2 bg-gray-700 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -300,7 +301,9 @@ export default function TaskEditMenu({
                 placeholder={addClicked ? "Add task name" : ""}
               />
               {errors.taskName && (
-                <div className="text-red-600">{errors.taskName}</div>
+                <div data-testid="taskName-Error" className="text-red-600">
+                  {errors.taskName}
+                </div>
               )}
             </div>
           </div>
