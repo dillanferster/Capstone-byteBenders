@@ -21,6 +21,8 @@
   "type": "module",
   "scripts": {
     "test": "vitest",
+    "test:all": "vitest run",
+    "test:coverage": "vitest run --coverage",
     "test:ui": "vitest --ui"
   }
 }
