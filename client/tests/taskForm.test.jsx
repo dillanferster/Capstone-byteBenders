@@ -36,7 +36,7 @@ describe("TaskEditMenu Input Validation", () => {
 
   // Empty Form Validation
   describe("Empty Form Validation", () => {
-    it("should show error when submitting empty form", async () => {
+    it("Test Id: ADT02-N, should show error when submitting empty form", async () => {
       renderForm();
 
       // Click submit without entering any data
@@ -137,8 +137,8 @@ describe("TaskEditMenu Input Validation", () => {
     });
   });
 
-  // Invalid Form Submission
-  describe("Invalid Form Submission", () => {
+  // Invalid Form Submission special characters
+  describe("Test Id: ADT04-N, Invalid Form Submission special characte", () => {
     it("should show error for invalid task name (special characters)", async () => {
       renderForm();
 
@@ -222,6 +222,45 @@ describe("TaskEditMenu Input Validation", () => {
         expect(
           screen.queryByTestId("taskChroniclesComplete-Error")
         ).toBeInTheDocument();
+      });
+    });
+  });
+
+  // Date Validation
+  describe("Test Id: ADT06-N, Date Validation", () => {
+    it("should show error when due date is before start date", async () => {
+      renderForm();
+
+      // Set start date to a later date than due date
+      await userEvent.type(screen.getByTestId("taskStartDate"), "2024-02-01");
+      await userEvent.type(screen.getByTestId("taskDueDate"), "2024-01-01");
+
+      fireEvent.click(screen.getByText("Add Task"));
+
+      await waitFor(() => {
+        expect(screen.getByTestId("taskDueDate-Error")).toBeInTheDocument();
+        expect(screen.getByTestId("taskDueDate-Error")).toHaveTextContent(
+          "Due date must be after the start date"
+        );
+      });
+    });
+  });
+
+  // Task Name Length Validation
+  describe("Test Id: ADT05-N, Task Name Length Validation", () => {
+    it("should show error when task name exceeds 100 characters", async () => {
+      renderForm();
+
+      const longTaskName = "a".repeat(101); // Create string longer than 100 chars
+      await userEvent.type(screen.getByTestId("taskName"), longTaskName);
+
+      fireEvent.click(screen.getByText("Add Task"));
+
+      await waitFor(() => {
+        expect(screen.getByTestId("taskName-Error")).toBeInTheDocument();
+        expect(screen.getByTestId("taskName-Error")).toHaveTextContent(
+          "Task name must not exceed 100 characters"
+        );
       });
     });
   });
