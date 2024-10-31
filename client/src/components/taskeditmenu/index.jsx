@@ -252,6 +252,7 @@ export default function TaskEditMenu({
           isOpen ? "opacity-100" : "opacity-0 pointer-events-none"
         }`}
         onClick={() => handleClickOff()}
+        data-testid="form-background"
       />
 
       <div
