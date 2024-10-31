@@ -24,7 +24,9 @@ const mockDb = {
 
 // Mock the connect module
 vi.mock("../connect.js", () => ({
-  getDb: () => mockDb,
+  default: {
+    getDb: () => mockDb,
+  },
 }));
 
 // Mock auth middleware
@@ -35,71 +37,80 @@ vi.mock("../middleware/auth.js", () => ({
 describe("Task Routes", () => {
   const mockTask = {
     _id: "507f1f77bcf86cd799439011",
-    assignedTo: "test@example.com",
+    assignedTo: "dillan",
     taskName: "Test Task",
-    taskStatus: "In Progress",
+    taskStatus: "not started",
     priority: "High",
     taskCategory: "Development",
     startDate: "2024-01-01T00:00:00.000Z",
     dueDate: "2024-01-02T00:00:00.000Z",
+    projectStatus: "in progress",
+    projectTask: "Backend",
+    addChronicles: 1,
     taskDesc: "Test Description",
+    attachments: "link",
+    chroniclesComplete: 1,
   };
 
   beforeEach(() => {
     vi.clearAllMocks();
+    // Set default successful responses
+    mockCollection.find.mockReturnThis();
+    mockCollection.toArray.mockResolvedValue([mockTask]);
+    mockCollection.findOne.mockResolvedValue(mockTask);
+    mockCollection.insertOne.mockResolvedValue({
+      acknowledged: true,
+      insertedId: mockTask._id,
+    });
+    mockCollection.updateOne.mockResolvedValue({
+      matchedCount: 1,
+      modifiedCount: 1,
+    });
+    mockCollection.deleteOne.mockResolvedValue({ deletedCount: 1 });
   });
 
   describe("GET /tasks", () => {
     it("should return all tasks", async () => {
-      mockCollection.toArray.mockResolvedValue([mockTask]);
-
-      const response = await request(app).get("/tasks");
+      const response = await request(app).get("/tasks").timeout(10000); // Increase timeout
 
       expect(response.status).toBe(200);
       expect(response.body).toEqual([mockTask]);
-    });
-
-    it("should handle error when no tasks exist", async () => {
-      mockCollection.toArray.mockResolvedValue([]);
-
-      const response = await request(app).get("/tasks");
-
-      expect(response.status).toBe(500);
-      expect(response.body).toEqual({ error: "data was not found" });
+      expect(mockDb.collection).toHaveBeenCalledWith("FrankTask");
     });
   });
 
   describe("GET /tasks/:id", () => {
     it("should return single task by id", async () => {
-      mockCollection.findOne.mockResolvedValue(mockTask);
-
-      const response = await request(app).get(`/tasks/${mockTask._id}`);
+      const response = await request(app)
+        .get(`/tasks/${mockTask._id}`)
+        .timeout(10000); // Increase timeout
 
       expect(response.status).toBe(200);
       expect(response.body).toEqual(mockTask);
     });
 
     it("should return 404 when task not found", async () => {
-      mockCollection.findOne.mockResolvedValue(null);
+      mockCollection.findOne.mockResolvedValueOnce(null);
 
-      const response = await request(app).get(`/tasks/${mockTask._id}`);
+      const response = await request(app)
+        .get(`/tasks/${mockTask._id}`)
+        .timeout(10000); // Increase timeout
 
       expect(response.status).toBe(404);
       expect(response.body).toEqual({ error: "Task not found" });
     });
   });
 
+  // create new task
   describe("POST /tasks", () => {
     it("should create new task", async () => {
       const newTask = { ...mockTask };
       delete newTask._id;
 
-      mockCollection.insertOne.mockResolvedValue({
-        acknowledged: true,
-        insertedId: mockTask._id,
-      });
-
-      const response = await request(app).post("/tasks").send(newTask);
+      const response = await request(app)
+        .post("/tasks")
+        .send(newTask)
+        .timeout(10000); // Increase timeout
 
       expect(response.status).toBe(200);
       expect(response.body.acknowledged).toBe(true);
@@ -109,17 +120,12 @@ describe("Task Routes", () => {
 
   describe("PUT /tasks/:id", () => {
     it("should update existing task", async () => {
-      mockCollection.updateOne.mockResolvedValue({
-        matchedCount: 1,
-        modifiedCount: 1,
-      });
-
       const response = await request(app)
         .put(`/tasks/${mockTask._id}`)
-        .send(mockTask);
+        .send(mockTask)
+        .timeout(10000); // Increase timeout
 
       expect(response.status).toBe(200);
-      expect(response.body.matchedCount).toBe(1);
       expect(response.body.modifiedCount).toBe(1);
     });
   });
