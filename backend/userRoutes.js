@@ -37,7 +37,8 @@
 // import express for router
 import express from "express";
 // import connection to database from ./connect file
-import database from "./connect.js";
+import { getDb } from "./connect.js";
+
 // import from mongodb to convert string to object id
 import { ObjectId } from "mongodb";
 // bcrypt import for password hashing and comparison
@@ -70,7 +71,7 @@ const secretKey = process.env.SECRET_KEY;
  * @param {Object} response - JSON response containing the newly created user object or error message.
  */
 userRoutes.route("/users").post(verifyToken, async (request, response) => {
-  let db = database.getDb();
+  let db = getDb();
 
   // Hash is algorithmically turning a password into ciphertext, or an irreversibly obfuscated version of itself that can be stored in a database
   // One-way process, meaning that the original password cannot be retrieved from the hash.
@@ -109,7 +110,7 @@ userRoutes.route("/users").post(verifyToken, async (request, response) => {
 // connects to database via ./connect file module function
 // goes into connection and finds item that matches the email
 userRoutes.route("/users/login").post(async (request, response) => {
-  let db = database.getDb();
+  let db = getDb();
   const user = await db
     .collection("users")
     .findOne({ email: request.body.email });
