@@ -103,9 +103,12 @@ describe("Task Routes", () => {
 
   // create new task
   describe("POST /tasks", () => {
-    it("should create new task", async () => {
+    it("Test id: ADT01-P,should create new task", async () => {
       const newTask = { ...mockTask };
       delete newTask._id;
+
+      // Mock findOne to return null first (for duplicate check)
+      mockCollection.findOne.mockResolvedValueOnce(null);
 
       const response = await request(app)
         .post("/tasks")
@@ -115,6 +118,22 @@ describe("Task Routes", () => {
       expect(response.status).toBe(200);
       expect(response.body.acknowledged).toBe(true);
       expect(response.body.insertedId).toBe(mockTask._id);
+    });
+
+    it("Test id: ADT03-N,should return error when task name already exists", async () => {
+      const newTask = { ...mockTask };
+      delete newTask._id;
+
+      // Mock findOne to return an existing task when checking for duplicates
+      mockCollection.findOne.mockResolvedValueOnce({ ...mockTask });
+
+      const response = await request(app)
+        .post("/tasks")
+        .send(newTask)
+        .timeout(10000);
+
+      expect(response.status).toBe(400);
+      expect(response.body).toEqual({ error: "Task name already exists" });
     });
   });
 
@@ -127,6 +146,17 @@ describe("Task Routes", () => {
 
       expect(response.status).toBe(200);
       expect(response.body.modifiedCount).toBe(1);
+    });
+  });
+
+  describe("DELETE /tasks/:id", () => {
+    it("should delete existing task", async () => {
+      mockCollection.deleteOne.mockResolvedValue({ deletedCount: 1 });
+
+      const response = await request(app).delete(`/tasks/${mockTask._id}`);
+
+      expect(response.status).toBe(200);
+      expect(response.body.deletedCount).toBe(1);
     });
   });
 });
