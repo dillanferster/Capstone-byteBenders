@@ -11,16 +11,22 @@
  *
  *  */
 
-const express = require("express"); // imports express object from the npm i express, saves it in in express variable
-const database = require("./connect"); // imports ./connect file from backend, saves it in the database variable
-const { verifyToken } = require("./middleware/auth"); // imports verifyToken function from authMiddleware file
-require("dotenv").config({ path: "./.env" }); // imports dotenv , loads the environment variables from .env file
-
-// sets the express object router function as projectRoutes variable
-let taskRoutes = express.Router();
-
+// imports express object from the npm i express, saves it in express variable
+import express from "express";
+// imports ./connect file from backend, saves it in the database variable
+import database from "./connect.js";
+// imports verifyToken function from authMiddleware file
+import { verifyToken } from "./middleware/auth.js";
+// imports dotenv, loads the environment variables from .env file
+import { config } from "dotenv";
 // imports from mongodb to convert string to object id
-const ObjectId = require("mongodb").ObjectId;
+import { ObjectId } from "mongodb";
+
+// Configure dotenv with path to .env file
+config({ path: "./.env" });
+
+// sets the express object router function as taskRoutes variable
+const taskRoutes = express.Router();
 
 // Read all / GET
 // async callback function, passes in HTTP request and response object
@@ -52,11 +58,6 @@ taskRoutes.route("/tasks").get(verifyToken, async (request, response) => {
 // Authenticated route, verifyToken middleware is called before the async function is executed
 // References for this file are from  https://www.youtube.com/watch?v=Jcs_2jNPgtE&t=8033s
 taskRoutes.route("/tasks/:id").get(verifyToken, async (request, response) => {
-  let db = database.getDb();
-  let data = await db
-    .collection("FrankTask")
-    .findOne({ _id: new ObjectId(request.params.id) });
-
   try {
     let db = database.getDb();
     let data = await db
@@ -253,4 +254,4 @@ taskRoutes
     response.json(data);
   });
 
-module.exports = taskRoutes;
+export default taskRoutes;

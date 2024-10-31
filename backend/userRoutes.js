@@ -34,16 +34,28 @@
  * @module userRoutes
  */
 
-const express = require("express"); // import express for router
-const database = require("./connect"); // import connection to database from ./connect file
-const ObjectId = require("mongodb").ObjectId; // import from mongodb to convert string to object id
-const bcrypt = require("bcrypt"); // bcrypt import for password hashing and comparison
-const jwt = require("jsonwebtoken"); // import for for token generation and verification
-require("dotenv").config({ path: "./.env" }); // import .env file for secret key
-const { verifyToken } = require("./middleware/auth"); // import verifyToken function from auth.js
+// import express for router
+import express from "express";
+// import connection to database from ./connect file
+import database from "./connect.js";
+// import from mongodb to convert string to object id
+import { ObjectId } from "mongodb";
+// bcrypt import for password hashing and comparison
+import bcrypt from "bcrypt";
+// import for for token generation and verification
+import jwt from "jsonwebtoken";
+// import .env file for secret key
+import { config } from "dotenv";
+// import verifyToken function from auth.js
+import { verifyToken } from "./middleware/auth.js";
 
-let userRoutes = express.Router(); // create router for user routes. What is Router??
-const SALT_ROUNDS = 10; // number of rounds to generate salt for password hashing
+// Configure dotenv
+config({ path: "./.env" });
+
+// create router for user routes. What is Router??
+const userRoutes = express.Router();
+// number of rounds to generate salt for password hashing
+const SALT_ROUNDS = 10;
 const secretKey = process.env.SECRET_KEY;
 
 /**
@@ -119,4 +131,4 @@ userRoutes.route("/users/login").post(async (request, response) => {
   }
 });
 
-module.exports = userRoutes;
+export default userRoutes;

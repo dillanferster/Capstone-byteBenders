@@ -1,5 +1,8 @@
-const jwt = require("jsonwebtoken"); // imports Json Web Token library for token generation
-require("dotenv").config({ path: "./.env" }); // imports dotenv , loads the environment variables from .env file
+// middleware/auth.js
+import jwt from "jsonwebtoken"; // imports Json Web Token library for token generation
+import dotenv from "dotenv"; // imports dotenv , loads the environment variables from .env file
+
+dotenv.config({ path: "./.env" });
 
 const secretKey = process.env.SECRET_KEY;
 
@@ -13,7 +16,7 @@ const secretKey = process.env.SECRET_KEY;
 // if error, sends a 403 error message: Forbidden
 // adds the user object to the request body
 // move on to next middleware or route handler
-function verifyToken(request, response, next) {
+export function verifyToken(request, response, next) {
   const authHeaders = request.headers["authorization"];
   const token = authHeaders && authHeaders.split(" ")[1]; // if authHeaders is found, extract token based on rules
   if (!token) {
@@ -32,5 +35,3 @@ function verifyToken(request, response, next) {
     next(); // pass control to next middleware or route handler
   });
 }
-
-module.exports = { verifyToken };

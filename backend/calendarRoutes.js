@@ -1,14 +1,17 @@
-const express = require("express");
-const database = require("./connect");
-const { verifyToken } = require("./middleware/auth");
-require("dotenv").config({ path: "./.env" });
+// calendarRoutes.js
+import express from "express";
+import { getDb } from "./connect.js"; // Note the .js extension
+import { verifyToken } from "./middleware/auth.js";
+import { ObjectId } from "mongodb";
+import dotenv from "dotenv";
 
-let calendarRoutes = express.Router();
-const ObjectId = require("mongodb").ObjectId;
+dotenv.config({ path: "./.env" });
+
+const calendarRoutes = express.Router();
 
 // Read all events / GET
 calendarRoutes.route("/events").get(verifyToken, async (request, response) => {
-  let db = database.getDb();
+  let db = getDb();
   try {
     let data = await db.collection("calendar").find({}).toArray();
     if (data.length > 0) {
@@ -25,7 +28,7 @@ calendarRoutes.route("/events").get(verifyToken, async (request, response) => {
 calendarRoutes
   .route("/events/:id")
   .get(verifyToken, async (request, response) => {
-    let db = database.getDb();
+    let db = getDb();
     try {
       let data = await db
         .collection("calendar")
@@ -42,12 +45,8 @@ calendarRoutes
 
 // Create event / POST
 calendarRoutes.route("/events").post(verifyToken, async (request, response) => {
-  console.log("IN CREATE EVENT ROUTES");
-  let db = database.getDb();
+  let db = getDb();
   try {
-    console.log("IN TRY BLOCK");
-    console.log("REQUEST BODY: ", request.body);
-    console.log("DATES TYPE: ", typeof request.body.start);
     let eventObject = {
       title: request.body.title,
       start: request.body.start,
@@ -55,14 +54,10 @@ calendarRoutes.route("/events").post(verifyToken, async (request, response) => {
       description: request.body.description,
       meetingLink: request.body.meetingLink,
       participants: request.body.participants,
-      // createdBy: request.user.id, // Assuming user info is added by auth middleware
-      // dateCreated: new Date(),
     };
-    console.log("TESTING IF IT CAME OUT: ", eventObject);
     let data = await db.collection("calendar").insertOne(eventObject);
     response.json(data);
   } catch (error) {
-    console.log("IN CATCH BLOCK: ", error);
     response.status(500).json({ error: "Failed to create event" });
   }
 });
@@ -71,7 +66,7 @@ calendarRoutes.route("/events").post(verifyToken, async (request, response) => {
 calendarRoutes
   .route("/events/:id")
   .put(verifyToken, async (request, response) => {
-    let db = database.getDb();
+    let db = getDb();
     try {
       let eventObject = {
         $set: {
@@ -81,8 +76,6 @@ calendarRoutes
           description: request.body.description,
           meetingLink: request.body.meetingLink,
           participants: request.body.participants,
-          // lastModified: new Date(),
-          // modifiedBy: request.user.id, // Assuming user info is added by auth middleware
         },
       };
       let data = await db
@@ -103,7 +96,7 @@ calendarRoutes
 calendarRoutes
   .route("/events/:id")
   .delete(verifyToken, async (request, response) => {
-    let db = database.getDb();
+    let db = getDb();
     try {
       let data = await db
         .collection("calendar")
@@ -123,7 +116,7 @@ calendarRoutes
 calendarRoutes
   .route("/events/range")
   .get(verifyToken, async (request, response) => {
-    let db = database.getDb();
+    let db = getDb();
     try {
       const { start, end } = request.query;
       let data = await db
@@ -146,7 +139,7 @@ calendarRoutes
 calendarRoutes
   .route("/events/participant/:email")
   .get(verifyToken, async (request, response) => {
-    let db = database.getDb();
+    let db = getDb();
     try {
       let data = await db
         .collection("calendar")
@@ -161,4 +154,4 @@ calendarRoutes
     }
   });
 
-module.exports = calendarRoutes;
+export default calendarRoutes;

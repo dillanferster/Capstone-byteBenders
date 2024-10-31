@@ -12,6 +12,13 @@
     "mongodb": "^6.8.1"
   },
   "devDependencies": {
-    "@types/dotenv": "^8.2.0"
+    "@types/dotenv": "^8.2.0",
+    "@vitest/coverage-v8": "^2.1.4",
+    "supertest": "^7.0.0",
+    "vitest": "^2.1.4"
+  },
+  "type": "module",
+  "scripts": {
+    "test": "vitest"
   }
 }
