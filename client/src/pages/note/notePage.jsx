@@ -83,6 +83,11 @@ const NotePage = () => {
   // Get current note for editing or preview
   const getCurrentNote = () => notes.find((note) => note._id === currentNoteId);
 
+  const addNote = (newNote) => {
+    setNotes(prevNotes => [...prevNotes, newNote]);
+    setCurrentNoteId(newNote._id); // Optionally select the new note
+  };
+
   return (
     <div className="note-page">
       <div className="note-sidebar">
@@ -90,7 +95,7 @@ const NotePage = () => {
           notes={notes}
           currentNoteId={currentNoteId}
           setCurrentNoteId={setCurrentNoteId}
-          addNote={handleAddNote} // Create a new note when clicked
+          addNote={addNote}
           deleteNoteById={handleDeleteNote}
         />
       </div>
