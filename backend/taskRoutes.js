@@ -86,15 +86,6 @@ taskRoutes.route("/tasks/:id").get(verifyToken, async (request, response) => {
 taskRoutes.route("/tasks").post(verifyToken, async (request, response) => {
   try {
     let db = database.getDb();
-    
-    // Check for existing task with same name
-    const existingTask = await db.collection("FrankTask").findOne({ 
-      taskName: request.body.taskName 
-    });
-    
-    if (existingTask) {
-      return response.status(400).json({ error: "Task name already exists" });
-    }
 
     let mongoObject = {
       assignedTo: request.body.assignedTo,
@@ -111,7 +102,7 @@ taskRoutes.route("/tasks").post(verifyToken, async (request, response) => {
       attachments: request.body.attachments,
       chroniclesComplete: request.body.chroniclesComplete,
     };
-    
+
     let data = await db.collection("FrankTask").insertOne(mongoObject);
     response.json(data);
   } catch (error) {
