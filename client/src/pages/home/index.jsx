@@ -118,10 +118,13 @@ const Dashboard = () => {
         // LOADING TASKS IN THE STATE
         setTasks(dataTasks);
         setNumbOfTasks(dataTasks.length);
+        console.log("Amount of tasks: " + dataTasks.length);
 
         // Calculate average task time
         let totalTaskTime = 0;
         dataTasks.map((task) => {
+          console.log("Task time: " + task.totalTime);
+          console.log("Task name: " + task.taskName);
           // Extract only the number from strings like "Minutes: 35"
           const minutes = parseInt(task.totalTime.split(": ")[1]);
           if (!isNaN(minutes)) {
