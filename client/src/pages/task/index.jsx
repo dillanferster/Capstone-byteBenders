@@ -283,7 +283,7 @@ const TaskPage = () => {
     console.log("task started");
 
     const updatedTask = {
-      taskStatus: "Started",
+      taskStatus: "In progress",
     };
 
     try {

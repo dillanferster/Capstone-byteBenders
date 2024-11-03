@@ -11,6 +11,28 @@ const Column = ({ title, headingColor, cards, setCards, column }) => {
     e.dataTransfer.setData("cardId", card.id);
   };
 
+  const handleDragOver = (e) => {
+    e.preventDefault();
+
+    setActive(true);
+  };
+
+  const handleDragLeave = () => {
+    setActive(false);
+  };
+
+  const handleDragEnd = (e) => {
+    setActive(false);
+
+    const cardId = e.dataTransfer.getData("cardId");
+
+    let copyOfCards = [...cards];
+    let cardToMove = copyOfCards.find((c) => c.id === Number(cardId));
+    cardToMove.column = column;
+
+    setCards(copyOfCards);
+  };
+
   const filteredCards = cards.filter((c) => c.column === column);
 
   return (
@@ -23,25 +45,31 @@ const Column = ({ title, headingColor, cards, setCards, column }) => {
         <h3 className={`font-medium ${headingColor}`}>{title} </h3>
       </div>
       <div
-        className={`h-full w-full transition-colors ${
+        className={`h-full w-full transition-colors rounded-md ${
           active ? "bg-neutral-800/50" : ""
         }`}
+        onDragOver={handleDragOver}
+        onDragLeave={handleDragLeave}
+        onDrop={handleDragEnd}
       >
         {filteredCards.map((c) => (
-          <Card key={c.id} {...c} />
+          <Card key={c.id} {...c} handleDragStart={handleDragStart} />
         ))}
       </div>
     </div>
   );
 };
 
-const Card = ({ id, title, description, column, setCards }) => {
+const Card = ({ id, title, description, column, handleDragStart }) => {
   return (
     <>
       <DropIndicator beforeId={id} column={column} />
       <div
         className="cursor-grab rounded border border-neutral-700 p-3 bg-neutral-800 active:cursor-grabbing"
         draggable="true"
+        onDragStart={(e) =>
+          handleDragStart(e, { id, title, description, column })
+        }
       >
         <p className="text-sm text-neutral-400">{title}</p>
         <p className="text-sm text-neutral-400">{description}</p>
@@ -61,11 +89,29 @@ const DropIndicator = ({ beforeId, column }) => {
   );
 };
 
-const DeleteBox = () => {
+const DeleteBox = ({ setCards }) => {
   const [active, setActive] = useState(false);
+
+  const handleDragOver = (e) => {
+    e.preventDefault();
+    setActive(true);
+  };
+
+  const handleDragLeave = () => {
+    setActive(false);
+  };
+
+  const handleDrop = (e) => {
+    const cardId = e.dataTransfer.getData("cardId");
+    setCards((prev) => prev.filter((card) => card.id !== Number(cardId)));
+    setActive(false);
+  };
 
   return (
     <div
+      onDragOver={handleDragOver}
+      onDragLeave={handleDragLeave}
+      onDrop={handleDrop}
       className={`mt-10 grid h-56 w-56 shrink-0 place-content-center rounded border text-md ${
         active
           ? "border-red-800 bg-red-800/20 text-red-500"
@@ -126,7 +172,7 @@ const TaskBoard = () => {
         setCards={setCards}
       />
 
-      <DeleteBox />
+      <DeleteBox setCards={setCards} />
     </div>
   );
 };
