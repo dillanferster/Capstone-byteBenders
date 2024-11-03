@@ -99,6 +99,46 @@ describe("Note Routes", () => {
       expect(response.body.acknowledged).toBe(true);
       expect(response.body.insertedId).toBe(mockNote._id);
     });
+
+    it("Test id: NM001-N, should reject empty note", async () => {
+      const emptyNote = {
+        title: "",
+        content: "",
+        createdBy: mockNote.createdBy,
+        dateCreated: mockNote.dateCreated,
+        updatedAt: mockNote.dateUpdated
+      };
+
+      const response = await request(app)
+        .post("/notes")
+        .send(emptyNote)
+        .timeout(10000);
+
+      expect(response.status).toBe(400);
+      expect(response.body).toEqual({ 
+        error: "Note title and content cannot be empty" 
+      });
+    });
+
+    it("Test id: NM001-E, should reject note with content exceeding maximum length", async () => {
+      const longNote = {
+        title: "Test Title",
+        content: "a".repeat(10001), // Create a string that exceeds 10000 characters
+        createdBy: mockNote.createdBy,
+        dateCreated: mockNote.dateCreated,
+        updatedAt: mockNote.dateUpdated,
+      };
+
+      const response = await request(app)
+        .post("/notes")
+        .send(longNote)
+        .timeout(10000);
+
+      expect(response.status).toBe(400);
+      expect(response.body).toEqual({
+        error: "Note content cannot exceed 10000 characters",
+      });
+    });
   });
 
   describe("PUT /notes/:id", () => {
