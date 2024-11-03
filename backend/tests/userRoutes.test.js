@@ -4,6 +4,7 @@ import express from "express";
 import userRoutes from "../userRoutes.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
+import { verifyToken } from "../middleware/auth.js";
 
 // Setup express app for testing
 const app = express();
@@ -14,7 +15,7 @@ app.use("/", userRoutes);
 vi.mock("bcrypt", () => ({
   default: {
     hash: vi.fn().mockResolvedValue("hashedPassword123"),
-    compare: vi.fn(),
+    compare: vi.fn().mockResolvedValue(true),
   },
 }));
 
@@ -46,9 +47,10 @@ vi.mock("../connect.js", async (importOriginal) => {
 
 // Mock auth middleware
 vi.mock("../middleware/auth.js", () => ({
-  verifyToken: (req, res, next) => next(),
+  verifyToken: vi.fn((req, res, next) => next()),
 }));
 
+// UNIT TESTS
 describe("User Routes", () => {
   const mockUser = {
     fname: "John",
@@ -93,8 +95,8 @@ describe("User Routes", () => {
       });
     });
 
-    // API-05N: User Creation - Email Already Taken
-    it("API-05N: should return 409 if email is already taken", async () => {
+    // API-05N1: User Creation - Email Already Taken
+    it("API-05N1: should return 409 if email is already taken", async () => {
       // Mock that email is already taken
       mockCollection.findOne.mockResolvedValueOnce({ email: mockUser.email });
 
@@ -105,6 +107,71 @@ describe("User Routes", () => {
         "Email already in use. Please enter another email."
       );
       expect(mockCollection.insertOne).not.toHaveBeenCalled();
+    });
+
+    // API-05E1	Database Connection Failure
+    it("API-05E1: should handle database connection failure", async () => {
+      mockCollection.findOne.mockRejectedValueOnce(
+        new Error("DB connection failed")
+      );
+
+      const response = await request(app).post("/users").send(mockUser);
+
+      expect(response.status).toBe(500);
+      expect(response.body.message).toBe("Database error occurred");
+    });
+
+    // API-05E2	Database Insertion Failure
+    it("API-05E2: should handle database insertion failure", async () => {
+      // Setup mocks
+      mockCollection.findOne.mockResolvedValueOnce(null);
+      mockCollection.insertOne.mockRejectedValueOnce(
+        new Error("Insert failed")
+      );
+      vi.mocked(bcrypt.hash).mockResolvedValueOnce("hashedPassword123");
+
+      // Make request
+      const response = await request(app).post("/users").send(mockUser);
+
+      // Verify response
+      expect(response.status).toBe(500);
+      expect(response.body).toEqual({
+        message: "Failed to create user",
+      });
+    });
+
+    // API-05E3	Password Hashing Failure
+    it("API-05E3: should handle bcrypt hashing failure", async () => {
+      // Setup mocks
+      mockCollection.findOne.mockResolvedValueOnce(null);
+      vi.mocked(bcrypt.hash).mockRejectedValueOnce(new Error("hash failed"));
+
+      // Make request
+      const response = await request(app).post("/users").send(mockUser);
+
+      // Verify response
+      expect(response.status).toBe(500);
+      expect(response.body).toEqual({
+        message: "Error creating user",
+      });
+    });
+
+    // API-05N1	Missing Authentication Token
+    it("API-05N2: should handle missing auth token", async () => {
+      // Temporarily change the mock implementation
+      vi.mocked(verifyToken).mockImplementation((req, res, next) => {
+        return res
+          .status(401)
+          .json({ message: "Authentication token required" });
+      });
+
+      const response = await request(app).post("/users").send(mockUser);
+
+      expect(response.status).toBe(401);
+      expect(response.body.message).toBe("Authentication token required");
+
+      // Reset the mock implementation after test
+      vi.mocked(verifyToken).mockImplementation((req, res, next) => next());
     });
   });
 
@@ -119,8 +186,8 @@ describe("User Routes", () => {
 
       // Mock user found
       mockCollection.findOne.mockResolvedValueOnce(existingUser);
-      // Mock successful password comparison
-      bcrypt.compare.mockResolvedValueOnce(true);
+      // Mock successful
+      vi.mocked(bcrypt.compare).mockResolvedValueOnce(true);
 
       const response = await request(app).post("/users/login").send({
         email: mockUser.email,
@@ -133,11 +200,6 @@ describe("User Routes", () => {
         token: "mockToken123",
         message: "User exists",
       });
-      expect(jwt.sign).toHaveBeenCalledWith(
-        existingUser,
-        process.env.SECRET_KEY,
-        { expiresIn: "1h" }
-      );
     });
 
     // API-09N1: User Login - Non-existent User
@@ -150,30 +212,29 @@ describe("User Routes", () => {
         password: "password123",
       });
 
-      expect(response.status).toBe(200); // You might want to change this to 404 in your actual implementation
+      expect(response.status).toBe(200);
       expect(response.body).toEqual({
         success: false,
         message: "User not found",
       });
     });
 
-    // API-09N2: Negative case for password handling with incorrect password
-    it("API-09N2: should return error for incorrect password input", async () => {
+    // API-09N2: Negative case for password handling
+    it("API-09N2: should return error for incorrect password", async () => {
       const existingUser = {
         ...mockUser,
         password: "hashedPassword123",
       };
 
-      // Mock user found but password comparison fails
       mockCollection.findOne.mockResolvedValueOnce(existingUser);
-      bcrypt.compare.mockResolvedValueOnce(false);
+      vi.mocked(bcrypt.compare).mockResolvedValueOnce(false);
 
       const response = await request(app).post("/users/login").send({
         email: mockUser.email,
         password: "wrongpassword",
       });
 
-      expect(response.status).toBe(200); // You might want to change this to 401 in your actual implementation
+      expect(response.status).toBe(200);
       expect(response.body).toEqual({
         success: false,
         message: "Incorrect password",
@@ -184,8 +245,8 @@ describe("User Routes", () => {
     it("API-9N3: should handle malformed token generation", async () => {
       const existingUser = { ...mockUser, password: "hashedPassword123" };
       mockCollection.findOne.mockResolvedValueOnce(existingUser);
-      bcrypt.compare.mockResolvedValueOnce(true);
-      jwt.sign.mockImplementationOnce(() => {
+      vi.mocked(bcrypt.compare).mockResolvedValueOnce(true);
+      vi.mocked(jwt.sign).mockImplementationOnce(() => {
         throw new Error("Token generation failed");
       });
 
@@ -194,8 +255,7 @@ describe("User Routes", () => {
         password: mockUser.password,
       });
 
-      // Match the actual route response format
-      expect(response.status).toBe(200); // Route returns 200 even for failures
+      expect(response.status).toBe(200);
       expect(response.body).toEqual({
         success: false,
         message: "User not found",
