@@ -283,7 +283,7 @@ const TaskPage = () => {
     console.log("task started");
 
     const updatedTask = {
-      taskStatus: "In progress",
+      taskStatus: "In Progress",
     };
 
     try {
@@ -325,7 +325,7 @@ const TaskPage = () => {
     console.log("task Resumed");
 
     const updatedTask = {
-      taskStatus: "In progress",
+      taskStatus: "In Progress",
     };
 
     try {
@@ -653,7 +653,35 @@ const TaskPage = () => {
         </button>
       </div>
       {taskBoardOpen ? (
-        <TaskBoard />
+        <>
+          <div>
+            <Button
+              variant="contained"
+              color="success"
+              onClick={() => handleButtonAdd()}
+            >
+              Add Task
+            </Button>
+          </div>
+          <TaskBoard />
+          <TaskEditMenu
+            isOpen={isOpen}
+            setIsOpen={setIsOpen}
+            toggleForm={toggleForm}
+            selectedTask={selectedTask}
+            updateTask={updateTask}
+            createTask={createTask}
+            viewClicked={viewClicked}
+            setViewClicked={setViewClicked}
+            addClicked={addClicked}
+            setAddClicked={setAddClicked}
+            editClicked={editClicked}
+            setEditClicked={setEditClicked}
+            reloadTheGrid={reloadTheGrid}
+            projects={projects}
+            addTaskToProject={addTaskToProject}
+          ></TaskEditMenu>
+        </>
       ) : (
         <div>
           <div className=" pb-[1rem] flex justify-between w-full ">
@@ -792,6 +820,7 @@ const TaskPage = () => {
             selectionColumnDef={selectionColumnDef}
             onSelectionChanged={handleOnSelectionChanged}
           ></ProjectGrid>
+
           <TaskEditMenu
             isOpen={isOpen}
             setIsOpen={setIsOpen}

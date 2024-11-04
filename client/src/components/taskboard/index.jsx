@@ -2,13 +2,29 @@
  * Ref: https://www.youtube.com/watch?v=O5lZqqy7VQE&t=264s&ab_channel=TomIsLoading
  */
 
-import React, { Fragment, useState } from "react";
+import React, { Fragment, useState, useEffect } from "react";
+import {
+  getTasks,
+  getTask,
+  createTask,
+  updateTask,
+  deleteTask,
+  startTask,
+  pauseTask,
+  resumeTask,
+  completeTask,
+  taskStatusUpdate,
+  taskTotalTime,
+  getProjects,
+  addTaskToProject,
+  deleteTaskFromProject,
+} from "../../api.js";
 
 const Column = ({ title, headingColor, cards, setCards, column }) => {
   const [active, setActive] = useState();
 
   const handleDragStart = (e, card) => {
-    e.dataTransfer.setData("cardId", card.id);
+    e.dataTransfer.setData("cardId", card._id);
   };
 
   const handleDragOver = (e) => {
@@ -28,18 +44,22 @@ const Column = ({ title, headingColor, cards, setCards, column }) => {
 
     let copy = [...cards];
 
-    let cardToMove = copy.find((c) => c.id === Number(cardId));
+    let cardToMove = copy.find((c) => c._id === cardId);
 
-    cardToMove.column = column;
+    cardToMove.taskStatus = column;
 
-    copy = copy.filter((c) => c.id !== Number(cardId));
+    copy = copy.filter((c) => c._id !== cardId);
 
     copy.push(cardToMove);
 
     setCards(copy);
   };
 
-  const filteredCards = cards.filter((c) => c.column === column);
+  const filteredCards = cards.filter((c) => c.taskStatus === column);
+
+  console.log("Column:", column);
+  console.log("All cards:", cards);
+  console.log("Filtered cards:", filteredCards);
 
   return (
     <div className="w-56 shrink-0">
@@ -66,21 +86,19 @@ const Column = ({ title, headingColor, cards, setCards, column }) => {
   );
 };
 
-const Card = ({ id, title, description, column, handleDragStart }) => {
+const Card = ({ _id, taskName, taskDesc, taskStatus, handleDragStart }) => {
   return (
     <>
-      <DropIndicator beforeId={id} column={column} />
       <div
         className="cursor-grab rounded border border-neutral-700 p-3 bg-neutral-800 active:cursor-grabbing"
         draggable="true"
         onDragStart={(e) =>
-          handleDragStart(e, { id, title, description, column })
+          handleDragStart(e, { _id, taskName, taskDesc, taskStatus })
         }
       >
-        <p className="text-sm text-neutral-400">{title}</p>
-        <p className="text-sm text-neutral-400">{description}</p>
+        <p className="text-sm text-neutral-400">{taskName}</p>
+        <p className="text-sm text-neutral-400">{taskDesc}</p>
       </div>
-      <DropIndicator beforeId="-1" column={column} />
     </>
   );
 };
@@ -129,35 +147,46 @@ const DeleteBox = ({ setCards }) => {
   );
 };
 
-// const AddCard = ({ column, setCards }) => {
-//   const [text, setText] = useState("");
-//   const [adding, setAdding] = useState(false);
-//   return (
-//     <>
-//       {adding ? (
-//         <form >
-//           <textarea onCh></textarea>
-//         </form>
-//       ) : (
-//         <button
-//           onClick={() => setAdding(true)}
-//           className="flex w-full items-center gap-1.5 px-3 py-1.5 text-xs text-neutral-400 transition-colors hover:text-neutral-50"
-//         >
-//           <span>Add Task +</span>
-//         </button>
-//       )}
-//     </>
-//   );
-// };
-
 const TaskBoard = () => {
-  const [cards, setCards] = useState(initialCards);
+  const [cards, setCards] = useState([]);
+  const [projects, setProjects] = useState([]);
+  const [tasks, setTasks] = useState([]);
+
+  // loads all PROJECTS from database into list
+  useEffect(() => {
+    async function loadAllProjects() {
+      const data = await getProjects();
+      if (data) {
+        setProjects(data);
+      }
+    }
+
+    loadAllProjects();
+  }, []);
+
+  // loads all TASKS from database into list
+  // When app component renders loadAllProjects() is called asynchronously
+  // so the rest on the program can still run when the function logic is being executed and returned some time in future
+  // if data is returned , then setProjects state is updated with data
+  // sets loading to true, then if and when data is returned sets to false
+  // dependencies : reloadGrid
+  useEffect(() => {
+    async function loadAllTasks() {
+      const data = await getTasks();
+      if (data) {
+        console.log("New task data received:", data);
+        setCards(data);
+      }
+    }
+
+    loadAllTasks();
+  }, []);
 
   return (
     <div className="flex h-full w-full justify-between overflow-y-scroll p-12 ">
       <Column
         title="Not Started"
-        column="not started"
+        column="Not Started"
         headingColor="text-red-300"
         cards={cards}
         setCards={setCards}
@@ -165,14 +194,14 @@ const TaskBoard = () => {
 
       <Column
         title="In Progress"
-        column="in progress"
+        column="In Progress"
         headingColor="text-yellow-300"
         cards={cards}
         setCards={setCards}
       />
       <Column
-        title="Complete"
-        column="complete"
+        title="Completed"
+        column="Completed"
         headingColor="text-green-300"
         cards={cards}
         setCards={setCards}
