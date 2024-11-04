@@ -150,7 +150,9 @@ export default function TaskEditMenu({
             updateTaskToProject(taskId, projectTask);
 
             reloadTheGrid();
-            setReloadTaskBoard((prev) => !prev);
+            if (setReloadTaskBoard) {
+              setReloadTaskBoard((prev) => !prev);
+            }
             toggleForm();
             clearAddInputs();
             setEditClicked(!editClicked);
@@ -208,15 +210,14 @@ export default function TaskEditMenu({
         try {
           const response = await createTask(addedTask);
           if (response.status === 200) {
-            // Now we have the new task ID
             const newTaskId = response.data.insertedId;
             console.log("New task ID:", newTaskId);
-
-            // Update the project with the new task ID
             updateTaskToProject(newTaskId);
 
             reloadTheGrid();
-            setReloadTaskBoard((prev) => !prev);
+            if (setReloadTaskBoard) {
+              setReloadTaskBoard((prev) => !prev);
+            }
             toggleForm();
             clearAddInputs();
             setAddClicked(!addClicked);

@@ -29,6 +29,7 @@ const Column = ({
   setIsOpen,
   setViewClicked,
   setSelectedTask,
+  handleButtonStart,
 }) => {
   const [active, setActive] = useState();
 
@@ -54,7 +55,7 @@ const Column = ({
         card.totalTime,
         card.chroniclesComplete
       );
-      
+
       setViewClicked((prev) => !prev);
       setIsOpen((prev) => !prev);
 
@@ -85,7 +86,8 @@ const Column = ({
   };
 
   const handleDragStart = (e, card) => {
-    e.dataTransfer.setData("cardId", card._id);
+    const cardData = JSON.stringify(card);
+    e.dataTransfer.setData("cardObject", cardData);
   };
 
   const handleDragOver = (e) => {
@@ -101,19 +103,48 @@ const Column = ({
   const handleDragEnd = (e) => {
     setActive(false);
 
-    const cardId = e.dataTransfer.getData("cardId");
+    const tempCardData = JSON.parse(e.dataTransfer.getData("cardObject"));
 
-    let copy = [...cards];
+    const selectedTask = [
+      {
+        id: tempCardData._id,
+        taskName: tempCardData.taskName,
+        assignedTo: tempCardData.assignedTo,
+        taskStatus: tempCardData.taskStatus,
+        priority: tempCardData.priority,
+        taskCategory: tempCardData.taskCategory,
+        startDate: tempCardData.startDate,
+        dueDate: tempCardData.dueDate,
+        projectTask: tempCardData.projectTask,
+        projectStatus: tempCardData.projectStatus,
+        addChronicles: tempCardData.addChronicles,
+        taskDesc: tempCardData.taskDesc,
+        attachments: tempCardData.attachments,
+        startTime: tempCardData.startTime,
+        completeTime: tempCardData.completeTime,
+        totalTime: tempCardData.totalTime,
+        chroniclesComplete: tempCardData.chroniclesComplete,
+      },
+    ];
 
-    let cardToMove = copy.find((c) => c._id === cardId);
+    console.log("cardData", selectedTask);
 
-    cardToMove.taskStatus = column;
+    // setSelectedTask(selectedTaskCard);
+    handleButtonStart(selectedTask);
 
-    copy = copy.filter((c) => c._id !== cardId);
+    // const cardId = tampCardData._id;
 
-    copy.push(cardToMove);
+    // let copy = [...cards];
 
-    setCards(copy);
+    // let cardToMove = copy.find((c) => c._id === cardId);
+
+    // cardToMove.taskStatus = column;
+
+    // copy = copy.filter((c) => c._id !== cardId);
+
+    // copy.push(cardToMove);
+
+    // setCards(copy);
   };
 
   const filteredCards = cards.filter((c) => c.taskStatus === column);
@@ -175,7 +206,25 @@ const Card = ({
         className="cursor-grab rounded border border-neutral-700 p-3 bg-neutral-800 active:cursor-grabbing flex flex-col gap-2"
         draggable="true"
         onDragStart={(e) =>
-          handleDragStart(e, { _id, taskName, taskDesc, taskStatus })
+          handleDragStart(e, {
+            _id,
+            taskName,
+            assignedTo,
+            taskStatus,
+            priority,
+            taskCategory,
+            startDate,
+            dueDate,
+            projectTask,
+            projectStatus,
+            addChronicles,
+            taskDesc,
+            attachments,
+            startTime,
+            completeTime,
+            totalTime,
+            chroniclesComplete,
+          })
         }
         onClick={(e) =>
           handleCardClick(e, {
@@ -269,6 +318,7 @@ const TaskBoard = ({
   setIsOpen,
   setViewClicked,
   setSelectedTask,
+  handleButtonStart,
 }) => {
   const [cards, setCards] = useState([]);
   const [projects, setProjects] = useState([]);
@@ -314,6 +364,7 @@ const TaskBoard = ({
         setIsOpen={setIsOpen}
         setViewClicked={setViewClicked}
         setSelectedTask={setSelectedTask}
+        handleButtonStart={handleButtonStart}
       />
 
       <Column
@@ -325,6 +376,7 @@ const TaskBoard = ({
         setIsOpen={setIsOpen}
         setViewClicked={setViewClicked}
         setSelectedTask={setSelectedTask}
+        handleButtonStart={handleButtonStart}
       />
       <Column
         title="Paused"
@@ -335,6 +387,7 @@ const TaskBoard = ({
         setIsOpen={setIsOpen}
         setViewClicked={setViewClicked}
         setSelectedTask={setSelectedTask}
+        handleButtonStart={handleButtonStart}
       />
       <Column
         title="Completed"
@@ -345,6 +398,7 @@ const TaskBoard = ({
         setIsOpen={setIsOpen}
         setViewClicked={setViewClicked}
         setSelectedTask={setSelectedTask}
+        handleButtonStart={handleButtonStart}
       />
 
       {/* <DeleteBox setCards={setCards} /> */}

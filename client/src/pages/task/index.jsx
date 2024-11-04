@@ -280,9 +280,9 @@ const TaskPage = () => {
 
   // handles button start task
   // calls startTask route
-  async function handleButtonStart() {
+  async function handleButtonStart(selectedTask) {
     startTask(selectedTask[0].id);
-    console.log("task started");
+    console.log("task started from drag and drop");
 
     const updatedTask = {
       taskStatus: "In Progress",
@@ -292,6 +292,7 @@ const TaskPage = () => {
       const response = await taskStatusUpdate(selectedTask[0].id, updatedTask);
       if (response.status === 200) {
         reloadTheGrid();
+        setReloadTaskBoard((prev) => !prev);
       }
     } catch (error) {
       console.error("Error updating task Status:", error);
@@ -670,6 +671,7 @@ const TaskPage = () => {
             setIsOpen={setIsOpen}
             setViewClicked={setViewClicked}
             setSelectedTask={setSelectedTask}
+            handleButtonStart={handleButtonStart}
           />
           <TaskEditMenu
             isOpen={isOpen}
