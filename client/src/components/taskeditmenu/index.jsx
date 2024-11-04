@@ -150,6 +150,7 @@ export default function TaskEditMenu({
             updateTaskToProject(taskId, projectTask);
 
             reloadTheGrid();
+            setReloadTaskBoard((prev) => !prev);
             toggleForm();
             clearAddInputs();
             setEditClicked(!editClicked);
@@ -250,7 +251,7 @@ export default function TaskEditMenu({
   return (
     <div>
       <div
-        className={`fixed inset-0 bg-gray-500 bg-opacity-40 backdrop-blur-sm transition-opacity duration-300  ${
+        className={`fixed inset-0 bg-gray-500/20 backdrop-blur-sm transition-opacity duration-300  ${
           isOpen ? "opacity-100" : "opacity-0 pointer-events-none"
         }`}
         onClick={() => handleClickOff()}

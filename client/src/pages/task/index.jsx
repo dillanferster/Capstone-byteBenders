@@ -183,7 +183,6 @@ const TaskPage = () => {
 
   const [reloadTaskBoard, setReloadTaskBoard] = useState(false);
 
-
   //*
 
   // projects object array from the database
@@ -666,7 +665,12 @@ const TaskPage = () => {
               Add Task
             </Button>
           </div>
-          <TaskBoard reloadTaskBoard={reloadTaskBoard} />
+          <TaskBoard
+            reloadTaskBoard={reloadTaskBoard}
+            setIsOpen={setIsOpen}
+            setViewClicked={setViewClicked}
+            setSelectedTask={setSelectedTask}
+          />
           <TaskEditMenu
             isOpen={isOpen}
             setIsOpen={setIsOpen}

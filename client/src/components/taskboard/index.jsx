@@ -20,8 +20,69 @@ import {
   deleteTaskFromProject,
 } from "../../api.js";
 
-const Column = ({ title, headingColor, cards, setCards, column }) => {
+const Column = ({
+  title,
+  headingColor,
+  cards,
+  setCards,
+  column,
+  setIsOpen,
+  setViewClicked,
+  setSelectedTask,
+}) => {
   const [active, setActive] = useState();
+
+  const handleCardClick = (e, card) => {
+    if (e.detail === 2) {
+      console.log(
+        "double clicked card",
+        card._id,
+        card.taskName,
+        card.assignedTo,
+        card.taskStatus,
+        card.priority,
+        card.taskCategory,
+        card.startDate,
+        card.dueDate,
+        card.projectTask,
+        card.projectStatus,
+        card.addChronicles,
+        card.taskDesc,
+        card.attachments,
+        card.startTime,
+        card.completeTime,
+        card.totalTime,
+        card.chroniclesComplete
+      );
+      
+      setViewClicked((prev) => !prev);
+      setIsOpen((prev) => !prev);
+
+      const selectedTaskCard = [
+        {
+          id: card._id,
+          taskName: card.taskName,
+          assignedTo: card.assignedTo,
+          taskStatus: card.taskStatus,
+          priority: card.priority,
+          taskCategory: card.taskCategory,
+          startDate: card.startDate,
+          dueDate: card.dueDate,
+          projectTask: card.projectTask,
+          projectStatus: card.projectStatus,
+          addChronicles: card.addChronicles,
+          taskDesc: card.taskDesc,
+          attachments: card.attachments,
+          startTime: card.startTime,
+          completeTime: card.completeTime,
+          totalTime: card.totalTime,
+          chroniclesComplete: card.chroniclesComplete,
+        },
+      ];
+
+      setSelectedTask(selectedTaskCard);
+    }
+  };
 
   const handleDragStart = (e, card) => {
     e.dataTransfer.setData("cardId", card._id);
@@ -57,10 +118,6 @@ const Column = ({ title, headingColor, cards, setCards, column }) => {
 
   const filteredCards = cards.filter((c) => c.taskStatus === column);
 
-  console.log("Column:", column);
-  console.log("All cards:", cards);
-  console.log("Filtered cards:", filteredCards);
-
   return (
     <div className="w-56 shrink-0 ">
       <div className="mb-3 flex items-center gap-2 border-b  border-neutral-700">
@@ -79,7 +136,12 @@ const Column = ({ title, headingColor, cards, setCards, column }) => {
         onDrop={handleDragEnd}
       >
         {filteredCards.map((c) => (
-          <Card key={c.id} {...c} handleDragStart={handleDragStart} />
+          <Card
+            key={c.id}
+            {...c}
+            handleDragStart={handleDragStart}
+            handleCardClick={handleCardClick}
+          />
         ))}
       </div>
     </div>
@@ -93,7 +155,19 @@ const Card = ({
   taskStatus,
   priority,
   assignedTo,
+  taskCategory,
+  startDate,
+  dueDate,
+  projectTask,
+  projectStatus,
+  addChronicles,
+  attachments,
+  startTime,
+  completeTime,
+  totalTime,
+  chroniclesComplete,
   handleDragStart,
+  handleCardClick,
 }) => {
   return (
     <>
@@ -102,6 +176,27 @@ const Card = ({
         draggable="true"
         onDragStart={(e) =>
           handleDragStart(e, { _id, taskName, taskDesc, taskStatus })
+        }
+        onClick={(e) =>
+          handleCardClick(e, {
+            _id,
+            taskName,
+            assignedTo,
+            taskStatus,
+            priority,
+            taskCategory,
+            startDate,
+            dueDate,
+            projectTask,
+            projectStatus,
+            addChronicles,
+            taskDesc,
+            attachments,
+            startTime,
+            completeTime,
+            totalTime,
+            chroniclesComplete,
+          })
         }
       >
         <p className="text-sm text-neutral-400">{taskName}</p>
@@ -169,7 +264,12 @@ const DropIndicator = ({ beforeId, column }) => {
 //   );
 // };
 
-const TaskBoard = ({ reloadTaskBoard }) => {
+const TaskBoard = ({
+  reloadTaskBoard,
+  setIsOpen,
+  setViewClicked,
+  setSelectedTask,
+}) => {
   const [cards, setCards] = useState([]);
   const [projects, setProjects] = useState([]);
 
@@ -211,6 +311,9 @@ const TaskBoard = ({ reloadTaskBoard }) => {
         headingColor="text-red-300"
         cards={cards}
         setCards={setCards}
+        setIsOpen={setIsOpen}
+        setViewClicked={setViewClicked}
+        setSelectedTask={setSelectedTask}
       />
 
       <Column
@@ -219,6 +322,9 @@ const TaskBoard = ({ reloadTaskBoard }) => {
         headingColor="text-yellow-300"
         cards={cards}
         setCards={setCards}
+        setIsOpen={setIsOpen}
+        setViewClicked={setViewClicked}
+        setSelectedTask={setSelectedTask}
       />
       <Column
         title="Paused"
@@ -226,6 +332,9 @@ const TaskBoard = ({ reloadTaskBoard }) => {
         headingColor="text-blue-300"
         cards={cards}
         setCards={setCards}
+        setIsOpen={setIsOpen}
+        setViewClicked={setViewClicked}
+        setSelectedTask={setSelectedTask}
       />
       <Column
         title="Completed"
@@ -233,6 +342,9 @@ const TaskBoard = ({ reloadTaskBoard }) => {
         headingColor="text-green-300"
         cards={cards}
         setCards={setCards}
+        setIsOpen={setIsOpen}
+        setViewClicked={setViewClicked}
+        setSelectedTask={setSelectedTask}
       />
 
       {/* <DeleteBox setCards={setCards} /> */}
