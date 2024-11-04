@@ -62,8 +62,8 @@ const Column = ({ title, headingColor, cards, setCards, column }) => {
   console.log("Filtered cards:", filteredCards);
 
   return (
-    <div className="w-56 shrink-0">
-      <div className="mb-3 flex items-center gap-2 ">
+    <div className="w-56 shrink-0 ">
+      <div className="mb-3 flex items-center gap-2 border-b  border-neutral-700">
         <span className="rounded text-sm text-neutral-400">
           {" "}
           {filteredCards.length}
@@ -86,11 +86,19 @@ const Column = ({ title, headingColor, cards, setCards, column }) => {
   );
 };
 
-const Card = ({ _id, taskName, taskDesc, taskStatus, handleDragStart }) => {
+const Card = ({
+  _id,
+  taskName,
+  taskDesc,
+  taskStatus,
+  priority,
+  assignedTo,
+  handleDragStart,
+}) => {
   return (
     <>
       <div
-        className="cursor-grab rounded border border-neutral-700 p-3 bg-neutral-800 active:cursor-grabbing"
+        className="cursor-grab rounded border border-neutral-700 p-3 bg-neutral-800 active:cursor-grabbing flex flex-col gap-2"
         draggable="true"
         onDragStart={(e) =>
           handleDragStart(e, { _id, taskName, taskDesc, taskStatus })
@@ -98,7 +106,13 @@ const Card = ({ _id, taskName, taskDesc, taskStatus, handleDragStart }) => {
       >
         <p className="text-sm text-neutral-400">{taskName}</p>
         <p className="text-sm text-neutral-400">{taskDesc}</p>
+        <div className="flex justify-between">
+          {" "}
+          <p className="text-sm text-neutral-400">{priority}</p>
+          <p className="text-sm text-neutral-400">{assignedTo}</p>
+        </div>
       </div>
+      <DropIndicator beforeId={_id} column={taskStatus} />
     </>
   );
 };
@@ -150,7 +164,7 @@ const DeleteBox = ({ setCards }) => {
 const TaskBoard = () => {
   const [cards, setCards] = useState([]);
   const [projects, setProjects] = useState([]);
-  const [tasks, setTasks] = useState([]);
+ 
 
   // loads all PROJECTS from database into list
   useEffect(() => {
@@ -184,6 +198,7 @@ const TaskBoard = () => {
 
   return (
     <div className="flex h-full w-full justify-between overflow-y-scroll p-12 ">
+
       <Column
         title="Not Started"
         column="Not Started"
@@ -213,25 +228,3 @@ const TaskBoard = () => {
 };
 
 export default TaskBoard;
-
-const initialCards = [
-  {
-    id: 1,
-    title: "Task 1",
-    description: "Description 1",
-    column: "not started",
-  },
-  {
-    id: 2,
-    title: "Task 2",
-    description: "Description 2",
-    column: "in progress",
-  },
-  {
-    id: 4,
-    title: "Task 4",
-    description: "Description 4",
-    column: "in progress",
-  },
-  { id: 3, title: "Task 3", description: "Description 3", column: "complete" },
-];
