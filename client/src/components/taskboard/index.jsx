@@ -26,11 +26,17 @@ const Column = ({ title, headingColor, cards, setCards, column }) => {
 
     const cardId = e.dataTransfer.getData("cardId");
 
-    let copyOfCards = [...cards];
-    let cardToMove = copyOfCards.find((c) => c.id === Number(cardId));
+    let copy = [...cards];
+
+    let cardToMove = copy.find((c) => c.id === Number(cardId));
+
     cardToMove.column = column;
 
-    setCards(copyOfCards);
+    copy = copy.filter((c) => c.id !== Number(cardId));
+
+    copy.push(cardToMove);
+
+    setCards(copy);
   };
 
   const filteredCards = cards.filter((c) => c.column === column);
