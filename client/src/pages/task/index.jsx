@@ -181,6 +181,9 @@ const TaskPage = () => {
   const [listToggled, setListToggled] = useState(true);
   const [boardToggled, setBoardToggled] = useState(false);
 
+  const [reloadTaskBoard, setReloadTaskBoard] = useState(false);
+
+
   //*
 
   // projects object array from the database
@@ -663,7 +666,7 @@ const TaskPage = () => {
               Add Task
             </Button>
           </div>
-          <TaskBoard />
+          <TaskBoard reloadTaskBoard={reloadTaskBoard} />
           <TaskEditMenu
             isOpen={isOpen}
             setIsOpen={setIsOpen}
@@ -680,6 +683,7 @@ const TaskPage = () => {
             reloadTheGrid={reloadTheGrid}
             projects={projects}
             addTaskToProject={addTaskToProject}
+            setReloadTaskBoard={setReloadTaskBoard}
           ></TaskEditMenu>
         </>
       ) : (

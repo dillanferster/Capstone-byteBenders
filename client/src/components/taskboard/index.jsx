@@ -127,44 +127,51 @@ const DropIndicator = ({ beforeId, column }) => {
   );
 };
 
-const DeleteBox = ({ setCards }) => {
-  const [active, setActive] = useState(false);
+// const DeleteBox = ({ setCards }) => {
+//   const [active, setActive] = useState(false);
 
-  const handleDragOver = (e) => {
-    e.preventDefault();
-    setActive(true);
-  };
+//   const handleDragOver = (e) => {
+//     e.preventDefault();
+//     setActive(true);
+//   };
 
-  const handleDragLeave = () => {
-    setActive(false);
-  };
+//   const handleDragLeave = () => {
+//     setActive(false);
+//   };
 
-  const handleDrop = (e) => {
-    const cardId = e.dataTransfer.getData("cardId");
-    setCards((prev) => prev.filter((card) => card.id !== Number(cardId)));
-    setActive(false);
-  };
+//   const handleDrop = (e) => {
+//     const cardId = e.dataTransfer.getData("cardId");
+//     setCards((prev) => prev.filter((card) => card.id !== Number(cardId)));
+//     setActive(false);
+//   };
 
-  return (
-    <div
-      onDragOver={handleDragOver}
-      onDragLeave={handleDragLeave}
-      onDrop={handleDrop}
-      className={`mt-10 grid h-56 w-56 shrink-0 place-content-center rounded border text-md ${
-        active
-          ? "border-red-800 bg-red-800/20 text-red-500"
-          : "border-neutral-500 bg-neutral-500/20 text-neutral-500"
-      }`}
-    >
-      Delete Task
-    </div>
-  );
-};
+//   return (
+//     <div
+//       onDragOver={handleDragOver}
+//       onDragLeave={handleDragLeave}
+//       onDrop={handleDrop}
+//       className={`mt-10 grid h-56 w-56 shrink-0 place-content-center rounded border text-md ${
+//         active
+//           ? "border-red-800 bg-red-800/20 text-red-500"
+//           : "border-neutral-500 bg-neutral-500/20 text-neutral-500"
+//       }`}
+//     >
+//       Delete Task
+//     </div>
+//   );
+// };
 
-const TaskBoard = () => {
+// const DeleteBtn = () => {
+//   return (
+//     <div className="text-red-500 pt-1">
+//       <button>Delete</button>
+//     </div>
+//   );
+// };
+
+const TaskBoard = ({ reloadTaskBoard }) => {
   const [cards, setCards] = useState([]);
   const [projects, setProjects] = useState([]);
- 
 
   // loads all PROJECTS from database into list
   useEffect(() => {
@@ -194,11 +201,10 @@ const TaskBoard = () => {
     }
 
     loadAllTasks();
-  }, []);
+  }, [reloadTaskBoard]);
 
   return (
     <div className="flex h-full w-full justify-between overflow-y-scroll p-12 ">
-
       <Column
         title="Not Started"
         column="Not Started"
@@ -215,6 +221,13 @@ const TaskBoard = () => {
         setCards={setCards}
       />
       <Column
+        title="Paused"
+        column="Paused"
+        headingColor="text-blue-300"
+        cards={cards}
+        setCards={setCards}
+      />
+      <Column
         title="Completed"
         column="Completed"
         headingColor="text-green-300"
@@ -222,7 +235,7 @@ const TaskBoard = () => {
         setCards={setCards}
       />
 
-      <DeleteBox setCards={setCards} />
+      {/* <DeleteBox setCards={setCards} /> */}
     </div>
   );
 };

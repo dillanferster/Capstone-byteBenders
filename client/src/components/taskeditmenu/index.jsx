@@ -28,6 +28,7 @@ export default function TaskEditMenu({
   reloadTheGrid,
   projects,
   addTaskToProject,
+  setReloadTaskBoard,
 }) {
   // * state
   const [taskId, setTaskId] = useState("");
@@ -214,6 +215,7 @@ export default function TaskEditMenu({
             updateTaskToProject(newTaskId);
 
             reloadTheGrid();
+            setReloadTaskBoard((prev) => !prev);
             toggleForm();
             clearAddInputs();
             setAddClicked(!addClicked);
