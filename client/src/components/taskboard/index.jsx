@@ -159,8 +159,8 @@ const Column = ({
   const filteredCards = cards.filter((c) => c.taskStatus === column);
 
   return (
-    <div className="w-56 shrink-0 ">
-      <div className="mb-3 flex items-center gap-2 border-b  border-neutral-700">
+    <div className="w-56 shrink-0  h-screen">
+      <div className="mb-3 flex items-center gap-2 border-b sticky top-0 backdrop-blur-lg  border-neutral-700 ">
         <span className="rounded text-sm text-neutral-400">
           {" "}
           {filteredCards.length}
@@ -212,7 +212,7 @@ const Card = ({
   return (
     <>
       <div
-        className="cursor-grab rounded border border-neutral-700 p-3 bg-neutral-800 active:cursor-grabbing flex flex-col gap-2"
+        className="h-[10rem] cursor-grab rounded border border-neutral-700 p-3 bg-neutral-800 active:cursor-grabbing flex flex-col  justify-between active:border-violet-300/60 "
         draggable="true"
         onDragStart={(e) =>
           handleDragStart(e, {
@@ -257,12 +257,26 @@ const Card = ({
           })
         }
       >
-        <p className="text-sm text-neutral-400">{taskName}</p>
+        <p className="text-sm text-neutral-400 border-b border-neutral-500">
+          {taskName}
+        </p>
         <p className="text-sm text-neutral-400">{taskDesc}</p>
         <div className="flex justify-between">
           {" "}
-          <p className="text-sm text-neutral-400">{priority}</p>
-          <p className="text-sm text-neutral-400">{assignedTo}</p>
+          <p
+            className={`text-sm text-neutral-400 ${
+              priority === "High"
+                ? "text-red-500"
+                : priority === "Low"
+                ? "text-green-500"
+                : "text-yellow-500"
+            }`}
+          >
+            {priority}
+          </p>
+          <p className="text-sm text-neutral-400 rounded-lg px-1 bg-neutral-700/80">
+            {assignedTo}
+          </p>
         </div>
       </div>
       <DropIndicator beforeId={_id} column={taskStatus} />
@@ -366,7 +380,7 @@ const TaskBoard = ({
   }, [reloadTaskBoard]);
 
   return (
-    <div className="flex h-full w-full justify-between overflow-y-scroll p-12 ">
+    <div className="flex h-full w-full justify-between overflow-y-scroll mt-8  px-12 ">
       <Column
         title="Not Started"
         column="Not Started"
