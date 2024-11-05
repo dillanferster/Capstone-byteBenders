@@ -30,6 +30,9 @@ const Column = ({
   setViewClicked,
   setSelectedTask,
   handleButtonStart,
+  handleButtonPause,
+  handleButtonResume,
+  handleButtonComplete,
 }) => {
   const [active, setActive] = useState();
 
@@ -129,22 +132,28 @@ const Column = ({
 
     console.log("cardData", selectedTask);
 
-    // setSelectedTask(selectedTaskCard);
-    handleButtonStart(selectedTask);
-
-    // const cardId = tampCardData._id;
-
-    // let copy = [...cards];
-
-    // let cardToMove = copy.find((c) => c._id === cardId);
-
-    // cardToMove.taskStatus = column;
-
-    // copy = copy.filter((c) => c._id !== cardId);
-
-    // copy.push(cardToMove);
-
-    // setCards(copy);
+    if (
+      selectedTask[0].taskStatus === "Not Started" &&
+      column === "In Progress"
+    ) {
+      handleButtonStart(selectedTask);
+    }
+    if (selectedTask[0].taskStatus === "In Progress" && column === "Paused") {
+      handleButtonPause(selectedTask);
+      console.log("in progress to paused");
+    }
+    if (selectedTask[0].taskStatus === "Paused" && column === "In Progress") {
+      handleButtonResume(selectedTask);
+    }
+    if (
+      selectedTask[0].taskStatus === "In Progress" &&
+      column === "Completed"
+    ) {
+      handleButtonComplete(selectedTask);
+    }
+    // if (selectedTask[0].taskStatus === "Paused" && column === "Completed") {
+    //   handleButtonComplete(selectedTask);
+    // }
   };
 
   const filteredCards = cards.filter((c) => c.taskStatus === column);
@@ -319,6 +328,9 @@ const TaskBoard = ({
   setViewClicked,
   setSelectedTask,
   handleButtonStart,
+  handleButtonPause,
+  handleButtonResume,
+  handleButtonComplete,
 }) => {
   const [cards, setCards] = useState([]);
   const [projects, setProjects] = useState([]);
@@ -364,7 +376,6 @@ const TaskBoard = ({
         setIsOpen={setIsOpen}
         setViewClicked={setViewClicked}
         setSelectedTask={setSelectedTask}
-        handleButtonStart={handleButtonStart}
       />
 
       <Column
@@ -377,6 +388,7 @@ const TaskBoard = ({
         setViewClicked={setViewClicked}
         setSelectedTask={setSelectedTask}
         handleButtonStart={handleButtonStart}
+        handleButtonResume={handleButtonResume}
       />
       <Column
         title="Paused"
@@ -387,7 +399,7 @@ const TaskBoard = ({
         setIsOpen={setIsOpen}
         setViewClicked={setViewClicked}
         setSelectedTask={setSelectedTask}
-        handleButtonStart={handleButtonStart}
+        handleButtonPause={handleButtonPause}
       />
       <Column
         title="Completed"
@@ -398,7 +410,7 @@ const TaskBoard = ({
         setIsOpen={setIsOpen}
         setViewClicked={setViewClicked}
         setSelectedTask={setSelectedTask}
-        handleButtonStart={handleButtonStart}
+        handleButtonComplete={handleButtonComplete}
       />
 
       {/* <DeleteBox setCards={setCards} /> */}

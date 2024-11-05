@@ -301,7 +301,7 @@ const TaskPage = () => {
 
   // handles button pause task
   // calls pauseTask route
-  async function buttonPause() {
+  async function buttonPause(selectedTask) {
     pauseTask(selectedTask[0].id);
     console.log("task Paused");
 
@@ -314,6 +314,7 @@ const TaskPage = () => {
       if (response.status === 200) {
         const selectedId = selectedTask[0].id;
         reloadTheGrid();
+        setReloadTaskBoard((prev) => !prev);
         return selectedId;
       }
     } catch (error) {
@@ -323,7 +324,7 @@ const TaskPage = () => {
 
   // handles button resume task
   // calls resumeTask route
-  async function handleButtonResume() {
+  async function handleButtonResume(selectedTask) {
     resumeTask(selectedTask[0].id);
     console.log("task Resumed");
 
@@ -335,6 +336,7 @@ const TaskPage = () => {
       const response = await taskStatusUpdate(selectedTask[0].id, updatedTask);
       if (response.status === 200) {
         reloadTheGrid();
+        setReloadTaskBoard((prev) => !prev);
       }
     } catch (error) {
       console.error("Error updating task Status:", error);
@@ -379,6 +381,7 @@ const TaskPage = () => {
         console.log(" seleleted id in button complete", selectedId);
 
         await reloadTheGrid();
+        setReloadTaskBoard((prev) => !prev);
         return selectedId;
       }
     } catch (error) {
@@ -479,10 +482,10 @@ const TaskPage = () => {
   /// handle pause
   // calculates rolling time for pause and resume
   // Reference Cluade.ai prompt : "im making a rolling time calculator the times are working. On the first click the finalTime is returned in handelPauseAndCalculate and passed into updateTotal time this all works , now on sencond run the finaltime is returned again but i need a way to add it to the final tie in the first run through but not sure how. this is becase the first time it runs and every other time it runs the finalTime is caculateed different inside of calculatePauseTime."
-  async function handlePauseandCalculate() {
+  async function handlePauseandCalculate(selectedTask) {
     const taskId = selectedTask[0].id;
 
-    const completeId = await buttonPause();
+    const completeId = await buttonPause(selectedTask);
     if (completeId) {
       const completeTaskObject = await getTask(completeId);
       const newTime = calculatePauseTime(completeTaskObject);
@@ -513,7 +516,7 @@ const TaskPage = () => {
   }
 
   // handle function for complete button click
-  async function handleCompleteandCalculate() {
+  async function handleCompleteandCalculate(selectedTask) {
     const completeId = await buttonComplete();
     if (completeId) {
       const completeTaskObject = await getTask(completeId);
@@ -672,6 +675,9 @@ const TaskPage = () => {
             setViewClicked={setViewClicked}
             setSelectedTask={setSelectedTask}
             handleButtonStart={handleButtonStart}
+            handleButtonPause={handlePauseandCalculate}
+            handleButtonResume={handleButtonResume}
+            handleButtonComplete={handleCompleteandCalculate}
           />
           <TaskEditMenu
             isOpen={isOpen}
@@ -719,7 +725,7 @@ const TaskPage = () => {
                   )}
                 {selectedTask.length === 1 &&
                   (selectedTask[0].taskStatus === "Started" ||
-                    selectedTask[0].taskStatus === "In progress") && (
+                    selectedTask[0].taskStatus === "In Progress") && (
                     <div>
                       {" "}
                       <Button
