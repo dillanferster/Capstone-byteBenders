@@ -151,9 +151,9 @@ const Column = ({
     ) {
       handleButtonComplete(selectedTask);
     }
-    // if (selectedTask[0].taskStatus === "Paused" && column === "Completed") {
-    //   handleButtonComplete(selectedTask);
-    // }
+    if (selectedTask[0].taskStatus === "Paused" && column === "Completed") {
+      handleButtonComplete(selectedTask);
+    }
   };
 
   const filteredCards = cards.filter((c) => c.taskStatus === column);

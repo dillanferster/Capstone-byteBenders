@@ -364,7 +364,7 @@ const TaskPage = () => {
   // handles when complete is pressed,
   // logs complete time and changes the status in database,
   // Reference Claude.ai prompt:  "why is my state variable for selected task not updating "
-  async function buttonComplete() {
+  async function buttonComplete(selectedTask) {
     await completeTask(selectedTask[0].id);
 
     console.log("task completed");
@@ -517,7 +517,7 @@ const TaskPage = () => {
 
   // handle function for complete button click
   async function handleCompleteandCalculate(selectedTask) {
-    const completeId = await buttonComplete();
+    const completeId = await buttonComplete(selectedTask);
     if (completeId) {
       const completeTaskObject = await getTask(completeId);
       const finalTime = calculateTotalHours(completeTaskObject);
