@@ -563,6 +563,7 @@ const TaskPage = () => {
         console.log("after deleting task from project", deleteResponse);
 
         reloadTheGrid();
+        setReloadTaskBoard((prev) => !prev);
       }
     }
   }
@@ -588,12 +589,14 @@ const TaskPage = () => {
     setBoardToggled((prev) => !prev);
     setListToggled((prev) => !prev);
     setTaskBoardOpen((prev) => !prev);
+    setSelectedTask([]);
   };
 
   const handleBoardClick = (params) => {
     setListToggled((prev) => !prev);
     setBoardToggled((prev) => !prev);
     setTaskBoardOpen((prev) => !prev);
+    setSelectedTask([]);
   };
 
   // loads all projects from database into list
@@ -680,6 +683,7 @@ const TaskPage = () => {
             handleButtonPause={handlePauseandCalculate}
             handleButtonResume={handleButtonResume}
             handleButtonComplete={handleCompleteandCalculate}
+            handleButtonDelete={handleButtonDelete}
           />
           <TaskEditMenu
             isOpen={isOpen}

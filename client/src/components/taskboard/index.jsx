@@ -33,31 +33,32 @@ const Column = ({
   handleButtonPause,
   handleButtonResume,
   handleButtonComplete,
+  setIsDeleteModalOpen,
 }) => {
   const [active, setActive] = useState();
 
   const handleCardClick = (e, card) => {
     if (e.detail === 2) {
-      console.log(
-        "double clicked card",
-        card._id,
-        card.taskName,
-        card.assignedTo,
-        card.taskStatus,
-        card.priority,
-        card.taskCategory,
-        card.startDate,
-        card.dueDate,
-        card.projectTask,
-        card.projectStatus,
-        card.addChronicles,
-        card.taskDesc,
-        card.attachments,
-        card.startTime,
-        card.completeTime,
-        card.totalTime,
-        card.chroniclesComplete
-      );
+      // console.log(
+      //   "double clicked card",
+      //   card._id,
+      //   card.taskName,
+      //   card.assignedTo,
+      //   card.taskStatus,
+      //   card.priority,
+      //   card.taskCategory,
+      //   card.startDate,
+      //   card.dueDate,
+      //   card.projectTask,
+      //   card.projectStatus,
+      //   card.addChronicles,
+      //   card.taskDesc,
+      //   card.attachments,
+      //   card.startTime,
+      //   card.completeTime,
+      //   card.totalTime,
+      //   card.chroniclesComplete
+      // );
 
       setViewClicked((prev) => !prev);
       setIsOpen((prev) => !prev);
@@ -181,8 +182,44 @@ const Column = ({
             {...c}
             handleDragStart={handleDragStart}
             handleCardClick={handleCardClick}
+            setIsDeleteModalOpen={setIsDeleteModalOpen}
+            setSelectedTask={setSelectedTask}
           />
         ))}
+      </div>
+    </div>
+  );
+};
+
+const DeleteModal = ({ isOpen, onClose, handleButtonDelete }) => {
+  if (!isOpen) return null;
+
+  const handleDelete = () => {
+    handleButtonDelete();
+    onClose();
+  };
+
+  return (
+    <div className="fixed inset-0 bg-black bg-opacity-20 flex items-center justify-center backdrop-blur-sm z-[100] transition-all duration-300 translate-x-[5rem]">
+      <div className="bg-neutral-800 p-6 rounded-lg shadow-lg border border-neutral-700">
+        <h3 className="text-lg font-medium text-white mb-4">Confirm Delete</h3>
+        <p className="text-neutral-300 mb-6">
+          Are you sure you want to delete this task?
+        </p>
+        <div className="flex justify-end gap-3">
+          <button
+            onClick={onClose}
+            className="px-4 py-2 rounded bg-neutral-700 text-white hover:bg-neutral-600 transition-colors"
+          >
+            Cancel
+          </button>
+          <button
+            onClick={() => handleDelete()}
+            className="px-4 py-2 rounded bg-red-600 text-white hover:bg-red-700 transition-colors"
+          >
+            Delete
+          </button>
+        </div>
       </div>
     </div>
   );
@@ -208,7 +245,37 @@ const Card = ({
   chroniclesComplete,
   handleDragStart,
   handleCardClick,
+  setIsDeleteModalOpen,
+  setSelectedTask,
 }) => {
+  const handleDelete = (e, card) => {
+    setIsDeleteModalOpen((prev) => !prev);
+
+    const selectedTaskCard = [
+      {
+        id: card._id,
+        taskName: card.taskName,
+        assignedTo: card.assignedTo,
+        taskStatus: card.taskStatus,
+        priority: card.priority,
+        taskCategory: card.taskCategory,
+        startDate: card.startDate,
+        dueDate: card.dueDate,
+        projectTask: card.projectTask,
+        projectStatus: card.projectStatus,
+        addChronicles: card.addChronicles,
+        taskDesc: card.taskDesc,
+        attachments: card.attachments,
+        startTime: card.startTime,
+        completeTime: card.completeTime,
+        totalTime: card.totalTime,
+        chroniclesComplete: card.chroniclesComplete,
+      },
+    ];
+
+    setSelectedTask(selectedTaskCard);
+  };
+
   return (
     <>
       <div
@@ -257,18 +324,45 @@ const Card = ({
           })
         }
       >
-        <p className="text-sm text-neutral-400 border-b border-neutral-500">
-          {taskName}
-        </p>
+        <div className="flex justify-between border-b border-neutral-500">
+          <p className="text-sm text-neutral-400 ">{taskName}</p>
+          <button
+            className="text-neutral-400 hover:text-red-500 "
+            onClick={(e) =>
+              handleDelete(e, {
+                _id,
+                taskName,
+                assignedTo,
+                taskStatus,
+                priority,
+                taskCategory,
+                startDate,
+                dueDate,
+                projectTask,
+                projectStatus,
+                addChronicles,
+                taskDesc,
+                attachments,
+                startTime,
+                completeTime,
+                totalTime,
+                chroniclesComplete,
+              })
+            }
+          >
+            <div className="flex  justify-end w-4">X</div>
+          </button>
+        </div>
+
         <p className="text-sm text-neutral-400">{taskDesc}</p>
         <div className="flex justify-between">
           {" "}
           <p
-            className={`text-sm text-neutral-400 ${
+            className={`text-sm  ${
               priority === "High"
-                ? "text-red-500"
+                ? "text-orange-600"
                 : priority === "Low"
-                ? "text-green-500"
+                ? "text-green-600"
                 : "text-yellow-500"
             }`}
           >
@@ -294,48 +388,6 @@ const DropIndicator = ({ beforeId, column }) => {
   );
 };
 
-// const DeleteBox = ({ setCards }) => {
-//   const [active, setActive] = useState(false);
-
-//   const handleDragOver = (e) => {
-//     e.preventDefault();
-//     setActive(true);
-//   };
-
-//   const handleDragLeave = () => {
-//     setActive(false);
-//   };
-
-//   const handleDrop = (e) => {
-//     const cardId = e.dataTransfer.getData("cardId");
-//     setCards((prev) => prev.filter((card) => card.id !== Number(cardId)));
-//     setActive(false);
-//   };
-
-//   return (
-//     <div
-//       onDragOver={handleDragOver}
-//       onDragLeave={handleDragLeave}
-//       onDrop={handleDrop}
-//       className={`mt-10 grid h-56 w-56 shrink-0 place-content-center rounded border text-md ${
-//         active
-//           ? "border-red-800 bg-red-800/20 text-red-500"
-//           : "border-neutral-500 bg-neutral-500/20 text-neutral-500"
-//       }`}
-//     >
-//       Delete Task
-//     </div>
-//   );
-// };
-
-// const DeleteBtn = () => {
-//   return (
-//     <div className="text-red-500 pt-1">
-//       <button>Delete</button>
-//     </div>
-//   );
-// };
-
 const TaskBoard = ({
   reloadTaskBoard,
   setIsOpen,
@@ -345,9 +397,11 @@ const TaskBoard = ({
   handleButtonPause,
   handleButtonResume,
   handleButtonComplete,
+  handleButtonDelete,
 }) => {
   const [cards, setCards] = useState([]);
   const [projects, setProjects] = useState([]);
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
 
   // loads all PROJECTS from database into list
   useEffect(() => {
@@ -381,6 +435,11 @@ const TaskBoard = ({
 
   return (
     <div className="flex h-full w-full justify-between overflow-y-scroll mt-8  px-12 ">
+      <DeleteModal
+        isOpen={isDeleteModalOpen}
+        onClose={() => setIsDeleteModalOpen((prev) => !prev)}
+        handleButtonDelete={handleButtonDelete}
+      />
       <Column
         title="Not Started"
         column="Not Started"
@@ -390,6 +449,7 @@ const TaskBoard = ({
         setIsOpen={setIsOpen}
         setViewClicked={setViewClicked}
         setSelectedTask={setSelectedTask}
+        setIsDeleteModalOpen={setIsDeleteModalOpen}
       />
 
       <Column
@@ -403,6 +463,7 @@ const TaskBoard = ({
         setSelectedTask={setSelectedTask}
         handleButtonStart={handleButtonStart}
         handleButtonResume={handleButtonResume}
+        setIsDeleteModalOpen={setIsDeleteModalOpen}
       />
       <Column
         title="Paused"
@@ -414,6 +475,7 @@ const TaskBoard = ({
         setViewClicked={setViewClicked}
         setSelectedTask={setSelectedTask}
         handleButtonPause={handleButtonPause}
+        setIsDeleteModalOpen={setIsDeleteModalOpen}
       />
       <Column
         title="Completed"
@@ -425,6 +487,7 @@ const TaskBoard = ({
         setViewClicked={setViewClicked}
         setSelectedTask={setSelectedTask}
         handleButtonComplete={handleButtonComplete}
+        setIsDeleteModalOpen={setIsDeleteModalOpen}
       />
 
       {/* <DeleteBox setCards={setCards} /> */}
