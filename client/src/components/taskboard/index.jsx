@@ -39,27 +39,6 @@ const Column = ({
 
   const handleCardClick = (e, card) => {
     if (e.detail === 2) {
-      // console.log(
-      //   "double clicked card",
-      //   card._id,
-      //   card.taskName,
-      //   card.assignedTo,
-      //   card.taskStatus,
-      //   card.priority,
-      //   card.taskCategory,
-      //   card.startDate,
-      //   card.dueDate,
-      //   card.projectTask,
-      //   card.projectStatus,
-      //   card.addChronicles,
-      //   card.taskDesc,
-      //   card.attachments,
-      //   card.startTime,
-      //   card.completeTime,
-      //   card.totalTime,
-      //   card.chroniclesComplete
-      // );
-
       setViewClicked((prev) => !prev);
       setIsOpen((prev) => !prev);
 
@@ -227,6 +206,7 @@ const DeleteModal = ({ isOpen, onClose, handleButtonDelete }) => {
 
 const Card = ({
   _id,
+  column,
   taskName,
   taskDesc,
   taskStatus,
@@ -279,7 +259,7 @@ const Card = ({
   return (
     <>
       <div
-        className="h-[10rem] cursor-grab rounded border border-neutral-700 p-3 bg-neutral-800 active:cursor-grabbing flex flex-col  justify-between active:border-violet-300/60 "
+        className="h-[10rem] cursor-grab rounded border border-neutral-700 p-3 bg-neutral-800 active:cursor-grabbing flex flex-col  justify-between active:border-violet-300/60 hover:border-violet-300/30"
         draggable="true"
         onDragStart={(e) =>
           handleDragStart(e, {
@@ -373,7 +353,7 @@ const Card = ({
           </p>
         </div>
       </div>
-      <DropIndicator beforeId={_id} column={taskStatus} />
+      <DropIndicator beforeId={_id} column={column} />
     </>
   );
 };
