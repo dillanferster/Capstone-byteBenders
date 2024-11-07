@@ -42,6 +42,7 @@ import {
 } from "../../api.js";
 import ProjectGrid from "../../components/projectgrid/index.jsx";
 import TaskEditMenu from "../../components/taskeditmenu/index.jsx";
+import TaskBoard from "../../components/taskboard/index.jsx";
 
 //
 
@@ -174,8 +175,13 @@ const TaskPage = () => {
   const [addClicked, setAddClicked] = useState(false); // for add button
   const [editClicked, setEditClicked] = useState(false); // for add button
   const [deleteOpen, setDeleteOpen] = useState(false); //for dlt btn
-
   const [accumulatedRollingTimes, setAccumulatedRollingTimes] = useState({});
+
+  const [taskBoardOpen, setTaskBoardOpen] = useState(false);
+  const [listToggled, setListToggled] = useState(true);
+  const [boardToggled, setBoardToggled] = useState(false);
+
+  const [reloadTaskBoard, setReloadTaskBoard] = useState(false);
 
   //*
 
@@ -274,18 +280,19 @@ const TaskPage = () => {
 
   // handles button start task
   // calls startTask route
-  async function handleButtonStart() {
+  async function handleButtonStart(selectedTask) {
     startTask(selectedTask[0].id);
-    console.log("task started");
+    console.log("task started from drag and drop");
 
     const updatedTask = {
-      taskStatus: "Started",
+      taskStatus: "In Progress",
     };
 
     try {
       const response = await taskStatusUpdate(selectedTask[0].id, updatedTask);
       if (response.status === 200) {
         reloadTheGrid();
+        setReloadTaskBoard((prev) => !prev);
       }
     } catch (error) {
       console.error("Error updating task Status:", error);
@@ -294,7 +301,7 @@ const TaskPage = () => {
 
   // handles button pause task
   // calls pauseTask route
-  async function buttonPause() {
+  async function buttonPause(selectedTask) {
     pauseTask(selectedTask[0].id);
     console.log("task Paused");
 
@@ -307,6 +314,7 @@ const TaskPage = () => {
       if (response.status === 200) {
         const selectedId = selectedTask[0].id;
         reloadTheGrid();
+        setReloadTaskBoard((prev) => !prev);
         return selectedId;
       }
     } catch (error) {
@@ -316,18 +324,19 @@ const TaskPage = () => {
 
   // handles button resume task
   // calls resumeTask route
-  async function handleButtonResume() {
+  async function handleButtonResume(selectedTask) {
     resumeTask(selectedTask[0].id);
     console.log("task Resumed");
 
     const updatedTask = {
-      taskStatus: "In progress",
+      taskStatus: "In Progress",
     };
 
     try {
       const response = await taskStatusUpdate(selectedTask[0].id, updatedTask);
       if (response.status === 200) {
         reloadTheGrid();
+        setReloadTaskBoard((prev) => !prev);
       }
     } catch (error) {
       console.error("Error updating task Status:", error);
@@ -355,7 +364,7 @@ const TaskPage = () => {
   // handles when complete is pressed,
   // logs complete time and changes the status in database,
   // Reference Claude.ai prompt:  "why is my state variable for selected task not updating "
-  async function buttonComplete() {
+  async function buttonComplete(selectedTask) {
     await completeTask(selectedTask[0].id);
 
     console.log("task completed");
@@ -372,6 +381,7 @@ const TaskPage = () => {
         console.log(" seleleted id in button complete", selectedId);
 
         await reloadTheGrid();
+        setReloadTaskBoard((prev) => !prev);
         return selectedId;
       }
     } catch (error) {
@@ -425,60 +435,6 @@ const TaskPage = () => {
     }
   }
 
-  // function calculatePauseTime(completeTaskObject) {
-  //   if (
-  //     completeTaskObject &&
-  //     completeTaskObject.startTime &&
-  //     completeTaskObject.pauseTime &&
-  //     completeTaskObject.pauseTime.length > 1
-  //   ) {
-  //     const pauseList = completeTaskObject.pauseTime;
-
-  //     let totalPauseTime = 0;
-  //     let pauseStartTime = 0;
-  //     let pauseEndTime = 0;
-
-  //     for (let index = 0; index < pauseList.length; index++) {
-  //       const pauseItem = pauseList[index];
-
-  //       if (index === 0) {
-  //         pauseEndTime = new Date(pauseItem.end);
-  //       } else {
-  //         pauseStartTime = new Date(pauseItem.start);
-  //         const newPauseTime = pauseStartTime - pauseEndTime;
-  //         totalPauseTime += newPauseTime;
-
-  //         pauseEndTime = new Date(pauseItem.end);
-  //       }
-  //     }
-
-  //     const totalMin = (totalPauseTime / (1000 * 60)).toFixed(2);
-
-  //     const finalRollingTime = `Minutes: ${totalMin}`;
-
-  //     console.log("total rollling time", finalRollingTime);
-
-  //     return totalMin;
-  //   } else {
-  //     // calculate just start and first pause
-  //     const startTime = new Date(completeTaskObject.startTime[0]);
-  //     const pauseTime = new Date(completeTaskObject.pauseTime[0].start);
-
-  //     console.log("start time pause button", startTime);
-  //     console.log("pause time pause button", pauseTime);
-
-  //     let totalTime = pauseTime - startTime;
-
-  //     const totalMin = (totalTime / (1000 * 60)).toFixed(2);
-
-  //     const finalTime = `Minutes: ${totalMin}`;
-
-  //     setRollingTimeFirst(totalMin);
-
-  //     return finalTime;
-  //   }
-  // }
-
   function calculatePauseTime(completeTaskObject) {
     if (
       completeTaskObject &&
@@ -526,10 +482,10 @@ const TaskPage = () => {
   /// handle pause
   // calculates rolling time for pause and resume
   // Reference Cluade.ai prompt : "im making a rolling time calculator the times are working. On the first click the finalTime is returned in handelPauseAndCalculate and passed into updateTotal time this all works , now on sencond run the finaltime is returned again but i need a way to add it to the final tie in the first run through but not sure how. this is becase the first time it runs and every other time it runs the finalTime is caculateed different inside of calculatePauseTime."
-  async function handlePauseandCalculate() {
+  async function handlePauseandCalculate(selectedTask) {
     const taskId = selectedTask[0].id;
 
-    const completeId = await buttonPause();
+    const completeId = await buttonPause(selectedTask);
     if (completeId) {
       const completeTaskObject = await getTask(completeId);
       const newTime = calculatePauseTime(completeTaskObject);
@@ -559,23 +515,9 @@ const TaskPage = () => {
     }
   }
 
-  // async function handlePauseandCalculate() {
-  //   const completeId = await buttonPause();
-  //   if (completeId) {
-  //     const completeTaskObject = await getTask(completeId);
-  //     const finalTime = calculatePauseTime(completeTaskObject);
-
-  //     console.log(
-  //       `after pause calc,  final time ${finalTime} rollingTimeFirst ${rollingTimeFirst}`
-  //     );
-
-  //     updateTotalTime(completeId, finalTime);
-  //   }
-  // }
-
   // handle function for complete button click
-  async function handleCompleteandCalculate() {
-    const completeId = await buttonComplete();
+  async function handleCompleteandCalculate(selectedTask) {
+    const completeId = await buttonComplete(selectedTask);
     if (completeId) {
       const completeTaskObject = await getTask(completeId);
       const finalTime = calculateTotalHours(completeTaskObject);
@@ -621,6 +563,7 @@ const TaskPage = () => {
         console.log("after deleting task from project", deleteResponse);
 
         reloadTheGrid();
+        setReloadTaskBoard((prev) => !prev);
       }
     }
   }
@@ -640,6 +583,20 @@ const TaskPage = () => {
     console.log("selected row", checkedRows);
 
     setSelectedTask(checkedRows);
+  };
+
+  const handleListClick = (params) => {
+    setBoardToggled((prev) => !prev);
+    setListToggled((prev) => !prev);
+    setTaskBoardOpen((prev) => !prev);
+    setSelectedTask([]);
+  };
+
+  const handleBoardClick = (params) => {
+    setListToggled((prev) => !prev);
+    setBoardToggled((prev) => !prev);
+    setTaskBoardOpen((prev) => !prev);
+    setSelectedTask([]);
   };
 
   // loads all projects from database into list
@@ -684,9 +641,30 @@ const TaskPage = () => {
   }, [reloadGrid]);
 
   return (
-    <div className=" p-[1rem] ">
-      <div className=" p-[1rem] flex justify-between w-full">
-        <div className="flex gap-8">
+    <div className="px-[1rem] pt-[.5rem] w-full h-4/5 ">
+      <div className="flex justify-end">
+        <div className="flex border w-[8rem] mb-[1rem] py-[.3rem] rounded-md text-white justify-around transition-all duration-100 ">
+          <button
+            className={`p-1 rounded-md w-[3rem] transition-all duration-100 ${
+              listToggled ? "bg-[#3E4396]" : ""
+            }`}
+            onClick={() => handleListClick()}
+          >
+            List
+          </button>
+          <button
+            className={`p-1 rounded-md w-[3rem] transition-all duration-100 ${
+              boardToggled ? "bg-[#3E4396]" : ""
+            }`}
+            onClick={() => handleBoardClick()}
+          >
+            Board
+          </button>
+        </div>
+      </div>
+
+      {taskBoardOpen ? (
+        <>
           <div>
             <Button
               variant="contained"
@@ -696,148 +674,194 @@ const TaskPage = () => {
               Add Task
             </Button>
           </div>
-
-          <div className="flex gap-4">
-            {selectedTask.length === 1 &&
-              selectedTask[0].taskStatus === "Not Started" && (
+          <TaskBoard
+            reloadTaskBoard={reloadTaskBoard}
+            setIsOpen={setIsOpen}
+            setViewClicked={setViewClicked}
+            setSelectedTask={setSelectedTask}
+            handleButtonStart={handleButtonStart}
+            handleButtonPause={handlePauseandCalculate}
+            handleButtonResume={handleButtonResume}
+            handleButtonComplete={handleCompleteandCalculate}
+            handleButtonDelete={handleButtonDelete}
+          />
+          <TaskEditMenu
+            isOpen={isOpen}
+            setIsOpen={setIsOpen}
+            toggleForm={toggleForm}
+            selectedTask={selectedTask}
+            updateTask={updateTask}
+            createTask={createTask}
+            viewClicked={viewClicked}
+            setViewClicked={setViewClicked}
+            addClicked={addClicked}
+            setAddClicked={setAddClicked}
+            editClicked={editClicked}
+            setEditClicked={setEditClicked}
+            reloadTheGrid={reloadTheGrid}
+            projects={projects}
+            addTaskToProject={addTaskToProject}
+            setReloadTaskBoard={setReloadTaskBoard}
+          ></TaskEditMenu>
+        </>
+      ) : (
+        <div>
+          <div className=" pb-[1rem] flex justify-between w-full ">
+            <div className="flex gap-8">
+              <div>
                 <Button
-                  variant="outlined"
+                  variant="contained"
                   color="success"
-                  onClick={() => handleButtonStart()}
+                  onClick={() => handleButtonAdd()}
                 >
-                  Start Task
+                  Add Task
                 </Button>
+              </div>
+
+              <div className="flex gap-4">
+                {selectedTask.length === 1 &&
+                  selectedTask[0].taskStatus === "Not Started" && (
+                    <Button
+                      variant="outlined"
+                      color="success"
+                      onClick={() => handleButtonStart()}
+                    >
+                      Start Task
+                    </Button>
+                  )}
+                {selectedTask.length === 1 &&
+                  (selectedTask[0].taskStatus === "Started" ||
+                    selectedTask[0].taskStatus === "In Progress") && (
+                    <div>
+                      {" "}
+                      <Button
+                        variant="outlined"
+                        color="warning"
+                        onClick={() => handlePauseandCalculate()}
+                      >
+                        Pause Task
+                      </Button>
+                    </div>
+                  )}{" "}
+                {selectedTask.length === 1 &&
+                  selectedTask[0].taskStatus === "Paused" && (
+                    <div>
+                      <Button
+                        variant="outlined"
+                        color="info"
+                        onClick={() => handleButtonResume()}
+                      >
+                        Resume Task
+                      </Button>
+                    </div>
+                  )}
+                {selectedTask.length === 1 &&
+                  selectedTask[0].taskStatus !== "Completed" && (
+                    <Button
+                      variant="outlined"
+                      color="error"
+                      onClick={() => handleCompleteandCalculate()}
+                    >
+                      Complete Task
+                    </Button>
+                  )}
+              </div>
+            </div>
+
+            <div className="flex gap-4">
+              {deleteOpen && (
+                <div className="flex items-center justify-end gap-4 z-[5]  w-full ">
+                  <p className="font-bold text-md">
+                    Are you sure you want to delete ?
+                  </p>
+                  <div>
+                    {" "}
+                    <Button
+                      variant="contained"
+                      color="error"
+                      onClick={() => handleButtonDelete()}
+                    >
+                      Delete
+                    </Button>
+                  </div>
+                  <div>
+                    {" "}
+                    <Button
+                      variant="outlined"
+                      color="warning"
+                      onClick={() => setDeleteOpen((prev) => !prev)}
+                    >
+                      Cancel
+                    </Button>
+                  </div>
+                </div>
               )}
-            {selectedTask.length === 1 &&
-              (selectedTask[0].taskStatus === "Started" ||
-                selectedTask[0].taskStatus === "In progress") && (
+
+              {selectedTask.length === 1 && !deleteOpen && (
+                <div className="flex gap-4">
+                  <div>
+                    <Button
+                      variant="outlined"
+                      color="info"
+                      onClick={() => handleButtonView()}
+                    >
+                      View
+                    </Button>
+                  </div>
+                  <div>
+                    {" "}
+                    <Button
+                      variant="outlined"
+                      color="warning"
+                      onClick={() => handleButtonEdit()}
+                    >
+                      Edit
+                    </Button>
+                  </div>
+                </div>
+              )}
+              {selectedTask.length > 0 && !deleteOpen && (
                 <div>
                   {" "}
                   <Button
-                    variant="outlined"
-                    color="warning"
-                    onClick={() => handlePauseandCalculate()}
+                    variant="contained"
+                    color="error"
+                    onClick={() => setDeleteOpen((prev) => !prev)}
                   >
-                    Pause Task
-                  </Button>
-                </div>
-              )}{" "}
-            {selectedTask.length === 1 &&
-              selectedTask[0].taskStatus === "Paused" && (
-                <div>
-                  <Button
-                    variant="outlined"
-                    color="info"
-                    onClick={() => handleButtonResume()}
-                  >
-                    Resume Task
+                    Delete
                   </Button>
                 </div>
               )}
-            {selectedTask.length === 1 &&
-              selectedTask[0].taskStatus !== "Completed" && (
-                <Button
-                  variant="outlined"
-                  color="error"
-                  onClick={() => handleCompleteandCalculate()}
-                >
-                  Complete Task
-                </Button>
-              )}
+            </div>
           </div>
+
+          <ProjectGrid
+            rows={rows}
+            columns={columns}
+            selection={selection}
+            selectionColumnDef={selectionColumnDef}
+            onSelectionChanged={handleOnSelectionChanged}
+          ></ProjectGrid>
+
+          <TaskEditMenu
+            isOpen={isOpen}
+            setIsOpen={setIsOpen}
+            toggleForm={toggleForm}
+            selectedTask={selectedTask}
+            updateTask={updateTask}
+            createTask={createTask}
+            viewClicked={viewClicked}
+            setViewClicked={setViewClicked}
+            addClicked={addClicked}
+            setAddClicked={setAddClicked}
+            editClicked={editClicked}
+            setEditClicked={setEditClicked}
+            reloadTheGrid={reloadTheGrid}
+            projects={projects}
+            addTaskToProject={addTaskToProject}
+          ></TaskEditMenu>
         </div>
-
-        <div className="flex gap-4">
-          {deleteOpen && (
-            <div className="flex items-center justify-end gap-4 z-[5]  w-full ">
-              <p className="font-bold text-md">
-                Are you sure you want to delete ?
-              </p>
-              <div>
-                {" "}
-                <Button
-                  variant="contained"
-                  color="error"
-                  onClick={() => handleButtonDelete()}
-                >
-                  Delete
-                </Button>
-              </div>
-              <div>
-                {" "}
-                <Button
-                  variant="outlined"
-                  color="warning"
-                  onClick={() => setDeleteOpen((prev) => !prev)}
-                >
-                  Cancel
-                </Button>
-              </div>
-            </div>
-          )}
-
-          {selectedTask.length === 1 && !deleteOpen && (
-            <div className="flex gap-4">
-              <div>
-                <Button
-                  variant="outlined"
-                  color="info"
-                  onClick={() => handleButtonView()}
-                >
-                  View
-                </Button>
-              </div>
-              <div>
-                {" "}
-                <Button
-                  variant="outlined"
-                  color="warning"
-                  onClick={() => handleButtonEdit()}
-                >
-                  Edit
-                </Button>
-              </div>
-            </div>
-          )}
-          {selectedTask.length > 0 && !deleteOpen && (
-            <div>
-              {" "}
-              <Button
-                variant="contained"
-                color="error"
-                onClick={() => setDeleteOpen((prev) => !prev)}
-              >
-                Delete
-              </Button>
-            </div>
-          )}
-        </div>
-      </div>
-
-      <ProjectGrid
-        rows={rows}
-        columns={columns}
-        selection={selection}
-        selectionColumnDef={selectionColumnDef}
-        onSelectionChanged={handleOnSelectionChanged}
-      ></ProjectGrid>
-      <TaskEditMenu
-        isOpen={isOpen}
-        setIsOpen={setIsOpen}
-        toggleForm={toggleForm}
-        selectedTask={selectedTask}
-        updateTask={updateTask}
-        createTask={createTask}
-        viewClicked={viewClicked}
-        setViewClicked={setViewClicked}
-        addClicked={addClicked}
-        setAddClicked={setAddClicked}
-        editClicked={editClicked}
-        setEditClicked={setEditClicked}
-        reloadTheGrid={reloadTheGrid}
-        projects={projects}
-        addTaskToProject={addTaskToProject}
-      ></TaskEditMenu>
+      )}
     </div>
   );
 };

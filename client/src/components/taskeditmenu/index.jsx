@@ -28,6 +28,7 @@ export default function TaskEditMenu({
   reloadTheGrid,
   projects,
   addTaskToProject,
+  setReloadTaskBoard,
 }) {
   // * state
   const [taskId, setTaskId] = useState("");
@@ -149,6 +150,9 @@ export default function TaskEditMenu({
             updateTaskToProject(taskId, projectTask);
 
             reloadTheGrid();
+            if (setReloadTaskBoard) {
+              setReloadTaskBoard((prev) => !prev);
+            }
             toggleForm();
             clearAddInputs();
             setEditClicked(!editClicked);
@@ -206,14 +210,14 @@ export default function TaskEditMenu({
         try {
           const response = await createTask(addedTask);
           if (response.status === 200) {
-            // Now we have the new task ID
             const newTaskId = response.data.insertedId;
             console.log("New task ID:", newTaskId);
-
-            // Update the project with the new task ID
             updateTaskToProject(newTaskId);
 
             reloadTheGrid();
+            if (setReloadTaskBoard) {
+              setReloadTaskBoard((prev) => !prev);
+            }
             toggleForm();
             clearAddInputs();
             setAddClicked(!addClicked);
@@ -248,7 +252,7 @@ export default function TaskEditMenu({
   return (
     <div>
       <div
-        className={`fixed inset-0 bg-gray-500 bg-opacity-40 backdrop-blur-sm transition-opacity duration-300  ${
+        className={`fixed inset-0 bg-gray-500/20 backdrop-blur-sm transition-opacity duration-300  ${
           isOpen ? "opacity-100" : "opacity-0 pointer-events-none"
         }`}
         onClick={() => handleClickOff()}
