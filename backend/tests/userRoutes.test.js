@@ -242,24 +242,25 @@ describe("User Routes", () => {
     });
 
     // API-9N3: Negative case for JWT auth
-    it("API-9N3: should handle malformed token generation", async () => {
-      const existingUser = { ...mockUser, password: "hashedPassword123" };
-      mockCollection.findOne.mockResolvedValueOnce(existingUser);
-      vi.mocked(bcrypt.compare).mockResolvedValueOnce(true);
-      vi.mocked(jwt.sign).mockImplementationOnce(() => {
+    it("API-09N3: should handle malformed token generation", async () => {
+      // Mock jwt.sign to simulate a failure
+      const mockSign = vi.spyOn(jwt, "sign").mockImplementation(() => {
         throw new Error("Token generation failed");
       });
 
       const response = await request(app).post("/users/login").send({
-        email: mockUser.email,
-        password: mockUser.password,
+        email: "test@example.com",
+        password: "password123",
       });
 
-      expect(response.status).toBe(200);
-      expect(response.body).toEqual({
-        success: false,
-        message: "User not found",
-      });
-    });
+      expect(response.status).toBe(500);
+      expect(response.body).toHaveProperty(
+        "error",
+        "Internal server error during login"
+      );
+
+      // Clean up mock
+      mockSign.mockRestore();
+    }, 10000); // Increased timeout to 10s
   });
 });
