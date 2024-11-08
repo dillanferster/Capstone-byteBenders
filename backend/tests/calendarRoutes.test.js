@@ -47,8 +47,8 @@ describe("Calendar Routes", () => {
     vi.clearAllMocks();
   });
 
-  // Existing test cases
   describe("GET /events", () => {
+    // CM007: View Event Details (All Events)
     it("should return all events", async () => {
       mockCollection.toArray.mockResolvedValue([mockEvent]);
 
@@ -58,6 +58,7 @@ describe("Calendar Routes", () => {
       expect(response.body).toEqual([mockEvent]);
     });
 
+    // CM014: View Events (Edge - Empty Calendar)
     it("should return empty array when no events exist", async () => {
       mockCollection.toArray.mockResolvedValue([]);
 
@@ -67,7 +68,7 @@ describe("Calendar Routes", () => {
       expect(response.body).toEqual([]);
     });
 
-    // CM014: Test empty calendar handling
+    // CM014: View Events (Edge - Empty Calendar)
     it("should handle empty calendar gracefully", async () => {
       mockCollection.toArray.mockResolvedValue([]);
 
@@ -77,10 +78,20 @@ describe("Calendar Routes", () => {
       expect(response.body).toEqual([]);
       expect(Array.isArray(response.body)).toBe(true);
     });
+
+    // CM018: Server Error Handling
+    it("should handle server error when fetching events", async () => {
+      mockCollection.toArray.mockRejectedValue(new Error("Database error"));
+
+      const response = await request(app).get("/events");
+
+      expect(response.status).toBe(500);
+      expect(response.body).toEqual({ error: "Failed to fetch events" });
+    });
   });
 
   describe("GET /events/:id", () => {
-    // CM007: View Event Details
+    // CM015: Get Single Event
     it("should return complete event details by id", async () => {
       mockCollection.findOne.mockResolvedValue(mockEvent);
 
@@ -96,6 +107,7 @@ describe("Calendar Routes", () => {
       expect(response.body).toHaveProperty("participants");
     });
 
+    // CM015: Get Single Event (Not Found)
     it("should return 404 when event not found", async () => {
       mockCollection.findOne.mockResolvedValue(null);
 
@@ -250,6 +262,7 @@ describe("Calendar Routes", () => {
       expect(response.body).toEqual(rangeEvents);
     });
 
+    // CM016: Empty Date Range
     it("should handle empty date range", async () => {
       mockCollection.toArray.mockResolvedValue([]);
 
@@ -277,6 +290,7 @@ describe("Calendar Routes", () => {
       expect(response.body).toEqual(participantEvents);
     });
 
+    // CM017: Empty Participant Events
     it("should return empty array when participant has no events", async () => {
       mockCollection.toArray.mockResolvedValue([]);
 

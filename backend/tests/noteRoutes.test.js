@@ -106,7 +106,7 @@ describe("Note Routes", () => {
         content: "",
         createdBy: mockNote.createdBy,
         dateCreated: mockNote.dateCreated,
-        updatedAt: mockNote.dateUpdated
+        updatedAt: mockNote.dateUpdated,
       };
 
       const response = await request(app)
@@ -115,8 +115,8 @@ describe("Note Routes", () => {
         .timeout(10000);
 
       expect(response.status).toBe(400);
-      expect(response.body).toEqual({ 
-        error: "Note title and content cannot be empty" 
+      expect(response.body).toEqual({
+        error: "Note title and content cannot be empty",
       });
     });
 
