@@ -33,7 +33,7 @@ import {
 } from "../../api.js";
 import ProjectGrid from "../../components/projectgrid/index.jsx";
 import EditMenu from "../../components/editmenu/index.jsx";
-import ProjectGantt from "../../components/ProjectGantt.jsx";
+import ProjectGantt from "../../components/GanttChart/ProjectGantt.jsx";
 //
 
 // columns for AG grid

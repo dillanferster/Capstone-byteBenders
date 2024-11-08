@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { Gantt, ViewMode } from "gantt-task-react";
 import "gantt-task-react/dist/index.css";
-
+import ViewSwitcher from "./ViewSwitcher";
 const ProjectGantt = ({ projects: projectsProp }) => {
   const [tasks, setTasks] = useState([]);
   const [viewMode, setViewMode] = useState(ViewMode.Week);
-
+  const [isChecked, setIsChecked] = useState(true);
   useEffect(() => {
     if (!projectsProp || projectsProp.length === 0) {
       setTasks([
@@ -24,8 +24,14 @@ const ProjectGantt = ({ projects: projectsProp }) => {
 
     const ganttTasks = projectsProp.map((project) => {
       const startDate = new Date(project.dateCreated);
-      const endDate = new Date(startDate);
-      endDate.setDate(endDate.getDate() + 7);
+      let endDate;
+
+      if (project.projectStatus === "Completed") {
+        endDate = new Date();
+      } else {
+        endDate = new Date(startDate);
+        endDate.setDate(endDate.getDate() + 14);
+      }
 
       return {
         start: startDate,
@@ -41,8 +47,10 @@ const ProjectGantt = ({ projects: projectsProp }) => {
             : 0,
         isDisabled: false,
         styles: {
-          progressColor: "#ffbb54",
-          progressSelectedColor: "#ff9e0d",
+          progressColor:
+            project.projectStatus === "Completed" ? "#4caf50" : "#ffbb54",
+          progressSelectedColor:
+            project.projectStatus === "Completed" ? "#45a049" : "#ff9e0d",
         },
       };
     });
@@ -78,7 +86,7 @@ const ProjectGantt = ({ projects: projectsProp }) => {
     <div style={{ padding: "20px" }}>
       <div
         style={{
-          height: "500px",
+          height: "700px",
           backgroundColor: "#fff",
           border: "1px solid #ddd",
           borderRadius: "8px",
@@ -86,6 +94,11 @@ const ProjectGantt = ({ projects: projectsProp }) => {
           overflow: "auto",
         }}
       >
+        <ViewSwitcher
+          onViewModeChange={(viewMode) => setViewMode(viewMode)}
+          onViewListChange={setIsChecked}
+          isChecked={isChecked}
+        />
         <Gantt
           tasks={tasks}
           viewMode={viewMode}
@@ -95,27 +108,6 @@ const ProjectGantt = ({ projects: projectsProp }) => {
           listCellWidth={"155px"}
           columnWidth={60}
         />
-      </div>
-
-      <div style={{ marginTop: "20px" }}>
-        <button
-          className="px-4 py-2 mx-2 bg-blue-500 text-white rounded"
-          onClick={() => setViewMode(ViewMode.Day)}
-        >
-          Day
-        </button>
-        <button
-          className="px-4 py-2 mx-2 bg-blue-500 text-white rounded"
-          onClick={() => setViewMode(ViewMode.Week)}
-        >
-          Week
-        </button>
-        <button
-          className="px-4 py-2 mx-2 bg-blue-500 text-white rounded"
-          onClick={() => setViewMode(ViewMode.Month)}
-        >
-          Month
-        </button>
       </div>
     </div>
   );
