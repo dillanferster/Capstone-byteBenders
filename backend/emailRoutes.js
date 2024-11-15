@@ -74,9 +74,9 @@ emailRoutes.route("/email-inbox/callback").get(async (req, res) => {
     // Not sure how this should be handled in the production environment
     res.cookie("accessToken", response.accessToken, {
       httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      sameSite: "strict",
-      maxAge: 3600000, // 1 hour (in milliseconds)
+      secure: process.env.NODE_ENV === "production", // // only use secure connection in production environment
+      sameSite: "strict", // prevents cookie to be sent with corss-site request - prevent CSRF attacks (forgery)
+      maxAge: 3600000, // 1 hour (in milliseconds) - cookie expiration duration
     });
 
     res.redirect("http://localhost:5173/email-inbox/"); // Redirect user to the main email inbox page
