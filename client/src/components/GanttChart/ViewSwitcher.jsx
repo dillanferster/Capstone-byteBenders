@@ -15,7 +15,7 @@ const ViewSwitcher = ({ onViewModeChange, onViewListChange, isChecked }) => {
         alignItems: "center",
       }}
     >
-      <div style={{ marginTop: "20px" }}>
+      <div>
         <button
           className="px-4 py-2 mx-2 bg-blue-500 text-white rounded"
           onClick={() => onViewModeChange(ViewMode.Day)}
@@ -36,9 +36,9 @@ const ViewSwitcher = ({ onViewModeChange, onViewListChange, isChecked }) => {
         </button>
         <button
           className="px-4 py-2 mx-2 bg-blue-500 text-white rounded"
-          onClick={() => onViewModeChange(ViewMode.QuarterYear)}
+          onClick={() => onViewModeChange(ViewMode.Year)}
         >
-          Quarter Year
+          Year
         </button>
 
         {/* Show Task List */}

@@ -2,10 +2,13 @@ import React, { useState, useEffect } from "react";
 import { Gantt, ViewMode } from "gantt-task-react";
 import "gantt-task-react/dist/index.css";
 import ViewSwitcher from "./ViewSwitcher";
+
 const ProjectGantt = ({ projects: projectsProp }) => {
   const [tasks, setTasks] = useState([]);
   const [viewMode, setViewMode] = useState(ViewMode.Week);
   const [isChecked, setIsChecked] = useState(true);
+  const [viewDate, setViewDate] = useState(new Date());
+
   useEffect(() => {
     if (!projectsProp || projectsProp.length === 0) {
       setTasks([
@@ -22,38 +25,50 @@ const ProjectGantt = ({ projects: projectsProp }) => {
       return;
     }
 
-    const ganttTasks = projectsProp.map((project) => {
-      const startDate = new Date(project.dateCreated);
-      let endDate;
+    const ganttTasks = projectsProp
+      .map((project) => {
+        const [year, month, day] = project.dateCreated.split("-").map(Number);
+        const startDate = new Date(Date.UTC(year, month - 1, day));
 
-      if (project.projectStatus === "Completed") {
-        endDate = new Date();
-      } else {
-        endDate = new Date(startDate);
-        endDate.setDate(endDate.getDate() + 14);
-      }
+        if (isNaN(startDate.getTime())) {
+          console.error(
+            `Invalid date for project ${project.projectName}:`,
+            project.dateCreated
+          );
+          return null;
+        }
 
-      return {
-        start: startDate,
-        end: endDate,
-        name: project.projectName,
-        id: project._id,
-        type: "task",
-        progress:
-          project.projectStatus === "Completed"
-            ? 100
-            : project.projectStatus === "In Progress"
-            ? 50
-            : 0,
-        isDisabled: false,
-        styles: {
-          progressColor:
-            project.projectStatus === "Completed" ? "#4caf50" : "#ffbb54",
-          progressSelectedColor:
-            project.projectStatus === "Completed" ? "#45a049" : "#ff9e0d",
-        },
-      };
-    });
+        let endDate;
+
+        if (project.projectStatus === "Completed") {
+          endDate = new Date();
+        } else {
+          endDate = new Date(startDate);
+          endDate.setDate(endDate.getDate() + 14);
+        }
+
+        return {
+          start: startDate,
+          end: endDate,
+          name: project.projectName,
+          id: project._id,
+          type: "task",
+          progress:
+            project.projectStatus === "Completed"
+              ? 100
+              : project.projectStatus === "In Progress"
+              ? 50
+              : 0,
+          isDisabled: false,
+          styles: {
+            progressColor:
+              project.projectStatus === "Completed" ? "#4caf50" : "#ffbb54",
+            progressSelectedColor:
+              project.projectStatus === "Completed" ? "#45a049" : "#ff9e0d",
+          },
+        };
+      })
+      .filter((task) => task !== null);
 
     const validTasks = ganttTasks.filter(
       (task) =>
@@ -102,11 +117,13 @@ const ProjectGantt = ({ projects: projectsProp }) => {
         <Gantt
           tasks={tasks}
           viewMode={viewMode}
+          viewDate={viewDate}
           onDateChange={handleTaskChange}
           onProgressChange={handleProgressChange}
           onSelect={handleSelect}
           listCellWidth={"155px"}
           columnWidth={60}
+          locale="en"
         />
       </div>
     </div>
