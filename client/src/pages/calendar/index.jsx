@@ -106,12 +106,21 @@ const Calendar = () => {
 
   const handleAddEvent = async (eventData) => {
     try {
-      // console.log(eventData);
       const response = await createCalendarEvent(eventData);
 
-      console.log("RESPONSE: " + response);
-
       if (!response.status === 200) throw new Error("Failed to create event");
+
+      // Add the new event to currentEvents
+      const newEvent = {
+        id: response.data._id, // Assuming your API returns the created event data
+        title: eventData.title,
+        start: new Date(eventData.start),
+        end: new Date(eventData.end),
+        description: eventData.description,
+        meetingLink: eventData.meetingLink,
+        participants: eventData.participants,
+      };
+      setCurrentEvents((prev) => [...prev, newEvent]);
 
       showAlert("Event created successfully");
       setModalOpen(false);
