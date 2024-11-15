@@ -71,29 +71,27 @@ const secretKey = process.env.SECRET_KEY;
  * @param {Object} response - JSON response containing the newly created user object or error message.
  */
 userRoutes.route("/users").post(verifyToken, async (request, response) => {
-  try {
-    let db = getDb();
+  let db = getDb();
 
-    // Hash is algorithmically turning a password into ciphertext, or an irreversibly obfuscated version of itself that can be stored in a database
-    // One-way process, meaning that the original password cannot be retrieved from the hash.
-    // Security measure to protect user passwords from being exposed in the event of a data breach.
-    // Blocking against the threat of password breaches
+  // Hash is algorithmically turning a password into ciphertext, or an irreversibly obfuscated version of itself that can be stored in a database
+  // One-way process, meaning that the original password cannot be retrieved from the hash.
+  // Security measure to protect user passwords from being exposed in the event of a data breach.
+  // Blocking against the threat of password breaches
+  const hash = await bcrypt.hash(request.body.password, SALT_ROUNDS);
 
-    // Check if the email is already taken by querying the users collection
-    // findOne() method to find a single document that matches the specified criteria
-    const takenEmail = await db
-      .collection("users")
-      .findOne({ email: request.body.email });
+  // Check if the email is already taken by querying the users collection
+  // findOne() method to find a single document that matches the specified criteria
+  const takenEmail = await db
+    .collection("users")
+    .findOne({ email: request.body.email });
 
-    if (takenEmail) {
-      return response
-        .status(409)
-        .json({ message: "Email already in use. Please enter another email." });
-    }
-
-    // Hash the password
-    const hash = await bcrypt.hash(request.body.password, SALT_ROUNDS);
-
+  // If email exists, return a 409 status code with a message
+  if (takenEmail) {
+    return response
+      .status(409)
+      .json({ message: "Email already in use. Please enter another email." });
+  } else {
+    // Prepare the new user object with hashed password and the current date as joinDate
     let mongoObject = {
       fname: request.body.fname,
       lname: request.body.lname,
@@ -102,18 +100,9 @@ userRoutes.route("/users").post(verifyToken, async (request, response) => {
       role: request.body.role,
       joinDate: new Date(),
     };
-
-    // Insert the user
+    // Insert the user object into the MongoDB users collection
     let data = await db.collection("users").insertOne(mongoObject);
     response.json(data);
-  } catch (error) {
-    if (error.message.includes("hash")) {
-      return response.status(500).json({ message: "Error creating user" });
-    }
-    if (error.message.includes("Insert failed")) {
-      return response.status(500).json({ message: "Failed to create user" });
-    }
-    response.status(500).json({ message: "Database error occurred" });
   }
 });
 
