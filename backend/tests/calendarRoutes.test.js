@@ -22,9 +22,9 @@ const mockDb = {
   collection: vi.fn(() => mockCollection),
 };
 
-// Mock the connect module
+// Mock the connect module - THIS IS THE KEY CHANGE
 vi.mock("../connect.js", () => ({
-  getDb: () => mockDb,
+  getDb: () => mockDb, // Export the getDb function directly
 }));
 
 // Mock auth middleware
