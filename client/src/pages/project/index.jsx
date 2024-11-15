@@ -26,6 +26,7 @@ import { Button, fabClasses } from "@mui/material";
 // database functions from api file
 import {
   getProjects,
+  getTasks,
   getProject,
   createProject,
   updateProject,
@@ -34,6 +35,7 @@ import {
 import ProjectGrid from "../../components/projectgrid/index.jsx";
 import EditMenu from "../../components/editmenu/index.jsx";
 import ProjectGantt from "../../components/GanttChart/ProjectGantt.jsx";
+
 //
 
 // columns for AG grid
@@ -114,9 +116,11 @@ const columns = [
 const ProjectPage = () => {
   //* state
   const [projects, setProjects] = useState([]); // Loaded projects from database
+  const [tasks, setTasks] = useState([]); // Loaded tasks from database
   const [isLoading, setIsLoading] = useState(); // state for loading
   const [selectedProject, setSelectedProject] = useState([]); // selected project array, when users click on projects in data table
   const [reloadGrid, setReloadGrid] = useState(false); // to update grid rows
+  const [reloadGantt, setReloadGantt] = useState(false); // to update gantt chart
   const [isOpen, setIsOpen] = useState(false); // for edit  menu
   const [viewClicked, setViewClicked] = useState(false); // for view button
   const [addClicked, setAddClicked] = useState(false); // for add button
@@ -200,6 +204,10 @@ const ProjectPage = () => {
     setReloadGrid(!reloadGrid);
   };
 
+  const reloadTheGantt = () => {
+    setReloadGantt(!reloadGantt);
+  };
+
   // function handles view button
   // calls toggleForm
   function handleButtonView() {
@@ -258,8 +266,17 @@ const ProjectPage = () => {
       }
     }
 
+    async function loadAllTasks() {
+      const data = await getTasks();
+      if (data) {
+        setTasks(data);
+        setIsLoading(false);
+      }
+    }
+
     loadAllProjects();
-  }, [reloadGrid]);
+    loadAllTasks();
+  }, [reloadGrid, reloadGantt]);
 
   return (
     <div className=" p-[1rem]  ">
@@ -372,7 +389,7 @@ const ProjectPage = () => {
           />
         </>
       ) : (
-        <ProjectGantt projects={projects} />
+        <ProjectGantt projects={projects} tasks={tasks} />
       )}
     </div>
   );
