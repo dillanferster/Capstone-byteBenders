@@ -83,8 +83,8 @@ const Calendar = () => {
   };
 
   const handleDateClick = (selected) => {
-    // Parse the selected date
-    const startDateTime = new Date(selected.startStr);
+    // Parse the selected date while preserving the actual selected date
+    const startDateTime = new Date(selected.start);
     startDateTime.setHours(9, 0, 0, 0);
     const endDateTime = new Date(startDateTime.getTime() + 60 * 60 * 1000);
 
