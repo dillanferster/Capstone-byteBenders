@@ -84,39 +84,24 @@ taskRoutes.route("/tasks/:id").get(verifyToken, async (request, response) => {
 // Authenticated route, verifyToken middleware is called before the async function is executed
 // References for this file are from  https://www.youtube.com/watch?v=Jcs_2jNPgtE&t=8033s
 taskRoutes.route("/tasks").post(verifyToken, async (request, response) => {
-  try {
-    let db = database.getDb();
-    
-    // Check for existing task with same name
-    const existingTask = await db.collection("FrankTask").findOne({ 
-      taskName: request.body.taskName 
-    });
-    
-    if (existingTask) {
-      return response.status(400).json({ error: "Task name already exists" });
-    }
-
-    let mongoObject = {
-      assignedTo: request.body.assignedTo,
-      taskName: request.body.taskName,
-      taskStatus: request.body.taskStatus,
-      priority: request.body.priority,
-      taskCategory: request.body.taskCategory,
-      startDate: request.body.startDate,
-      dueDate: request.body.dueDate,
-      projectStatus: request.body.projectStatus,
-      projectTask: request.body.projectTask,
-      addChronicles: request.body.addChronicles,
-      taskDesc: request.body.taskDesc,
-      attachments: request.body.attachments,
-      chroniclesComplete: request.body.chroniclesComplete,
-    };
-    
-    let data = await db.collection("FrankTask").insertOne(mongoObject);
-    response.json(data);
-  } catch (error) {
-    response.status(500).json({ error: error.message });
-  }
+  let db = database.getDb();
+  let mongoObject = {
+    assignedTo: request.body.assignedTo,
+    taskName: request.body.taskName,
+    taskStatus: request.body.taskStatus,
+    priority: request.body.priority,
+    taskCategory: request.body.taskCategory,
+    startDate: request.body.startDate,
+    dueDate: request.body.dueDate,
+    projectStatus: request.body.projectStatus,
+    projectTask: request.body.projectTask,
+    addChronicles: request.body.addChronicles,
+    taskDesc: request.body.taskDesc,
+    attachments: request.body.attachments,
+    chroniclesComplete: request.body.chroniclesComplete,
+  };
+  let data = await db.collection("FrankTask").insertOne(mongoObject);
+  response.json(data);
 });
 
 // update one / PUT
