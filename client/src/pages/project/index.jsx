@@ -33,6 +33,7 @@ import {
 } from "../../api.js";
 import ProjectGrid from "../../components/projectgrid/index.jsx";
 import EditMenu from "../../components/editmenu/index.jsx";
+import ProjectGantt from "../../components/GanttChart/ProjectGantt.jsx";
 //
 
 // columns for AG grid
@@ -121,6 +122,7 @@ const ProjectPage = () => {
   const [addClicked, setAddClicked] = useState(false); // for add button
   const [editClicked, setEditClicked] = useState(false); // for add button
   const [deleteOpen, setDeleteOpen] = useState(false); // for dlt btn
+  const [showGantt, setShowGantt] = useState(false); // Add this new state
 
   //*
 
@@ -262,13 +264,22 @@ const ProjectPage = () => {
   return (
     <div className=" p-[1rem]  ">
       <div className=" p-[1rem] flex justify-between   w-full">
-        <Button
-          variant="contained"
-          color="success"
-          onClick={() => handleButtonAdd()}
-        >
-          Add project
-        </Button>
+        <div className="flex gap-4">
+          <Button
+            variant="contained"
+            color="success"
+            onClick={() => handleButtonAdd()}
+          >
+            Add project
+          </Button>
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={() => setShowGantt(!showGantt)}
+          >
+            {showGantt ? "Show Table View" : "Show Gantt View"}
+          </Button>
+        </div>
         <div className="flex gap-4">
           {deleteOpen && (
             <div className="flex items-center justify-end gap-4 z-[5]  w-full ">
@@ -335,28 +346,34 @@ const ProjectPage = () => {
         </div>
       </div>
 
-      <ProjectGrid
-        rows={rows}
-        columns={columns}
-        selection={selection}
-        selectionColumnDef={selectionColumnDef}
-        onSelectionChanged={handleOnSelectionChanged}
-      ></ProjectGrid>
-      <EditMenu
-        isOpen={isOpen}
-        setIsOpen={setIsOpen}
-        toggleForm={toggleForm}
-        selectedProject={selectedProject}
-        updateProject={updateProject}
-        createProject={createProject}
-        viewClicked={viewClicked}
-        setViewClicked={setViewClicked}
-        addClicked={addClicked}
-        setAddClicked={setAddClicked}
-        editClicked={editClicked}
-        setEditClicked={setEditClicked}
-        reloadTheGrid={reloadTheGrid}
-      ></EditMenu>
+      {!showGantt ? (
+        <>
+          <ProjectGrid
+            rows={rows}
+            columns={columns}
+            selection={selection}
+            selectionColumnDef={selectionColumnDef}
+            onSelectionChanged={handleOnSelectionChanged}
+          />
+          <EditMenu
+            isOpen={isOpen}
+            setIsOpen={setIsOpen}
+            toggleForm={toggleForm}
+            selectedProject={selectedProject}
+            updateProject={updateProject}
+            createProject={createProject}
+            viewClicked={viewClicked}
+            setViewClicked={setViewClicked}
+            addClicked={addClicked}
+            setAddClicked={setAddClicked}
+            editClicked={editClicked}
+            setEditClicked={setEditClicked}
+            reloadTheGrid={reloadTheGrid}
+          />
+        </>
+      ) : (
+        <ProjectGantt projects={projects} />
+      )}
     </div>
   );
 };
