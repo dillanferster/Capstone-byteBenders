@@ -10,22 +10,31 @@
  *
  *  */
 
-import connect from "./connect.js"; // imports ./connect file from backend, saves it in the database variable
-import express from "express"; // imports express object from the npm i express, saves it in in express variable
-import cors from "cors"; // imports cors from npm i cors
-import projects from "./projectRoutes.js"; // imports projectRoutes file
-import tasks from "./taskRoutes.js"; // imports projectRoutes file
-import users from "./userRoutes.js"; // imports userRoutes file
-import notes from "./noteRoutes.js"; // imports noteRoutes file
-import session from "express-session"; // imports session management
-import emails from "./emailRoutes.js"; // imports emailRoutes
-import events from "./calendarRoutes.js"; // imports calendarRoutes
-import AWS from "aws-sdk"; // Import AWS SDK v2 (in maintenance mode). Migrate to AWS SDK for Javascript V3 later
-import cookieParser from "cookie-parser"; // Import cookie-parser
-import { config } from "dotenv"; // Load environment variables
+const connect = require("./connect"); // imports ./connect file from backend, saves it in the database variable
 
-// Configure dotenv
-config({ path: "./.env" });
+const express = require("express"); // imports express object from the npm i express, saves it in in express variable
+
+const cors = require("cors"); // imports cors from npm i cors
+
+const projects = require("./projectRoutes"); // imports projectRoutes file
+
+const tasks = require("./taskRoutes"); // imports projectRoutes file
+
+const users = require("./userRoutes"); // imports userRoutes file
+
+const notes = require("./noteRoutes"); // imports noteRoutes file
+
+const session = require("express-session"); // imports session management
+
+const emails = require("./emailRoutes"); // imports emailRoutes
+
+const events = require("./calendarRoutes"); // imports calendarRoutes
+
+const AWS = require("aws-sdk"); // Import AWS SDK v2 (in maintenance mode). Migrate to AWS SDK for Javascript V3 later
+
+const cookieParser = require("cookie-parser"); // Import cookie-parser
+
+require("dotenv").config({ path: "./.env" }); // Load environment variables
 
 const app = express(); // creates express application instance
 

@@ -1,9 +1,6 @@
 // backend/middleware/azureAuthConfig.js
-import { ConfidentialClientApplication } from "@azure/msal-node";
-import { config as dotenvConfig } from "dotenv";
-
-// Load environment variables from .env file
-dotenvConfig();
+const msal = require("@azure/msal-node");
+require("dotenv").config();
 
 const config = {
   auth: {
@@ -25,6 +22,6 @@ const config = {
 
 console.log("MSAL Config:", JSON.stringify(config, null, 2)); // Gigi debug log
 
-const cca = new ConfidentialClientApplication(config);
+const cca = new msal.ConfidentialClientApplication(config);
 
-export default cca;
+module.exports = cca;

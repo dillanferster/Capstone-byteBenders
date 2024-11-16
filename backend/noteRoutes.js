@@ -12,26 +12,20 @@
  *
  *  */
 
-// imports express object from the npm i express, saves it in in express variable
-import express from "express";
-// imports ./connect file from backend, saves it in the database variable
-import database from "./connect.js";
-// imports verifyToken function from authMiddleware file
-import { verifyToken } from "./middleware/auth.js";
-// imports dotenv , loads the environment variables from .env file
-import { config } from "dotenv";
-// imports from mongodb to convert string to object id
-import { ObjectId } from "mongodb";
-
-// Configure dotenv
-config({ path: "./.env" });
+const express = require("express"); // imports express object from the npm i express, saves it in in express variable
+const database = require("./connect"); // imports ./connect file from backend, saves it in the database variable
+const { verifyToken } = require("./middleware/auth"); // imports verifyToken function from authMiddleware file
+require("dotenv").config({ path: "./.env" }); // imports dotenv , loads the environment variables from .env file
 
 // sets the express object router function as noteRoutes variable
-const noteRoutes = express.Router();
+let noteRoutes = express.Router();
+
+// imports from mongodb to convert string to object id
+const ObjectId = require("mongodb").ObjectId;
 
 // Middleware for disabling caching
 noteRoutes.use((req, res, next) => {
-  res.set("Cache-Control", "no-store");
+  res.set('Cache-Control', 'no-store');
   next();
 });
 
@@ -40,6 +34,7 @@ noteRoutes.use((req, res, next) => {
   console.log(`${req.method} request for ${req.url}`);
   next();
 });
+
 
 // Read all / GET
 // async callback function, passes in HTTP request and response object
@@ -50,15 +45,11 @@ noteRoutes.use((req, res, next) => {
 // Authenticated route, verifyToken middleware is called before the async function is executed
 noteRoutes.route("/notes").get(verifyToken, async (request, response) => {
   try {
-    const db = database.getDb();
-
-    // Check if the client wants task notes or all notes
-    const filter = request.query.isTaskNote === "true" ? { taskId: { $ne: null } } : {};
-
-    const data = await db.collection("notes").find(filter).toArray();
+    let db = database.getDb();
+    let data = await db.collection("notes").find({}).toArray();
 
     if (data.length > 0) {
-      response.json(data); // Return notes with all fields, including taskId
+      response.json(data);
     } else {
       response.status(404).json({ message: "No notes found" });
     }
@@ -67,7 +58,6 @@ noteRoutes.route("/notes").get(verifyToken, async (request, response) => {
     response.status(500).json({ message: "Server Error" });
   }
 });
-
 
 // Read One / GET
 // async callback function, passes in HTTP request and response object
@@ -97,37 +87,18 @@ noteRoutes.route("/notes/:id").get(verifyToken, async (request, response) => {
 });
 
 //Read all notes by a specific user / GET
-// noteRoutes.route("/notes/createdBy/:userId")
-//   .get(verifyToken, async (request, response) => {
-//     try {
-//       let db = database.getDb();
-//       let data = await db
-//         .collection("notes")
-//         .find({ createdBy: request.params.userId })
-//         .toArray();
-
-//       if (data.length > 0) {
-//         response.json(data);
-//       } else {
-//         response.status(404).send("No notes found for this user");
-//       }
-//     } catch (error) {
-//       console.error("Error in GET /notes/createdBy/:userId:", error);
-//       response.status(500).json({ message: "Server Error" });
-//     }
-//   });
-noteRoutes.route("/notes").get(verifyToken, async (request, response) => {
+noteRoutes.route("/notes/createdBy/:userId").get(verifyToken, async (request, response) => {
   try {
     let db = database.getDb();
-    let data = await db.collection("notes").find({}).toArray();
+    let data = await db.collection("notes").find({ createdBy: request.params.userId }).toArray();
 
     if (data.length > 0) {
-      response.json(data); // Ensure all fields, including taskId, are sent back
+      response.json(data);
     } else {
-      response.status(404).json({ message: "No notes found" });
+      response.status(404).send("No notes found for this user");
     }
   } catch (error) {
-    console.error("Error in GET /notes:", error);
+    console.error("Error in GET /notes/createdBy/:userId:", error);
     response.status(500).json({ message: "Server Error" });
   }
 });
@@ -143,34 +114,22 @@ noteRoutes.route("/notes").get(verifyToken, async (request, response) => {
 noteRoutes.route("/notes").post(verifyToken, async (request, response) => {
   let db = database.getDb();
 
+  // Ensure you're reading the correct fields from the request body
   let mongoObject = {
-    noteTitle: request.body.title || null,
-    noteContent: request.body.content || null,
-    taskId: request.body.taskId || null, // Task notes should include taskId
-    createdBy: request.body.createdBy || null,
+    noteTitle: request.body.title,    // Make sure the frontend sends this
+    noteContent: request.body.content, // Make sure the frontend sends this
+    createdBy: request.body.createdBy, // Replace with actual user info if necessary
     dateCreated: request.body.dateCreated || new Date(),
     dateUpdated: request.body.updatedAt || new Date(),
   };
 
-  // Validate required fields
-  if (!mongoObject.noteTitle || !mongoObject.noteContent) {
-    return response.status(400).json({ message: "Title and content are required" });
-  }
-
-  // Validate task notes
-  if (mongoObject.taskId && !ObjectId.isValid(mongoObject.taskId)) {
-    return response.status(400).json({ message: "Invalid task ID for task note" });
-  }
-
   try {
     let data = await db.collection("notes").insertOne(mongoObject);
-    response.json({ acknowledged: data.acknowledged, insertedId: data.insertedId, taskId: mongoObject.taskId });
+    response.json(data);
   } catch (error) {
-    console.error("Error in POST /notes:", error);
-    response.status(500).json({ error: "Failed to create note" });
+    response.status(500).json({ error: 'Failed to create note' });
   }
 });
-
 
 // update one / PUT
 // async callback function, passes in HTTP request and response object
@@ -182,52 +141,32 @@ noteRoutes.route("/notes").post(verifyToken, async (request, response) => {
 // * new ObjectId(request.params.id), converts the id string in a MongoDb id
 // Authenticated route, verifyToken middleware is called before the async function is executed
 noteRoutes.route("/notes/:id").put(verifyToken, async (request, response) => {
-  console.log("Update request received:", request.body); // Log the incoming request body
-
-  const db = database.getDb();
-  const { id } = request.params;
-
-  // Validate ID format
-  if (!ObjectId.isValid(id)) {
-    console.error("Invalid ID format:", id);
-    return response.status(400).json({ message: "Invalid note ID." });
-  }
-
-  const mongoObject = {
-    $set: {
-      noteTitle: request.body.noteTitle?.trim() || null,
-      noteContent: request.body.noteContent?.trim() || null,
-      taskId: request.body.taskId || null,
-      dateUpdated: new Date(),
-    },
-  };
-
-  // Validate required fields
-  if (!mongoObject.$set.noteTitle || !mongoObject.$set.noteContent) {
-    console.error("Validation Error: Missing title or content.");
-    return response.status(400).json({ message: "Title and content are required." });
-  }
-
   try {
-    const result = await db
+    let db = database.getDb();
+    let mongoObject = {
+      $set: {
+        noteTitle: request.body.noteTitle,
+        noteContent: request.body.noteContent,
+        createdBy: request.body.createdBy,
+        dateCreated: request.body.dateCreated,
+        dateUpdated: new Date(),
+      },
+    };
+    let data = await db
       .collection("notes")
-      .updateOne({ _id: new ObjectId(id) }, mongoObject);
-
-    if (result.matchedCount === 0) {
-      console.error("No matching note found for ID:", id);
-      return response.status(404).json({ message: "Note not found." });
+      .updateOne({ _id: new ObjectId(request.params.id) }, mongoObject);
+    
+    if (data.modifiedCount > 0) {
+      let updatedNote = await db.collection("notes").findOne({ _id: new ObjectId(request.params.id) });
+      response.json(updatedNote);
+    } else {
+      response.status(404).json({ message: "Note not found or no changes made" });
     }
-
-    const updatedNote = await db.collection("notes").findOne({ _id: new ObjectId(id) });
-    response.json(updatedNote);
   } catch (error) {
-    console.error("Error updating note:", error);
-    response.status(500).json({ error: "Failed to update note." });
+    console.error("Error in PUT /notes/:id:", error);
+    response.status(500).json({ message: "Server Error" });
   }
 });
-
-
-
 
 // Delete One / delete
 // async callback function, passes in HTTP request and response object
@@ -237,24 +176,22 @@ noteRoutes.route("/notes/:id").put(verifyToken, async (request, response) => {
 // check to make sure data  has a value then returns response in json, if not gives an error
 // * new ObjectId(request.params.id), converts the id string in a MongoDb id
 // Authenticated route, verifyToken middleware is called before the async function is executed
-noteRoutes
-  .route("/notes/:id")
-  .delete(verifyToken, async (request, response) => {
-    try {
-      let db = database.getDb();
-      let data = await db
-        .collection("notes")
-        .deleteOne({ _id: new ObjectId(request.params.id) });
+noteRoutes.route("/notes/:id").delete(verifyToken, async (request, response) => {
+  try {
+    let db = database.getDb();
+    let data = await db
+      .collection("notes")
+      .deleteOne({ _id: new ObjectId(request.params.id) });
 
-      if (data.deletedCount > 0) {
-        response.json({ message: "Note deleted successfully" });
-      } else {
-        response.status(404).json({ message: "Note not found" });
-      }
-    } catch (error) {
-      console.error("Error in DELETE /notes/:id:", error);
-      response.status(500).json({ message: "Server Error" });
+    if (data.deletedCount > 0) {
+      response.json({ message: "Note deleted successfully" });
+    } else {
+      response.status(404).json({ message: "Note not found" });
     }
-  });
+  } catch (error) {
+    console.error("Error in DELETE /notes/:id:", error);
+    response.status(500).json({ message: "Server Error" });
+  }
+});
 
-export default noteRoutes;
+module.exports = noteRoutes;

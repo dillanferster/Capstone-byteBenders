@@ -256,7 +256,6 @@ export default function TaskEditMenu({
           isOpen ? "opacity-100" : "opacity-0 pointer-events-none"
         }`}
         onClick={() => handleClickOff()}
-        data-testid="form-background"
       />
 
       <div
@@ -298,7 +297,6 @@ export default function TaskEditMenu({
               <input
                 type="text"
                 id="taskName"
-                data-testid="taskName"
                 value={taskName}
                 onChange={(e) => setTaskName(e.target.value)}
                 className="w-full px-4 py-2 bg-gray-700 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -306,9 +304,7 @@ export default function TaskEditMenu({
                 placeholder={addClicked ? "Add task name" : ""}
               />
               {errors.taskName && (
-                <div data-testid="taskName-Error" className="text-red-600">
-                  {errors.taskName}
-                </div>
+                <div className="text-red-600">{errors.taskName}</div>
               )}
             </div>
           </div>
@@ -325,7 +321,6 @@ export default function TaskEditMenu({
               <select
                 id="projectTask"
                 value={projectTask}
-                data-testid="taskProject"
                 onChange={(e) => setProjectTask(e.target.value)}
                 className="w-full px-4 py-2 bg-gray-700 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
                 disabled={viewClicked}
@@ -342,11 +337,6 @@ export default function TaskEditMenu({
                   </option>
                 ))}
               </select>
-              {errors.projectTask && (
-                <div data-testid="taskProject-Error" className="text-red-600">
-                  {errors.projectTask}
-                </div>
-              )}
             </div>
             <div className="w-[18rem]">
               <label
@@ -358,7 +348,6 @@ export default function TaskEditMenu({
               <select
                 id="projectStatus"
                 value={projectStatus}
-                data-testid="projectStatus"
                 onChange={(e) => setProjectStatus(e.target.value)}
                 className="w-full px-4 py-2 bg-gray-700 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
                 disabled={viewClicked}
@@ -373,11 +362,6 @@ export default function TaskEditMenu({
                 <option value="Not started">Not Started</option>
                 <option value="Storage">Storage</option>
               </select>
-              {errors.projectStatus && (
-                <div data-testid="projectStatus-Error" className="text-red-600">
-                  {errors.projectStatus}
-                </div>
-              )}
             </div>
           </div>
 
@@ -393,7 +377,6 @@ export default function TaskEditMenu({
                 type="text"
                 id="assignedTo"
                 value={assignedTo}
-                data-testid="taskAssignedTo"
                 onChange={(e) => setAssignedTo(e.target.value)}
                 className="w-full px-4 py-2 bg-gray-700 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
                 required
@@ -401,12 +384,7 @@ export default function TaskEditMenu({
                 disabled={viewClicked}
               />
               {errors.assignedTo && (
-                <div
-                  className="text-red-600"
-                  data-testid="taskAssignedTo-Error"
-                >
-                  {errors.assignedTo}
-                </div>
+                <div className="text-red-600">{errors.assignedTo}</div>
               )}
             </div>
 
@@ -420,7 +398,6 @@ export default function TaskEditMenu({
               <select
                 id="taskStatus"
                 value={taskStatus}
-                data-testid="taskStatus"
                 onChange={(e) => setTaskStatus(e.target.value)}
                 className="w-full px-4 py-2 bg-gray-700 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
                 disabled={viewClicked}
@@ -448,7 +425,6 @@ export default function TaskEditMenu({
               <select
                 id="priority"
                 value={priority}
-                data-testid="taskPriority"
                 onChange={(e) => setPriority(e.target.value)}
                 className="w-full px-4 py-2 bg-gray-700 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
                 disabled={viewClicked}
@@ -462,11 +438,6 @@ export default function TaskEditMenu({
                 <option value="Medium">Medium</option>
                 <option value="Low">Low</option>
               </select>
-              {errors.priority && (
-                <div data-testid="taskPriority-Error" className="text-red-600">
-                  {errors.priority}
-                </div>
-              )}
             </div>
             <div className="w-[18rem]">
               <label
@@ -479,7 +450,6 @@ export default function TaskEditMenu({
                 type="text"
                 id="taskCategory"
                 value={taskCategory}
-                data-testid="taskCategory"
                 onChange={(e) => setTaskCategory(e.target.value)}
                 className="w-full px-4 py-2 bg-gray-700 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
                 required
@@ -487,9 +457,7 @@ export default function TaskEditMenu({
                 disabled={viewClicked}
               />
               {errors.taskCategory && (
-                <div data-testid="taskCategory-Error" className="text-red-600">
-                  {errors.taskCategory}
-                </div>
+                <div className="text-red-600">{errors.taskCategory}</div>
               )}
             </div>
           </div>
@@ -507,16 +475,13 @@ export default function TaskEditMenu({
                 type="date"
                 id="startDate"
                 value={startDate}
-                data-testid="taskStartDate"
                 onChange={(e) => setStartDate(e.target.value)}
                 className="w-full px-4 py-2 bg-gray-700 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
                 required
                 disabled={viewClicked}
               />
               {errors.startDate && (
-                <div data-testid="taskStartDate-Error" className="text-red-600">
-                  {errors.startDate}
-                </div>
+                <div className="text-red-600">{errors.startDate}</div>
               )}
             </div>
             <div className="w-[18rem]">
@@ -530,16 +495,13 @@ export default function TaskEditMenu({
                 type="date"
                 id="dueDate"
                 value={dueDate}
-                data-testid="taskDueDate"
                 onChange={(e) => setDueDate(e.target.value)}
                 className="w-full px-4 py-2 bg-gray-700 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
                 required
                 disabled={viewClicked}
               />
               {errors.dueDate && (
-                <div data-testid="taskDueDate-Error" className="text-red-600">
-                  {errors.dueDate}
-                </div>
+                <div className="text-red-600">{errors.dueDate}</div>
               )}
             </div>
           </div>
@@ -557,7 +519,6 @@ export default function TaskEditMenu({
                 type="text"
                 id="addChronicles"
                 value={addChronicles}
-                data-testid="taskChronicles"
                 onChange={(e) => setAddChronicles(e.target.value)}
                 className="w-full px-4 py-2 bg-gray-700 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
                 required
@@ -565,12 +526,7 @@ export default function TaskEditMenu({
                 disabled={viewClicked}
               />
               {errors.addChronicles && (
-                <div
-                  data-testid="taskChronicles-Error"
-                  className="text-red-600"
-                >
-                  {errors.addChronicles}
-                </div>
+                <div className="text-red-600">{errors.addChronicles}</div>
               )}
             </div>
             <div className="w-[18rem]">
@@ -583,7 +539,6 @@ export default function TaskEditMenu({
               <input
                 id="chroniclesComplete"
                 value={chroniclesComplete}
-                data-testid="taskChroniclesComplete"
                 onChange={(e) => setChroniclesComplete(e.target.value)}
                 className="w-full px-4 py-2 bg-gray-700 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
                 rows={4}
@@ -591,12 +546,7 @@ export default function TaskEditMenu({
                 disabled={viewClicked}
               />
               {errors.chroniclesComplete && (
-                <div
-                  data-testid="taskChroniclesComplete-Error"
-                  className="text-red-600"
-                >
-                  {errors.chroniclesComplete}
-                </div>
+                <div className="text-red-600">{errors.chroniclesComplete}</div>
               )}
             </div>
           </div>
@@ -611,7 +561,6 @@ export default function TaskEditMenu({
             <textarea
               id="description"
               value={taskDesc}
-              data-testid="taskDescription"
               onChange={(e) => setTaskDesc(e.target.value)}
               className="w-full px-4 py-2 bg-gray-700 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
               rows={4}
@@ -619,9 +568,7 @@ export default function TaskEditMenu({
               disabled={viewClicked}
             />
             {errors.taskDesc && (
-              <div data-testid="taskDescription-Error" className="text-red-600">
-                {errors.taskDesc}
-              </div>
+              <div className="text-red-600">{errors.taskDesc}</div>
             )}
           </div>
 
@@ -635,7 +582,6 @@ export default function TaskEditMenu({
             <input
               id="attachments"
               value={attachments}
-              data-testid="taskAttachments"
               onChange={(e) => setAttachments(e.target.value)}
               className="w-full px-4 py-2 bg-gray-700 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
               rows={4}
@@ -643,9 +589,7 @@ export default function TaskEditMenu({
               disabled={viewClicked}
             />
             {errors.attachments && (
-              <div data-testid="taskAttachments-Error" className="text-red-600">
-                {errors.attachments}
-              </div>
+              <div className="text-red-600">{errors.attachments}</div>
             )}
           </div>
 
