@@ -94,6 +94,7 @@ const EmailPage = () => {
 
   const handleEmailClick = (email) => {
     setSelectedEmail(email);
+    console.log(selectedEmail.body.content);
   };
 
   // Function to close the Email Compose dialog
