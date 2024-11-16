@@ -1,49 +1,28 @@
 import React, { useState, useEffect } from 'react';
 
 const NoteEditor = ({ currentNote, saveNote }) => {
-  const [note, setNote] = useState({ Title: '', Content: '' });
+  const [note, setNote] = useState({ noteTitle: '', noteContent: '' });
 
   // Update the note state when the currentNote prop changes
   useEffect(() => {
-    if (currentNote) {
-      // Transform the note data to match the expected structure
-      setNote({
-        _id: currentNote._id,
-        title: currentNote.noteTitle || currentNote.title,
-        content: currentNote.noteContent || currentNote.content,
-        taskId: currentNote.taskId,
-        createdBy: currentNote.createdBy,
-        dateUpdated: currentNote.dateUpdated
-      });
-    }
+    setNote(currentNote || { noteTitle: '', noteContent: '' });
   }, [currentNote]);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    const fieldName = name === 'noteTitle' ? 'title' : name === 'noteContent' ? 'content' : name;
-    
-    setNote(prevNote => ({
+    setNote((prevNote) => ({
       ...prevNote,
-      [fieldName]: value,
-      dateUpdated: new Date().toISOString()
+      [name]: value,
+      dateUpdated: new Date().toISOString(),  // Update the timestamp when note changes
     }));
   };
 
   const handleSaveClick = () => {
-    // Ensure that the note has content and proper structure
-    if (note.title.trim() || note.content.trim()) {
-      const noteToSave = {
-        _id: note._id,
-        title: note.title.trim(),
-        content: note.content.trim(),
-        taskId: note.taskId,
-        createdBy: note.createdBy,
-        dateUpdated: note.dateUpdated
-      };
-      
-      saveNote(noteToSave);
+    // Ensure that the note is not null or undefined and has content
+    if (note.noteTitle.trim() || note.noteContent.trim()) {
+      saveNote(note); // Call the saveNote function with the updated note
     } else {
-      toast.error('Note cannot be empty');
+      alert('Note cannot be empty');
     }
   };
 
@@ -52,14 +31,14 @@ const NoteEditor = ({ currentNote, saveNote }) => {
       <input
         type="text"
         name="noteTitle"
-        value={note.title || ''}
+        value={note.noteTitle || ''} // Ensure the input field is controlled
         placeholder="Note Title"
         onChange={handleInputChange}
         className="note-title-input"
       />
       <textarea
         name="noteContent"
-        value={note.content || ''}
+        value={note.noteContent || ''} // Ensure the textarea is controlled
         placeholder="Write your note here..."
         onChange={handleInputChange}
         className="note-content-textarea"

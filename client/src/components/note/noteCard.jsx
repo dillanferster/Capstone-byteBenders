@@ -1,28 +1,32 @@
 import React from 'react';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faTrash } from '@fortawesome/free-solid-svg-icons';
 
-const NoteCard = ({ note, isActive, onClick, onDelete }) => {
+const NoteCard = ({ note, onDelete, isActive, onClick }) => {
+  if (!note) return null;
+
   const handleDelete = (e) => {
     e.stopPropagation();
-    onDelete(note._id);
+    if (window.confirm('Are you sure you want to delete this note?')) {
+      onDelete(note._id);
+    }
   };
 
   return (
-    <div 
+    <div
       className={`note-item ${isActive ? 'active' : ''}`}
       onClick={onClick}
     >
       <div className="note-content">
-        <h3 className="note-title">
-          {note.noteTitle || 'Untitled'}
-          {note.taskId && <span className="note-task-badge">Task</span>}
-        </h3>
+        <h4 className="note-title">{note.noteTitle || 'Untitled'}</h4>
+        <small>{new Date(note.dateUpdated).toLocaleString()}</small> {/* Updated date */}
       </div>
-      <button 
+      <button
         className="delete-note-button"
         onClick={handleDelete}
-        aria-label="Delete note"
+        title="Delete Note"
       >
-        <i className="fas fa-trash"></i>
+        <FontAwesomeIcon icon={faTrash} />
       </button>
     </div>
   );
