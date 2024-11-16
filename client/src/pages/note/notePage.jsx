@@ -1,69 +1,75 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import Sidebar from '../../components/note/Sidebar';
+import Sidebar from '../../components/note/sidebar';
 import NoteEditor from '../../components/note/NoteEditor';
 import './NotePage.css';
 import { getNotes, createNote, updateNote, deleteNote } from '../../api';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
 
 const NotePage = () => {
   const [notes, setNotes] = useState([]);
   const [currentNoteId, setCurrentNoteId] = useState(null);
   const [isEditMode, setIsEditMode] = useState(true);
-  const [creatingNote, setCreatingNote] = useState(false); // To track the creation state
+  const [creatingNote, setCreatingNote] = useState(false);
 
   // Fetch notes from the DB
   const fetchNotes = async () => {
     try {
       const notesFromDB = await getNotes();
-      setNotes(notesFromDB || []); // Handle cases where no notes exist yet
+      const updatedNotes = notesFromDB.map(note => ({
+        ...note,
+        isTaskNote: !!note.taskId,
+      }));
+      setNotes(updatedNotes || []);
     } catch (error) {
       console.error('Error fetching notes:', error);
+      toast.error('Failed to fetch notes');
     }
   };
 
   useEffect(() => {
-    fetchNotes(); // Fetch notes on initial render
+    fetchNotes();
   }, []);
 
-  // Save note (for both updating and creating new notes)
+  // Save note (updating existing notes)
   const handleSaveNote = async (noteData) => {
-    try {
-      if (noteData && noteData._id) {
-        // Update existing note
-        const savedNote = await updateNote(noteData._id, noteData);
-        setNotes((prevNotes) =>
-          prevNotes.map((note) => (note._id === savedNote._id ? savedNote : note))
-        );
-      } else {
-        // Create new note
-        const savedNote = await createNote(noteData);
-        setNotes((prevNotes) => [savedNote, ...prevNotes]);
-        setCurrentNoteId(savedNote._id); // Select the new note
-      }
-      setCreatingNote(false); // Reset the creating state after saving
-    } catch (error) {
-      console.error('Error saving note:', error);
+    if (!noteData._id) {
+      console.error("Note ID is missing");
+      toast.error("Cannot update note: Missing ID");
+      return;
     }
-  };
-
-  // Create a new note (only one at a time)
-  const handleAddNote = async () => {
-    if (creatingNote) return; // Prevent creating multiple notes at once
 
     try {
-      setCreatingNote(true); // Set creating note state to true to prevent another creation
-      const newNote = {
-        noteTitle: 'Untitled', // Default title for new notes
-        noteContent: '', // Default content
-        dateCreated: new Date().toISOString(),
-        dateUpdated: new Date().toISOString(),
+      // Transform the note data to match the expected structure
+      const noteToUpdate = {
+        title: noteData.title || noteData.noteTitle, // Handle both property names
+        content: noteData.content || noteData.noteContent, // Handle both property names
+        taskId: noteData.taskId || null,
+        dateUpdated: new Date().toISOString()
       };
 
-      const savedNote = await createNote(newNote); // Save the new note to the DB
-      setNotes((prevNotes) => [savedNote, ...prevNotes]); // Add the new note to the list
-      setCurrentNoteId(savedNote._id); // Select the new note for editing
-      setIsEditMode(true); // Switch to edit mode
+      console.log("Sending update request with data:", noteToUpdate);
+
+      const updatedNote = await updateNote(noteData._id, noteToUpdate);
+
+      // Update the notes state with the updated note
+      setNotes(prevNotes =>
+        prevNotes.map(note =>
+          note._id === noteData._id
+            ? {
+                ...note,
+                ...updatedNote,
+                isTaskNote: !!updatedNote.taskId
+              }
+            : note
+        )
+      );
+
+      toast.success("Note updated successfully");
     } catch (error) {
-      console.error('Error creating new note:', error);
+      console.error("Error updating note:", error);
+      toast.error("Failed to update note. Please try again.");
     }
   };
 
@@ -71,25 +77,28 @@ const NotePage = () => {
   const handleDeleteNote = async (noteId) => {
     try {
       await deleteNote(noteId);
-      setNotes((prevNotes) => prevNotes.filter((note) => note._id !== noteId));
+      setNotes(prevNotes => prevNotes.filter(note => note._id !== noteId));
       if (currentNoteId === noteId) {
         setCurrentNoteId(null);
       }
+      toast.success("Note deleted successfully");
     } catch (error) {
       console.error('Error deleting note:', error);
+      toast.error('Failed to delete note');
     }
   };
 
   // Get current note for editing or preview
-  const getCurrentNote = () => notes.find((note) => note._id === currentNoteId);
+  const getCurrentNote = () => notes.find(note => note._id === currentNoteId);
 
   const addNote = (newNote) => {
     setNotes(prevNotes => [...prevNotes, newNote]);
-    setCurrentNoteId(newNote._id); // Optionally select the new note
+    setCurrentNoteId(newNote._id);
   };
 
   return (
     <div className="note-page">
+      <ToastContainer />
       <div className="note-sidebar">
         <Sidebar
           notes={notes}
@@ -122,9 +131,9 @@ const NotePage = () => {
           <div className="note-preview">
             {currentNoteId ? (
               <>
-                <h2>{getCurrentNote()?.noteTitle || 'Untitled'}</h2>
+                <h2>{getCurrentNote()?.title || getCurrentNote()?.noteTitle || 'Untitled'}</h2>
                 <div className="content">
-                  {getCurrentNote()?.noteContent || 'No content available...'}
+                  {getCurrentNote()?.content || getCurrentNote()?.noteContent || 'No content available...'}
                 </div>
               </>
             ) : (
