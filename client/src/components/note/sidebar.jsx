@@ -16,8 +16,10 @@ const Sidebar = ({ notes, currentNoteId, setCurrentNoteId, addNote, deleteNoteBy
   };
 
   // Function to handle regular note creation
-  const handleCreateNote = async (noteData) => {
-    if (!noteData.title || !noteData.content) {
+// Function to handle regular note creation
+const handleCreateNote = async (noteData) => {
+  try {
+    if (!noteData.title.trim() || !noteData.content.trim()) {
       alert('Title and content are required for creating a note.');
       return;
     }
@@ -28,32 +30,35 @@ const Sidebar = ({ notes, currentNoteId, setCurrentNoteId, addNote, deleteNoteBy
       taskId: null, // Regular notes have no taskId
     };
 
-    try {
-      const response = await createNote(noteToCreate);
+    const response = await createNote(noteToCreate);
 
-      if (response && response.acknowledged && response.insertedId) {
-        const createdNote = {
-          ...noteToCreate,
-          _id: response.insertedId,
-        };
+    if (response && response.acknowledged && response.insertedId) {
+      const createdNote = {
+        ...noteToCreate,
+        _id: response.insertedId,
+        noteTitle: noteToCreate.title, // Ensure title is set
+        noteContent: noteToCreate.content, // Ensure content is set
+      };
 
-        addNote(createdNote); // Add new note to state
-        setShowCreateForm(false); // Close the form
-        showNotification('Note created successfully', 'success');
-      } else {
-        console.error('Failed to create note:', response);
-        showNotification('Failed to create note. Please check the server response.', 'error');
-      }
-    } catch (error) {
-      console.error('Error creating note:', error);
-      showNotification('An error occurred while creating the note. Please try again.', 'error');
+      addNote(createdNote); // Add the note to the state
+      setShowCreateForm(false);
+      showNotification('Note created successfully', 'success');
+    } else {
+      alert('Failed to create note. Please check the server response.');
+      showNotification('Failed to create note. Please check the server response.', 'error');
     }
-  };
+  } catch (error) {
+    console.error('Error creating note:', error);
+    alert('An error occurred while creating the note. Please try again.');
+    showNotification('An error occurred while creating the note. Please try again.', 'error');
+  }
+};
 
-  // Function to handle task note creation
-  const handleCreateTaskNote = async (noteData) => {
-    if (!noteData.title || !noteData.content || !noteData.taskId) {
-      alert('Task note requires a title, content, and a valid task ID.');
+// Function to handle task note creation
+const handleCreateTaskNote = async (noteData) => {
+  try {
+    if (!noteData.title.trim() || !noteData.content.trim() || !noteData.taskId) {
+      alert("Task note requires a title, content, and a valid task ID.");
       return;
     }
 
@@ -63,27 +68,31 @@ const Sidebar = ({ notes, currentNoteId, setCurrentNoteId, addNote, deleteNoteBy
       taskId: noteData.taskId, // Ensure taskId is passed correctly
     };
 
-    try {
-      const response = await createNote(noteToCreate);
+    const response = await createNote(noteToCreate);
 
-      if (response && response.acknowledged && response.insertedId) {
-        const createdTaskNote = {
-          ...noteToCreate,
-          _id: response.insertedId,
-        };
+    if (response && response.acknowledged && response.insertedId) {
+      const createdTaskNote = {
+        ...noteToCreate,
+        _id: response.insertedId,
+        noteTitle: noteToCreate.title, // Ensure title is set
+        noteContent: noteToCreate.content, // Ensure content is set
+      };
 
-        addNote(createdTaskNote); // Add new task note to state
-        setShowTaskNoteForm(false); // Close the form
-        showNotification('Task note created successfully', 'success');
-      } else {
-        console.error('Failed to create task note:', response);
-        showNotification('Failed to create task note. Please check the server response.', 'error');
-      }
-    } catch (error) {
-      console.error('Error creating task note:', error);
-      showNotification('An error occurred while creating the task note. Please try again.', 'error');
+      addNote(createdTaskNote); // Add the note to the state
+      setShowTaskNoteForm(false);
+      showNotification('Task note created successfully', 'success');
+    } else {
+      alert("Failed to create task note.");
+      showNotification('Failed to create task note.', 'error');
     }
-  };
+  } catch (error) {
+    console.error("Error creating task note:", error);
+    alert("Failed to create task note. Please try again.");
+    showNotification('Failed to create task note. Please try again.', 'error');
+  }
+};
+
+
 
   return (
     <div className="note-sidebar">
