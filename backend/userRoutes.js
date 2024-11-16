@@ -34,16 +34,29 @@
  * @module userRoutes
  */
 
-const express = require("express"); // import express for router
-const database = require("./connect"); // import connection to database from ./connect file
-const ObjectId = require("mongodb").ObjectId; // import from mongodb to convert string to object id
-const bcrypt = require("bcrypt"); // bcrypt import for password hashing and comparison
-const jwt = require("jsonwebtoken"); // import for for token generation and verification
-require("dotenv").config({ path: "./.env" }); // import .env file for secret key
-const { verifyToken } = require("./middleware/auth"); // import verifyToken function from auth.js
+// import express for router
+import express from "express";
+// import connection to database from ./connect file
+import { getDb } from "./connect.js";
 
-let userRoutes = express.Router(); // create router for user routes. What is Router??
-const SALT_ROUNDS = 10; // number of rounds to generate salt for password hashing
+// import from mongodb to convert string to object id
+import { ObjectId } from "mongodb";
+// bcrypt import for password hashing and comparison
+import bcrypt from "bcrypt";
+// import for for token generation and verification
+import jwt from "jsonwebtoken";
+// import .env file for secret key
+import { config } from "dotenv";
+// import verifyToken function from auth.js
+import { verifyToken } from "./middleware/auth.js";
+
+// Configure dotenv
+config({ path: "./.env" });
+
+// create router for user routes. What is Router??
+const userRoutes = express.Router();
+// number of rounds to generate salt for password hashing
+const SALT_ROUNDS = 10;
 const secretKey = process.env.SECRET_KEY;
 
 /**
@@ -58,7 +71,7 @@ const secretKey = process.env.SECRET_KEY;
  * @param {Object} response - JSON response containing the newly created user object or error message.
  */
 userRoutes.route("/users").post(verifyToken, async (request, response) => {
-  let db = database.getDb();
+  let db = getDb();
 
   // Hash is algorithmically turning a password into ciphertext, or an irreversibly obfuscated version of itself that can be stored in a database
   // One-way process, meaning that the original password cannot be retrieved from the hash.
@@ -97,7 +110,7 @@ userRoutes.route("/users").post(verifyToken, async (request, response) => {
 // connects to database via ./connect file module function
 // goes into connection and finds item that matches the email
 userRoutes.route("/users/login").post(async (request, response) => {
-  let db = database.getDb();
+  let db = getDb();
   const user = await db
     .collection("users")
     .findOne({ email: request.body.email });
@@ -119,4 +132,4 @@ userRoutes.route("/users/login").post(async (request, response) => {
   }
 });
 
-module.exports = userRoutes;
+export default userRoutes;

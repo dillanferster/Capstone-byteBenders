@@ -7,11 +7,16 @@
  */
 
 // Import required modules
-const express = require("express"); // Import express module
-const emailRoutes = express.Router(); // Create a new expess router object
-const cca = require("./middleware/azureAuthConfig"); // import MSAL client
-require("dotenv").config({ path: "./.env" });
-// const axios = require("axios");
+import express from "express"; // Import express module
+import cca from "./middleware/azureAuthConfig.js"; // import MSAL client
+import { config } from "dotenv";
+// import axios from 'axios';
+
+// Configure dotenv
+config({ path: "./.env" });
+
+// Create a new express router object
+const emailRoutes = express.Router();
 
 /**
  * Route to initiate email authentication.
@@ -392,4 +397,4 @@ emailRoutes.route("/email-inbox/signout").get(async (req, res) => {
   }
 });
 
-module.exports = emailRoutes;
+export default emailRoutes;

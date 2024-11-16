@@ -5,12 +5,15 @@
  *  Exports as  projectRoutes
  *
  *  References for this connection file are from
- * c
+ *  https://www.youtube.com/watch?v=Jcs_2jNPgtE&t=8033s
  *
  *  */
 
-const { MongoClient, ServerApiVersion } = require("mongodb");
-require("dotenv").config({ path: "./.env" }); // imports dotenv , loads the environment variables from .env file
+import { MongoClient, ServerApiVersion } from "mongodb";
+import dotenv from "dotenv";
+
+// imports dotenv , loads the environment variables from .env file
+dotenv.config({ path: "./.env" });
 
 // Create a MongoClient with a MongoClientOptions object to set the Stable API version
 // reference  https://www.youtube.com/watch?v=Jcs_2jNPgtE&t=8033s
@@ -21,21 +24,23 @@ const client = new MongoClient(process.env.ATLAS_URI, {
     deprecationErrors: true,
   },
 });
-////
 
 let database;
 
-// can use require() to access one module.export
-// making the connection the to the database
-module.exports = {
-  // creates initail connect to database, uses the client from above and connects to "Projects db"
-  connectToServer: () => {
-    database = client.db("Capstone");
-  },
-  // returns the database object , can only call after the connect server runs
-  getDb: () => {
-    return database;
-  },
+// creates initial connect to database, uses the client from above and connects to "Projects db"
+export const connectToServer = () => {
+  database = client.db("Capstone");
+};
+
+// returns the database object , can only call after the connect server runs
+export const getDb = () => {
+  return database;
+};
+
+// Export both functions as default export for backwards compatibility
+export default {
+  connectToServer,
+  getDb,
 };
 
 // async function run() {

@@ -11,17 +11,27 @@
  *
  *  */
 
-const express = require("express"); // imports express object from the npm i express, saves it in in express variable
-const database = require("./connect"); // imports ./connect file from backend, saves it in the database variable
-const { verifyToken } = require("./middleware/auth"); // imports verifyToken function from authMiddleware file
-require("dotenv").config({ path: "./.env" }); // imports dotenv , loads the environment variables from .env file
-const AWS = require("aws-sdk"); // Import AWS SDK
+// imports express object from the npm i express, saves it in in express variable
+import express from "express";
+// imports ./connect file from backend, saves it in the database variable
+import database from "./connect.js";
+// imports verifyToken function from authMiddleware file
+import { verifyToken } from "./middleware/auth.js";
+// imports dotenv , loads the environment variables from .env file
+import { config } from "dotenv";
+// Import AWS SDK
+import AWS from "aws-sdk";
+// imports from mongodb to convert string to object id
+import { ObjectId } from "mongodb";
+
+// Configure dotenv
+config({ path: "./.env" });
 
 // sets the express object router function as projectRoutes variable
-let projectRoutes = express.Router();
+const projectRoutes = express.Router();
 
-// imports from mongodb to convert string to object id
-const ObjectId = require("mongodb").ObjectId;
+// INITIALIZING AWS COMPREHEND CLIENT
+const comprehend = new AWS.Comprehend();
 
 // Read all / GET
 // async callback function, passes in HTTP request and response object
@@ -185,9 +195,6 @@ projectRoutes
 // // Analyze email text
 // // Assuming AWS SDK is already configured in server.js
 
-// INITIALIZING AWS COMPREHEND CLIENT
-const comprehend = new AWS.Comprehend();
-
 projectRoutes
   .route("/analyze-email")
   .post(verifyToken, async (request, response) => {
@@ -260,4 +267,4 @@ projectRoutes
   });
 ////////////////////////// AWS Comprehend //////////////////////////
 
-module.exports = projectRoutes;
+export default projectRoutes;
