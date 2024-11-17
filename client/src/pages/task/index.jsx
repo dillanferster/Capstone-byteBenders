@@ -44,6 +44,9 @@ import ProjectGrid from "../../components/projectgrid/index.jsx";
 import TaskEditMenu from "../../components/taskeditmenu/index.jsx";
 import TaskBoard from "../../components/taskboard/index.jsx";
 
+import { useTheme } from "@mui/material";
+import { tokens } from "../../theme.js";
+
 //
 
 // columns for AG grid
@@ -182,6 +185,9 @@ const TaskPage = () => {
   const [boardToggled, setBoardToggled] = useState(false);
 
   const [reloadTaskBoard, setReloadTaskBoard] = useState(false);
+
+  const theme = useTheme();
+  const colors = tokens(theme.palette.mode);
 
   //*
 

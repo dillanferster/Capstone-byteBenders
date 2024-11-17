@@ -177,7 +177,7 @@ const Column = ({
 
   return (
     <div className="w-56 shrink-0 h-screen">
-      <div className="mb-3 flex items-center gap-2 border-b sticky top-0 backdrop-blur-lg border-neutral-700">
+      <div className="mb-3 flex items-center gap-2 border-b sticky top-0 z-[10] backdrop-blur-lg border-neutral-700">
         <span className="rounded text-sm text-neutral-400">
           {filteredCards.length}
         </span>
