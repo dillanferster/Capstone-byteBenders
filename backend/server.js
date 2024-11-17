@@ -1,65 +1,78 @@
-/** backend/server.js
+/** 
+ * backend/server.js
  *
- * This file creates the node server
+ * This file creates the Node.js server and sets up routes, middleware, and real-time communication using Socket.IO.
  *
- * listen for HTTP requests on port 3000
+ * The server listens for HTTP requests on port 3000.
  *
- *
- *  References for this file are from
- *  https://www.youtube.com/watch?v=Jcs_2jNPgtE&t=8033s
- *
- *  */
+ * References:
+ * https://socket.io/docs/v4/
+ * https://expressjs.com/
+ * https://www.npmjs.com/package/cors
+ */
 
-const connect = require("./connect"); // imports ./connect file from backend, saves it in the database variable
+// Import database connection module
+const connect = require("./connect");
 
-const express = require("express"); // imports express object from the npm i express, saves it in in express variable
+// Import Express framework for handling HTTP requests
+const express = require("express");
 
-const cors = require("cors"); // imports cors from npm i cors
+// Import CORS middleware to handle cross-origin requests
+const cors = require("cors");
 
-const projects = require("./projectRoutes"); // imports projectRoutes file
+// Import route handlers for different modules
+const projects = require("./projectRoutes");
+const tasks = require("./taskRoutes");
+const users = require("./userRoutes");
+const notes = require("./noteRoutes");
+const emails = require("./emailRoutes");
+const events = require("./calendarRoutes");
 
-const tasks = require("./taskRoutes"); // imports projectRoutes file
+// Import session and cookie management middleware
+const session = require("express-session");
+const cookieParser = require("cookie-parser");
 
-const users = require("./userRoutes"); // imports userRoutes file
+// Load environment variables from .env file
+require("dotenv").config({ path: "./.env" });
 
-const notes = require("./noteRoutes"); // imports noteRoutes file
+// Initialize Express application
+const app = express();
 
-const session = require("express-session"); // imports session management
+// Import HTTP and Socket.IO modules for real-time communication
+const http = require("http");
+const { Server } = require("socket.io");
+const server = http.createServer(app); // Create HTTP server
+const io = new Server(server, {
+  cors: {
+    origin: "http://localhost:5173", // Allow requests from frontend
+    methods: ["GET", "POST"], // Allow specific HTTP methods
+    credentials: true, // Allow cookies and credentials
+  },
+});
 
-const emails = require("./emailRoutes"); // imports emailRoutes
-
-const events = require("./calendarRoutes"); // imports calendarRoutes
-
-const AWS = require("aws-sdk"); // Import AWS SDK v2 (in maintenance mode). Migrate to AWS SDK for Javascript V3 later
-
-const cookieParser = require("cookie-parser"); // Import cookie-parser
-
-require("dotenv").config({ path: "./.env" }); // Load environment variables
-
-const app = express(); // creates express application instance
-
-// specifies what port the server will listen for requests on
+// Define the port the server will listen on
 const PORT = 3000;
-////////////////////////// AWS Comprehend //////////////////////////
-// // AWS SDK configuration
+
+// AWS Comprehend configuration
+const AWS = require("aws-sdk");
 AWS.config.update({
   accessKeyId: process.env.AWS_ACCESS_KEY_ID,
   secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
   region: process.env.AWS_REGION,
 });
+const comprehend = new AWS.Comprehend(); // Initialize AWS Comprehend
 
-const comprehend = new AWS.Comprehend(); // Initialize Comprehend
-////////////////////////// AWS Comprehend //////////////////////////
+/** Middleware Configuration **/
 
-// deals with cors domain information
+// Enable CORS to allow communication between frontend and backend
 app.use(
   cors({
-    origin: "http://localhost:5173", // Allow frontend to communicate with backend
-    credentials: true, // Allow cookies and sessions
+    origin: "http://localhost:5173",
+    credentials: true,
   })
 );
 
-// Initialize session middleware
+// Initialize session management
 app.use(
   session({
     secret: process.env.AZURE_CLIENT_SECRET,
@@ -72,36 +85,67 @@ app.use(
 // Use cookie-parser middleware
 app.use(cookieParser());
 
-// formats everything into json
+// Parse incoming JSON requests
 app.use(express.json());
 
-//mounting projects, makes projects available to the rest of the app
-app.use(projects);
+/** Socket.IO Real-time Communication **/
 
-//mounting tasks, makes projects available to the rest of the app
-app.use(tasks);
+// Handle Socket.IO connection events
+io.on("connection", (socket) => {
+  console.log(`New client connected: ${socket.id}`); // Log when a client connects
 
-// mounting notes, makes notes available to the rest of the app
-app.use(notes);
+  // Handle custom event 'sendNotification' from the client
+  socket.on("sendNotification", (data) => {
+    console.log("Notification data received:", data);
 
-//mounting routes, makes users available to the rest of the app
-app.use(users);
+    // Broadcast the notification to all connected clients
+    io.emit("notification", data);
+  });
 
-//mounting emailRoutes, makes emailRoutes available to the rest of the app
-app.use(emails);
-
-//mounting calendarRoutes, makes calendarRoutes available to the rest of the app
-app.use(events);
-
-// error handling middleware
-app.use((err, req, res, next) => {
-  console.error(err.stack);
-  res.status(500).send("Something broke!");
+  // Handle client disconnection
+  socket.on("disconnect", () => {
+    console.log(`Client disconnected: ${socket.id}`);
+  });
 });
 
-// creates the server and tells it to listen on PORT for requests
-// callback function runs the connect file once connection is established
-app.listen(PORT, () => {
-  connect.connectToServer();
-  console.log(`server is running on port ${PORT}`);
+// Attach Socket.IO instance to Express request object for use in routes
+app.use((req, res, next) => {
+  req.io = io;
+  next();
+});
+
+/** Mount Routes **/
+
+// Mount project routes
+app.use(projects);
+
+// Mount task routes
+app.use(tasks);
+
+// Mount note routes
+app.use(notes);
+
+// Mount user routes
+app.use(users);
+
+// Mount email routes
+app.use(emails);
+
+// Mount calendar routes
+app.use(events);
+
+/** Error Handling Middleware **/
+
+// Global error handling middleware
+app.use((err, req, res, next) => {
+  console.error(err.stack); // Log the error stack trace
+  res.status(500).send("Something broke!"); // Send generic error response
+});
+
+/** Start the Server **/
+
+// Start the server and connect to the database
+server.listen(PORT, () => {
+  connect.connectToServer(); // Initialize database connection
+  console.log(`Server is running on http://localhost:${PORT}`);
 });
