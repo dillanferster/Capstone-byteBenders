@@ -260,6 +260,7 @@ const TaskPage = () => {
     toggleForm();
     socket.emit("taskNotification", {
       message: `Task "${selectedTask[0]?.taskName}" was created.`,
+      action: "add",
     });
   }
 
@@ -271,6 +272,7 @@ const TaskPage = () => {
 
     socket.emit("taskNotification", {
       message: `Task "${selectedTask[0]?.taskName}" was edited.`,
+      action: "edit",
     });
   }
 
@@ -289,6 +291,7 @@ const TaskPage = () => {
     toggleForm();
     socket.emit("taskNotification", {
       message: `Task "${selectedTask[0]?.taskName}" was viewed.`,
+      action: "view",
     });
   }
 
