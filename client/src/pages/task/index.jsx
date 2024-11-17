@@ -43,8 +43,7 @@ import {
 import ProjectGrid from "../../components/projectgrid/index.jsx";
 import TaskEditMenu from "../../components/taskeditmenu/index.jsx";
 import TaskBoard from "../../components/taskboard/index.jsx";
-
-//
+import { useNotification } from "../../NotificationContext.jsx";
 
 // columns for AG grid
 // field: corresponds to a row with a matching property ex. field: id in column matches to id: in rows
@@ -182,6 +181,7 @@ const TaskPage = () => {
   const [boardToggled, setBoardToggled] = useState(false);
 
   const [reloadTaskBoard, setReloadTaskBoard] = useState(false);
+  const showNotification = useNotification(); 
 
   //*
 
@@ -294,6 +294,7 @@ const TaskPage = () => {
         reloadTheGrid();
         setReloadTaskBoard((prev) => !prev);
       }
+      showNotification("Task Started");
     } catch (error) {
       console.error("Error updating task Status:", error);
     }
@@ -317,6 +318,7 @@ const TaskPage = () => {
         setReloadTaskBoard((prev) => !prev);
         return selectedId;
       }
+      showNotification("Task Paused");
     } catch (error) {
       console.error("Error updating task Status:", error);
     }
@@ -338,6 +340,7 @@ const TaskPage = () => {
         reloadTheGrid();
         setReloadTaskBoard((prev) => !prev);
       }
+      showNotification("Task Resumed");
     } catch (error) {
       console.error("Error updating task Status:", error);
     }
@@ -356,6 +359,7 @@ const TaskPage = () => {
       if (response && response.status === 200) {
         reloadTheGrid();
       }
+      showNotification("Task Total Time Updated");
     } catch (error) {
       console.error("Error updating total time:", error);
     }
@@ -384,6 +388,7 @@ const TaskPage = () => {
         setReloadTaskBoard((prev) => !prev);
         return selectedId;
       }
+      showNotification("Task Completed");
     } catch (error) {
       console.error("Error updating task Status:", error);
     }
@@ -543,7 +548,7 @@ const TaskPage = () => {
           (project) => project.projectName === selectedTask[0].projectTask
         );
         console.log("project that task will be deleted from", projectMatch._id);
-
+      
         const taskObject = {
           taskId: task.id,
         };
@@ -565,6 +570,7 @@ const TaskPage = () => {
         reloadTheGrid();
         setReloadTaskBoard((prev) => !prev);
       }
+      showNotification("Task Deleted");
     }
   }
 
