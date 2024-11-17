@@ -33,7 +33,7 @@ const ObjectId = require("mongodb").ObjectId;
 // reference  https://www.youtube.com/watch?v=Jcs_2jNPgtE&t=8033s
 projectRoutes.route("/projects").get(verifyToken, async (request, response) => {
   let db = database.getDb();
-  let data = await db.collection("Frank").find({}).toArray();
+  let data = await db.collection("GigiProj").find({}).toArray();
 
   if (data.length > 0) {
     response.json(data);
@@ -57,7 +57,7 @@ projectRoutes
   .get(verifyToken, async (request, response) => {
     let db = database.getDb();
     let data = await db
-      .collection("Dillan")
+      .collection("GigiProj")
       .findOne({ _id: new ObjectId(request.params.id) });
     if (data) {
       response.json(data);
@@ -89,7 +89,7 @@ projectRoutes
       quickBaseLink: request.body.quickBaseLink,
       dateCreated: request.body.dateCreated,
     };
-    let data = await db.collection("Frank").insertOne(mongoObject);
+    let data = await db.collection("GigiProj").insertOne(mongoObject);
     response.json(data);
   });
 
@@ -120,7 +120,7 @@ projectRoutes
       },
     };
     let data = await db
-      .collection("Frank")
+      .collection("GigiProj")
       .updateOne({ _id: new ObjectId(request.params.id) }, mongoObject);
     response.json(data);
   });
@@ -138,7 +138,7 @@ projectRoutes
       $push: { TaskIdForProject: request.body.taskId },
     };
     let data = await db
-      .collection("Frank")
+      .collection("GigiProj")
       .updateOne({ _id: new ObjectId(request.params.id) }, mongoObject);
     response.json(data);
   });
@@ -157,7 +157,7 @@ projectRoutes
       $pull: { TaskIdForProject: request.body.taskId },
     };
     let data = await db
-      .collection("Frank")
+      .collection("GigiProj")
       .updateOne({ _id: new ObjectId(request.params.id) }, mongoObject);
     response.json(data);
   });
@@ -175,7 +175,7 @@ projectRoutes
   .delete(verifyToken, async (request, response) => {
     let db = database.getDb();
     let data = await db
-      .collection("Frank")
+      .collection("GigiProj")
       .deleteOne({ _id: new ObjectId(request.params.id) });
 
     response.json(data);

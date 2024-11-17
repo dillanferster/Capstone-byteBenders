@@ -1,7 +1,3 @@
-const priorityMap = { High: 3, Medium: 2, Low: 1 };
-const getDisplayOrder = (priority, startDate) => {
-  return priorityMap[priority] * 1000000 + new Date(startDate).getTime();
-};
 // Helper function to map tasks to projects
 const mapTasksToProjects = (projects, tasks) => {
   if (!Array.isArray(projects) || !Array.isArray(tasks)) {
@@ -31,25 +27,30 @@ const mapTasksToProjects = (projects, tasks) => {
           ? 100
           : project.projectStatus === "In Progress"
           ? 50
+          : project.projectStatus === "Paused"
+          ? 25
           : 0,
       type: "project",
       hideChildren: false,
-      displayOrder: 1,
     };
 
     console.log("taskIds:", taskIds);
     const projectTasks = tasks
       .filter((task) => taskIds.includes(task._id)) // Match task IDs
-      .map((task, index) => {
-        // Pass index to map
+      .map((task) => {
         // Determine task progress based on taskStatus
         const taskProgress =
           task.taskStatus === "Completed"
             ? 100
             : task.taskStatus === "In Progress"
             ? 50
+            : task.taskStatus === "Paused"
+            ? 25
             : 0;
 
+        // // Check if dependencies is an array
+        // if (Array.isArray(task.dependencies) && task.dependencies.length > 0) {
+        //   console.log("task.dependencies:", task.dependencies[0]);
         // Create the task object for Gantt chart
         return {
           start: new Date(task.startDate),
@@ -58,21 +59,35 @@ const mapTasksToProjects = (projects, tasks) => {
           id: task._id, // Assuming _id is a string
           progress: taskProgress,
           type: "task",
-          project: task.projectTask, // Reference to the project name
-          displayOrder: index + 1, // Use index for display order
+          dependencies: task.dependencies || [], // This will be in the format ["Task 0"]
         };
+        // } else {
+        //   // Create the task object for Gantt chart
+        //   return {
+        //     start: new Date(task.startDate),
+        //     end: new Date(task.dueDate),
+        //     name: task.taskName,
+        //     id: task._id, // Assuming _id is a string
+        //     progress: taskProgress,
+        //     type: "task",
+        //     project: task.projectTask, // Reference to the project name
+        //   };
+        // }
       });
 
-    console.log("projectTasks:", projectTasks);
-    console.log("ganttProject:", ganttProject);
-    console.log(
-      "Task IDs before filtering:",
-      tasks.map((task) => task._id)
-    );
-    console.log(
-      "Filtered projectTasks:",
-      projectTasks.map((task) => task.id)
-    );
+    // Check if there are no tasks and add a placeholder task
+    if (projectTasks.length === 0) {
+      projectTasks.push({
+        start: ganttProject.start,
+        end: ganttProject.start,
+        name: "No task in project", // Placeholder message
+        id: `${ganttProject.id}-no-tasks`, // Unique ID for the placeholder
+        progress: 0,
+        type: "task",
+        dependencies: [],
+        project: ganttProject.name, // Reference to the project name
+      });
+    }
 
     return { ganttProject, projectTasks };
   });

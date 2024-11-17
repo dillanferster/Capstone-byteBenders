@@ -159,6 +159,20 @@ const columns = [
     floatingFilter: true,
     editable: false,
   },
+  {
+    field: "dependencies",
+    headerName: "Dependencies ID",
+    filter: true,
+    floatingFilter: true,
+    editable: false,
+  },
+  {
+    field: "dependenciesName",
+    headerName: "Dependencies name",
+    filter: true,
+    floatingFilter: true,
+    editable: false,
+  },
 ];
 
 const TaskPage = () => {
@@ -215,6 +229,8 @@ const TaskPage = () => {
         startTime: task.startTime,
         completeTime: task.completeTime,
         totalTime: task.totalTime,
+        dependencies: task.dependencies,
+        dependenciesName: "",
         chroniclesComplete: task.chroniclesComplete,
       })),
     [tasks]
@@ -286,6 +302,7 @@ const TaskPage = () => {
   // handles button start task
   // calls startTask route
   async function handleButtonStart(selectedTask) {
+    console.log("selectedTask", selectedTask[0].id);
     startTask(selectedTask[0].id);
     console.log("task started from drag and drop");
 
@@ -731,7 +748,7 @@ const TaskPage = () => {
                     <Button
                       variant="outlined"
                       color="success"
-                      onClick={() => handleButtonStart()}
+                      onClick={() => handleButtonStart(selectedTask)}
                     >
                       Start Task
                     </Button>
@@ -864,6 +881,7 @@ const TaskPage = () => {
             setEditClicked={setEditClicked}
             reloadTheGrid={reloadTheGrid}
             projects={projects}
+            tasks={tasks}
             addTaskToProject={addTaskToProject}
           ></TaskEditMenu>
         </>
@@ -884,7 +902,7 @@ const TaskPage = () => {
             setIsOpen={setIsOpen}
             setViewClicked={setViewClicked}
             setSelectedTask={setSelectedTask}
-            handleButtonStart={handleButtonStart}
+            handleButtonStart={handleButtonStart(selectedTask)}
             handleButtonPause={handlePauseandCalculate}
             handleButtonResume={handleButtonResume}
             handleButtonComplete={handleCompleteandCalculate}
@@ -905,6 +923,7 @@ const TaskPage = () => {
             setEditClicked={setEditClicked}
             reloadTheGrid={reloadTheGrid}
             projects={projects}
+            tasks={tasks}
             addTaskToProject={addTaskToProject}
           ></TaskEditMenu>
         </>
