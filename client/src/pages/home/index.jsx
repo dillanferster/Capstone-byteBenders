@@ -91,7 +91,10 @@ const Dashboard = () => {
 
           // Calculate total time for all tasks in this project
           for (const task of projectTasks) {
-            if (task.totalTime) {
+            if (!task.totalTime) {
+              projectTotalTime = 0;
+              hasValidTasks = false;
+            } else {
               const minutes = parseInt(task.totalTime.split(": ")[1]);
               if (!isNaN(minutes)) {
                 projectTotalTime += minutes;
