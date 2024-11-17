@@ -3,116 +3,41 @@ import "gantt-task-react/dist/index.css";
 import { ViewMode } from "gantt-task-react";
 
 const ViewSwitcher = ({ onViewModeChange, onViewListChange, isChecked }) => {
+  const handleViewModeChange = (mode) => {
+    onViewModeChange(mode);
+  };
+
   return (
     <div
-      className="ViewContainer"
       style={{
-        listStyle: "none",
-        msBoxOrient: "horizontal",
         display: "flex",
-        WebkitJustifyContent: "flex-start",
-        justifyContent: "flex-start",
-        alignItems: "center",
+        alignItems: "left",
+        marginBottom: "5px",
+        padding: "5px",
       }}
     >
-      <div style={{ marginTop: "20px" }}>
+      {Object.values(ViewMode).map((mode) => (
         <button
-          className="px-4 py-2 mx-2 bg-blue-500 text-white rounded"
-          onClick={() => onViewModeChange(ViewMode.Day)}
+          key={mode}
+          className="px-4 py-2 mx-2 bg-blue-500 text-white rounded hover:bg-orange-300"
+          onClick={() => handleViewModeChange(mode)}
         >
-          Day
+          {mode}
         </button>
-        <button
-          className="px-4 py-2 mx-2 bg-blue-500 text-white rounded"
-          onClick={() => onViewModeChange(ViewMode.Week)}
-        >
-          Week
-        </button>
-        <button
-          className="px-4 py-2 mx-2 bg-blue-500 text-white rounded"
-          onClick={() => onViewModeChange(ViewMode.Month)}
-        >
-          Month
-        </button>
-        <button
-          className="px-4 py-2 mx-2 bg-blue-500 text-white rounded"
-          onClick={() => onViewModeChange(ViewMode.QuarterYear)}
-        >
-          Quarter Year
-        </button>
+      ))}
 
-        {/* Show Task List */}
-        <div
-          className="Switch"
-          style={{
-            margin: "4px 15px",
-            fontSize: "14px",
-            fontFamily:
-              "Arial, Roboto, Oxygen, Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue",
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-          }}
-        >
-          <label
-            className="Switch_Toggle"
-            style={{
-              position: "relative",
-              display: "inline-block",
-              width: "60px",
-              height: "30px",
-              marginRight: "5px",
-            }}
-          >
-            <input
-              type="checkbox"
-              defaultChecked={isChecked}
-              onClick={() => onViewListChange(!isChecked)}
-              style={{
-                opacity: 0,
-                width: 0,
-                height: 0,
-              }}
-            />
-            <span
-              className="Slider"
-              style={{
-                position: "absolute",
-                cursor: "pointer",
-                top: 0,
-                left: 0,
-                right: 0,
-                bottom: 0,
-                backgroundColor: "#ccc",
-                WebkitTransition: "0.4s",
-                transition: "0.4s",
-                ":before": {
-                  position: "absolute",
-                  content: '""',
-                  height: "21px",
-                  width: "21px",
-                  left: "6px",
-                  bottom: "4px",
-                  backgroundColor: "white",
-                  WebkitTransition: "0.4s",
-                  transition: "0.4s",
-                },
-                ":checked + &": {
-                  backgroundColor: "#2196f3",
-                },
-                ":focus + &": {
-                  boxShadow: "0 0 1px #2196f3",
-                },
-                ":checked + &:before": {
-                  WebkitTransform: "translateX(26px)",
-                  msTransform: "translateX(26px)",
-                  transform: "translateX(26px)",
-                },
-              }}
-            />
-          </label>
-          Show Task List
-        </div>
+      {/* Show Task List */}
+      <div
+        className="Switch"
+        style={{ margin: "4px 15px", display: "flex", alignItems: "center" }}
+      >
+        <input
+          type="checkbox"
+          checked={isChecked}
+          onChange={() => onViewListChange(!isChecked)}
+          style={{ marginRight: "5px" }}
+        />
+        <label style={{ fontSize: "16px" }}> Show Projects & Tasks List </label>
       </div>
     </div>
   );

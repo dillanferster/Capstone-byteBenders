@@ -4,7 +4,10 @@ import * as Yup from "yup";
 /// Claude.AI prompt: "Can you help make yup form validation schema for react app form"
 const taskSchema = Yup.object().shape({
   taskName: Yup.string()
-    .matches(/^[a-zA-Z0-9\s]+$/, "Only letters and spaces are allowed")
+    .matches(
+      /^[a-zA-Z0-9\s\-.]+$/,
+      "Only letters, spaces, dots, and hyphens are allowed"
+    )
     .max(100, " Task name must not exceed 100 characters")
     .required("Task name is required"),
   assignedTo: Yup.string()

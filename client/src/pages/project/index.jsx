@@ -27,6 +27,7 @@ import { Button, fabClasses } from "@mui/material";
 // database functions from api file
 import {
   getProjects,
+  getTasks,
   getProject,
   createProject,
   updateProject,
@@ -84,7 +85,7 @@ const columns = [
   },
   {
     field: "dateCreated",
-    headerName: "Date",
+    headerName: "Date Created",
     floatingFilter: true,
     filter: true,
     editable: false,
@@ -110,11 +111,19 @@ const columns = [
     floatingFilter: true,
     editable: false,
   },
+  {
+    field: "tasksCount",
+    headerName: "Number of Tasks",
+    filter: true,
+    floatingFilter: true,
+    editable: false,
+  },
 ];
 
 const ProjectPage = () => {
   //* state
   const [projects, setProjects] = useState([]); // Loaded projects from database
+  const [tasks, setTasks] = useState([]); // Loaded tasks from database
   const [isLoading, setIsLoading] = useState(); // state for loading
   const [selectedProject, setSelectedProject] = useState([]); // selected project array, when users click on projects in data table
   const [reloadGrid, setReloadGrid] = useState(false); // to update grid rows
@@ -147,6 +156,23 @@ const ProjectPage = () => {
         projectStatus: project.projectStatus,
         quickBaseLink: project.quickBaseLink,
         projectDesc: project.projectDesc,
+        tasksCount: project.TaskIdForProject // count unique number of task id string
+          ? (() => {
+              const uniqueItems = new Set();
+
+              project.TaskIdForProject.forEach((item) => {
+                if (typeof item === "string") {
+                  uniqueItems.add(item); // Add string directly
+                } else if (item instanceof ObjectId) {
+                  // handle edge cases when task id is saved as an objectid in the string array
+                  uniqueItems.add(item.toString()); // Convert ObjectId to string and add
+                }
+              });
+              console.log("uniqueItems", uniqueItems);
+              // Return the total count of unique strings and ObjectIds
+              return uniqueItems.size;
+            })()
+          : 0,
       })),
     [projects]
   );
@@ -270,7 +296,16 @@ const ProjectPage = () => {
       }
     }
 
+    async function loadAllTasks() {
+      const data = await getTasks();
+      if (data) {
+        setTasks(data);
+        setIsLoading(false);
+      }
+    }
+
     loadAllProjects();
+    loadAllTasks();
   }, [reloadGrid]);
 
   return (
@@ -288,8 +323,8 @@ const ProjectPage = () => {
             Add project
           </Button>
           <Button
-            variant="contained"
-            color="primary"
+            variant="outlined"
+            color="success"
             onClick={() => setShowGantt(!showGantt)}
           >
             {showGantt ? "Show Table View" : "Show Gantt View"}
@@ -387,7 +422,13 @@ const ProjectPage = () => {
           />
         </>
       ) : (
-        <ProjectGantt projects={projects} />
+        <>
+          <ProjectGantt
+            projects={projects}
+            tasks={tasks}
+            // style={{ height: "80vh", overflow: "auto" }}
+          />
+        </>
       )}
     </div>
   );
