@@ -89,7 +89,7 @@ const EmailAnalysisForm = () => {
             onChange={(e) => setEmailText(e.target.value)}
             sx={{
               marginBottom: 2,
-              backgroundColor: colors.grey[900],
+              backgroundColor: colors.primary[600],
               color: colors.grey[100],
               borderColor: colors.grey[700],
               "& .MuiInputBase-input": { fontSize: "1.2rem" },
