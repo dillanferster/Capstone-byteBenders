@@ -45,8 +45,7 @@ import ProjectGrid from "../../components/projectgrid/index.jsx";
 import TaskEditMenu from "../../components/taskeditmenu/index.jsx";
 import TaskBoard from "../../components/taskboard/index.jsx";
 import { useSocket } from "../../contexts/SocketContext.jsx";
-
-
+import ProjectGantt from "../../components/GanttChart/ProjectGantt.jsx";
 //
 
 // columns for AG grid
@@ -162,6 +161,20 @@ const columns = [
     floatingFilter: true,
     editable: false,
   },
+  {
+    field: "dependencies",
+    headerName: "Dependencies ID",
+    filter: true,
+    floatingFilter: true,
+    editable: false,
+  },
+  {
+    field: "dependenciesName",
+    headerName: "Dependencies name",
+    filter: true,
+    floatingFilter: true,
+    editable: false,
+  },
 ];
 
 const TaskPage = () => {
@@ -183,17 +196,22 @@ const TaskPage = () => {
   const [taskBoardOpen, setTaskBoardOpen] = useState(false);
   const [listToggled, setListToggled] = useState(true);
   const [boardToggled, setBoardToggled] = useState(false);
-
+  const [ganttToggled, setGanttToggled] = useState(false);
   const [reloadTaskBoard, setReloadTaskBoard] = useState(false);
   const socket = useSocket();
 
+  const [showGantt, setShowGantt] = useState(false); // to show gantt chart
+
+  // State to track the current view mode
+  const [currentView, setCurrentView] = useState("list"); // Default view is "list"
+
   //*
 
-  // projects object array from the database
-  // rows maps the project list to the corresponding fields that match to the ag grid field columns for the datagrid component
+  // tasks object array from the database
+  // rows maps the tasks list to the corresponding fields that match to the ag grid field columns for the datagrid component
   // rows is then passed into the datagrid component
-  // useMemo so when the projectPage component reloads from state changes the rows dont reload with it, only when projects or reloadGrid state is changed
-  // dependencies : projects, reloadGrid
+  // useMemo so when the taskPage component reloads from state changes the rows dont reload with it, only when tasks or reloadGrid state is changed
+  // dependencies : tasks, reloadGrid
   // References: https://www.ag-grid.com/react-data-grid/getting-started/
   const rows = useMemo(
     () =>
@@ -214,6 +232,8 @@ const TaskPage = () => {
         startTime: task.startTime,
         completeTime: task.completeTime,
         totalTime: task.totalTime,
+        dependencies: task.dependencies,
+        dependenciesName: "",
         chroniclesComplete: task.chroniclesComplete,
       })),
     [tasks]
@@ -354,8 +374,16 @@ const TaskPage = () => {
 
   // handles button resume task
   // calls resumeTask route
-  async function handleButtonResume(selectedTask) {
-    resumeTask(selectedTask[0].id);
+  async function handleButtonResume() {
+    // Check if selectedTask is defined and has at least one element
+    if (!selectedTask || selectedTask.length === 0) {
+      console.error("No task selected for resume.");
+      return; // Exit the function if no task is selected
+    }
+
+    const taskId = selectedTask[0].id; // Safely access the first task's ID
+
+    resumeTask(taskId);
     console.log("task Resumed");
 
     const updatedTask = {
@@ -363,7 +391,7 @@ const TaskPage = () => {
     };
 
     try {
-      const response = await taskStatusUpdate(selectedTask[0].id, updatedTask);
+      const response = await taskStatusUpdate(taskId, updatedTask);
       if (response.status === 200) {
         reloadTheGrid();
         setReloadTaskBoard((prev) => !prev);
@@ -399,8 +427,15 @@ const TaskPage = () => {
   // logs complete time and changes the status in database,
   // Reference Claude.ai prompt:  "why is my state variable for selected task not updating "
   async function buttonComplete(selectedTask) {
-    await completeTask(selectedTask[0].id);
+    // Check if selectedTask is defined and has at least one element
+    if (!selectedTask || selectedTask.length === 0) {
+      console.error("No task selected for completion.");
+      return; // Exit the function if no task is selected
+    }
 
+    const taskId = selectedTask[0].id; // Safely access the first task's ID
+
+    await completeTask(taskId);
     console.log("task completed");
 
     const updatedTask = {
@@ -408,11 +443,11 @@ const TaskPage = () => {
     };
 
     try {
-      const response = await taskStatusUpdate(selectedTask[0].id, updatedTask);
+      const response = await taskStatusUpdate(taskId, updatedTask);
       if (response.status === 200) {
-        const selectedId = selectedTask[0].id;
+        const selectedId = taskId;
 
-        console.log(" seleleted id in button complete", selectedId);
+        console.log("selected id in button complete", selectedId);
 
         await reloadTheGrid();
         setReloadTaskBoard((prev) => !prev);
@@ -523,7 +558,13 @@ const TaskPage = () => {
   // calculates rolling time for pause and resume
   // Reference Cluade.ai prompt : "im making a rolling time calculator the times are working. On the first click the finalTime is returned in handelPauseAndCalculate and passed into updateTotal time this all works , now on sencond run the finaltime is returned again but i need a way to add it to the final tie in the first run through but not sure how. this is becase the first time it runs and every other time it runs the finalTime is caculateed different inside of calculatePauseTime."
   async function handlePauseandCalculate(selectedTask) {
-    const taskId = selectedTask[0].id;
+    // Check if selectedTask is defined and has at least one element
+    if (!selectedTask || selectedTask.length === 0) {
+      console.error("No task selected for pause calculation.");
+      return; // Exit the function if no task is selected
+    }
+
+    const taskId = selectedTask[0].id; // Safely access the first task's ID
 
     const completeId = await buttonPause(selectedTask);
     if (completeId) {
@@ -577,10 +618,15 @@ const TaskPage = () => {
       const response = await deleteTask(task.id);
 
       if (response.status === 200) {
-        console.log("projectTask", selectedTask[0].projectTask);
+        console.log(
+          "projectTask: ",
+          selectedTask[0].projectTask,
+          ", projectId:",
+          selectedTask[0].projectId
+        );
 
         const projectMatch = projects.find(
-          (project) => project.projectName === selectedTask[0].projectTask
+          (project) => project._id === selectedTask[0].projectId
         );
         console.log("project that task will be deleted from", projectMatch._id);
 
@@ -628,17 +674,25 @@ const TaskPage = () => {
     setSelectedTask(checkedRows);
   };
 
-  const handleListClick = (params) => {
-    setBoardToggled((prev) => !prev);
-    setListToggled((prev) => !prev);
-    setTaskBoardOpen((prev) => !prev);
+  // Handlers to change the view mode
+  const handleListClick = () => {
+    setCurrentView("list");
+    setTaskBoardOpen(false);
+    setShowGantt(false);
     setSelectedTask([]);
   };
 
-  const handleBoardClick = (params) => {
-    setListToggled((prev) => !prev);
-    setBoardToggled((prev) => !prev);
-    setTaskBoardOpen((prev) => !prev);
+  const handleBoardClick = () => {
+    setCurrentView("board");
+    setTaskBoardOpen(true);
+    setShowGantt(false);
+    setSelectedTask([]);
+  };
+
+  const handleGanttClick = () => {
+    setCurrentView("gantt");
+    setTaskBoardOpen(false);
+    setShowGantt(true);
     setSelectedTask([]);
   };
 
@@ -692,66 +746,33 @@ const TaskPage = () => {
         <div className="flex border w-[8rem] mb-[1rem] py-[.3rem] rounded-md text-white justify-around transition-all duration-100 ">
           <button
             className={`p-1 rounded-md w-[3rem] transition-all duration-100 ${
-              listToggled ? "bg-[#3E4396]" : ""
+              currentView === "list" ? "bg-[#3E4396]" : ""
             }`}
-            onClick={() => handleListClick()}
+            onClick={handleListClick}
           >
             List
           </button>
           <button
             className={`p-1 rounded-md w-[3rem] transition-all duration-100 ${
-              boardToggled ? "bg-[#3E4396]" : ""
+              currentView === "board" ? "bg-[#3E4396]" : ""
             }`}
-            onClick={() => handleBoardClick()}
+            onClick={handleBoardClick}
           >
             Board
+          </button>
+          <button
+            className={`p-1 rounded-md w-[3rem] transition-all duration-100 ${
+              currentView === "gantt" ? "bg-[#3E4396]" : ""
+            }`}
+            onClick={handleGanttClick}
+          >
+            Gantt
           </button>
         </div>
       </div>
 
-      {taskBoardOpen ? (
+      {currentView === "list" && (
         <>
-          <div>
-            <Button
-              variant="contained"
-              color="success"
-              onClick={() => handleButtonAdd()}
-            >
-              Add Task
-            </Button>
-          </div>
-          <TaskBoard
-            reloadTaskBoard={reloadTaskBoard}
-            setIsOpen={setIsOpen}
-            setViewClicked={setViewClicked}
-            setSelectedTask={setSelectedTask}
-            handleButtonStart={handleButtonStart}
-            handleButtonPause={handlePauseandCalculate}
-            handleButtonResume={handleButtonResume}
-            handleButtonComplete={handleCompleteandCalculate}
-            handleButtonDelete={handleButtonDelete}
-          />
-          <TaskEditMenu
-            isOpen={isOpen}
-            setIsOpen={setIsOpen}
-            toggleForm={toggleForm}
-            selectedTask={selectedTask}
-            updateTask={updateTask}
-            createTask={createTask}
-            viewClicked={viewClicked}
-            setViewClicked={setViewClicked}
-            addClicked={addClicked}
-            setAddClicked={setAddClicked}
-            editClicked={editClicked}
-            setEditClicked={setEditClicked}
-            reloadTheGrid={reloadTheGrid}
-            projects={projects}
-            addTaskToProject={addTaskToProject}
-            setReloadTaskBoard={setReloadTaskBoard}
-          ></TaskEditMenu>
-        </>
-      ) : (
-        <div>
           <div className=" pb-[1rem] flex justify-between w-full ">
             <div className="flex gap-8">
               <div>
@@ -770,7 +791,7 @@ const TaskPage = () => {
                     <Button
                       variant="outlined"
                       color="success"
-                      onClick={() => handleButtonStart()}
+                      onClick={() => handleButtonStart(selectedTask)}
                     >
                       Start Task
                     </Button>
@@ -783,7 +804,7 @@ const TaskPage = () => {
                       <Button
                         variant="outlined"
                         color="warning"
-                        onClick={() => handlePauseandCalculate()}
+                        onClick={() => handlePauseandCalculate(selectedTask)}
                       >
                         Pause Task
                       </Button>
@@ -795,7 +816,7 @@ const TaskPage = () => {
                       <Button
                         variant="outlined"
                         color="info"
-                        onClick={() => handleButtonResume()}
+                        onClick={handleButtonResume}
                       >
                         Resume Task
                       </Button>
@@ -806,7 +827,7 @@ const TaskPage = () => {
                     <Button
                       variant="outlined"
                       color="error"
-                      onClick={() => handleCompleteandCalculate()}
+                      onClick={() => handleCompleteandCalculate(selectedTask)}
                     >
                       Complete Task
                     </Button>
@@ -888,7 +909,6 @@ const TaskPage = () => {
             selectionColumnDef={selectionColumnDef}
             onSelectionChanged={handleOnSelectionChanged}
           ></ProjectGrid>
-
           <TaskEditMenu
             isOpen={isOpen}
             setIsOpen={setIsOpen}
@@ -904,9 +924,66 @@ const TaskPage = () => {
             setEditClicked={setEditClicked}
             reloadTheGrid={reloadTheGrid}
             projects={projects}
+            tasks={tasks}
             addTaskToProject={addTaskToProject}
           ></TaskEditMenu>
-        </div>
+        </>
+      )}
+      {currentView === "board" && (
+        <>
+          <div>
+            <Button
+              variant="contained"
+              color="success"
+              onClick={() => handleButtonAdd()}
+            >
+              Add Task
+            </Button>
+          </div>
+          <TaskBoard
+            reloadTaskBoard={reloadTaskBoard}
+            setIsOpen={setIsOpen}
+            setViewClicked={setViewClicked}
+            setSelectedTask={setSelectedTask}
+            handleButtonStart={handleButtonStart(selectedTask)}
+            handleButtonPause={handlePauseandCalculate}
+            handleButtonResume={handleButtonResume}
+            handleButtonComplete={handleCompleteandCalculate}
+            handleButtonDelete={handleButtonDelete}
+          />
+          <TaskEditMenu
+            isOpen={isOpen}
+            setIsOpen={setIsOpen}
+            toggleForm={toggleForm}
+            selectedTask={selectedTask}
+            updateTask={updateTask}
+            createTask={createTask}
+            viewClicked={viewClicked}
+            setViewClicked={setViewClicked}
+            addClicked={addClicked}
+            setAddClicked={setAddClicked}
+            editClicked={editClicked}
+            setEditClicked={setEditClicked}
+            reloadTheGrid={reloadTheGrid}
+            projects={projects}
+            tasks={tasks}
+            addTaskToProject={addTaskToProject}
+          ></TaskEditMenu>
+        </>
+      )}
+      {currentView === "gantt" && (
+        <>
+          <div>
+            <Button
+              variant="contained"
+              color="success"
+              onClick={() => handleButtonAdd()}
+            >
+              Add Task
+            </Button>
+          </div>
+          <ProjectGantt tasks={tasks} />
+        </>
       )}
     </div>
   );

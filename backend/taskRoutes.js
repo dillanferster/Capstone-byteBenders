@@ -86,6 +86,7 @@ taskRoutes.route("/tasks").post(verifyToken, async (request, response) => {
   let db = database.getDb();
   let mongoObject = {
     assignedTo: request.body.assignedTo,
+    projectId: request.body.projectId,
     taskName: request.body.taskName,
     taskStatus: request.body.taskStatus,
     priority: request.body.priority,
@@ -98,6 +99,7 @@ taskRoutes.route("/tasks").post(verifyToken, async (request, response) => {
     taskDesc: request.body.taskDesc,
     attachments: request.body.attachments,
     chroniclesComplete: request.body.chroniclesComplete,
+    dependencies: request.body.dependencies,
   };
   let data = await db.collection("FrankTask").insertOne(mongoObject);
   response.json(data);
@@ -118,6 +120,7 @@ taskRoutes.route("/tasks/:id").put(verifyToken, async (request, response) => {
   let mongoObject = {
     $set: {
       assignedTo: request.body.assignedTo,
+      projectId: request.body.projectId,
       taskName: request.body.taskName,
       taskStatus: request.body.taskStatus,
       priority: request.body.priority,
@@ -130,6 +133,7 @@ taskRoutes.route("/tasks/:id").put(verifyToken, async (request, response) => {
       taskDesc: request.body.taskDesc,
       attachments: request.body.attachments,
       chroniclesComplete: request.body.chroniclesComplete,
+      dependencies: request.body.dependencies,
     },
   };
   let data = await db
