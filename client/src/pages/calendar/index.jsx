@@ -298,6 +298,47 @@ const Calendar = () => {
                 background-color: ${colors.primary[400]} !important;
                 color: ${colors.grey[100]} !important;
               }
+
+              /* Button styles */
+              .fc-button-primary {
+                background-color: ${colors.primary[400]} !important;
+                border-color: ${colors.primary[400]} !important;
+                color: ${colors.grey[100]} !important;
+              }
+
+              /* Button hover state */
+              .fc-button-primary:hover {
+                background-color: ${colors.primary[500]} !important;
+                border-color: ${colors.primary[500]} !important;
+                color: ${colors.blueAccent[200]} !important;
+              }
+
+              /* Active/Selected button state */
+              .fc-button-active {
+                background-color: ${colors.primary[500]} !important;
+                border-color: ${colors.primary[500]} !important;
+                color: ${colors.blueAccent[200]} !important;
+              }
+
+              /* Chevron icons */
+              .fc-icon-chevron-left,
+              .fc-icon-chevron-right {
+                color: ${colors.grey[100]} !important;
+              }
+
+              /* Chevron icons hover */
+              .fc-prev-button:hover .fc-icon-chevron-left,
+              .fc-next-button:hover .fc-icon-chevron-right {
+                color: ${colors.blueAccent[200]} !important;
+              }
+
+              /* Disabled button state */
+              .fc-button-primary:disabled {
+                background-color: ${colors.primary[600]} !important;
+                border-color: ${colors.primary[600]} !important;
+                color: ${colors.grey[300]} !important;
+                opacity: 0.7 !important;
+              }
             `}
           </style>
           <FullCalendar
