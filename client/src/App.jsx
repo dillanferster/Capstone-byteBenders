@@ -76,8 +76,8 @@ const App = () => {
       <ThemeProvider theme={theme}>
         <CssBaseline />
         <SocketProvider>
-        <NotificationListener />
-        <main className="content">
+          <NotificationListener />
+          <main className="content">
           <Routes>
             <Route path="/" element={<LoginPage />} />
             {/* <Route path="/signup" element={<SignUpPage />} /> */}

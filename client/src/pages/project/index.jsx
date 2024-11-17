@@ -189,8 +189,8 @@ const ProjectPage = () => {
     setAddClicked(!addClicked);
     setSelectedProject("");
     toggleForm();
-    socket.emit("sendNotification", {
-      message: `New project created: ${projectName}`,
+    socket.emit("projectNotification", {
+      message: `New project was created`,
     });
   }
 
@@ -199,8 +199,8 @@ const ProjectPage = () => {
   function handleButtonEdit() {
     setEditClicked(!editClicked);
     toggleForm();
-    socket.emit("sendNotification", {
-      message: `Project edited: ${projectName}`,
+    socket.emit("projectNotification", {
+      message: `Project was edited`,
     });
   }
 
@@ -227,8 +227,8 @@ const ProjectPage = () => {
         if (response.status === 200) {
           console.log("deleted project with id:", project.id);
           reloadTheGrid();
-          socket.emit("sendNotification", {
-            message: `Project deleted: ${project.projectName}`,
+          socket.emit("projectNotification", {
+            message: `Project was deleted`,
           });
         }
       });

@@ -8,17 +8,20 @@ const NotificationListener = () => {
   useEffect(() => {
     if (!socket) return;
 
-    socket.on("notification", (message) => {
-      console.log("Notification received:", message);
-      alert(message.message); // Display the notification
+    // Listen for all notifications
+    socket.on("Notification", (data) => {
+      console.log("Notification received:",data);
+
+      // Show notification alert (you can customize this with a toast or UI component)
+      alert(`Notification: ${data.message}`);
     });
 
     return () => {
-      socket.off("notification"); // Clean up the listener
+      socket.off("Notification");
     };
   }, [socket]);
 
-  return null; // No UI is rendered by this component
+  return null; // This component does not render anything
 };
 
 export default NotificationListener;
