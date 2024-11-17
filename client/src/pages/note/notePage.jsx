@@ -1,11 +1,10 @@
-import React, { useState, useEffect, useCallback } from 'react';
-import Sidebar from '../../components/note/sidebar';
-import NoteEditor from '../../components/note/NoteEditor';
-import './NotePage.css';
-import { getNotes, createNote, updateNote, deleteNote } from '../../api';
-import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
-
+import React, { useState, useEffect, useCallback } from "react";
+import Sidebar from "../../components/note/sidebar";
+import NoteEditor from "../../components/note/NoteEditor";
+import "./NotePage.css";
+import { getNotes, createNote, updateNote, deleteNote } from "../../api";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const NotePage = () => {
   const [notes, setNotes] = useState([]);
@@ -17,14 +16,14 @@ const NotePage = () => {
   const fetchNotes = async () => {
     try {
       const notesFromDB = await getNotes();
-      const updatedNotes = notesFromDB.map(note => ({
+      const updatedNotes = notesFromDB.map((note) => ({
         ...note,
         isTaskNote: !!note.taskId,
       }));
       setNotes(updatedNotes || []);
     } catch (error) {
-      console.error('Error fetching notes:', error);
-      toast.error('Failed to fetch notes');
+      console.error("Error fetching notes:", error);
+      toast.error("Failed to fetch notes");
     }
   };
 
@@ -46,7 +45,7 @@ const NotePage = () => {
         title: noteData.title || noteData.noteTitle, // Handle both property names
         content: noteData.content || noteData.noteContent, // Handle both property names
         taskId: noteData.taskId || null,
-        dateUpdated: new Date().toISOString()
+        dateUpdated: new Date().toISOString(),
       };
 
       console.log("Sending update request with data:", noteToUpdate);
@@ -54,13 +53,13 @@ const NotePage = () => {
       const updatedNote = await updateNote(noteData._id, noteToUpdate);
 
       // Update the notes state with the updated note
-      setNotes(prevNotes =>
-        prevNotes.map(note =>
+      setNotes((prevNotes) =>
+        prevNotes.map((note) =>
           note._id === noteData._id
             ? {
                 ...note,
                 ...updatedNote,
-                isTaskNote: !!updatedNote.taskId
+                isTaskNote: !!updatedNote.taskId,
               }
             : note
         )
@@ -77,19 +76,19 @@ const NotePage = () => {
   const handleDeleteNote = async (noteId) => {
     try {
       await deleteNote(noteId);
-      setNotes(prevNotes => prevNotes.filter(note => note._id !== noteId));
+      setNotes((prevNotes) => prevNotes.filter((note) => note._id !== noteId));
       if (currentNoteId === noteId) {
         setCurrentNoteId(null);
       }
       toast.success("Note deleted successfully");
     } catch (error) {
-      console.error('Error deleting note:', error);
-      toast.error('Failed to delete note');
+      console.error("Error deleting note:", error);
+      toast.error("Failed to delete note");
     }
   };
 
   // Get current note for editing or preview
-  const getCurrentNote = () => notes.find(note => note._id === currentNoteId);
+  const getCurrentNote = () => notes.find((note) => note._id === currentNoteId);
 
   const addNote = (newNote) => {
     // Ensure the new note has a valid title and content
@@ -98,12 +97,10 @@ const NotePage = () => {
       noteContent: newNote.content || "",
       ...newNote,
     };
-  
+
     setNotes((prevNotes) => [noteWithDefaults, ...prevNotes]); // Add new note to the top
     setCurrentNoteId(noteWithDefaults._id); // Select the new note
   };
-  
-  
 
   return (
     <div className="note-page">
@@ -122,31 +119,42 @@ const NotePage = () => {
         <div className="editor-header">
           <button
             onClick={() => setIsEditMode(true)}
-            className={`tab-button ${isEditMode ? 'active-tab' : ''}`}
+            className={`tab-button ${isEditMode ? "active-tab" : ""}`}
           >
             Edit
           </button>
           <button
             onClick={() => setIsEditMode(false)}
-            className={`tab-button ${!isEditMode ? 'active-tab' : ''}`}
+            className={`tab-button ${!isEditMode ? "active-tab" : ""}`}
           >
             Preview
           </button>
         </div>
 
         {isEditMode ? (
-          <NoteEditor currentNote={getCurrentNote()} saveNote={handleSaveNote} />
+          <NoteEditor
+            currentNote={getCurrentNote()}
+            saveNote={handleSaveNote}
+          />
         ) : (
           <div className="note-preview">
             {currentNoteId ? (
               <>
-                <h2>{getCurrentNote()?.title || getCurrentNote()?.noteTitle || 'Untitled'}</h2>
+                <h2>
+                  {getCurrentNote()?.title ||
+                    getCurrentNote()?.noteTitle ||
+                    "Untitled"}
+                </h2>
                 <div className="content">
-                  {getCurrentNote()?.content || getCurrentNote()?.noteContent || 'No content available...'}
+                  {getCurrentNote()?.content ||
+                    getCurrentNote()?.noteContent ||
+                    "No content available..."}
                 </div>
               </>
             ) : (
-              <div className="no-note">Please select a note or create a new one.</div>
+              <div className="no-note">
+                Please select a note or create a new one.
+              </div>
             )}
           </div>
         )}

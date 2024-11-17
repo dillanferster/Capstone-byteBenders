@@ -16,6 +16,7 @@
 
 import React, { useCallback } from "react";
 import { useState, useEffect, useMemo, useRef } from "react";
+import Header from "../../components/Header";
 
 // date formatter
 import { format } from "date-fns";
@@ -641,7 +642,10 @@ const TaskPage = () => {
   }, [reloadGrid]);
 
   return (
-    <div className="px-[1rem] pt-[.5rem] w-full h-4/5 ">
+    <div className="p-5">
+      <div display="flex" justifyContent="space-between" alignItems="center">
+        <Header title="TASKS" subtitle="Welcome to your dashboard" />
+      </div>
       <div className="flex justify-end">
         <div className="flex border w-[8rem] mb-[1rem] py-[.3rem] rounded-md text-white justify-around transition-all duration-100 ">
           <button

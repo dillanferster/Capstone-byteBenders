@@ -13,6 +13,7 @@ import {
 } from "@mui/material";
 import { tokens } from "../../theme";
 import { Formik, Field } from "formik";
+import Header from "../../components/Header";
 
 const EmailAnalysisForm = () => {
   const [emailText, setEmailText] = useState("");
@@ -60,6 +61,9 @@ const EmailAnalysisForm = () => {
         color: colors.grey[100],
       }}
     >
+      <Box display="flex" justifyContent="space-between" alignItems="center">
+        <Header title="ANALYZE EMAIL" subtitle="Welcome to your dashboard" />
+      </Box>
       <Typography variant="h4" color={colors.greenAccent[500]} gutterBottom>
         Generate New Project From Email
       </Typography>

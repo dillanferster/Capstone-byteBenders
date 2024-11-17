@@ -16,6 +16,7 @@
 
 import React from "react";
 import { useState, useEffect, useMemo } from "react";
+import Header from "../../components/Header.jsx";
 
 // date formatter
 import { format } from "date-fns";
@@ -262,8 +263,11 @@ const ProjectPage = () => {
   }, [reloadGrid]);
 
   return (
-    <div className=" p-[1rem]  ">
-      <div className=" p-[1rem] flex justify-between   w-full">
+    <div className="p-5">
+      <div display="flex" justifyContent="space-between" alignItems="center">
+        <Header title="PROJECTS" subtitle="Projects pages" />
+      </div>
+      <div className=" pb-[1rem] flex justify-between   w-full">
         <div className="flex gap-4">
           <Button
             variant="contained"
