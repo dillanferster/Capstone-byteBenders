@@ -95,13 +95,22 @@ io.on("connection", (socket) => {
   console.log(`New client connected: ${socket.id}`); // Log when a client connects
 
   // Handle custom event 'sendNotification' from the client
-  socket.on("sendNotification", (data) => {
-    console.log("Notification data received:", data);
+  socket.on("projectNotification", (data) => {
+    console.log("Project notification data received:", data);
 
     // Broadcast the notification to all connected clients
-    io.emit("notification", data);
+    io.emit("projectNotification", { type: "project", ...data });
   });
-
+  //task
+  socket.on("taskNotification", (data) => {
+    console.log("Task notification data received:", data);
+    io.emit("taskNotification", { type: "task", ...data });
+  });
+  // socket.on('taskNotification', (data) => {
+  //   console.log('Notification received:', data);
+  //   socket.broadcast.emit('taskNotification', data);
+  // });
+  
   // Handle client disconnection
   socket.on("disconnect", () => {
     console.log(`Client disconnected: ${socket.id}`);
