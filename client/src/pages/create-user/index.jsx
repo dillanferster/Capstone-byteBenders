@@ -33,7 +33,7 @@ export default function CreateUserPage() {
   }
 
   return (
-    <Box m="20px" px="70px" py="30px">
+    <Box m="20px">
       <Header title="CREATE USER" subtitle="Create a New User Account" />
 
       {/* Pass handleSubmit to SignUpForm */}

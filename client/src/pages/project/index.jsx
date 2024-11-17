@@ -16,6 +16,7 @@
 
 import React from "react";
 import { useState, useEffect, useMemo } from "react";
+import Header from "../../components/Header.jsx";
 
 // date formatter
 import { format } from "date-fns";
@@ -35,7 +36,7 @@ import {
 import ProjectGrid from "../../components/projectgrid/index.jsx";
 import EditMenu from "../../components/editmenu/index.jsx";
 import ProjectGantt from "../../components/GanttChart/ProjectGantt.jsx";
-//
+import { useSocket } from "../../contexts/SocketContext";
 
 // columns for AG grid
 // field: corresponds to a row with a matching property ex. field: id in column matches to id: in rows
@@ -132,6 +133,8 @@ const ProjectPage = () => {
   const [editClicked, setEditClicked] = useState(false); // for add button
   const [deleteOpen, setDeleteOpen] = useState(false); // for dlt btn
   const [showGantt, setShowGantt] = useState(false); // Add this new state
+  const socket = useSocket();
+
 
   //*
 
@@ -213,6 +216,9 @@ const ProjectPage = () => {
     setAddClicked(!addClicked);
     setSelectedProject("");
     toggleForm();
+    socket.emit("projectNotification", {
+      message: `New project was created`,
+    });
   }
 
   // function handles edit button
@@ -220,6 +226,9 @@ const ProjectPage = () => {
   function handleButtonEdit() {
     setEditClicked(!editClicked);
     toggleForm();
+    socket.emit("projectNotification", {
+      message: `Project was edited`,
+    });
   }
 
   const reloadTheGrid = () => {
@@ -245,6 +254,9 @@ const ProjectPage = () => {
         if (response.status === 200) {
           console.log("deleted project with id:", project.id);
           reloadTheGrid();
+          socket.emit("projectNotification", {
+            message: `Project was deleted`,
+          });
         }
       });
     });
@@ -297,8 +309,11 @@ const ProjectPage = () => {
   }, [reloadGrid]);
 
   return (
-    <div className=" p-[1rem]  ">
-      <div className=" p-[1rem] flex justify-between   w-full">
+    <div className="p-5">
+      <div display="flex" justifyContent="space-between" alignItems="center">
+        <Header title="PROJECTS" subtitle="Projects pages" />
+      </div>
+      <div className=" pb-[1rem] flex justify-between   w-full">
         <div className="flex gap-4">
           <Button
             variant="contained"

@@ -9,10 +9,7 @@
         "projectStatus": "Complete",
         "quickBaseLink": "link 1",
         "dateCreated": "2024-10-10",
-        "TaskIdForProject": [
-            {"$oid": "67188f7d7fc68276ca0d10ed"},
-            {"$oid": "67188f7d7fc68276ca0d10ee"}
-        ]
+        "TaskIdForProject": ["67188f7d7fc68276ca0d10ed", "67188f7d7fc68276ca0d10ee"]
     },
     {
         "_id": {"$oid": "67120f2294fe762a4a99b73c"},
@@ -24,10 +21,7 @@
         "projectStatus": "In Progress",
         "quickBaseLink": "link 2",
         "dateCreated": "2024-10-10",
-        "TaskIdForProject": [
-            {"$oid": "67188f7d7fc68276ca0d10ef"},
-            {"$oid": "67188f7d7fc68276ca0d10f0"}
-        ]
+        "TaskIdForProject": ["67188f7d7fc68276ca0d10ef", "67188f7d7fc68276ca0d10f0"]
     },
     {
         "_id": {"$oid": "67120f2294fe762a4a99b73d"},
@@ -51,10 +45,7 @@
         "projectStatus": "Complete",
         "quickBaseLink": "link 4",
         "dateCreated": "2024-10-10",
-        "TaskIdForProject": [
-            {"$oid": "67188f7d7fc68276ca0d10f1"},
-            {"$oid": "67188f7d7fc68276ca0d10f2"}
-        ]
+        "TaskIdForProject": ["67188f7d7fc68276ca0d10f1", "67188f7d7fc68276ca0d10f2"]
     },
     {
         "_id": {"$oid": "67120f2294fe762a4a99b73f"},
@@ -66,10 +57,7 @@
         "projectStatus": "In Progress",
         "quickBaseLink": "link 5",
         "dateCreated": "2024-10-10",
-        "TaskIdForProject": [
-            {"$oid": "67188f7d7fc68276ca0d10f3"},
-            {"$oid": "67188f7d7fc68276ca0d10f4"}
-        ]
+        "TaskIdForProject": ["67188f7d7fc68276ca0d10f3", "67188f7d7fc68276ca0d10f4"]
     },
     {
         "_id": {"$oid": "67120f2294fe762a4a99b740"},
@@ -93,10 +81,7 @@
         "projectStatus": "Complete",
         "quickBaseLink": "link 7",
         "dateCreated": "2024-10-10",
-        "TaskIdForProject": [
-            {"$oid": "67188f7d7fc68276ca0d10f5"},
-            {"$oid": "67188f7d7fc68276ca0d10f6"}
-        ]
+        "TaskIdForProject": ["67188f7d7fc68276ca0d10f5", "67188f7d7fc68276ca0d10f6"]
     },
     {
         "_id": {"$oid": "67120f2294fe762a4a99b742"},
@@ -120,10 +105,7 @@
         "projectStatus": "In Progress",
         "quickBaseLink": "link 9",
         "dateCreated": "2024-10-10",
-        "TaskIdForProject": [
-            {"$oid": "67188f7d7fc68276ca0d10f7"},
-            {"$oid": "67188f7d7fc68276ca0d10f8"}
-        ]
+        "TaskIdForProject": ["67188f7d7fc68276ca0d10f7", "67188f7d7fc68276ca0d10f8"]
     },
     {
         "_id": {"$oid": "67120f2294fe762a4a99b744"},
@@ -147,10 +129,7 @@
         "projectStatus": "Complete",
         "quickBaseLink": "link 11",
         "dateCreated": "2024-10-10",
-        "TaskIdForProject": [
-            {"$oid": "67188f7d7fc68276ca0d10f9"},
-            {"$oid": "67188f7d7fc68276ca0d10fa"}
-        ]
+        "TaskIdForProject": ["67188f7d7fc68276ca0d10f9", "67188f7d7fc68276ca0d10fa"]
     },
     {
         "_id": {"$oid": "67120f2294fe762a4a99b746"},
@@ -162,10 +141,7 @@
         "projectStatus": "In Progress",
         "quickBaseLink": "link 12",
         "dateCreated": "2024-10-10",
-        "TaskIdForProject": [
-            {"$oid": "67188f7d7fc68276ca0d10fb"},
-            {"$oid": "67188f7d7fc68276ca0d10fc"}
-        ]
+        "TaskIdForProject": ["67188f7d7fc68276ca0d10fb", "67188f7d7fc68276ca0d10fc"]
     },
     {
         "_id": {"$oid": "67120f2294fe762a4a99b747"},
@@ -189,10 +165,7 @@
         "projectStatus": "Complete",
         "quickBaseLink": "link 14",
         "dateCreated": "2024-10-10",
-        "TaskIdForProject": [
-            {"$oid": "67188f7d7fc68276ca0d10fd"},
-            {"$oid": "67188f7d7fc68276ca0d10fe"}
-        ]
+        "TaskIdForProject": ["67188f7d7fc68276ca0d10fd", "67188f7d7fc68276ca0d10fe"]
     },
     {
         "_id": {"$oid": "67120f2294fe762a4a99b749"},
@@ -204,10 +177,7 @@
         "projectStatus": "In Progress",
         "quickBaseLink": "link 15",
         "dateCreated": "2024-10-10",
-        "TaskIdForProject": [
-            {"$oid": "67188f7d7fc68276ca0d10ff"},
-            {"$oid": "67188f7d7fc68276ca0d1100"}
-        ]
+        "TaskIdForProject": ["67188f7d7fc68276ca0d10ff", "67188f7d7fc68276ca0d1100"]
     },
     {
         "_id": {"$oid": "67120f2294fe762a4a99b74a"},
@@ -243,10 +213,7 @@
         "projectStatus": "In Progress",
         "quickBaseLink": "link 18",
         "dateCreated": "2024-10-10",
-        "TaskIdForProject": [
-            {"$oid": "67188f7d7fc68276ca0d1101"},
-            {"$oid": "67188f7d7fc68276ca0d1102"}
-        ]
+        "TaskIdForProject": ["67188f7d7fc68276ca0d1101", "67188f7d7fc68276ca0d1102"]
     },
     {
         "_id": {"$oid": "67120f2294fe762a4a99b74d"},
@@ -258,10 +225,7 @@
         "projectStatus": "Complete",
         "quickBaseLink": "link 19",
         "dateCreated": "2024-10-10",
-        "TaskIdForProject": [
-            {"$oid": "67188f7d7fc68276ca0d1103"},
-            {"$oid": "67188f7d7fc68276ca0d1104"}
-        ]
+        "TaskIdForProject": ["67188f7d7fc68276ca0d1103", "67188f7d7fc68276ca0d1104"]
     },
     {
         "_id": {"$oid": "67120f2294fe762a4a99b74e"},
@@ -285,10 +249,7 @@
         "projectStatus": "In Progress",
         "quickBaseLink": "link 21",
         "dateCreated": "2024-10-10",
-        "TaskIdForProject": [
-            {"$oid": "67188f7d7fc68276ca0d1105"},
-            {"$oid": "67188f7d7fc68276ca0d1106"}
-        ]
+        "TaskIdForProject": ["67188f7d7fc68276ca0d1105", "67188f7d7fc68276ca0d1106"]
     },
     {
         "_id": {"$oid": "67120f2294fe762a4a99b750"},
@@ -300,10 +261,7 @@
         "projectStatus": "Complete",
         "quickBaseLink": "link 22",
         "dateCreated": "2024-10-10",
-        "TaskIdForProject": [
-            {"$oid": "67188f7d7fc68276ca0d1107"},
-            {"$oid": "67188f7d7fc68276ca0d1108"}
-        ]
+        "TaskIdForProject": ["67188f7d7fc68276ca0d1107", "67188f7d7fc68276ca0d1108"]
     },
     {
         "_id": {"$oid": "67120f2294fe762a4a99b751"},
@@ -327,10 +285,7 @@
         "projectStatus": "In Progress",
         "quickBaseLink": "link 24",
         "dateCreated": "2024-10-10",
-        "TaskIdForProject": [
-            {"$oid": "67188f7d7fc68276ca0d1109"},
-            {"$oid": "67188f7d7fc68276ca0d110a"}
-        ]
+        "TaskIdForProject": ["67188f7d7fc68276ca0d1109", "67188f7d7fc68276ca0d110a"]
     },
     {
         "_id": {"$oid": "67120f2294fe762a4a99b753"},

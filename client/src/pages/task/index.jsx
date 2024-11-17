@@ -16,6 +16,7 @@
 
 import React, { useCallback } from "react";
 import { useState, useEffect, useMemo, useRef } from "react";
+import Header from "../../components/Header";
 
 // date formatter
 import { format } from "date-fns";
@@ -43,6 +44,7 @@ import {
 import ProjectGrid from "../../components/projectgrid/index.jsx";
 import TaskEditMenu from "../../components/taskeditmenu/index.jsx";
 import TaskBoard from "../../components/taskboard/index.jsx";
+import { useSocket } from "../../contexts/SocketContext.jsx";
 import ProjectGantt from "../../components/GanttChart/ProjectGantt.jsx";
 //
 
@@ -196,6 +198,7 @@ const TaskPage = () => {
   const [boardToggled, setBoardToggled] = useState(false);
   const [ganttToggled, setGanttToggled] = useState(false);
   const [reloadTaskBoard, setReloadTaskBoard] = useState(false);
+  const socket = useSocket();
 
   const [showGantt, setShowGantt] = useState(false); // to show gantt chart
 
@@ -271,10 +274,15 @@ const TaskPage = () => {
   // function Handles add Button click
   // calls makeProject
   // setReloadGrid so the rows rerender with new item
+  
   function handleButtonAdd() {
     setAddClicked(!addClicked);
     setSelectedTask("");
     toggleForm();
+    socket.emit("taskNotification", {
+      message: `Task "${selectedTask[0]?.taskName}" was created.`,
+      action: "add",
+    });
   }
 
   // function handles edit button
@@ -282,6 +290,11 @@ const TaskPage = () => {
   function handleButtonEdit() {
     setEditClicked(!editClicked);
     toggleForm();
+
+    socket.emit("taskNotification", {
+      message: `Task "${selectedTask[0]?.taskName}" was edited.`,
+      action: "edit",
+    });
   }
 
   // updates grid usestate to cause a re-render
@@ -297,12 +310,16 @@ const TaskPage = () => {
     setViewClicked(!viewClicked);
     console.log("set view to", viewClicked);
     toggleForm();
+    socket.emit("taskNotification", {
+      message: `Task "${selectedTask[0]?.taskName}" was viewed.`,
+      action: "view",
+    });
   }
 
   // handles button start task
   // calls startTask route
   async function handleButtonStart(selectedTask) {
-    console.log("selectedTask", selectedTask[0].id);
+    if (!selectedTask || selectedTask.length === 0) return;
     startTask(selectedTask[0].id);
     console.log("task started from drag and drop");
 
@@ -315,6 +332,12 @@ const TaskPage = () => {
       if (response.status === 200) {
         reloadTheGrid();
         setReloadTaskBoard((prev) => !prev);
+        socket.emit("taskNotification", {
+          message: `Task "${selectedTask[0]?.taskName}" was started.`,
+          taskId: selectedTask[0].id,
+          taskName: selectedTask[0].taskName,
+          action: "start",
+        });
       }
     } catch (error) {
       console.error("Error updating task Status:", error);
@@ -337,6 +360,11 @@ const TaskPage = () => {
         const selectedId = selectedTask[0].id;
         reloadTheGrid();
         setReloadTaskBoard((prev) => !prev);
+        socket.emit("taskNotification", {
+          message: `Task "${selectedTask[0]?.taskName}" was paused.`,
+          action: "pause",
+        });
+
         return selectedId;
       }
     } catch (error) {
@@ -367,6 +395,10 @@ const TaskPage = () => {
       if (response.status === 200) {
         reloadTheGrid();
         setReloadTaskBoard((prev) => !prev);
+        socket.emit("taskNotification", {
+          message: `Task "${selectedTask[0]?. taskName}" was resumed.`,
+          action: "resume",
+        });
       }
     } catch (error) {
       console.error("Error updating task Status:", error);
@@ -419,6 +451,12 @@ const TaskPage = () => {
 
         await reloadTheGrid();
         setReloadTaskBoard((prev) => !prev);
+        socket.emit("taskNotification", {
+          message: `Task "${selectedTask[0]?.taskName}" was completed.`,
+          taskId: selectedTask[0].id,
+          taskName: selectedTask[0].taskName,
+          action: "complete",
+          });
         return selectedId;
       }
     } catch (error) {
@@ -609,6 +647,9 @@ const TaskPage = () => {
         );
 
         console.log("after deleting task from project", deleteResponse);
+        socket.emit("taskNotification", {
+          message: `Task "${selectedTask[0]?.taskName}" was deleted.`,
+        });
 
         reloadTheGrid();
         setReloadTaskBoard((prev) => !prev);
@@ -697,8 +738,10 @@ const TaskPage = () => {
   }, [reloadGrid]);
 
   return (
-    // View Mode Selection
-    <div className="px-[1rem] pt-[.5rem] w-full h-4/5 ">
+    <div className="p-5">
+      <div display="flex" justifyContent="space-between" alignItems="center">
+        <Header title="TASKS" subtitle="Welcome to your dashboard" />
+      </div>
       <div className="flex justify-end">
         <div className="flex border w-[8rem] mb-[1rem] py-[.3rem] rounded-md text-white justify-around transition-all duration-100 ">
           <button

@@ -6,16 +6,19 @@ require("dotenv").config({ path: "./.env" });
 let calendarRoutes = express.Router();
 const ObjectId = require("mongodb").ObjectId;
 
-// Read all events / GET
+// Read all events / GET - Modified to only get user's events
 calendarRoutes.route("/events").get(verifyToken, async (request, response) => {
   let db = database.getDb();
   try {
-    let data = await db.collection("calendar").find({}).toArray();
-    if (data.length > 0) {
-      response.json(data);
-    } else {
-      response.json([]); // Return empty array if no events found
-    }
+    // Get user ID from the verified token
+    const userId = request.body.user._id;
+
+    let data = await db
+      .collection("calendar")
+      .find({ assignedTo: userId })
+      .toArray();
+
+    response.json(data || []);
   } catch (error) {
     response.status(500).json({ error: "Failed to fetch events" });
   }
@@ -40,14 +43,10 @@ calendarRoutes
     }
   });
 
-// Create event / POST
+// Create event / POST - Modified to include assignedTo
 calendarRoutes.route("/events").post(verifyToken, async (request, response) => {
-  console.log("IN CREATE EVENT ROUTES");
   let db = database.getDb();
   try {
-    console.log("IN TRY BLOCK");
-    console.log("REQUEST BODY: ", request.body);
-    console.log("DATES TYPE: ", typeof request.body.start);
     let eventObject = {
       title: request.body.title,
       start: request.body.start,
@@ -55,10 +54,9 @@ calendarRoutes.route("/events").post(verifyToken, async (request, response) => {
       description: request.body.description,
       meetingLink: request.body.meetingLink,
       participants: request.body.participants,
-      // createdBy: request.user.id, // Assuming user info is added by auth middleware
-      // dateCreated: new Date(),
+      assignedTo: request.body.user._id, // Add user ID from token
     };
-    console.log("TESTING IF IT CAME OUT: ", eventObject);
+
     let data = await db.collection("calendar").insertOne(eventObject);
     response.json(data);
   } catch (error) {
@@ -119,16 +117,19 @@ calendarRoutes
     }
   });
 
-// Get events by date range / GET
+// Get events by date range / GET - Modified to include user filter
 calendarRoutes
   .route("/events/range")
   .get(verifyToken, async (request, response) => {
     let db = database.getDb();
     try {
       const { start, end } = request.query;
+      const userId = request.body.user._id;
+
       let data = await db
         .collection("calendar")
         .find({
+          assignedTo: userId,
           start: { $gte: new Date(start) },
           end: { $lte: new Date(end) },
         })

@@ -19,17 +19,28 @@ const FAQ = () => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
 
+  const summaryStyles = {
+    backgroundColor: colors.primary[400],
+    "&:hover": {
+      backgroundColor: colors.primary[400], // Change color on hover later ***
+    },
+  };
+
+  const detailStyles = {
+    backgroundColor: colors.primary[400], // Could change this to be smoother ***
+  };
+
   return (
     <Box m="20px">
       <Header title="FAQ" subtitle="Frequently Asked Questions Page" />
 
       <Accordion>
-        <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+        <AccordionSummary expandIcon={<ExpandMoreIcon />} sx={summaryStyles}>
           <Typography color={colors.greenAccent[500]} variant="h5">
             An Important Question
           </Typography>
         </AccordionSummary>
-        <AccordionDetails>
+        <AccordionDetails sx={detailStyles}>
           <Typography>
             Lorem ipsum dolor sit amet consectetur, adipisicing elit.
             Consequuntur sit beatae nam quibusdam expedita dignissimos sequi ex
@@ -40,12 +51,12 @@ const FAQ = () => {
       </Accordion>
 
       <Accordion>
-        <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+        <AccordionSummary expandIcon={<ExpandMoreIcon />} sx={summaryStyles}>
           <Typography color={colors.greenAccent[500]} variant="h5">
             Another Important Question
           </Typography>
         </AccordionSummary>
-        <AccordionDetails>
+        <AccordionDetails sx={detailStyles}>
           <Typography>
             Lorem ipsum dolor sit amet consectetur, adipisicing elit.
             Consequuntur sit beatae nam quibusdam expedita dignissimos sequi ex
@@ -56,12 +67,12 @@ const FAQ = () => {
       </Accordion>
 
       <Accordion>
-        <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+        <AccordionSummary expandIcon={<ExpandMoreIcon />} sx={summaryStyles}>
           <Typography color={colors.greenAccent[500]} variant="h5">
             Your Favorite Question
           </Typography>
         </AccordionSummary>
-        <AccordionDetails>
+        <AccordionDetails sx={detailStyles}>
           <Typography>
             Lorem ipsum dolor sit amet consectetur, adipisicing elit.
             Consequuntur sit beatae nam quibusdam expedita dignissimos sequi ex
@@ -72,12 +83,12 @@ const FAQ = () => {
       </Accordion>
 
       <Accordion>
-        <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+        <AccordionSummary expandIcon={<ExpandMoreIcon />} sx={summaryStyles}>
           <Typography color={colors.greenAccent[500]} variant="h5">
             Some Random Question
           </Typography>
         </AccordionSummary>
-        <AccordionDetails>
+        <AccordionDetails sx={detailStyles}>
           <Typography>
             Lorem ipsum dolor sit amet consectetur, adipisicing elit.
             Consequuntur sit beatae nam quibusdam expedita dignissimos sequi ex
@@ -88,12 +99,12 @@ const FAQ = () => {
       </Accordion>
 
       <Accordion>
-        <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+        <AccordionSummary expandIcon={<ExpandMoreIcon />} sx={summaryStyles}>
           <Typography color={colors.greenAccent[500]} variant="h5">
             The Final Question
           </Typography>
         </AccordionSummary>
-        <AccordionDetails>
+        <AccordionDetails sx={detailStyles}>
           <Typography>
             Lorem ipsum dolor sit amet consectetur, adipisicing elit.
             Consequuntur sit beatae nam quibusdam expedita dignissimos sequi ex

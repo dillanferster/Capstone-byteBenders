@@ -74,48 +74,48 @@ export const tokens = (mode) => ({
           900: "#e0e0e0",
         },
         primary: {
-          100: "#040509",
-          200: "#080b12",
-          300: "#0c101b",
-          400: "#f2f0f0",
-          500: "#141b2d",
-          600: "#434957",
-          700: "#727681",
-          800: "#a1a4ab",
-          900: "#d0d1d5",
+          100: "#1F2A40", // Darkest blue-grey
+          200: "#2F3B54", // Dark blue-grey
+          300: "#404B64", // Medium dark blue-grey
+          400: "#E8EDF4", // Medium blue-grey
+          500: "#D5DCE8", // Light medium blue-grey
+          600: "#D5DCE8", // Light blue-grey
+          700: "#E8EDF4", // Very light blue-grey
+          800: "#F5F7FA", // Almost white with slight blue
+          900: "#FFFFFF", // Pure white
         },
         greenAccent: {
-          100: "#0f2922",
-          200: "#1e5245",
-          300: "#2e7c67",
-          400: "#3da58a",
-          500: "#4cceac",
-          600: "#70d8bd",
-          700: "#94e2cd",
-          800: "#b7ebde",
-          900: "#dbf5ee",
+          100: "#0f2922", // Darkest green
+          200: "#1e5245", // Dark green
+          300: "#2e7c67", // Medium dark green
+          400: "#3da58a", // Medium green
+          500: "#4cceac", // Main green
+          600: "#70d8bd", // Light green
+          700: "#94e2cd", // Lighter green
+          800: "#b7ebde", // Very light green
+          900: "#dbf5ee", // Lightest green
         },
         redAccent: {
-          100: "#2c100f",
-          200: "#58201e",
-          300: "#832f2c",
-          400: "#af3f3b",
-          500: "#db4f4a",
-          600: "#e2726e",
-          700: "#e99592",
-          800: "#f1b9b7",
-          900: "#f8dcdb",
+          100: "#2c100f", // Darkest red
+          200: "#58201e", // Dark red
+          300: "#832f2c", // Medium dark red
+          400: "#af3f3b", // Medium red
+          500: "#db4f4a", // Main red
+          600: "#e2726e", // Light red
+          700: "#e99592", // Lighter red
+          800: "#f1b9b7", // Very light red
+          900: "#f8dcdb", // Lightest red
         },
         blueAccent: {
-          100: "#151632",
-          200: "#2a2d64",
-          300: "#3e4396",
-          400: "#535ac8",
-          500: "#6870fa",
-          600: "#868dfb",
-          700: "#a4a9fc",
-          800: "#c3c6fd",
-          900: "#e1e2fe",
+          100: "#2a2d64", // Start with medium-dark blue instead of very dark
+          200: "#3e4396", // Dark blue but lighter than before
+          300: "#535ac8", // Medium-dark blue
+          400: "#6870fa", // Medium blue
+          500: "#868dfb", // Medium-light blue
+          600: "#a4a9fc", // Light blue
+          700: "#c3c6fd", // Lighter blue
+          800: "#d2d4fe", // Very light blue
+          900: "#e1e2fe", // Lightest blue
         },
       }),
 });

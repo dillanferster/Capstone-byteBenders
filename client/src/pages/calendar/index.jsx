@@ -83,8 +83,8 @@ const Calendar = () => {
   };
 
   const handleDateClick = (selected) => {
-    // Parse the selected date
-    const startDateTime = new Date(selected.startStr);
+    // Parse the selected date while preserving the actual selected date
+    const startDateTime = new Date(selected.start);
     startDateTime.setHours(9, 0, 0, 0);
     const endDateTime = new Date(startDateTime.getTime() + 60 * 60 * 1000);
 
@@ -106,12 +106,21 @@ const Calendar = () => {
 
   const handleAddEvent = async (eventData) => {
     try {
-      // console.log(eventData);
       const response = await createCalendarEvent(eventData);
 
-      console.log("RESPONSE: " + response);
-
       if (!response.status === 200) throw new Error("Failed to create event");
+
+      // Add the new event to currentEvents
+      const newEvent = {
+        id: response.data._id, // Assuming your API returns the created event data
+        title: eventData.title,
+        start: new Date(eventData.start),
+        end: new Date(eventData.end),
+        description: eventData.description,
+        meetingLink: eventData.meetingLink,
+        participants: eventData.participants,
+      };
+      setCurrentEvents((prev) => [...prev, newEvent]);
 
       showAlert("Event created successfully");
       setModalOpen(false);
@@ -288,6 +297,47 @@ const Calendar = () => {
               .fc-list-empty {
                 background-color: ${colors.primary[400]} !important;
                 color: ${colors.grey[100]} !important;
+              }
+
+              /* Button styles */
+              .fc-button-primary {
+                background-color: ${colors.primary[400]} !important;
+                border-color: ${colors.primary[400]} !important;
+                color: ${colors.grey[100]} !important;
+              }
+
+              /* Button hover state */
+              .fc-button-primary:hover {
+                background-color: ${colors.primary[500]} !important;
+                border-color: ${colors.primary[500]} !important;
+                color: ${colors.blueAccent[200]} !important;
+              }
+
+              /* Active/Selected button state */
+              .fc-button-active {
+                background-color: ${colors.primary[500]} !important;
+                border-color: ${colors.primary[500]} !important;
+                color: ${colors.blueAccent[200]} !important;
+              }
+
+              /* Chevron icons */
+              .fc-icon-chevron-left,
+              .fc-icon-chevron-right {
+                color: ${colors.grey[100]} !important;
+              }
+
+              /* Chevron icons hover */
+              .fc-prev-button:hover .fc-icon-chevron-left,
+              .fc-next-button:hover .fc-icon-chevron-right {
+                color: ${colors.blueAccent[200]} !important;
+              }
+
+              /* Disabled button state */
+              .fc-button-primary:disabled {
+                background-color: ${colors.primary[600]} !important;
+                border-color: ${colors.primary[600]} !important;
+                color: ${colors.grey[300]} !important;
+                opacity: 0.7 !important;
               }
             `}
           </style>

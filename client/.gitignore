@@ -62,7 +62,8 @@ dist-ssr
  
 # testing
 /coverage
- 
+/tests
+
 # production
 /build
  
