@@ -9,18 +9,17 @@ const ViewSwitcher = ({ onViewModeChange, onViewListChange, isChecked }) => {
 
   return (
     <div
-      className="ViewContainer"
       style={{
         display: "flex",
-        alignItems: "center",
-        marginBottom: "10px",
-        padding: "10px",
+        alignItems: "left",
+        marginBottom: "5px",
+        padding: "5px",
       }}
     >
       {Object.values(ViewMode).map((mode) => (
         <button
           key={mode}
-          className="px-4 py-2 mx-2 bg-blue-500 text-white rounded"
+          className="px-4 py-2 mx-2 bg-blue-500 text-white rounded hover:bg-orange-300"
           onClick={() => handleViewModeChange(mode)}
         >
           {mode}

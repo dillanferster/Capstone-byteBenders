@@ -20,7 +20,7 @@ const ProjectGantt = ({ projects: projectsProp, tasks }) => {
   } else if (viewMode === ViewMode.Month) {
     columnWidth = 260;
   } else if (viewMode === ViewMode.Week) {
-    columnWidth = 100;
+    columnWidth = 80;
   }
   useEffect(() => {
     if (projectsProp.length > 0) {
@@ -37,7 +37,7 @@ const ProjectGantt = ({ projects: projectsProp, tasks }) => {
   const handleSelect = (task, isSelected) => console.log(task, isSelected);
   const handleExpanderClick = (task) => {
     setTasksForGantt(tasksForGantt.map((t) => (t.id === task.id ? task : t)));
-    console.log("On expander click Id:" + task.id);
+    console.log("On expander click Id:" + task.id + task.name);
   };
   const handleDblClick = (task) => console.log("On double click Id:" + task.id);
   const handleClick = (task) => console.log("On click Id:" + task.id);
@@ -47,14 +47,15 @@ const ProjectGantt = ({ projects: projectsProp, tasks }) => {
   }
 
   return (
-    <div style={{ padding: "20px" }}>
+    <div>
       <div
         style={{
           height: "750px",
           backgroundColor: "#fff",
           border: "1px solid #ddd",
-          borderRadius: "8px",
-          padding: "20px",
+          borderRadius: "10px",
+          padding: "10px",
+          maxWidth: "100%",
         }}
       >
         <ViewSwitcher
@@ -62,25 +63,23 @@ const ProjectGantt = ({ projects: projectsProp, tasks }) => {
           onViewListChange={setIsChecked}
           isChecked={isChecked}
         />
-        <Gantt
-          tasks={tasksForGantt}
-          viewMode={viewMode}
-          viewDate={viewDate}
-          monthCalendarFormat={"2-digit"}
-          monthTaskListFormat={"short"}
-          onDateChange={handleTaskChange}
-          onProgressChange={handleProgressChange}
-          onSelect={handleSelect}
-          onDoubleClick={handleDblClick}
-          onClick={handleClick}
-          onExpanderClick={handleExpanderClick}
-          listCellWidth={isChecked ? "155px" : ""}
-          columnWidth={columnWidth}
-          ganttHeight={600}
-          locale="en"
-          preStepsCount={1}
-          // style={{ width: "100%" }}
-        />
+        <div>
+          <Gantt
+            tasks={tasksForGantt}
+            viewMode={viewMode}
+            viewDate={viewDate}
+            onDateChange={handleTaskChange}
+            onProgressChange={handleProgressChange}
+            onSelect={handleSelect}
+            onDoubleClick={handleDblClick}
+            onClick={handleClick}
+            onExpanderClick={handleExpanderClick}
+            listCellWidth={isChecked ? "120px" : ""}
+            columnWidth={columnWidth}
+            ganttHeight={600}
+            style={{ maxWidth: "100%", overflowX: "hidden" }}
+          />
+        </div>
       </div>
     </div>
   );
