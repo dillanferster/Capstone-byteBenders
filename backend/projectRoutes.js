@@ -258,6 +258,25 @@ projectRoutes
         .json({ success: false, error: "Failed to analyze email" });
     }
   });
+
+//notification route
+projectRoutes.route("/projects").post(verifyToken, async (req, res) => {
+  let db = database.getDb();
+  let mongoObject = {
+    projectName: req.body.projectName,
+    projectDesc: req.body.projectDesc,
+    // Add other fields here
+  };
+  let data = await db.collection("projects").insertOne(mongoObject);
+
+  // Emit a notification to all connected users
+  req.io.emit("projectCreated", {
+    message: `New project created: ${mongoObject.projectName}`,
+    project: mongoObject,
+  });
+
+  res.json(data);
+});
 ////////////////////////// AWS Comprehend //////////////////////////
 
 module.exports = projectRoutes;

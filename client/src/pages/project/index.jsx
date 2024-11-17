@@ -35,7 +35,7 @@ import {
 import ProjectGrid from "../../components/projectgrid/index.jsx";
 import EditMenu from "../../components/editmenu/index.jsx";
 import ProjectGantt from "../../components/GanttChart/ProjectGantt.jsx";
-//
+import { useSocket } from "../../contexts/SocketContext";
 
 // columns for AG grid
 // field: corresponds to a row with a matching property ex. field: id in column matches to id: in rows
@@ -124,6 +124,8 @@ const ProjectPage = () => {
   const [editClicked, setEditClicked] = useState(false); // for add button
   const [deleteOpen, setDeleteOpen] = useState(false); // for dlt btn
   const [showGantt, setShowGantt] = useState(false); // Add this new state
+  const socket = useSocket();
+
 
   //*
 
@@ -188,6 +190,9 @@ const ProjectPage = () => {
     setAddClicked(!addClicked);
     setSelectedProject("");
     toggleForm();
+    socket.emit("projectNotification", {
+      message: `New project was created`,
+    });
   }
 
   // function handles edit button
@@ -195,6 +200,9 @@ const ProjectPage = () => {
   function handleButtonEdit() {
     setEditClicked(!editClicked);
     toggleForm();
+    socket.emit("projectNotification", {
+      message: `Project was edited`,
+    });
   }
 
   const reloadTheGrid = () => {
@@ -220,6 +228,9 @@ const ProjectPage = () => {
         if (response.status === 200) {
           console.log("deleted project with id:", project.id);
           reloadTheGrid();
+          socket.emit("projectNotification", {
+            message: `Project was deleted`,
+          });
         }
       });
     });

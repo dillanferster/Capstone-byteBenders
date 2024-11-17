@@ -44,6 +44,8 @@ import {
 import ProjectGrid from "../../components/projectgrid/index.jsx";
 import TaskEditMenu from "../../components/taskeditmenu/index.jsx";
 import TaskBoard from "../../components/taskboard/index.jsx";
+import { useSocket } from "../../contexts/SocketContext.jsx";
+
 
 //
 
@@ -183,6 +185,7 @@ const TaskPage = () => {
   const [boardToggled, setBoardToggled] = useState(false);
 
   const [reloadTaskBoard, setReloadTaskBoard] = useState(false);
+  const socket = useSocket();
 
   //*
 
@@ -251,10 +254,15 @@ const TaskPage = () => {
   // function Handles add Button click
   // calls makeProject
   // setReloadGrid so the rows rerender with new item
+  
   function handleButtonAdd() {
     setAddClicked(!addClicked);
     setSelectedTask("");
     toggleForm();
+    socket.emit("taskNotification", {
+      message: `Task "${selectedTask[0]?.taskName}" was created.`,
+      action: "add",
+    });
   }
 
   // function handles edit button
@@ -262,6 +270,11 @@ const TaskPage = () => {
   function handleButtonEdit() {
     setEditClicked(!editClicked);
     toggleForm();
+
+    socket.emit("taskNotification", {
+      message: `Task "${selectedTask[0]?.taskName}" was edited.`,
+      action: "edit",
+    });
   }
 
   // updates grid usestate to cause a re-render
@@ -277,11 +290,16 @@ const TaskPage = () => {
     setViewClicked(!viewClicked);
     console.log("set view to", viewClicked);
     toggleForm();
+    socket.emit("taskNotification", {
+      message: `Task "${selectedTask[0]?.taskName}" was viewed.`,
+      action: "view",
+    });
   }
 
   // handles button start task
   // calls startTask route
   async function handleButtonStart(selectedTask) {
+    if (!selectedTask || selectedTask.length === 0) return;
     startTask(selectedTask[0].id);
     console.log("task started from drag and drop");
 
@@ -294,6 +312,12 @@ const TaskPage = () => {
       if (response.status === 200) {
         reloadTheGrid();
         setReloadTaskBoard((prev) => !prev);
+        socket.emit("taskNotification", {
+          message: `Task "${selectedTask[0]?.taskName}" was started.`,
+          taskId: selectedTask[0].id,
+          taskName: selectedTask[0].taskName,
+          action: "start",
+        });
       }
     } catch (error) {
       console.error("Error updating task Status:", error);
@@ -316,6 +340,11 @@ const TaskPage = () => {
         const selectedId = selectedTask[0].id;
         reloadTheGrid();
         setReloadTaskBoard((prev) => !prev);
+        socket.emit("taskNotification", {
+          message: `Task "${selectedTask[0]?.taskName}" was paused.`,
+          action: "pause",
+        });
+
         return selectedId;
       }
     } catch (error) {
@@ -338,6 +367,10 @@ const TaskPage = () => {
       if (response.status === 200) {
         reloadTheGrid();
         setReloadTaskBoard((prev) => !prev);
+        socket.emit("taskNotification", {
+          message: `Task "${selectedTask[0]?. taskName}" was resumed.`,
+          action: "resume",
+        });
       }
     } catch (error) {
       console.error("Error updating task Status:", error);
@@ -383,6 +416,12 @@ const TaskPage = () => {
 
         await reloadTheGrid();
         setReloadTaskBoard((prev) => !prev);
+        socket.emit("taskNotification", {
+          message: `Task "${selectedTask[0]?.taskName}" was completed.`,
+          taskId: selectedTask[0].id,
+          taskName: selectedTask[0].taskName,
+          action: "complete",
+          });
         return selectedId;
       }
     } catch (error) {
@@ -562,6 +601,9 @@ const TaskPage = () => {
         );
 
         console.log("after deleting task from project", deleteResponse);
+        socket.emit("taskNotification", {
+          message: `Task "${selectedTask[0]?.taskName}" was deleted.`,
+        });
 
         reloadTheGrid();
         setReloadTaskBoard((prev) => !prev);

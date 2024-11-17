@@ -253,4 +253,24 @@ taskRoutes
     response.json(data);
   });
 
+//notification route
+taskRoutes.route("/tasks").post(verifyToken, async (req, res) => {
+  let db = database.getDb();
+  let mongoObject = {
+    taskName: req.body.taskName,
+    assignedTo: req.body.assignedTo,
+    // Add other fields here
+  };
+  let data = await db.collection("tasks").insertOne(mongoObject);
+
+  // Emit a notification to all connected users
+  req.io.emit("taskCreated", {
+    message: `New task created: ${mongoObject.taskName}`,
+    task: mongoObject,
+  });
+
+  res.json(data);
+});
+
+
 module.exports = taskRoutes;
