@@ -24,6 +24,8 @@ import EmailAnalysisForm from "./pages/emailanalysis/index.jsx";
 
 // Database functions from the API file
 import { getProjects, createProject } from "./api.js";
+import { SocketProvider } from "./contexts/SocketContext";
+import NotificationListener from "./components/NotificationListener";
 
 const sidenavWidth = 240; // Set the sidebar width globally
 
@@ -73,6 +75,8 @@ const App = () => {
     <ColorModeContext.Provider value={colorMode}>
       <ThemeProvider theme={theme}>
         <CssBaseline />
+        <SocketProvider>
+        <NotificationListener />
         <main className="content">
           <Routes>
             <Route path="/" element={<LoginPage />} />
@@ -87,9 +91,10 @@ const App = () => {
               <Route path="/create-user" element={<CreateUserPage />} />
               <Route path="/emailanalysis" element={<EmailAnalysisForm />} />
               <Route path="/email-inbox" element={<EmailPage />} />
-            </Route>
-          </Routes>
-        </main>
+              </Route>
+            </Routes>
+          </main>
+        </SocketProvider>
       </ThemeProvider>
     </ColorModeContext.Provider>
   );

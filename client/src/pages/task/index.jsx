@@ -43,6 +43,7 @@ import {
 import ProjectGrid from "../../components/projectgrid/index.jsx";
 import TaskEditMenu from "../../components/taskeditmenu/index.jsx";
 import TaskBoard from "../../components/taskboard/index.jsx";
+import { useSocket } from "../../contexts/SocketContext";
 
 //
 
@@ -183,6 +184,8 @@ const TaskPage = () => {
 
   const [reloadTaskBoard, setReloadTaskBoard] = useState(false);
 
+  const socket = useSocket();
+
   //*
 
   // projects object array from the database
@@ -293,6 +296,9 @@ const TaskPage = () => {
       if (response.status === 200) {
         reloadTheGrid();
         setReloadTaskBoard((prev) => !prev);
+        socket.emit("sendNotification", {
+          message: "Task started: " + selectedTask[0].taskName,
+        });
       }
     } catch (error) {
       console.error("Error updating task Status:", error);
@@ -315,6 +321,9 @@ const TaskPage = () => {
         const selectedId = selectedTask[0].id;
         reloadTheGrid();
         setReloadTaskBoard((prev) => !prev);
+        socket.emit("sendNotification", {
+          message: "Task paused: " + selectedTask[0].taskName,
+        });
         return selectedId;
       }
     } catch (error) {
@@ -337,6 +346,9 @@ const TaskPage = () => {
       if (response.status === 200) {
         reloadTheGrid();
         setReloadTaskBoard((prev) => !prev);
+        socket.emit("sendNotification", {
+          message: "Task resumed: " + selectedTask[0].taskName,
+        });
       }
     } catch (error) {
       console.error("Error updating task Status:", error);
@@ -382,6 +394,9 @@ const TaskPage = () => {
 
         await reloadTheGrid();
         setReloadTaskBoard((prev) => !prev);
+        socket.emit("sendNotification", {
+          message: "Task completed: " + selectedTask[0].taskName,
+        });
         return selectedId;
       }
     } catch (error) {
