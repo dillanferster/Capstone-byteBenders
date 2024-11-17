@@ -45,6 +45,7 @@ import TaskEditMenu from "../../components/taskeditmenu/index.jsx";
 import TaskBoard from "../../components/taskboard/index.jsx";
 import { useSocket } from "../../contexts/SocketContext.jsx";
 
+
 //
 
 // columns for AG grid
@@ -183,7 +184,6 @@ const TaskPage = () => {
   const [boardToggled, setBoardToggled] = useState(false);
 
   const [reloadTaskBoard, setReloadTaskBoard] = useState(false);
-
   const socket = useSocket();
 
   //*
@@ -253,13 +253,13 @@ const TaskPage = () => {
   // function Handles add Button click
   // calls makeProject
   // setReloadGrid so the rows rerender with new item
+  
   function handleButtonAdd() {
     setAddClicked(!addClicked);
     setSelectedTask("");
     toggleForm();
-    const newTaskName = "New Task";
     socket.emit("taskNotification", {
-      message: `Task "${newTaskName}" was created.`,
+      message: `Task "${selectedTask[0]?.taskName}" was created.`,
     });
   }
 
@@ -268,9 +268,9 @@ const TaskPage = () => {
   function handleButtonEdit() {
     setEditClicked(!editClicked);
     toggleForm();
-    const taskName = selectedTask[0]?.taskName || "Unknown Task";
+
     socket.emit("taskNotification", {
-      message: `Task "${taskName}" was edited.`,
+      message: `Task "${selectedTask[0]?.taskName}" was edited.`,
     });
   }
 
@@ -287,9 +287,8 @@ const TaskPage = () => {
     setViewClicked(!viewClicked);
     console.log("set view to", viewClicked);
     toggleForm();
-    const taskName = selectedTask[0]?.taskName || "Unknown Task";
     socket.emit("taskNotification", {
-      message: `Task "${taskName}" was viewed.`,
+      message: `Task "${selectedTask[0]?.taskName}" was viewed.`,
     });
   }
 
@@ -309,11 +308,11 @@ const TaskPage = () => {
       if (response.status === 200) {
         reloadTheGrid();
         setReloadTaskBoard((prev) => !prev);
-        const taskName = selectedTask[0]?.taskName || "Unknown Task";
         socket.emit("taskNotification", {
-          message: `Task "${taskName}" was started.`,
+          message: `Task "${selectedTask[0]?.taskName}" was started.`,
           taskId: selectedTask[0].id,
           taskName: selectedTask[0].taskName,
+          action: "start",
         });
       }
     } catch (error) {
@@ -338,7 +337,8 @@ const TaskPage = () => {
         reloadTheGrid();
         setReloadTaskBoard((prev) => !prev);
         socket.emit("taskNotification", {
-          message: `Task "${taskName}" was paused.`,
+          message: `Task "${selectedTask[0]?.taskName}" was paused.`,
+          action: "pause",
         });
 
         return selectedId;
@@ -364,7 +364,8 @@ const TaskPage = () => {
         reloadTheGrid();
         setReloadTaskBoard((prev) => !prev);
         socket.emit("taskNotification", {
-          message: `Task "${taskName}" was resumed.`,
+          message: `Task "${selectedTask[0]?. taskName}" was resumed.`,
+          action: "resume",
         });
       }
     } catch (error) {
@@ -415,7 +416,8 @@ const TaskPage = () => {
           message: `Task "${selectedTask[0]?.taskName}" was completed.`,
           taskId: selectedTask[0].id,
           taskName: selectedTask[0].taskName,
-        });
+          action: "complete",
+          });
         return selectedId;
       }
     } catch (error) {
@@ -595,6 +597,9 @@ const TaskPage = () => {
         );
 
         console.log("after deleting task from project", deleteResponse);
+        socket.emit("taskNotification", {
+          message: `Task "${selectedTask[0]?.taskName}" was deleted.`,
+        });
 
         reloadTheGrid();
         setReloadTaskBoard((prev) => !prev);

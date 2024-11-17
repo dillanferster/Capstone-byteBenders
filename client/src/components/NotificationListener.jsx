@@ -1,27 +1,28 @@
 // src/components/NotificationListener.jsx
 import { useEffect } from "react";
-import { useSocket } from "../contexts/SocketContext";
+import { useSocket } from "../contexts/SocketContext.jsx";
 
 const NotificationListener = () => {
   const socket = useSocket();
-
+    
   useEffect(() => {
     if (!socket) return;
+    const handleNotification = (data) => {
+        console.log('Notification received:', data);
+        alert(`Notification: ${data.message}`);
+    };
 
-    // Listen for all notifications
-    socket.on("Notification", (data) => {
-      console.log("Notification received:",data);
-
-      // Show notification alert (you can customize this with a toast or UI component)
-      alert(`Notification: ${data.message}`);
-    });
+    socket.on('projectNotification', handleNotification);
+    socket.on('taskNotification', handleNotification);
 
     return () => {
-      socket.off("Notification");
+        socket.off('projectNotification', handleNotification);
+        socket.off('taskNotification', handleNotification);
     };
-  }, [socket]);
+}, [socket]);
 
-  return null; // This component does not render anything
+ return null; // This component does not render anything
 };
+
 
 export default NotificationListener;

@@ -99,16 +99,18 @@ io.on("connection", (socket) => {
     console.log("Project notification data received:", data);
 
     // Broadcast the notification to all connected clients
-    io.emit("Notification", { type: "project", ...data });
+    io.emit("projectNotification", { type: "project", ...data });
   });
   //task
   socket.on("taskNotification", (data) => {
     console.log("Task notification data received:", data);
-    io.emit("Notification", { type: "task", ...data });
+    io.emit("taskNotification", { type: "task", ...data });
   });
+  // socket.on('taskNotification', (data) => {
+  //   console.log('Notification received:', data);
+  //   socket.broadcast.emit('taskNotification', data);
+  // });
   
-
-
   // Handle client disconnection
   socket.on("disconnect", () => {
     console.log(`Client disconnected: ${socket.id}`);
