@@ -38,7 +38,8 @@ const Column = ({
   handleButtonComplete,
   setIsDeleteModalOpen,
 }) => {
-  const [active, setActive] = useState();
+  const [active, setActive] = useState(false);
+  const [dropIndicatorY, setDropIndicatorY] = useState(null);
 
   const handleCardClick = (e, card) => {
     if (e.detail === 2) {
@@ -78,56 +79,52 @@ const Column = ({
 
   const handleDragOver = (e) => {
     e.preventDefault();
-    highlightIndicator(e);
     setActive(true);
-  };
 
-  const highlightIndicator = (e) => {
-    const indicators = getIndicators();
-    const el = getNearestIndicator(e, indicators);
-    el.element.style.opacity = 1;
-  };
+    // Get the container's bounding rect
+    const containerRect = e.currentTarget.getBoundingClientRect();
+    const mouseY = e.clientY - containerRect.top;
 
-  const clearHighlights = (indicators) => {
-    indicators = indicators || getIndicators();
-    indicators.forEach((el) => (el.style.opacity = 0));
-  };
+    // Get all cards in this column
+    const cards = e.currentTarget.getElementsByClassName("task-card");
 
-  const getNearestIndicator = (e, indicators) => {
-    const DISTANCE_OFFSET = 100;
+    // Find the insertion point
+    let insertIndex = 0;
+    let indicatorY = 0;
 
-    const el = indicators.reduce(
-      (closest, child) => {
-        const box = child.getBoundingClientRect();
-        const offset = e.clientY - (box.top + DISTANCE_OFFSET);
+    for (const card of cards) {
+      const cardRect = card.getBoundingClientRect();
+      const cardMiddle = cardRect.top + cardRect.height / 2 - containerRect.top;
 
-        if (offset < 0 && offset > closest.offset) {
-          return { offset: offset, element: child };
-        } else {
-          return closest;
-        }
-      },
-      {
-        offset: Number.NEGATIVE_INFINITY,
-        element: indicators[indicators.length - 1],
+      if (mouseY > cardMiddle) {
+        insertIndex++;
+        indicatorY = cardRect.bottom - containerRect.top;
+      } else {
+        indicatorY = cardRect.top - containerRect.top;
+        break;
       }
-    );
+    }
 
-    return el;
-  };
+    // If mouse is below all cards, place indicator at bottom
+    if (insertIndex === cards.length) {
+      const lastCard = cards[cards.length - 1];
+      if (lastCard) {
+        const lastCardRect = lastCard.getBoundingClientRect();
+        indicatorY = lastCardRect.bottom - containerRect.top;
+      }
+    }
 
-  const getIndicators = () => {
-    return Array.from(document.querySelectorAll(`[data-column="${column}"]`));
+    setDropIndicatorY(indicatorY);
   };
 
   const handleDragLeave = () => {
-    clearHighlights();
     setActive(false);
+    setDropIndicatorY(null);
   };
 
   const handleDragEnd = (e) => {
-    clearHighlights();
     setActive(false);
+    setDropIndicatorY(null);
 
     const tempCardData = JSON.parse(e.dataTransfer.getData("cardObject"));
 
@@ -153,8 +150,6 @@ const Column = ({
       },
     ];
 
-    console.log("cardData", selectedTask);
-
     if (
       selectedTask[0].taskStatus === "Not Started" &&
       column === "In Progress"
@@ -163,7 +158,6 @@ const Column = ({
     }
     if (selectedTask[0].taskStatus === "In Progress" && column === "Paused") {
       handleButtonPause(selectedTask);
-      console.log("in progress to paused");
     }
     if (selectedTask[0].taskStatus === "Paused" && column === "In Progress") {
       handleButtonResume(selectedTask);
@@ -182,22 +176,29 @@ const Column = ({
   const filteredCards = cards.filter((c) => c.taskStatus === column);
 
   return (
-    <div className="w-56 shrink-0  h-screen">
-      <div className="mb-3 flex items-center gap-2 border-b sticky top-0 backdrop-blur-lg  border-neutral-700 ">
+    <div className="w-56 shrink-0 h-screen">
+      <div className="mb-3 flex items-center gap-2 border-b sticky top-0 backdrop-blur-lg border-neutral-700">
         <span className="rounded text-sm text-neutral-400">
-          {" "}
           {filteredCards.length}
         </span>
-        <h3 className={`font-medium ${headingColor}`}>{title} </h3>
+        <h3 className={`font-medium ${headingColor}`}>{title}</h3>
       </div>
       <div
-        className={`h-full w-full transition-colors rounded-md ${
+        className={`h-full w-full transition-colors rounded-md relative  ${
           active ? "bg-neutral-800/50" : ""
         }`}
         onDragOver={handleDragOver}
         onDragLeave={handleDragLeave}
         onDrop={handleDragEnd}
       >
+        {/* Drop indicator line */}
+        {dropIndicatorY !== null && (
+          <div
+            className="absolute w-full h-1 bg-violet-300/80 rounded-full transform -translate-y-1/2 pointer-events-none"
+            style={{ top: `${dropIndicatorY}px` }}
+          />
+        )}
+
         {filteredCards.map((c) => (
           <Card
             key={c.id}
@@ -208,7 +209,6 @@ const Column = ({
             setSelectedTask={setSelectedTask}
           />
         ))}
-        <DropIndicator beforeId="-1" column={column} />
       </div>
     </div>
   );
@@ -305,9 +305,8 @@ const Card = ({
 
   return (
     <>
-      <DropIndicator beforeId={_id} column={column} />
       <div
-        className="h-[10rem] cursor-grab rounded border border-neutral-700 p-3 active:cursor-grabbing flex flex-col  justify-between active:border-violet-300/60 hover:border-violet-300/30 "
+        className="task-card h-[10rem] mt-2 cursor-grab rounded border border-neutral-700 p-3 active:cursor-grabbing flex flex-col  justify-between active:border-violet-300/60 hover:border-violet-300/40 "
         draggable="true"
         style={{ background: colors.primary[600] }}
         onDragStart={(e) =>
@@ -403,16 +402,6 @@ const Card = ({
         </div>
       </div>
     </>
-  );
-};
-
-const DropIndicator = ({ beforeId, column }) => {
-  return (
-    <div
-      data-before={beforeId || "-1"}
-      data-column={column}
-      className="my-0.5 h-0.5 w-full bg-violet-300 opacity-0"
-    />
   );
 };
 
