@@ -402,6 +402,7 @@ export default function TaskEditMenu({
               <select
                 id="dependencies"
                 value={dependencies}
+                defaultValue=""
                 onChange={(e) => {
                   const selectedOptions = Array.from(
                     e.target.selectedOptions
@@ -421,6 +422,7 @@ export default function TaskEditMenu({
                     {task.taskName}
                   </option>
                 ))}
+                <option value="">None</option>
               </select>
             </div>
             <div className="w-[18rem]">
