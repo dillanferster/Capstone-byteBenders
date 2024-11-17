@@ -35,7 +35,6 @@ import {
 import ProjectGrid from "../../components/projectgrid/index.jsx";
 import EditMenu from "../../components/editmenu/index.jsx";
 import ProjectGantt from "../../components/GanttChart/ProjectGantt.jsx";
-
 //
 
 // columns for AG grid
@@ -85,7 +84,7 @@ const columns = [
   },
   {
     field: "dateCreated",
-    headerName: "Date",
+    headerName: "Date Created",
     floatingFilter: true,
     filter: true,
     editable: false,
@@ -111,6 +110,13 @@ const columns = [
     floatingFilter: true,
     editable: false,
   },
+  {
+    field: "tasksCount",
+    headerName: "Number of Tasks",
+    filter: true,
+    floatingFilter: true,
+    editable: false,
+  },
 ];
 
 const ProjectPage = () => {
@@ -120,7 +126,6 @@ const ProjectPage = () => {
   const [isLoading, setIsLoading] = useState(); // state for loading
   const [selectedProject, setSelectedProject] = useState([]); // selected project array, when users click on projects in data table
   const [reloadGrid, setReloadGrid] = useState(false); // to update grid rows
-  const [reloadGantt, setReloadGantt] = useState(false); // to update gantt chart
   const [isOpen, setIsOpen] = useState(false); // for edit  menu
   const [viewClicked, setViewClicked] = useState(false); // for view button
   const [addClicked, setAddClicked] = useState(false); // for add button
@@ -148,6 +153,23 @@ const ProjectPage = () => {
         projectStatus: project.projectStatus,
         quickBaseLink: project.quickBaseLink,
         projectDesc: project.projectDesc,
+        tasksCount: project.TaskIdForProject // count unique number of task id string
+          ? (() => {
+              const uniqueItems = new Set();
+
+              project.TaskIdForProject.forEach((item) => {
+                if (typeof item === "string") {
+                  uniqueItems.add(item); // Add string directly
+                } else if (item instanceof ObjectId) {
+                  // handle edge cases when task id is saved as an objectid in the string array
+                  uniqueItems.add(item.toString()); // Convert ObjectId to string and add
+                }
+              });
+              console.log("uniqueItems", uniqueItems);
+              // Return the total count of unique strings and ObjectIds
+              return uniqueItems.size;
+            })()
+          : 0,
       })),
     [projects]
   );
@@ -202,10 +224,6 @@ const ProjectPage = () => {
 
   const reloadTheGrid = () => {
     setReloadGrid(!reloadGrid);
-  };
-
-  const reloadTheGantt = () => {
-    setReloadGantt(!reloadGantt);
   };
 
   // function handles view button
@@ -276,7 +294,7 @@ const ProjectPage = () => {
 
     loadAllProjects();
     loadAllTasks();
-  }, [reloadGrid, reloadGantt]);
+  }, [reloadGrid]);
 
   return (
     <div className=" p-[1rem]  ">
@@ -389,7 +407,13 @@ const ProjectPage = () => {
           />
         </>
       ) : (
-        <ProjectGantt projects={projects} tasks={tasks} />
+        <>
+          <ProjectGantt
+            projects={projects}
+            tasks={tasks}
+            // style={{ height: "80vh", overflow: "auto" }}
+          />
+        </>
       )}
     </div>
   );
