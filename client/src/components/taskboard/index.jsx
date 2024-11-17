@@ -20,6 +20,9 @@ import {
   deleteTaskFromProject,
 } from "../../api.js";
 
+import { useTheme } from "@mui/material";
+import { tokens } from "../../theme.js";
+
 const Column = ({
   title,
   headingColor,
@@ -75,15 +78,55 @@ const Column = ({
 
   const handleDragOver = (e) => {
     e.preventDefault();
-
+    highlightIndicator(e);
     setActive(true);
   };
 
+  const highlightIndicator = (e) => {
+    const indicators = getIndicators();
+    const el = getNearestIndicator(e, indicators);
+    el.element.style.opacity = 1;
+  };
+
+  const clearHighlights = (indicators) => {
+    indicators = indicators || getIndicators();
+    indicators.forEach((el) => (el.style.opacity = 0));
+  };
+
+  const getNearestIndicator = (e, indicators) => {
+    const DISTANCE_OFFSET = 100;
+
+    const el = indicators.reduce(
+      (closest, child) => {
+        const box = child.getBoundingClientRect();
+        const offset = e.clientY - (box.top + DISTANCE_OFFSET);
+
+        if (offset < 0 && offset > closest.offset) {
+          return { offset: offset, element: child };
+        } else {
+          return closest;
+        }
+      },
+      {
+        offset: Number.NEGATIVE_INFINITY,
+        element: indicators[indicators.length - 1],
+      }
+    );
+
+    return el;
+  };
+
+  const getIndicators = () => {
+    return Array.from(document.querySelectorAll(`[data-column="${column}"]`));
+  };
+
   const handleDragLeave = () => {
+    clearHighlights();
     setActive(false);
   };
 
   const handleDragEnd = (e) => {
+    clearHighlights();
     setActive(false);
 
     const tempCardData = JSON.parse(e.dataTransfer.getData("cardObject"));
@@ -165,6 +208,7 @@ const Column = ({
             setSelectedTask={setSelectedTask}
           />
         ))}
+        <DropIndicator beforeId="-1" column={column} />
       </div>
     </div>
   );
@@ -228,6 +272,9 @@ const Card = ({
   setIsDeleteModalOpen,
   setSelectedTask,
 }) => {
+  const theme = useTheme();
+  const colors = tokens(theme.palette.mode);
+
   const handleDelete = (e, card) => {
     setIsDeleteModalOpen((prev) => !prev);
 
@@ -258,9 +305,11 @@ const Card = ({
 
   return (
     <>
+      <DropIndicator beforeId={_id} column={column} />
       <div
-        className="h-[10rem] cursor-grab rounded border border-neutral-700 p-3 bg-neutral-800 active:cursor-grabbing flex flex-col  justify-between active:border-violet-300/60 hover:border-violet-300/30"
+        className="h-[10rem] cursor-grab rounded border border-neutral-700 p-3 active:cursor-grabbing flex flex-col  justify-between active:border-violet-300/60 hover:border-violet-300/30 "
         draggable="true"
+        style={{ background: colors.primary[600] }}
         onDragStart={(e) =>
           handleDragStart(e, {
             _id,
@@ -353,7 +402,6 @@ const Card = ({
           </p>
         </div>
       </div>
-      <DropIndicator beforeId={_id} column={column} />
     </>
   );
 };
@@ -469,8 +517,6 @@ const TaskBoard = ({
         handleButtonComplete={handleButtonComplete}
         setIsDeleteModalOpen={setIsDeleteModalOpen}
       />
-
-      {/* <DeleteBox setCards={setCards} /> */}
     </div>
   );
 };
