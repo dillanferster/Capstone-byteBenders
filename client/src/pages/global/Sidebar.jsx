@@ -59,6 +59,12 @@ const Sidebar = () => {
         "& .pro-menu.item.active": {
           color: "#6870fa !important",
         },
+        "& .pro-menu-item:hover .pro-item-content": {
+          color: `${colors.blueAccent[200]} !important`,
+        },
+        "& .pro-menu-item:hover .MuiSvgIcon-root": {
+          color: `${colors.blueAccent[200]} !important`,
+        },
       }}
     >
       <ProSidebar collapsed={isCollapsed}>
