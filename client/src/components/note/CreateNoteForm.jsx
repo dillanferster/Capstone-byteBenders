@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { validateNote } from '../../utils/noteValidation';
+// import { validateNote } from '../../utils/noteValidation';
 import { getTasks } from '../../api';
 
 const CreateNoteForm = ({ onClose, onSubmit, isTaskNote }) => {
