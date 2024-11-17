@@ -52,153 +52,155 @@ const EmailAnalysisForm = () => {
   }
 
   return (
-    <Box
-      sx={{
-        backgroundColor: colors.primary[500],
-        padding: 2,
-        borderRadius: 2,
-        boxShadow: 3,
-        color: colors.grey[100],
-      }}
-    >
+    <Box p="20px">
       <Box display="flex" justifyContent="space-between" alignItems="center">
         <Header title="ANALYZE EMAIL" subtitle="Welcome to your dashboard" />
       </Box>
-      <Typography variant="h4" color={colors.greenAccent[500]} gutterBottom>
-        Generate New Project From Email
-      </Typography>
-      <Typography variant="h5" color={colors.grey[600]} gutterBottom>
-        This function can categorize text containing AWS Comprehend predefined
-        entities such as{" "}
-        <strong>Person, Title, Quantity, Date, and more</strong>. Try analyzing
-        an email or text below.
-        <br />
-        <br />
-        Example: George Clooney played in the movie Ocean Twelve by Paramount in
-        2011 which sold millions of DVD copies.
-      </Typography>
-      <form onSubmit={handleSubmit}>
-        <TextField
-          label="Enter Email Content"
-          multiline
-          rows={10}
-          fullWidth
-          variant="outlined"
-          value={emailText}
-          onChange={(e) => setEmailText(e.target.value)}
-          sx={{
-            marginBottom: 2,
-            backgroundColor: colors.grey[900],
-            color: colors.grey[100],
-            borderColor: colors.grey[700],
-            "& .MuiInputBase-input": { fontSize: "1.2rem" },
-          }}
-          InputProps={{ style: { color: colors.grey[100] } }}
-        />
-        <Button
-          variant="contained"
-          type="submit"
-          disabled={isSubmitting}
-          sx={{
-            backgroundColor: colors.blueAccent[500],
-            color: colors.primary[100],
-            fontSize: "1.2rem",
-            "&:hover": { backgroundColor: colors.blueAccent[700] },
-          }}
-        >
-          {isSubmitting ? "Analyzing..." : "Analyze Email"}
-        </Button>
-      </form>
-      {error && (
-        <Typography
-          color={theme.palette.error.main}
-          variant="h6"
-          sx={{ marginTop: 2 }}
-        >
-          {error}
+      <Box
+        sx={{
+          backgroundColor: colors.primary[400],
+          padding: 2,
+          borderRadius: 2,
+          boxShadow: 3,
+          color: colors.grey[100],
+        }}
+      >
+        <Typography variant="h4" color={colors.greenAccent[500]} gutterBottom>
+          Generate New Project From Email
         </Typography>
-      )}
-      {project && (
-        <Dialog open={openDialog} onClose={() => setOpenDialog(false)}>
-          <DialogTitle variant="h4">Create New Project</DialogTitle>
-          <Formik
-            initialValues={{
-              projectName: project.projectName || "",
-              projectDesc: project.projectDesc || "",
-              assignedTo: project.assignedTo || "",
-              startDate: project.startDate || "",
-              projectNumber: project.projectNumber || "",
-              projectClient: project.projectClient || "",
+        <Typography variant="h5" color={colors.grey[600]} gutterBottom>
+          This function can categorize text containing AWS Comprehend predefined
+          entities such as{" "}
+          <strong>Person, Title, Quantity, Date, and more</strong>. Try
+          analyzing an email or text below.
+          <br />
+          <br />
+          Example: George Clooney played in the movie Ocean Twelve by Paramount
+          in 2011 which sold millions of DVD copies.
+        </Typography>
+        <form onSubmit={handleSubmit}>
+          <TextField
+            label="Enter Email Content"
+            multiline
+            rows={10}
+            fullWidth
+            variant="outlined"
+            value={emailText}
+            onChange={(e) => setEmailText(e.target.value)}
+            sx={{
+              marginBottom: 2,
+              backgroundColor: colors.grey[900],
+              color: colors.grey[100],
+              borderColor: colors.grey[700],
+              "& .MuiInputBase-input": { fontSize: "1.2rem" },
             }}
-            onSubmit={(values, { setSubmitting }) => {
-              console.log(values);
-              setSubmitting(false);
-              setOpenDialog(false);
-              // Here you would typically update the project state or send the updated data to an API
+            InputProps={{ style: { color: colors.grey[100] } }}
+          />
+          <Button
+            variant="contained"
+            type="submit"
+            disabled={isSubmitting}
+            sx={{
+              backgroundColor: colors.blueAccent[500],
+              color: colors.primary[100],
+              fontSize: "1.2rem",
+              "&:hover": { backgroundColor: colors.blueAccent[700] },
             }}
           >
-            {({ handleSubmit, isSubmitting }) => (
-              <form onSubmit={handleSubmit}>
-                <DialogContent>
-                  <Field
-                    name="projectName"
-                    as={TextField}
-                    label="Project Name"
-                    fullWidth
-                    margin="normal"
-                  />
-                  <Field
-                    name="projectDesc"
-                    as={TextField}
-                    label="Description"
-                    fullWidth
-                    margin="normal"
-                  />
-                  <Field
-                    name="assignedTo"
-                    as={TextField}
-                    label="Assigned Staff"
-                    fullWidth
-                    margin="normal"
-                  />
-                  <Field
-                    name="startDate"
-                    as={TextField}
-                    label="Project Date"
-                    fullWidth
-                    margin="normal"
-                  />
-                  <Field
-                    name="projectNumber"
-                    as={TextField}
-                    label="Project Quantity"
-                    fullWidth
-                    margin="normal"
-                  />
-                  <Field
-                    name="projectClient"
-                    as={TextField}
-                    label="Project Client"
-                    fullWidth
-                    margin="normal"
-                  />
-                </DialogContent>
-                <DialogActions>
-                  <Button onClick={() => setOpenDialog(false)}>Cancel</Button>
-                  <Button
-                    type="submit"
-                    variant="contained"
-                    color="primary"
-                    disabled={isSubmitting}
-                  >
-                    Save
-                  </Button>
-                </DialogActions>
-              </form>
-            )}
-          </Formik>
-        </Dialog>
-      )}
+            {isSubmitting ? "Analyzing..." : "Analyze Email"}
+          </Button>
+        </form>
+        {error && (
+          <Typography
+            color={theme.palette.error.main}
+            variant="h6"
+            sx={{ marginTop: 2 }}
+          >
+            {error}
+          </Typography>
+        )}
+        {project && (
+          <Dialog open={openDialog} onClose={() => setOpenDialog(false)}>
+            <DialogTitle variant="h4">Create New Project</DialogTitle>
+            <Formik
+              initialValues={{
+                projectName: project.projectName || "",
+                projectDesc: project.projectDesc || "",
+                assignedTo: project.assignedTo || "",
+                startDate: project.startDate || "",
+                projectNumber: project.projectNumber || "",
+                projectClient: project.projectClient || "",
+              }}
+              onSubmit={(values, { setSubmitting }) => {
+                console.log(values);
+                setSubmitting(false);
+                setOpenDialog(false);
+                // Here you would typically update the project state or send the updated data to an API
+              }}
+            >
+              {({ handleSubmit, isSubmitting }) => (
+                <form onSubmit={handleSubmit}>
+                  <DialogContent>
+                    <Field
+                      name="projectName"
+                      as={TextField}
+                      label="Project Name"
+                      fullWidth
+                      margin="normal"
+                    />
+                    <Field
+                      name="projectDesc"
+                      as={TextField}
+                      label="Description"
+                      fullWidth
+                      margin="normal"
+                    />
+                    <Field
+                      name="assignedTo"
+                      as={TextField}
+                      label="Assigned Staff"
+                      fullWidth
+                      margin="normal"
+                    />
+                    <Field
+                      name="startDate"
+                      as={TextField}
+                      label="Project Date"
+                      fullWidth
+                      margin="normal"
+                    />
+                    <Field
+                      name="projectNumber"
+                      as={TextField}
+                      label="Project Quantity"
+                      fullWidth
+                      margin="normal"
+                    />
+                    <Field
+                      name="projectClient"
+                      as={TextField}
+                      label="Project Client"
+                      fullWidth
+                      margin="normal"
+                    />
+                  </DialogContent>
+                  <DialogActions>
+                    <Button onClick={() => setOpenDialog(false)}>Cancel</Button>
+                    <Button
+                      type="submit"
+                      variant="contained"
+                      color="primary"
+                      disabled={isSubmitting}
+                    >
+                      Save
+                    </Button>
+                  </DialogActions>
+                </form>
+              )}
+            </Formik>
+          </Dialog>
+        )}
+      </Box>
     </Box>
   );
 };
