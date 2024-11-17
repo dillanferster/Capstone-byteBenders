@@ -32,7 +32,7 @@ const ObjectId = require("mongodb").ObjectId;
 // References for this file are from  https://www.youtube.com/watch?v=Jcs_2jNPgtE&t=8033s
 taskRoutes.route("/tasks").get(verifyToken, async (request, response) => {
   let db = database.getDb();
-  let data = await db.collection("Gigi").find({}).toArray();
+  let data = await db.collection("FrankTask").find({}).toArray();
 
   if (data.length > 0) {
     response.json(data);
@@ -54,13 +54,13 @@ taskRoutes.route("/tasks").get(verifyToken, async (request, response) => {
 taskRoutes.route("/tasks/:id").get(verifyToken, async (request, response) => {
   let db = database.getDb();
   let data = await db
-    .collection("Gigi")
+    .collection("FrankTask")
     .findOne({ _id: new ObjectId(request.params.id) });
 
   try {
     let db = database.getDb();
     let data = await db
-      .collection("Gigi")
+      .collection("FrankTask")
       .findOne({ _id: new ObjectId(request.params.id) });
 
     if (!data) {
@@ -101,7 +101,7 @@ taskRoutes.route("/tasks").post(verifyToken, async (request, response) => {
     chroniclesComplete: request.body.chroniclesComplete,
     dependencies: request.body.dependencies,
   };
-  let data = await db.collection("Gigi").insertOne(mongoObject);
+  let data = await db.collection("FrankTask").insertOne(mongoObject);
   response.json(data);
 });
 
@@ -137,7 +137,7 @@ taskRoutes.route("/tasks/:id").put(verifyToken, async (request, response) => {
     },
   };
   let data = await db
-    .collection("Gigi")
+    .collection("FrankTask")
     .updateOne({ _id: new ObjectId(request.params.id) }, mongoObject);
   response.json(data);
 });
@@ -156,7 +156,7 @@ taskRoutes
   .delete(verifyToken, async (request, response) => {
     let db = database.getDb();
     let data = await db
-      .collection("Gigi")
+      .collection("FrankTask")
       .deleteOne({ _id: new ObjectId(request.params.id) });
 
     response.json(data);
@@ -172,7 +172,7 @@ taskRoutes
       $push: { startTime: new Date() },
     };
     let data = await db
-      .collection("Gigi")
+      .collection("FrankTask")
       .updateOne({ _id: new ObjectId(request.params.id) }, mongoObject);
     response.json(data);
   });
@@ -186,7 +186,7 @@ taskRoutes
       $push: { pauseTime: { start: new Date() } },
     };
     let data = await db
-      .collection("Gigi")
+      .collection("FrankTask")
       .updateOne({ _id: new ObjectId(request.params.id) }, mongoObject);
     response.json(data);
   });
@@ -203,7 +203,7 @@ taskRoutes
 
     let db = database.getDb();
 
-    let data = await db.collection("Gigi").updateOne(
+    let data = await db.collection("FrankTask").updateOne(
       { _id: new ObjectId(request.params.id) }, // match the document by ID
       { $set: { "pauseTime.$[elem].end": new Date() } }, // update the 'end' field, $ is positional operator
       { arrayFilters: [{ "elem.end": { $exists: false } }] } // filter array elements with no 'end' field
@@ -221,7 +221,7 @@ taskRoutes
       $push: { completeTime: new Date() },
     };
     let data = await db
-      .collection("Gigi")
+      .collection("FrankTask")
       .updateOne({ _id: new ObjectId(request.params.id) }, mongoObject);
     response.json(data);
   });
@@ -237,7 +237,7 @@ taskRoutes
       $set: { taskStatus: request.body.taskStatus },
     };
     let data = await db
-      .collection("Gigi")
+      .collection("FrankTask")
       .updateOne({ _id: new ObjectId(request.params.id) }, mongoObject);
     response.json(data);
   });
@@ -252,7 +252,7 @@ taskRoutes
       $set: { totalTime: request.body.totalTime },
     };
     let data = await db
-      .collection("Gigi")
+      .collection("FrankTask")
       .updateOne({ _id: new ObjectId(request.params.id) }, mongoObject);
     response.json(data);
   });

@@ -308,8 +308,8 @@ const ProjectPage = () => {
             Add project
           </Button>
           <Button
-            variant="contained"
-            color="primary"
+            variant="outlined"
+            color="success"
             onClick={() => setShowGantt(!showGantt)}
           >
             {showGantt ? "Show Table View" : "Show Gantt View"}
