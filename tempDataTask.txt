@@ -10,18 +10,18 @@
     "startDate": "2024-10-10",
     "dueDate": "2024-10-15",
     "projectStatus": "Complete",
-    "projectTask": "ONE",
-    "addChronicles": "Initial setup complete",
+    "projectTask": "Project 1",
+    "addChronicles": "2",
     "taskDesc": "Setup project environment",
     "attachments": "setup_docs.pdf",
-    "chroniclesComplete": "Environment configured successfully",
+    "chroniclesComplete": "1",
     "startTime": [{"$date": {"$numberLong": "1729288002055"}}],
     "pauseTime": [
-      {"start": {"$date": {"$numberLong": "1729288602055"}}, "end": {"$date": {"$numberLong": "1729288902055"}}},
-      {"start": {"$date": {"$numberLong": "1729289202055"}}, "end": {"$date": {"$numberLong": "1729289502055"}}}
+      {"start": {"$date": {"$numberLong": "1729288602055"}}, "end": {"$date": {"$numberLong": "1729288902055"}}}
     ],
     "completeTime": [{"$date": {"$numberLong": "1729290602055"}}],
-    "totalTime": "Minutes: 35"
+    "totalTime": "Minutes: 35",
+    "dependencies": [""]
   },
   {
     "_id": {"$oid": "67188f7d7fc68276ca0d10ee"},
@@ -34,17 +34,18 @@
     "startDate": "2024-10-10",
     "dueDate": "2024-10-15",
     "projectStatus": "Complete",
-    "projectTask": "TWO",
-    "addChronicles": "Testing phase complete",
+    "projectTask": "Project 1",
+    "addChronicles": "2",
     "taskDesc": "Perform system testing",
     "attachments": "test_results.pdf",
-    "chroniclesComplete": "All tests passed successfully",
+    "chroniclesComplete": "1",
     "startTime": [{"$date": {"$numberLong": "1729291002055"}}],
     "pauseTime": [
       {"start": {"$date": {"$numberLong": "1729291902055"}}, "end": {"$date": {"$numberLong": "1729292202055"}}}
     ],
     "completeTime": [{"$date": {"$numberLong": "1729293802055"}}],
-    "totalTime": "Minutes: 42"
+    "totalTime": "Minutes: 42",
+    "dependencies": [""]
   },
   {
     "_id": {"$oid": "67188f7d7fc68276ca0d10ef"},
@@ -57,17 +58,18 @@
     "startDate": "2024-10-10",
     "dueDate": "2024-10-15",
     "projectStatus": "In Progress",
-    "projectTask": "ONE",
-    "addChronicles": "Development in progress",
+    "projectTask": "Project 2",
+    "addChronicles": "2",
     "taskDesc": "Implement core features",
     "attachments": "specs.pdf",
-    "chroniclesComplete": "",
+    "chroniclesComplete": "1",
     "startTime": [{"$date": {"$numberLong": "1729294002055"}}],
     "pauseTime": [
       {"start": {"$date": {"$numberLong": "1729294602055"}}, "end": {"$date": {"$numberLong": "1729294902055"}}}
     ],
     "completeTime": [],
-    "totalTime": "Minutes: 15"
+    "totalTime": "Minutes: 15",
+    "dependencies": [""]
   },
   {
     "_id": {"$oid": "67188f7d7fc68276ca0d10f0"},
@@ -80,17 +82,18 @@
     "startDate": "2024-10-10",
     "dueDate": "2024-10-15",
     "projectStatus": "In Progress",
-    "projectTask": "TWO",
-    "addChronicles": "Documentation complete",
+    "projectTask": "Project 2",
+    "addChronicles": "2",
     "taskDesc": "Create technical documentation",
     "attachments": "docs.pdf",
-    "chroniclesComplete": "Documentation finished and reviewed",
+    "chroniclesComplete": "1",
     "startTime": [{"$date": {"$numberLong": "1729295002055"}}],
     "pauseTime": [
       {"start": {"$date": {"$numberLong": "1729295602055"}}, "end": {"$date": {"$numberLong": "1729296202055"}}}
     ],
     "completeTime": [{"$date": {"$numberLong": "1729297802055"}}],
-    "totalTime": "Minutes: 55"
+    "totalTime": "Minutes: 55",
+    "dependencies": [""]
   },
   {
     "_id": {"$oid": "67188f7d7fc68276ca0d10f1"},
@@ -103,17 +106,18 @@
     "startDate": "2024-10-10",
     "dueDate": "2024-10-15",
     "projectStatus": "Complete",
-    "projectTask": "ONE",
-    "addChronicles": "Feature implementation complete",
+    "projectTask": "Project 4",
+    "addChronicles": "2",
     "taskDesc": "Implement core functionality",
     "attachments": "implementation_docs.pdf",
-    "chroniclesComplete": "All features implemented successfully",
+    "chroniclesComplete": "1",
     "startTime": [{"$date": {"$numberLong": "1729298002055"}}],
     "pauseTime": [
       {"start": {"$date": {"$numberLong": "1729298902055"}}, "end": {"$date": {"$numberLong": "1729299202055"}}}
     ],
     "completeTime": [{"$date": {"$numberLong": "1729300602055"}}],
-    "totalTime": "Minutes: 38"
+    "totalTime": "Minutes: 38",
+    "dependencies": [""]
   },
   {
     "_id": {"$oid": "67188f7d7fc68276ca0d10f2"},
@@ -126,17 +130,18 @@
     "startDate": "2024-10-10",
     "dueDate": "2024-10-15",
     "projectStatus": "Complete",
-    "projectTask": "TWO",
-    "addChronicles": "Testing complete",
+    "projectTask": "Project 4",
+    "addChronicles": "2",
     "taskDesc": "Perform integration testing",
     "attachments": "test_results.pdf",
-    "chroniclesComplete": "All tests passed",
+    "chroniclesComplete": "1",
     "startTime": [{"$date": {"$numberLong": "1729301002055"}}],
     "pauseTime": [
       {"start": {"$date": {"$numberLong": "1729301602055"}}, "end": {"$date": {"$numberLong": "1729302202055"}}}
     ],
     "completeTime": [{"$date": {"$numberLong": "1729303802055"}}],
-    "totalTime": "Minutes: 40"
+    "totalTime": "Minutes: 40",
+    "dependencies": [""]
   },
   {
     "_id": {"$oid": "67188f7d7fc68276ca0d10f3"},
@@ -149,17 +154,18 @@
     "startDate": "2024-10-10",
     "dueDate": "2024-10-15",
     "projectStatus": "In Progress",
-    "projectTask": "ONE",
-    "addChronicles": "Development ongoing",
+    "projectTask": "Project 5",
+    "addChronicles": "2",
     "taskDesc": "Build API endpoints",
     "attachments": "api_specs.pdf",
-    "chroniclesComplete": "",
+    "chroniclesComplete": "1",
     "startTime": [{"$date": {"$numberLong": "1729304002055"}}],
     "pauseTime": [
       {"start": {"$date": {"$numberLong": "1729304602055"}}, "end": {"$date": {"$numberLong": "1729304902055"}}}
     ],
     "completeTime": [],
-    "totalTime": "Minutes: 15"
+    "totalTime": "Minutes: 15",
+    "dependencies": [""]
   },
   {
     "_id": {"$oid": "67188f7d7fc68276ca0d10f4"},
@@ -172,17 +178,18 @@
     "startDate": "2024-10-10",
     "dueDate": "2024-10-15",
     "projectStatus": "In Progress",
-    "projectTask": "TWO",
-    "addChronicles": "API documentation complete",
+    "projectTask": "Project 5",
+    "addChronicles": "2",
     "taskDesc": "Document API endpoints",
     "attachments": "api_docs.pdf",
-    "chroniclesComplete": "Documentation reviewed and approved",
+    "chroniclesComplete": "1",
     "startTime": [{"$date": {"$numberLong": "1729305002055"}}],
     "pauseTime": [
       {"start": {"$date": {"$numberLong": "1729305602055"}}, "end": {"$date": {"$numberLong": "1729306202055"}}}
     ],
     "completeTime": [{"$date": {"$numberLong": "1729307802055"}}],
-    "totalTime": "Minutes: 45"
+    "totalTime": "Minutes: 45",
+    "dependencies": [""]
   },
   {
     "_id": {"$oid": "67188f7d7fc68276ca0d10f5"},
@@ -195,17 +202,18 @@
     "startDate": "2024-10-10",
     "dueDate": "2024-10-15",
     "projectStatus": "Complete",
-    "projectTask": "ONE",
-    "addChronicles": "Feature development complete",
+    "projectTask": "Project 7",
+    "addChronicles": "2",
     "taskDesc": "Implement user authentication",
     "attachments": "auth_docs.pdf",
-    "chroniclesComplete": "Authentication system implemented",
+    "chroniclesComplete": "1",
     "startTime": [{"$date": {"$numberLong": "1729308002055"}}],
     "pauseTime": [
       {"start": {"$date": {"$numberLong": "1729308902055"}}, "end": {"$date": {"$numberLong": "1729309202055"}}}
     ],
     "completeTime": [{"$date": {"$numberLong": "1729310602055"}}],
-    "totalTime": "Minutes: 38"
+    "totalTime": "Minutes: 38",
+    "dependencies": [""]
   },
   {
     "_id": {"$oid": "67188f7d7fc68276ca0d10f6"},
@@ -218,17 +226,18 @@
     "startDate": "2024-10-10",
     "dueDate": "2024-10-15",
     "projectStatus": "Complete",
-    "projectTask": "TWO",
-    "addChronicles": "Security testing complete",
+    "projectTask": "Project 7",
+    "addChronicles": "2",
     "taskDesc": "Perform security testing",
     "attachments": "security_test_results.pdf",
-    "chroniclesComplete": "All security tests passed",
+    "chroniclesComplete": "1",
     "startTime": [{"$date": {"$numberLong": "1729311002055"}}],
     "pauseTime": [
       {"start": {"$date": {"$numberLong": "1729311602055"}}, "end": {"$date": {"$numberLong": "1729312202055"}}}
     ],
     "completeTime": [{"$date": {"$numberLong": "1729313802055"}}],
-    "totalTime": "Minutes: 45"
+    "totalTime": "Minutes: 45",
+    "dependencies": [""]
   },
   {
     "_id": {"$oid": "67188f7d7fc68276ca0d10f7"},
@@ -241,17 +250,18 @@
     "startDate": "2024-10-10",
     "dueDate": "2024-10-15",
     "projectStatus": "In Progress",
-    "projectTask": "ONE",
-    "addChronicles": "Database migration in progress",
+    "projectTask": "Project 9",
+    "addChronicles": "2",
     "taskDesc": "Migrate database",
     "attachments": "migration_plan.pdf",
-    "chroniclesComplete": "",
+    "chroniclesComplete": "1",
     "startTime": [{"$date": {"$numberLong": "1729314002055"}}],
     "pauseTime": [
       {"start": {"$date": {"$numberLong": "1729314602055"}}, "end": {"$date": {"$numberLong": "1729314902055"}}}
     ],
     "completeTime": [],
-    "totalTime": "Minutes: 15"
+    "totalTime": "Minutes: 15",
+    "dependencies": [""]
   },
   {
     "_id": {"$oid": "67188f7d7fc68276ca0d10f8"},
@@ -264,17 +274,18 @@
     "startDate": "2024-10-10",
     "dueDate": "2024-10-15",
     "projectStatus": "In Progress",
-    "projectTask": "TWO",
-    "addChronicles": "Schema documentation complete",
+    "projectTask": "Project 9",
+    "addChronicles": "2",
     "taskDesc": "Document database schema",
     "attachments": "schema_docs.pdf",
-    "chroniclesComplete": "Schema documentation reviewed",
+    "chroniclesComplete": "1",
     "startTime": [{"$date": {"$numberLong": "1729315002055"}}],
     "pauseTime": [
       {"start": {"$date": {"$numberLong": "1729315602055"}}, "end": {"$date": {"$numberLong": "1729316202055"}}}
     ],
     "completeTime": [{"$date": {"$numberLong": "1729317802055"}}],
-    "totalTime": "Minutes: 45"
+    "totalTime": "Minutes: 45",
+    "dependencies": [""]
   },
   {
     "_id": {"$oid": "67188f7d7fc68276ca0d10f9"},
@@ -287,17 +298,18 @@
     "startDate": "2024-10-10",
     "dueDate": "2024-10-15",
     "projectStatus": "In Progress",
-    "projectTask": "ONE",
-    "addChronicles": "Frontend development in progress",
+    "projectTask": "Project 11",
+    "addChronicles": "2",
     "taskDesc": "Implement user interface",
     "attachments": "ui_specs.pdf",
-    "chroniclesComplete": "",
+    "chroniclesComplete": "1",
     "startTime": [{"$date": {"$numberLong": "1729318002055"}}],
     "pauseTime": [
       {"start": {"$date": {"$numberLong": "1729318602055"}}, "end": {"$date": {"$numberLong": "1729318902055"}}}
     ],
     "completeTime": [],
-    "totalTime": "Minutes: 15"
+    "totalTime": "Minutes: 15",
+    "dependencies": [""]
   },
   {
     "_id": {"$oid": "67188f7d7fc68276ca0d10fa"},
@@ -310,17 +322,18 @@
     "startDate": "2024-10-10",
     "dueDate": "2024-10-15",
     "projectStatus": "In Progress",
-    "projectTask": "TWO",
-    "addChronicles": "UI documentation complete",
+    "projectTask": "Project 11",
+    "addChronicles": "2",
     "taskDesc": "Document UI components",
     "attachments": "ui_docs.pdf",
-    "chroniclesComplete": "UI documentation reviewed",
+    "chroniclesComplete": "1",
     "startTime": [{"$date": {"$numberLong": "1729319002055"}}],
     "pauseTime": [
       {"start": {"$date": {"$numberLong": "1729319602055"}}, "end": {"$date": {"$numberLong": "1729320202055"}}}
     ],
     "completeTime": [{"$date": {"$numberLong": "1729321802055"}}],
-    "totalTime": "Minutes: 45"
+    "totalTime": "Minutes: 45",
+    "dependencies": [""]
   },
   {
     "_id": {"$oid": "67188f7d7fc68276ca0d10fb"},
@@ -333,17 +346,18 @@
     "startDate": "2024-10-10",
     "dueDate": "2024-10-15",
     "projectStatus": "Complete",
-    "projectTask": "ONE",
-    "addChronicles": "Backend development complete",
+    "projectTask": "Project 12",
+    "addChronicles": "2",
     "taskDesc": "Implement server logic",
     "attachments": "backend_docs.pdf",
-    "chroniclesComplete": "Server implementation successful",
+    "chroniclesComplete": "1",
     "startTime": [{"$date": {"$numberLong": "1729322002055"}}],
     "pauseTime": [
       {"start": {"$date": {"$numberLong": "1729322902055"}}, "end": {"$date": {"$numberLong": "1729323202055"}}}
     ],
     "completeTime": [{"$date": {"$numberLong": "1729324602055"}}],
-    "totalTime": "Minutes: 38"
+    "totalTime": "Minutes: 38",
+    "dependencies": [""]
   },
   {
     "_id": {"$oid": "67188f7d7fc68276ca0d10fc"},
@@ -356,17 +370,18 @@
     "startDate": "2024-10-10",
     "dueDate": "2024-10-15",
     "projectStatus": "Complete",
-    "projectTask": "TWO",
-    "addChronicles": "Backend testing complete",
+    "projectTask": "Project 12",
+    "addChronicles": "2",
     "taskDesc": "Perform backend testing",
     "attachments": "backend_test_results.pdf",
-    "chroniclesComplete": "All backend tests passed",
+    "chroniclesComplete": "1",
     "startTime": [{"$date": {"$numberLong": "1729325002055"}}],
     "pauseTime": [
       {"start": {"$date": {"$numberLong": "1729325602055"}}, "end": {"$date": {"$numberLong": "1729326202055"}}}
     ],
     "completeTime": [{"$date": {"$numberLong": "1729327802055"}}],
-    "totalTime": "Minutes: 45"
+    "totalTime": "Minutes: 45",
+    "dependencies": [""]
   },
   {
     "_id": {"$oid": "67188f7d7fc68276ca0d10fd"},
@@ -379,17 +394,18 @@
     "startDate": "2024-10-10",
     "dueDate": "2024-10-15",
     "projectStatus": "In Progress",
-    "projectTask": "ONE",
-    "addChronicles": "API integration in progress",
+    "projectTask": "Project 14",
+    "addChronicles": "2",
     "taskDesc": "Integrate third-party APIs",
     "attachments": "api_integration_docs.pdf",
-    "chroniclesComplete": "",
+    "chroniclesComplete": "1",
     "startTime": [{"$date": {"$numberLong": "1729328002055"}}],
     "pauseTime": [
       {"start": {"$date": {"$numberLong": "1729328602055"}}, "end": {"$date": {"$numberLong": "1729328902055"}}}
     ],
     "completeTime": [],
-    "totalTime": "Minutes: 15"
+    "totalTime": "Minutes: 15",
+    "dependencies": [""]
   },
   {
     "_id": {"$oid": "67188f7d7fc68276ca0d10fe"},
@@ -402,17 +418,18 @@
     "startDate": "2024-10-10",
     "dueDate": "2024-10-15",
     "projectStatus": "In Progress",
-    "projectTask": "TWO",
-    "addChronicles": "Integration documentation complete",
+    "projectTask": "Project 14",
+    "addChronicles": "2",
     "taskDesc": "Document API integrations",
     "attachments": "integration_docs.pdf",
-    "chroniclesComplete": "Integration documentation reviewed",
+    "chroniclesComplete": "1",
     "startTime": [{"$date": {"$numberLong": "1729329002055"}}],
     "pauseTime": [
       {"start": {"$date": {"$numberLong": "1729329602055"}}, "end": {"$date": {"$numberLong": "1729330202055"}}}
     ],
     "completeTime": [{"$date": {"$numberLong": "1729331802055"}}],
-    "totalTime": "Minutes: 45"
+    "totalTime": "Minutes: 45",
+    "dependencies": [""]
   },
   {
     "_id": {"$oid": "67188f7d7fc68276ca0d10ff"},
@@ -425,17 +442,18 @@
     "startDate": "2024-10-10",
     "dueDate": "2024-10-15",
     "projectStatus": "Complete",
-    "projectTask": "ONE",
-    "addChronicles": "Performance optimization complete",
+    "projectTask": "Project 15",
+    "addChronicles": "2",
     "taskDesc": "Optimize application performance",
     "attachments": "performance_docs.pdf",
-    "chroniclesComplete": "Performance targets achieved",
+    "chroniclesComplete": "1",
     "startTime": [{"$date": {"$numberLong": "1729332002055"}}],
     "pauseTime": [
       {"start": {"$date": {"$numberLong": "1729332902055"}}, "end": {"$date": {"$numberLong": "1729333202055"}}}
     ],
     "completeTime": [{"$date": {"$numberLong": "1729334602055"}}],
-    "totalTime": "Minutes: 38"
+    "totalTime": "Minutes: 38",
+    "dependencies": [""]
   },
   {
     "_id": {"$oid": "67188f7d7fc68276ca0d1100"},
@@ -448,17 +466,18 @@
     "startDate": "2024-10-10",
     "dueDate": "2024-10-15",
     "projectStatus": "Complete",
-    "projectTask": "TWO",
-    "addChronicles": "Performance testing complete",
+    "projectTask": "Project 15",
+    "addChronicles": "2",
     "taskDesc": "Conduct performance testing",
     "attachments": "perf_test_results.pdf",
-    "chroniclesComplete": "Performance tests passed",
+    "chroniclesComplete": "1",
     "startTime": [{"$date": {"$numberLong": "1729335002055"}}],
     "pauseTime": [
       {"start": {"$date": {"$numberLong": "1729335602055"}}, "end": {"$date": {"$numberLong": "1729336202055"}}}
     ],
     "completeTime": [{"$date": {"$numberLong": "1729337802055"}}],
-    "totalTime": "Minutes: 45"
+    "totalTime": "Minutes: 45",
+    "dependencies": [""]
   },
   {
     "_id": {"$oid": "67188f7d7fc68276ca0d1101"},
@@ -471,17 +490,18 @@
     "startDate": "2024-10-10",
     "dueDate": "2024-10-15",
     "projectStatus": "In Progress",
-    "projectTask": "ONE",
-    "addChronicles": "Security implementation in progress",
+    "projectTask": "Project 18",
+    "addChronicles": "2",
     "taskDesc": "Implement security features",
     "attachments": "security_specs.pdf",
-    "chroniclesComplete": "",
+    "chroniclesComplete": "1",
     "startTime": [{"$date": {"$numberLong": "1729338002055"}}],
     "pauseTime": [
       {"start": {"$date": {"$numberLong": "1729338602055"}}, "end": {"$date": {"$numberLong": "1729338902055"}}}
     ],
     "completeTime": [],
-    "totalTime": "Minutes: 15"
+    "totalTime": "Minutes: 15",
+    "dependencies": [""]
   },
   {
     "_id": {"$oid": "67188f7d7fc68276ca0d1102"},
@@ -494,17 +514,18 @@
     "startDate": "2024-10-10",
     "dueDate": "2024-10-15",
     "projectStatus": "In Progress",
-    "projectTask": "TWO",
-    "addChronicles": "Security documentation complete",
+    "projectTask": "Project 18",
+    "addChronicles": "2",
     "taskDesc": "Document security features",
     "attachments": "security_docs.pdf",
-    "chroniclesComplete": "Security documentation reviewed",
+    "chroniclesComplete": "1",
     "startTime": [{"$date": {"$numberLong": "1729339002055"}}],
     "pauseTime": [
       {"start": {"$date": {"$numberLong": "1729339602055"}}, "end": {"$date": {"$numberLong": "1729340202055"}}}
     ],
     "completeTime": [{"$date": {"$numberLong": "1729341802055"}}],
-    "totalTime": "Minutes: 45"
+    "totalTime": "Minutes: 45",
+    "dependencies": [""]
   },
   {
     "_id": {"$oid": "67188f7d7fc68276ca0d1103"},
@@ -517,17 +538,18 @@
     "startDate": "2024-10-10",
     "dueDate": "2024-10-15",
     "projectStatus": "Complete",
-    "projectTask": "ONE",
-    "addChronicles": "Database optimization complete",
+    "projectTask": "Project 19",
+    "addChronicles": "2",
     "taskDesc": "Optimize database performance",
     "attachments": "db_optimization_docs.pdf",
-    "chroniclesComplete": "Database optimization successful",
+    "chroniclesComplete": "1",
     "startTime": [{"$date": {"$numberLong": "1729342002055"}}],
     "pauseTime": [
       {"start": {"$date": {"$numberLong": "1729342902055"}}, "end": {"$date": {"$numberLong": "1729343202055"}}}
     ],
     "completeTime": [{"$date": {"$numberLong": "1729344602055"}}],
-    "totalTime": "Minutes: 38"
+    "totalTime": "Minutes: 38",
+    "dependencies": [""]
   },
   {
     "_id": {"$oid": "67188f7d7fc68276ca0d1104"},
@@ -540,17 +562,18 @@
     "startDate": "2024-10-10",
     "dueDate": "2024-10-15",
     "projectStatus": "Complete",
-    "projectTask": "TWO",
-    "addChronicles": "Database testing complete",
+    "projectTask": "Project 19",
+    "addChronicles": "2",
     "taskDesc": "Test database performance",
     "attachments": "db_test_results.pdf",
-    "chroniclesComplete": "All database tests passed",
+    "chroniclesComplete": "1",
     "startTime": [{"$date": {"$numberLong": "1729345002055"}}],
     "pauseTime": [
       {"start": {"$date": {"$numberLong": "1729345602055"}}, "end": {"$date": {"$numberLong": "1729346202055"}}}
     ],
     "completeTime": [{"$date": {"$numberLong": "1729347802055"}}],
-    "totalTime": "Minutes: 45"
+    "totalTime": "Minutes: 45",
+    "dependencies": [""]
   },
   {
     "_id": {"$oid": "67188f7d7fc68276ca0d1105"},
@@ -563,17 +586,18 @@
     "startDate": "2024-10-10",
     "dueDate": "2024-10-15",
     "projectStatus": "In Progress",
-    "projectTask": "ONE",
-    "addChronicles": "Mobile integration in progress",
+    "projectTask": "Project 21",
+    "addChronicles": "2",
     "taskDesc": "Implement mobile features",
     "attachments": "mobile_specs.pdf",
-    "chroniclesComplete": "",
+    "chroniclesComplete": "1",
     "startTime": [{"$date": {"$numberLong": "1729348002055"}}],
     "pauseTime": [
       {"start": {"$date": {"$numberLong": "1729348602055"}}, "end": {"$date": {"$numberLong": "1729348902055"}}}
     ],
     "completeTime": [],
-    "totalTime": "Minutes: 15"
+    "totalTime": "Minutes: 15",
+    "dependencies": [""]
   },
   {
     "_id": {"$oid": "67188f7d7fc68276ca0d1106"},
@@ -586,17 +610,18 @@
     "startDate": "2024-10-10",
     "dueDate": "2024-10-15",
     "projectStatus": "In Progress",
-    "projectTask": "TWO",
-    "addChronicles": "Mobile documentation complete",
+    "projectTask": "Project 21",
+    "addChronicles": "2",
     "taskDesc": "Document mobile features",
     "attachments": "mobile_docs.pdf",
-    "chroniclesComplete": "Mobile documentation reviewed",
+    "chroniclesComplete": "1",
     "startTime": [{"$date": {"$numberLong": "1729349002055"}}],
     "pauseTime": [
       {"start": {"$date": {"$numberLong": "1729349602055"}}, "end": {"$date": {"$numberLong": "1729350202055"}}}
     ],
     "completeTime": [{"$date": {"$numberLong": "1729351802055"}}],
-    "totalTime": "Minutes: 45"
+    "totalTime": "Minutes: 45",
+    "dependencies": [""]
   },
   {
     "_id": {"$oid": "67188f7d7fc68276ca0d1107"},
@@ -609,17 +634,18 @@
     "startDate": "2024-10-10",
     "dueDate": "2024-10-15",
     "projectStatus": "Complete",
-    "projectTask": "ONE",
-    "addChronicles": "Analytics implementation complete",
+    "projectTask": "Project 22",
+    "addChronicles": "2",
     "taskDesc": "Implement analytics features",
     "attachments": "analytics_docs.pdf",
-    "chroniclesComplete": "Analytics implementation successful",
+    "chroniclesComplete": "1",
     "startTime": [{"$date": {"$numberLong": "1729352002055"}}],
     "pauseTime": [
       {"start": {"$date": {"$numberLong": "1729352902055"}}, "end": {"$date": {"$numberLong": "1729353202055"}}}
     ],
     "completeTime": [{"$date": {"$numberLong": "1729354602055"}}],
-    "totalTime": "Minutes: 38"
+    "totalTime": "Minutes: 38",
+    "dependencies": [""]
   },
   {
     "_id": {"$oid": "67188f7d7fc68276ca0d1108"},
@@ -632,17 +658,18 @@
     "startDate": "2024-10-10",
     "dueDate": "2024-10-15",
     "projectStatus": "Complete",
-    "projectTask": "TWO",
-    "addChronicles": "Analytics testing complete",
+    "projectTask": "Project 22",
+    "addChronicles": "2",
     "taskDesc": "Test analytics features",
     "attachments": "analytics_test_results.pdf",
-    "chroniclesComplete": "All analytics tests passed",
+    "chroniclesComplete": "1",
     "startTime": [{"$date": {"$numberLong": "1729355002055"}}],
     "pauseTime": [
       {"start": {"$date": {"$numberLong": "1729355602055"}}, "end": {"$date": {"$numberLong": "1729356202055"}}}
     ],
     "completeTime": [{"$date": {"$numberLong": "1729357802055"}}],
-    "totalTime": "Minutes: 45"
+    "totalTime": "Minutes: 45",
+    "dependencies": [""]
   },
   {
     "_id": {"$oid": "67188f7d7fc68276ca0d1109"},
@@ -655,17 +682,18 @@
     "startDate": "2024-10-10",
     "dueDate": "2024-10-15",
     "projectStatus": "In Progress",
-    "projectTask": "ONE",
-    "addChronicles": "Cloud integration in progress",
+    "projectTask": "Project 24",
+    "addChronicles": "2",
     "taskDesc": "Implement cloud features",
     "attachments": "cloud_specs.pdf",
-    "chroniclesComplete": "",
+    "chroniclesComplete": "1",
     "startTime": [{"$date": {"$numberLong": "1729358002055"}}],
     "pauseTime": [
       {"start": {"$date": {"$numberLong": "1729358602055"}}, "end": {"$date": {"$numberLong": "1729358902055"}}}
     ],
     "completeTime": [],
-    "totalTime": "Minutes: 15"
+    "totalTime": "Minutes: 15",
+    "dependencies": [""]
   },
   {
     "_id": {"$oid": "67188f7d7fc68276ca0d110a"},
@@ -678,16 +706,17 @@
     "startDate": "2024-10-10",
     "dueDate": "2024-10-15",
     "projectStatus": "In Progress",
-    "projectTask": "TWO",
-    "addChronicles": "Cloud documentation complete",
+    "projectTask": "Project 24",
+    "addChronicles": "2",
     "taskDesc": "Document cloud features",
     "attachments": "cloud_docs.pdf",
-    "chroniclesComplete": "Cloud documentation reviewed",
+    "chroniclesComplete": "1",
     "startTime": [{"$date": {"$numberLong": "1729359002055"}}],
     "pauseTime": [
       {"start": {"$date": {"$numberLong": "1729359602055"}}, "end": {"$date": {"$numberLong": "1729360202055"}}}
     ],
     "completeTime": [{"$date": {"$numberLong": "1729361802055"}}],
-    "totalTime": "Minutes: 45"
+    "totalTime": "Minutes: 45",
+    "dependencies": [""]
   }
 ]
