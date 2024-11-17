@@ -53,26 +53,17 @@ const mapTasksToProjects = (projects, tasks) => {
         //   console.log("task.dependencies:", task.dependencies[0]);
         // Create the task object for Gantt chart
         return {
-          start: new Date(task.startDate),
-          end: new Date(task.dueDate),
+          start: new Date(task.startDate) || new Date(),
+          end: new Date(task.dueDate) || new Date(),
           name: task.taskName,
           id: task._id, // Assuming _id is a string
           progress: taskProgress,
           type: "task",
-          dependencies: task.dependencies || [], // This will be in the format ["Task 0"]
+          project: ganttProject.id,
+          dependencies: Array.isArray(task.dependencies)
+            ? task.dependencies.map((dep) => dep.toString()) // Convert ObjectId to string if necessary
+            : [],
         };
-        // } else {
-        //   // Create the task object for Gantt chart
-        //   return {
-        //     start: new Date(task.startDate),
-        //     end: new Date(task.dueDate),
-        //     name: task.taskName,
-        //     id: task._id, // Assuming _id is a string
-        //     progress: taskProgress,
-        //     type: "task",
-        //     project: task.projectTask, // Reference to the project name
-        //   };
-        // }
       });
 
     // Check if there are no tasks and add a placeholder task
@@ -85,7 +76,7 @@ const mapTasksToProjects = (projects, tasks) => {
         progress: 0,
         type: "task",
         dependencies: [],
-        project: ganttProject.name, // Reference to the project name
+        project: ganttProject.id, // Reference to the project id
       });
     }
 
