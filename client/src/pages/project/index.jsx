@@ -34,7 +34,6 @@ import {
 import ProjectGrid from "../../components/projectgrid/index.jsx";
 import EditMenu from "../../components/editmenu/index.jsx";
 import ProjectGantt from "../../components/GanttChart/ProjectGantt.jsx";
-import { useNotification } from "../../NotificationContext.jsx";
 //
 
 // columns for AG grid
@@ -124,7 +123,7 @@ const ProjectPage = () => {
   const [editClicked, setEditClicked] = useState(false); // for add button
   const [deleteOpen, setDeleteOpen] = useState(false); // for dlt btn
   const [showGantt, setShowGantt] = useState(false); // Add this new state
-  const showNotification = useNotification();//notification
+
   //*
 
   // projects object array from the database
@@ -188,7 +187,6 @@ const ProjectPage = () => {
     setAddClicked(!addClicked);
     setSelectedProject("");
     toggleForm();
-    showNotification("Project Added");
   }
 
   // function handles edit button
@@ -196,12 +194,10 @@ const ProjectPage = () => {
   function handleButtonEdit() {
     setEditClicked(!editClicked);
     toggleForm();
-    showNotification("Project Edited");
   }
 
   const reloadTheGrid = () => {
     setReloadGrid(!reloadGrid);
-    showNotification("Project Reloaded");
   };
 
   // function handles view button
@@ -210,7 +206,6 @@ const ProjectPage = () => {
     setViewClicked(!viewClicked);
     console.log("set view to", viewClicked);
     toggleForm();
-    showNotification("Project Viewed");
   }
 
   // handles delete button
@@ -224,7 +219,6 @@ const ProjectPage = () => {
         if (response.status === 200) {
           console.log("deleted project with id:", project.id);
           reloadTheGrid();
-          showNotification("Project Deleted");
         }
       });
     });
