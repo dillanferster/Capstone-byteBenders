@@ -91,7 +91,10 @@ const Dashboard = () => {
 
           // Calculate total time for all tasks in this project
           for (const task of projectTasks) {
-            if (task.totalTime) {
+            if (!task.totalTime) {
+              projectTotalTime = 0;
+              hasValidTasks = false;
+            } else {
               const minutes = parseInt(task.totalTime.split(": ")[1]);
               if (!isNaN(minutes)) {
                 projectTotalTime += minutes;
@@ -175,35 +178,6 @@ const Dashboard = () => {
     <Box m="20px">
       <Box display="flex" justifyContent="space-between" alignItems="center">
         <Header title="DASHBOARD" subtitle="Welcome to your dashboard" />
-
-        <Box>
-          {/* <Button
-            sx={{
-              backgroundColor: colors.blueAccent[700],
-              color: colors.grey[100],
-              fontSize: "14px",
-              fontWeight: "bold",
-              padding: "10px 20px",
-            }}
-          >
-            <DownloadOutlinedIcon sx={{ mr: "10px" }} />
-            Download Reports
-          </Button> */}
-          {/* <Button
-            variant="contained"
-            onClick={handleLogout}
-            sx={{
-              backgroundColor: colors.blueAccent[700],
-              color: colors.grey[100],
-              fontSize: "14px",
-              fontWeight: "bold",
-              padding: "5px 10px",
-              borderRadius: "20px",
-            }}
-          >
-            Log out
-          </Button> */}
-        </Box>
       </Box>
       {/* GRID & CHARTS */}
       <Box

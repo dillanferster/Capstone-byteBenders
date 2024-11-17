@@ -39,6 +39,7 @@
     "bootstrap": "^5.3.3",
     "date-fns": "^4.1.0",
     "formik": "^2.4.6",
+    "gantt-task-react": "^0.3.9",
     "jwt-decode": "^4.0.0",
     "nanoid": "^5.0.7",
     "react": "^18.3.1",
@@ -47,6 +48,9 @@
     "react-markdown": "^9.0.1",
     "react-pro-sidebar": "^0.7.1",
     "react-router-dom": "^6.26.2",
+    "react-toastify": "^10.0.6",
+    "socket.io": "^4.8.1",
+    "socket.io-client": "^4.8.1",
     "yup": "^1.4.0"
   },
   "devDependencies": {

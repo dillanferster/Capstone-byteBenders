@@ -27,6 +27,7 @@ export default function TaskEditMenu({
   setEditClicked,
   reloadTheGrid,
   projects,
+  tasks,
   addTaskToProject,
   setReloadTaskBoard,
 }) {
@@ -34,6 +35,7 @@ export default function TaskEditMenu({
   const [taskId, setTaskId] = useState("");
   const [taskName, setTaskName] = useState("");
   const [projectTask, setProjectTask] = useState("");
+  const [projectId, setProjectId] = useState("");
   const [assignedTo, setAssignedTo] = useState("");
   const [taskStatus, setTaskStatus] = useState("");
   const [priority, setPriority] = useState("");
@@ -45,7 +47,7 @@ export default function TaskEditMenu({
   const [attachments, setAttachments] = useState("");
   const [taskDesc, setTaskDesc] = useState("");
   const [chroniclesComplete, setChroniclesComplete] = useState("");
-
+  const [dependencies, setDependencies] = useState([""]);
   const [errors, setErrors] = useState({});
 
   //*
@@ -71,7 +73,7 @@ export default function TaskEditMenu({
       setAttachments(selectedTask[0].attachments);
       setTaskDesc(selectedTask[0].taskDesc);
       setChroniclesComplete(selectedTask[0].chroniclesComplete);
-
+      setDependencies(selectedTask[0].dependencies);
       console.log("set task defaults");
     } else {
       clearAddInputs();
@@ -93,6 +95,7 @@ export default function TaskEditMenu({
     setAttachments("");
     setChroniclesComplete("");
     setProjectTask("");
+    setDependencies([""]);
   }
 
   // takes in the current taskId and projectTask (project name)
@@ -134,6 +137,7 @@ export default function TaskEditMenu({
       attachments: attachments,
       taskDesc: taskDesc,
       chroniclesComplete: chroniclesComplete,
+      dependencies: dependencies,
     };
 
     ///// Refereance, Claude.AI prompt: "Can you help make yup form validation schema for react app form"
@@ -198,6 +202,7 @@ export default function TaskEditMenu({
       taskDesc: taskDesc,
       attachments: attachments,
       chroniclesComplete: chroniclesComplete,
+      dependencies: dependencies,
     };
 
     try {
@@ -387,7 +392,39 @@ export default function TaskEditMenu({
                 <div className="text-red-600">{errors.assignedTo}</div>
               )}
             </div>
-
+            <div className="w-[18rem]">
+              <label
+                htmlFor="dependencies"
+                className="block text-sm font-medium mb-2 text-gray-300"
+              >
+                Dependencies
+              </label>
+              <select
+                id="dependencies"
+                value={dependencies}
+                defaultValue=""
+                onChange={(e) => {
+                  const selectedOptions = Array.from(
+                    e.target.selectedOptions
+                  ).map((option) => option.value);
+                  setDependencies(selectedOptions);
+                }}
+                className="w-full px-4 py-2 bg-gray-700 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                disabled={viewClicked}
+              >
+                {addClicked && (
+                  <option value="" disabled={addClicked}>
+                    --Select an option--
+                  </option>
+                )}
+                {tasks.map((task) => (
+                  <option key={task._id} value={task._id}>
+                    {task.taskName}
+                  </option>
+                ))}
+                <option value="">None</option>
+              </select>
+            </div>
             <div className="w-[18rem]">
               <label
                 htmlFor="taskStatus"

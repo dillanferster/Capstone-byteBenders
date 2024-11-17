@@ -86,6 +86,7 @@ taskRoutes.route("/tasks").post(verifyToken, async (request, response) => {
   let db = database.getDb();
   let mongoObject = {
     assignedTo: request.body.assignedTo,
+    projectId: request.body.projectId,
     taskName: request.body.taskName,
     taskStatus: request.body.taskStatus,
     priority: request.body.priority,
@@ -98,6 +99,7 @@ taskRoutes.route("/tasks").post(verifyToken, async (request, response) => {
     taskDesc: request.body.taskDesc,
     attachments: request.body.attachments,
     chroniclesComplete: request.body.chroniclesComplete,
+    dependencies: request.body.dependencies,
   };
   let data = await db.collection("FrankTask").insertOne(mongoObject);
   response.json(data);
@@ -118,6 +120,7 @@ taskRoutes.route("/tasks/:id").put(verifyToken, async (request, response) => {
   let mongoObject = {
     $set: {
       assignedTo: request.body.assignedTo,
+      projectId: request.body.projectId,
       taskName: request.body.taskName,
       taskStatus: request.body.taskStatus,
       priority: request.body.priority,
@@ -130,6 +133,7 @@ taskRoutes.route("/tasks/:id").put(verifyToken, async (request, response) => {
       taskDesc: request.body.taskDesc,
       attachments: request.body.attachments,
       chroniclesComplete: request.body.chroniclesComplete,
+      dependencies: request.body.dependencies,
     },
   };
   let data = await db
@@ -252,5 +256,25 @@ taskRoutes
       .updateOne({ _id: new ObjectId(request.params.id) }, mongoObject);
     response.json(data);
   });
+
+//notification route
+taskRoutes.route("/tasks").post(verifyToken, async (req, res) => {
+  let db = database.getDb();
+  let mongoObject = {
+    taskName: req.body.taskName,
+    assignedTo: req.body.assignedTo,
+    // Add other fields here
+  };
+  let data = await db.collection("tasks").insertOne(mongoObject);
+
+  // Emit a notification to all connected users
+  req.io.emit("taskCreated", {
+    message: `New task created: ${mongoObject.taskName}`,
+    task: mongoObject,
+  });
+
+  res.json(data);
+});
+
 
 module.exports = taskRoutes;

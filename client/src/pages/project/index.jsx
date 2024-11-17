@@ -16,6 +16,7 @@
 
 import React from "react";
 import { useState, useEffect, useMemo } from "react";
+import Header from "../../components/Header.jsx";
 
 // date formatter
 import { format } from "date-fns";
@@ -26,6 +27,7 @@ import { Button, fabClasses } from "@mui/material";
 // database functions from api file
 import {
   getProjects,
+  getTasks,
   getProject,
   createProject,
   updateProject,
@@ -33,7 +35,8 @@ import {
 } from "../../api.js";
 import ProjectGrid from "../../components/projectgrid/index.jsx";
 import EditMenu from "../../components/editmenu/index.jsx";
-//
+import ProjectGantt from "../../components/GanttChart/ProjectGantt.jsx";
+import { useSocket } from "../../contexts/SocketContext";
 
 // columns for AG grid
 // field: corresponds to a row with a matching property ex. field: id in column matches to id: in rows
@@ -82,7 +85,7 @@ const columns = [
   },
   {
     field: "dateCreated",
-    headerName: "Date",
+    headerName: "Date Created",
     floatingFilter: true,
     filter: true,
     editable: false,
@@ -108,11 +111,19 @@ const columns = [
     floatingFilter: true,
     editable: false,
   },
+  {
+    field: "tasksCount",
+    headerName: "Number of Tasks",
+    filter: true,
+    floatingFilter: true,
+    editable: false,
+  },
 ];
 
 const ProjectPage = () => {
   //* state
   const [projects, setProjects] = useState([]); // Loaded projects from database
+  const [tasks, setTasks] = useState([]); // Loaded tasks from database
   const [isLoading, setIsLoading] = useState(); // state for loading
   const [selectedProject, setSelectedProject] = useState([]); // selected project array, when users click on projects in data table
   const [reloadGrid, setReloadGrid] = useState(false); // to update grid rows
@@ -121,6 +132,9 @@ const ProjectPage = () => {
   const [addClicked, setAddClicked] = useState(false); // for add button
   const [editClicked, setEditClicked] = useState(false); // for add button
   const [deleteOpen, setDeleteOpen] = useState(false); // for dlt btn
+  const [showGantt, setShowGantt] = useState(false); // Add this new state
+  const socket = useSocket();
+
 
   //*
 
@@ -142,6 +156,23 @@ const ProjectPage = () => {
         projectStatus: project.projectStatus,
         quickBaseLink: project.quickBaseLink,
         projectDesc: project.projectDesc,
+        tasksCount: project.TaskIdForProject // count unique number of task id string
+          ? (() => {
+              const uniqueItems = new Set();
+
+              project.TaskIdForProject.forEach((item) => {
+                if (typeof item === "string") {
+                  uniqueItems.add(item); // Add string directly
+                } else if (item instanceof ObjectId) {
+                  // handle edge cases when task id is saved as an objectid in the string array
+                  uniqueItems.add(item.toString()); // Convert ObjectId to string and add
+                }
+              });
+              console.log("uniqueItems", uniqueItems);
+              // Return the total count of unique strings and ObjectIds
+              return uniqueItems.size;
+            })()
+          : 0,
       })),
     [projects]
   );
@@ -185,6 +216,9 @@ const ProjectPage = () => {
     setAddClicked(!addClicked);
     setSelectedProject("");
     toggleForm();
+    socket.emit("projectNotification", {
+      message: `New project was created`,
+    });
   }
 
   // function handles edit button
@@ -192,6 +226,9 @@ const ProjectPage = () => {
   function handleButtonEdit() {
     setEditClicked(!editClicked);
     toggleForm();
+    socket.emit("projectNotification", {
+      message: `Project was edited`,
+    });
   }
 
   const reloadTheGrid = () => {
@@ -217,6 +254,9 @@ const ProjectPage = () => {
         if (response.status === 200) {
           console.log("deleted project with id:", project.id);
           reloadTheGrid();
+          socket.emit("projectNotification", {
+            message: `Project was deleted`,
+          });
         }
       });
     });
@@ -256,19 +296,40 @@ const ProjectPage = () => {
       }
     }
 
+    async function loadAllTasks() {
+      const data = await getTasks();
+      if (data) {
+        setTasks(data);
+        setIsLoading(false);
+      }
+    }
+
     loadAllProjects();
+    loadAllTasks();
   }, [reloadGrid]);
 
   return (
-    <div className=" p-[1rem]  ">
-      <div className=" p-[1rem] flex justify-between   w-full">
-        <Button
-          variant="contained"
-          color="success"
-          onClick={() => handleButtonAdd()}
-        >
-          Add project
-        </Button>
+    <div className="p-5">
+      <div display="flex" justifyContent="space-between" alignItems="center">
+        <Header title="PROJECTS" subtitle="Projects pages" />
+      </div>
+      <div className=" pb-[1rem] flex justify-between   w-full">
+        <div className="flex gap-4">
+          <Button
+            variant="contained"
+            color="success"
+            onClick={() => handleButtonAdd()}
+          >
+            Add project
+          </Button>
+          <Button
+            variant="outlined"
+            color="success"
+            onClick={() => setShowGantt(!showGantt)}
+          >
+            {showGantt ? "Show Table View" : "Show Gantt View"}
+          </Button>
+        </div>
         <div className="flex gap-4">
           {deleteOpen && (
             <div className="flex items-center justify-end gap-4 z-[5]  w-full ">
@@ -335,28 +396,40 @@ const ProjectPage = () => {
         </div>
       </div>
 
-      <ProjectGrid
-        rows={rows}
-        columns={columns}
-        selection={selection}
-        selectionColumnDef={selectionColumnDef}
-        onSelectionChanged={handleOnSelectionChanged}
-      ></ProjectGrid>
-      <EditMenu
-        isOpen={isOpen}
-        setIsOpen={setIsOpen}
-        toggleForm={toggleForm}
-        selectedProject={selectedProject}
-        updateProject={updateProject}
-        createProject={createProject}
-        viewClicked={viewClicked}
-        setViewClicked={setViewClicked}
-        addClicked={addClicked}
-        setAddClicked={setAddClicked}
-        editClicked={editClicked}
-        setEditClicked={setEditClicked}
-        reloadTheGrid={reloadTheGrid}
-      ></EditMenu>
+      {!showGantt ? (
+        <>
+          <ProjectGrid
+            rows={rows}
+            columns={columns}
+            selection={selection}
+            selectionColumnDef={selectionColumnDef}
+            onSelectionChanged={handleOnSelectionChanged}
+          />
+          <EditMenu
+            isOpen={isOpen}
+            setIsOpen={setIsOpen}
+            toggleForm={toggleForm}
+            selectedProject={selectedProject}
+            updateProject={updateProject}
+            createProject={createProject}
+            viewClicked={viewClicked}
+            setViewClicked={setViewClicked}
+            addClicked={addClicked}
+            setAddClicked={setAddClicked}
+            editClicked={editClicked}
+            setEditClicked={setEditClicked}
+            reloadTheGrid={reloadTheGrid}
+          />
+        </>
+      ) : (
+        <>
+          <ProjectGantt
+            projects={projects}
+            tasks={tasks}
+            // style={{ height: "80vh", overflow: "auto" }}
+          />
+        </>
+      )}
     </div>
   );
 };
