@@ -12,6 +12,9 @@
 import { useEffect, useState } from "react";
 import projectSchema from "../../validations/projectValidation";
 
+import { useTheme } from "@mui/material";
+import { tokens } from "../../theme.js";
+
 export default function EditMenu({
   toggleForm,
   isOpen,
@@ -38,6 +41,9 @@ export default function EditMenu({
   const [quickBaseLink, setQuickBaseLink] = useState("");
   const [projectDescription, setProjectDescription] = useState("");
   const [errors, setErrors] = useState({});
+
+  const theme = useTheme();
+  const colors = tokens(theme.palette.mode);
 
   //*
 
@@ -195,9 +201,10 @@ export default function EditMenu({
       />
 
       <div
-        className={`fixed top-0 right-0 w-full max-w-2xl h-full bg-[#1f2a40] text-gray-100 p-8 z-[10] shadow-xl transition-transform duration-300 ease-in-out transform overflow-y-scroll ${
+        className={`fixed top-0 right-0 w-full max-w-2xl h-full  text-gray-100 p-8 z-[10] shadow-xl transition-transform duration-300 ease-in-out transform overflow-y-scroll ${
           isOpen ? "translate-x-0" : "translate-x-full"
         }`}
+        style={{ backgroundColor: colors.primary[300], opacity: 0.98 }}
       >
         <h2 className="text-3xl font-bold mb-8 text-white">Project</h2>
 
