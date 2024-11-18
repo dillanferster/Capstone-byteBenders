@@ -12,6 +12,9 @@
 import { useContext, useEffect, useState } from "react";
 import taskSchema from "../../validations/taskValidation";
 
+import { useTheme } from "@mui/material";
+import { tokens } from "../../theme.js";
+
 export default function TaskEditMenu({
   toggleForm,
   isOpen,
@@ -48,6 +51,9 @@ export default function TaskEditMenu({
   const [chroniclesComplete, setChroniclesComplete] = useState("");
   const [dependencies, setDependencies] = useState([""]);
   const [errors, setErrors] = useState({});
+
+  const theme = useTheme();
+  const colors = tokens(theme);
 
   //*
 
@@ -263,9 +269,10 @@ export default function TaskEditMenu({
       />
 
       <div
-        className={`fixed top-0 right-0 w-full max-w-2xl h-full bg-[#1f2a40] text-gray-100 p-8 z-[10] shadow-xl transition-transform duration-300 ease-in-out transform overflow-y-scroll ${
+        className={`fixed top-0 right-0 w-full max-w-2xl h-full text-gray-100 p-8 z-[10] shadow-xl transition-transform duration-300 ease-in-out transform overflow-y-scroll ${
           isOpen ? "translate-x-0" : "translate-x-full"
         }`}
+        style={{ backgroundColor: colors.primary[300], opacity: 0.98 }}
       >
         <h2 className="text-2xl font-bold mb-4 text-white">Task</h2>
 
@@ -369,8 +376,8 @@ export default function TaskEditMenu({
             </div>
           </div>
 
-          <div className="flex justify-between">
-            <div className="w-[18rem]">
+          <div className="flex gap-2">
+            <div className="w-[16rem]">
               <label
                 htmlFor="assignedTo"
                 className="block text-sm font-medium mb-2 text-gray-300"
@@ -391,7 +398,7 @@ export default function TaskEditMenu({
                 <div className="text-red-600">{errors.assignedTo}</div>
               )}
             </div>
-            <div className="w-[18rem]">
+            <div className="w-[16rem]">
               <label
                 htmlFor="dependencies"
                 className="block text-sm font-medium mb-2 text-gray-300"
@@ -424,7 +431,7 @@ export default function TaskEditMenu({
                 <option value="">None</option>
               </select>
             </div>
-            <div className="w-[18rem]">
+            <div className="w-[16rem]">
               <label
                 htmlFor="taskStatus"
                 className="block text-sm font-medium mb-2 text-gray-300"
