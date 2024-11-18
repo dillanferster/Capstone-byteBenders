@@ -9,22 +9,25 @@
     "participants": [
       {
         "_id": "66ecad9e8a3f2ac1cf9c5e69",
-        "name": "Gigi Vu",
+        "fname": "Gigi",
+        "lname": "Vu",
         "email": "gigivu2804@gmail.com"
       },
       {
         "_id": "66edf316e28a0a2b418a2914",
-        "name": "Dillan Ferster",
+        "fname": "Dillan",
+        "lname": "Ferster",
         "email": "dillyferster@gmail.com"
       },
       {
         "_id": "67096afe0de38ea01b0c9422",
-        "name": "Test Account",
+        "fname": "Test",
+        "lname": "Account",
         "email": "test@test.com"
       }
     ],
     "createdBy": "66ecad9e8a3f2ac1cf9c5e69",
-    "createdAt": "2024-10-28T08:00:00.000Z"
+    "createdAt": {"$date": {"$numberLong": "1698479400000"}}
   },
   {
     "_id": {"$oid": "671ac51d0a8c26c8598c6d02"},
@@ -36,22 +39,25 @@
     "participants": [
       {
         "_id": "6709c2d8b011d617133190ae",
-        "name": "hermela yimer",
+        "fname": "hermela",
+        "lname": "yimer",
         "email": "heru@gmail.com"
       },
       {
         "_id": "6723e03980f0bfe37458578f",
-        "name": "Desmond Readwin",
+        "fname": "Desmond",
+        "lname": "Readwin",
         "email": "gdread3@gmail.com"
       },
       {
         "_id": "673ab72cc6ef58f5d1bf0974",
-        "name": "Mike Hunt",
+        "fname": "Mike",
+        "lname": "Hunt",
         "email": "mikehunt@test.com"
       }
     ],
     "createdBy": "6709c2d8b011d617133190ae",
-    "createdAt": "2024-10-28T13:00:00.000Z"
+    "createdAt": {"$date": {"$numberLong": "1698497400000"}}
   },
   {
     "_id": {"$oid": "671ac51d0a8c26c8598c6d03"},
@@ -63,22 +69,25 @@
     "participants": [
       {
         "_id": "673ab740c6ef58f5d1bf0975",
-        "name": "Paul Jobs",
+        "fname": "Paul",
+        "lname": "Jobs",
         "email": "PaulJobs@test.com"
       },
       {
         "_id": "673ab74dc6ef58f5d1bf0976",
-        "name": "Henry Fifth",
+        "fname": "Henry",
+        "lname": "Fifth",
         "email": "henryFifth@test.com"
       },
       {
         "_id": "673ab761c6ef58f5d1bf0977",
-        "name": "Caleb Polsky",
+        "fname": "Caleb",
+        "lname": "Polsky",
         "email": "CalebPolsky@test.com"
       }
     ],
     "createdBy": "673ab740c6ef58f5d1bf0975",
-    "createdAt": "2024-10-30T09:30:00.000Z"
+    "createdAt": {"$date": {"$numberLong": "1698652200000"}}
   },
   {
     "_id": {"$oid": "671ac51d0a8c26c8598c6d04"},
@@ -90,22 +99,25 @@
     "participants": [
       {
         "_id": "66ecad9e8a3f2ac1cf9c5e69",
-        "name": "Gigi Vu",
+        "fname": "Gigi",
+        "lname": "Vu",
         "email": "gigivu2804@gmail.com"
       },
       {
         "_id": "673ab71bc6ef58f5d1bf0973",
-        "name": "Frank Bosse",
+        "fname": "Frank",
+        "lname": "Bosse",
         "email": "frankbosse@test.com"
       },
       {
         "_id": "67398dcf16c5d3ed05ae1508",
-        "name": "baby cat",
+        "fname": "baby",
+        "lname": "cat",
         "email": "baby@gmail.com"
       }
     ],
     "createdBy": "66ecad9e8a3f2ac1cf9c5e69",
-    "createdAt": "2024-10-30T14:30:00.000Z"
+    "createdAt": {"$date": {"$numberLong": "1698670200000"}}
   },
   {
     "_id": {"$oid": "671ac51d0a8c26c8598c6d05"},
@@ -117,22 +129,25 @@
     "participants": [
       {
         "_id": "66edf316e28a0a2b418a2914",
-        "name": "Dillan Ferster",
+        "fname": "Dillan",
+        "lname": "Ferster",
         "email": "dillyferster@gmail.com"
       },
       {
         "_id": "6723e03980f0bfe37458578f",
-        "name": "Desmond Readwin",
+        "fname": "Desmond",
+        "lname": "Readwin",
         "email": "gdread3@gmail.com"
       },
       {
         "_id": "673ab74dc6ef58f5d1bf0976",
-        "name": "Henry Fifth",
+        "fname": "Henry",
+        "lname": "Fifth",
         "email": "henryFifth@test.com"
       }
     ],
     "createdBy": "66edf316e28a0a2b418a2914",
-    "createdAt": "2024-11-01T09:00:00.000Z"
+    "createdAt": {"$date": {"$numberLong": "1698824400000"}}
   },
   {
     "_id": {"$oid": "671ac51d0a8c26c8598c6d06"},
@@ -144,22 +159,25 @@
     "participants": [
       {
         "_id": "67096afe0de38ea01b0c9422",
-        "name": "Test Account",
+        "fname": "Test",
+        "lname": "Account",
         "email": "test@test.com"
       },
       {
         "_id": "673ab72cc6ef58f5d1bf0974",
-        "name": "Mike Hunt",
+        "fname": "Mike",
+        "lname": "Hunt",
         "email": "mikehunt@test.com"
       },
       {
         "_id": "673ab761c6ef58f5d1bf0977",
-        "name": "Caleb Polsky",
+        "fname": "Caleb",
+        "lname": "Polsky",
         "email": "CalebPolsky@test.com"
       }
     ],
     "createdBy": "67096afe0de38ea01b0c9422",
-    "createdAt": "2024-11-01T13:00:00.000Z"
+    "createdAt": {"$date": {"$numberLong": "1698838800000"}}
   },
   {
     "_id": {"$oid": "671ac51d0a8c26c8598c6d07"},
@@ -171,22 +189,25 @@
     "participants": [
       {
         "_id": "6709c2d8b011d617133190ae",
-        "name": "hermela yimer",
+        "fname": "hermela",
+        "lname": "yimer",
         "email": "heru@gmail.com"
       },
       {
         "_id": "673ab71bc6ef58f5d1bf0973",
-        "name": "Frank Bosse",
+        "fname": "Frank",
+        "lname": "Bosse",
         "email": "frankbosse@test.com"
       },
       {
         "_id": "673ab740c6ef58f5d1bf0975",
-        "name": "Paul Jobs",
+        "fname": "Paul",
+        "lname": "Jobs",
         "email": "PaulJobs@test.com"
       }
     ],
     "createdBy": "6709c2d8b011d617133190ae",
-    "createdAt": "2024-11-04T08:00:00.000Z"
+    "createdAt": {"$date": {"$numberLong": "1699081200000"}}
   },
   {
     "_id": {"$oid": "671ac51d0a8c26c8598c6d08"},
@@ -198,22 +219,25 @@
     "participants": [
       {
         "_id": "66ecad9e8a3f2ac1cf9c5e69",
-        "name": "Gigi Vu",
+        "fname": "Gigi",
+        "lname": "Vu",
         "email": "gigivu2804@gmail.com"
       },
       {
         "_id": "67398dcf16c5d3ed05ae1508",
-        "name": "baby cat",
+        "fname": "baby",
+        "lname": "cat",
         "email": "baby@gmail.com"
       },
       {
         "_id": "673ab761c6ef58f5d1bf0977",
-        "name": "Caleb Polsky",
+        "fname": "Caleb",
+        "lname": "Polsky",
         "email": "CalebPolsky@test.com"
       }
     ],
     "createdBy": "66ecad9e8a3f2ac1cf9c5e69",
-    "createdAt": "2024-11-04T14:30:00.000Z"
+    "createdAt": {"$date": {"$numberLong": "1699104600000"}}
   },
   {
     "_id": {"$oid": "671ac51d0a8c26c8598c6d09"},
@@ -225,22 +249,25 @@
     "participants": [
       {
         "_id": "66edf316e28a0a2b418a2914",
-        "name": "Dillan Ferster",
+        "fname": "Dillan",
+        "lname": "Ferster",
         "email": "dillyferster@gmail.com"
       },
       {
         "_id": "673ab71bc6ef58f5d1bf0973",
-        "name": "Frank Bosse",
+        "fname": "Frank",
+        "lname": "Bosse",
         "email": "frankbosse@test.com"
       },
       {
         "_id": "673ab74dc6ef58f5d1bf0976",
-        "name": "Henry Fifth",
+        "fname": "Henry",
+        "lname": "Fifth",
         "email": "henryFifth@test.com"
       }
     ],
     "createdBy": "66edf316e28a0a2b418a2914",
-    "createdAt": "2024-11-06T10:00:00.000Z"
+    "createdAt": {"$date": {"$numberLong": "1699261200000"}}
   },
   {
     "_id": {"$oid": "671ac51d0a8c26c8598c6d10"},
@@ -252,21 +279,24 @@
     "participants": [
       {
         "_id": "67096afe0de38ea01b0c9422",
-        "name": "Test Account",
+        "fname": "Test",
+        "lname": "Account",
         "email": "test@test.com"
       },
       {
         "_id": "6723e03980f0bfe37458578f",
-        "name": "Desmond Readwin",
+        "fname": "Desmond",
+        "lname": "Readwin",
         "email": "gdread3@gmail.com"
       },
       {
         "_id": "673ab72cc6ef58f5d1bf0974",
-        "name": "Mike Hunt",
+        "fname": "Mike",
+        "lname": "Hunt",
         "email": "mikehunt@test.com"
       }
     ],
     "createdBy": "67096afe0de38ea01b0c9422",
-    "createdAt": "2024-11-06T13:00:00.000Z"
+    "createdAt": {"$date": {"$numberLong": "1699272000000"}}
   }
 ]

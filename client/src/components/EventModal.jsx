@@ -10,6 +10,7 @@ import {
   Chip,
   CircularProgress,
 } from "@mui/material";
+import { searchUsers } from "../api";
 
 const EventModal = ({
   isOpen,
@@ -57,8 +58,7 @@ const EventModal = ({
   useEffect(() => {
     const fetchUsers = async () => {
       try {
-        const response = await fetch("/api/users/search?query=" + searchQuery);
-        const data = await response.json();
+        const data = await searchUsers(searchQuery);
         setUserOptions(
           data.filter(
             (user) => currentUser?._id && user._id !== currentUser._id

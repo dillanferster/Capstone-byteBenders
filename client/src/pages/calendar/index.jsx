@@ -32,6 +32,7 @@ import {
   createCalendarEvent,
   updateCalendarEvent,
   deleteCalendarEvent,
+  getCurrentUser,
 } from "../../api";
 
 const Calendar = () => {
@@ -54,22 +55,19 @@ const Calendar = () => {
   useEffect(() => {
     const fetchUserData = async () => {
       try {
-        const response = await fetch("/api/users/current", {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
-        });
-        if (response.ok) {
-          const userData = await response;
-          setCurrentUser(userData);
-        }
+        const userData = await getCurrentUser();
+        setCurrentUser(userData);
       } catch (error) {
         console.error("Failed to fetch user data:", error);
+        showAlert("Failed to load user data", "error");
       }
     };
 
     fetchUserData();
   }, []);
+
+  // Log when passing to EventModal
+  console.log("Current user being passed to modal:", currentUser);
 
   // Fetch events from the backend
   const fetchEvents = async () => {
