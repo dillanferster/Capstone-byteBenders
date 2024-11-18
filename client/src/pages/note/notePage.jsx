@@ -92,18 +92,9 @@ const NotePage = () => {
   const getCurrentNote = () => notes.find(note => note._id === currentNoteId);
 
   const addNote = (newNote) => {
-    // Ensure the new note has a valid title and content
-    const noteWithDefaults = {
-      noteTitle: newNote.title || "Untitled",
-      noteContent: newNote.content || "",
-      ...newNote,
-    };
-  
-    setNotes((prevNotes) => [noteWithDefaults, ...prevNotes]); // Add new note to the top
-    setCurrentNoteId(noteWithDefaults._id); // Select the new note
+    setNotes(prevNotes => [...prevNotes, newNote]);
+    setCurrentNoteId(newNote._id);
   };
-  
-  
 
   return (
     <div className="note-page">

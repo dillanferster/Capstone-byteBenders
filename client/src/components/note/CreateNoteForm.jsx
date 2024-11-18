@@ -28,47 +28,41 @@ const CreateNoteForm = ({ onClose, onSubmit, isTaskNote }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsSubmitting(true);
-  
+    
     try {
-      const trimmedTitle = title.trim() || "New Note"; // Set default title if empty
-      const trimmedContent = content.trim();
-  
-      if (!trimmedContent) {
-        alert("Content is required.");
-        setIsSubmitting(false);
+      const validation = validateNote({ title, content });
+      if (!validation.isValid) {
+        setErrors(validation.errors);
+        setTouched({ title: true, content: true });
         return;
       }
-  
+
       if (isTaskNote && !taskId) {
-        alert("Please select a task for the task note.");
-        setIsSubmitting(false);
+        setErrors(prev => ({ ...prev, taskId: 'Please select a task' }));
         return;
       }
-  
-      const noteData = {
-        title: trimmedTitle,
-        content: trimmedContent,
-        taskId: isTaskNote ? taskId : null,
-      };
-  
-      console.log("Submitting form with data:", noteData);
-  
-      await onSubmit(noteData);
-  
-      // Clear form after submission
-      setTitle("");
-      setContent("");
-      setTaskId("");
+
+      console.log('Submitting form with data:', { title, content, taskId }); // Debug log
+
+      await onSubmit({ 
+        title, 
+        content,
+        taskId: isTaskNote ? taskId : null
+      });
+
+      // Clear form
+      setTitle('');
+      setContent('');
+      setTaskId('');
       setErrors({});
       setTouched({ title: false, content: false });
     } catch (error) {
-      console.error("Error in form submission:", error);
-      alert("Failed to create note. Please try again.");
+      console.error('Error in form submission:', error);
+      alert('Failed to create note. Please try again.');
     } finally {
       setIsSubmitting(false);
     }
   };
-  
 
   return (
     <div className="create-note-overlay" onClick={onClose}>
