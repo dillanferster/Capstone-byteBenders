@@ -204,16 +204,22 @@ export default function EditMenu({
         className={`fixed top-0 right-0 w-full max-w-2xl h-full  text-gray-100 p-8 z-[10] shadow-xl transition-transform duration-300 ease-in-out transform overflow-y-scroll ${
           isOpen ? "translate-x-0" : "translate-x-full"
         }`}
-        style={{ backgroundColor: colors.primary[300], opacity: 0.98 }}
+        style={{ backgroundColor: colors.primary[400], opacity: 0.98 }}
       >
-        <h2 className="text-3xl font-bold mb-8 text-white">Project</h2>
+        <h2
+          className="text-3xl font-bold mb-8"
+          style={{ color: colors.grey[100] }}
+        >
+          Project
+        </h2>
 
         <form className="space-y-6">
           <div className="flex justify-between">
             <div className="w-[18rem]">
               <label
                 htmlFor="projectName"
-                className="block text-sm font-medium mb-2 text-gray-300"
+                className="block text-sm font-medium mb-2"
+                style={{ color: colors.grey[300] }}
               >
                 Project ID
               </label>
@@ -221,7 +227,11 @@ export default function EditMenu({
                 type="text"
                 id="projectName"
                 defaultValue={projectId}
-                className="w-full px-4 py-2 bg-gray-700 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full px-4 py-2 rounded-lg placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                style={{
+                  backgroundColor: colors.primary[300],
+                  color: colors.grey[200],
+                }}
                 disabled
                 placeholder={
                   addClicked ? "ID will be generated automatically" : ""
@@ -231,7 +241,8 @@ export default function EditMenu({
             <div className="w-[18rem]">
               <label
                 htmlFor="projectName"
-                className="block text-sm font-medium mb-2 text-gray-300"
+                className="block text-sm font-medium mb-2"
+                style={{ color: colors.grey[300] }}
               >
                 Project Name
               </label>
@@ -240,7 +251,11 @@ export default function EditMenu({
                 id="projectName"
                 value={projectName}
                 onChange={(e) => setProjectName(e.target.value)}
-                className="w-full px-4 py-2 bg-gray-700 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full px-4 py-2 rounded-lg placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                style={{
+                  backgroundColor: colors.primary[300],
+                  color: colors.grey[200],
+                }}
                 required
                 placeholder="Enter Project name"
                 disabled={viewClicked}
@@ -254,7 +269,8 @@ export default function EditMenu({
             <div className="w-[18rem]">
               <label
                 htmlFor="projectName"
-                className="block text-sm font-medium mb-2 text-gray-300"
+                className="block text-sm font-medium mb-2"
+                style={{ color: colors.grey[300] }}
               >
                 Assigned To
               </label>
@@ -263,7 +279,11 @@ export default function EditMenu({
                 id="assignedTo"
                 value={assignedTo}
                 onChange={(e) => setAssignedTo(e.target.value)}
-                className="w-full px-4 py-2 bg-gray-700 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full px-4 py-2 rounded-lg placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                style={{
+                  backgroundColor: colors.primary[300],
+                  color: colors.grey[200],
+                }}
                 required
                 placeholder="Assign Project"
                 disabled={viewClicked}
@@ -276,7 +296,8 @@ export default function EditMenu({
             <div className="w-[18rem]">
               <label
                 htmlFor="projectStatus"
-                className="block text-sm font-medium mb-2 text-gray-300"
+                className="block text-sm font-medium mb-2"
+                style={{ color: colors.grey[300] }}
               >
                 Project Status
               </label>
@@ -284,7 +305,11 @@ export default function EditMenu({
                 id="projectStatus"
                 value={projectStatus}
                 onChange={(e) => setProjectStatus(e.target.value)}
-                className="w-full px-4 py-2 bg-gray-700 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full px-4 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                style={{
+                  backgroundColor: colors.primary[300],
+                  color: colors.grey[200],
+                }}
                 disabled={viewClicked}
               >
                 {addClicked && (
@@ -303,7 +328,8 @@ export default function EditMenu({
           <div>
             <label
               htmlFor="dateCreated"
-              className="block text-sm font-medium mb-2 text-gray-300"
+              className="block text-sm font-medium mb-2"
+              style={{ color: colors.grey[300] }}
             >
               Date Created
             </label>
@@ -312,7 +338,11 @@ export default function EditMenu({
               id="dateCreated"
               value={dateCreated}
               onChange={(e) => setDateCreated(e.target.value)}
-              className="w-full px-4 py-2 bg-gray-700 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-4 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              style={{
+                backgroundColor: colors.primary[300],
+                color: colors.grey[200],
+              }}
               required
               disabled={viewClicked}
             />
@@ -324,7 +354,8 @@ export default function EditMenu({
             <div className="w-[18rem]">
               <label
                 htmlFor="caseId"
-                className="block text-sm font-medium mb-2 text-gray-300"
+                className="block text-sm font-medium mb-2 "
+                style={{ color: colors.grey[300] }}
               >
                 Case ID (Quickbase)
               </label>
@@ -333,7 +364,11 @@ export default function EditMenu({
                 id="projectName"
                 value={caseId}
                 onChange={(e) => setCaseId(e.target.value)}
-                className="w-full px-4 py-2 bg-gray-700 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full px-4 py-2 rounded-lg placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                style={{
+                  backgroundColor: colors.primary[300],
+                  color: colors.grey[200],
+                }}
                 required
                 placeholder="Enter Case Id"
                 disabled={viewClicked}
@@ -346,7 +381,8 @@ export default function EditMenu({
             <div className="w-[18rem]">
               <label
                 htmlFor="projectName"
-                className="block text-sm font-medium mb-2 text-gray-300"
+                className="block text-sm font-medium mb-2"
+                style={{ color: colors.grey[300] }}
               >
                 QuickBase Case Link
               </label>
@@ -355,7 +391,11 @@ export default function EditMenu({
                 id="quickBaseLink"
                 value={quickBaseLink}
                 onChange={(e) => setQuickBaseLink(e.target.value)}
-                className="w-full px-4 py-2 bg-gray-700 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full px-4 py-2 rounded-lg placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                style={{
+                  backgroundColor: colors.primary[300],
+                  color: colors.grey[200],
+                }}
                 required
                 placeholder="Enter QuickBase Link"
                 disabled={viewClicked}
@@ -369,7 +409,8 @@ export default function EditMenu({
           <div>
             <label
               htmlFor="dataClassification"
-              className="block text-sm font-medium mb-2 text-gray-300"
+              className="block text-sm font-medium mb-2 "
+              style={{ color: colors.grey[300] }}
             >
               Data Classification
             </label>
@@ -378,7 +419,11 @@ export default function EditMenu({
               id="projectName"
               value={dataClassification}
               onChange={(e) => setDataClassification(e.target.value)}
-              className="w-full px-4 py-2 bg-gray-700 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-4 py-2 rounded-lg  placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              style={{
+                backgroundColor: colors.primary[300],
+                color: colors.grey[200],
+              }}
               required
               placeholder="Enter data classification"
               disabled={viewClicked}
@@ -391,7 +436,8 @@ export default function EditMenu({
           <div>
             <label
               htmlFor="description"
-              className="block text-sm font-medium mb-2 text-gray-300"
+              className="block text-sm font-medium mb-2 "
+              style={{ color: colors.grey[300] }}
             >
               Description
             </label>
@@ -399,7 +445,11 @@ export default function EditMenu({
               id="description"
               value={projectDescription}
               onChange={(e) => setProjectDescription(e.target.value)}
-              className="w-full px-4 py-2 bg-gray-700 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-4 py-2 rounded-lg placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              style={{
+                backgroundColor: colors.primary[300],
+                color: colors.grey[200],
+              }}
               rows={4}
               placeholder="Enter Description"
               disabled={viewClicked}
