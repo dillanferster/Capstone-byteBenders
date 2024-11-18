@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback } from "react";
 import Sidebar from "../../components/note/sidebar";
-import NoteEditor from "../../components/note/NoteEditor";
+import NoteEditor from "../../components/note/noteEditor";
 import "./NotePage.css";
 import { getNotes, createNote, updateNote, deleteNote } from "../../api";
 import { ToastContainer, toast } from "react-toastify";

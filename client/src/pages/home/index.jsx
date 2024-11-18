@@ -16,6 +16,8 @@ import {
   IconButton,
   Typography,
   useTheme,
+  Autocomplete,
+  TextField,
 } from "@mui/material";
 import { tokens } from "../../theme";
 import Header from "../../components/Header";
@@ -290,30 +292,59 @@ const Dashboard = () => {
             </Box>
             <Box display="flex" alignItems="center" gap={2}>
               <FormControl size="small" sx={{ minWidth: 120 }}>
-                <Select
-                  key={targetProject._id}
-                  value={targetProject.projectName}
-                  onChange={handleTargetProjectChange}
-                  displayEmpty
-                  sx={{
-                    color: colors.grey[100],
-                    ".MuiOutlinedInput-notchedOutline": {
-                      borderColor: colors.grey[100],
-                    },
-                    "&:hover .MuiOutlinedInput-notchedOutline": {
-                      borderColor: colors.grey[300],
-                    },
-                    "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
-                      borderColor: colors.grey[100],
-                    },
+                <Autocomplete
+                  value={targetProject}
+                  onChange={(event, newValue) => {
+                    if (newValue) {
+                      setTargetProject(newValue);
+                    }
                   }}
-                >
-                  {projects.map((project) => (
-                    <MenuItem value={project.projectName}>
-                      {project.projectName}
-                    </MenuItem>
-                  ))}
-                </Select>
+                  options={projects}
+                  getOptionLabel={(option) => option.projectName || ""}
+                  isOptionEqualToValue={(option, value) =>
+                    option._id === value._id
+                  }
+                  renderInput={(params) => (
+                    <TextField
+                      {...params}
+                      size="small"
+                      sx={{
+                        minWidth: 200,
+                        "& .MuiOutlinedInput-root": {
+                          color: colors.grey[100],
+                          "& fieldset": {
+                            borderColor: colors.grey[100],
+                          },
+                          "&:hover fieldset": {
+                            borderColor: colors.grey[300],
+                          },
+                          "&.Mui-focused fieldset": {
+                            borderColor: colors.grey[100],
+                          },
+                        },
+                        "& .MuiInputLabel-root": {
+                          color: colors.grey[100],
+                        },
+                      }}
+                    />
+                  )}
+                  renderOption={(props, option) => (
+                    <Box
+                      component="li"
+                      {...props}
+                      key={option._id}
+                      sx={{
+                        color: colors.grey[100],
+                        backgroundColor: colors.primary[500],
+                        "&.MuiAutocomplete-option:hover": {
+                          backgroundColor: colors.greenAccent[600],
+                        },
+                      }}
+                    >
+                      {option.projectName}
+                    </Box>
+                  )}
+                />
               </FormControl>
             </Box>
           </Box>
