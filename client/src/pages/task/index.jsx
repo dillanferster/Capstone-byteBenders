@@ -44,8 +44,13 @@ import {
 import ProjectGrid from "../../components/projectgrid/index.jsx";
 import TaskEditMenu from "../../components/taskeditmenu/index.jsx";
 import TaskBoard from "../../components/taskboard/index.jsx";
+
+import { useTheme } from "@mui/material";
+import { tokens } from "../../theme.js";
+
 import { useSocket } from "../../contexts/SocketContext.jsx";
 import ProjectGantt from "../../components/GanttChart/ProjectGantt.jsx";
+
 //
 
 // columns for AG grid
@@ -205,6 +210,9 @@ const TaskPage = () => {
   // State to track the current view mode
   const [currentView, setCurrentView] = useState("list"); // Default view is "list"
 
+  const theme = useTheme();
+  const colors = tokens(theme.palette.mode);
+
   //*
 
   // tasks object array from the database
@@ -274,7 +282,7 @@ const TaskPage = () => {
   // function Handles add Button click
   // calls makeProject
   // setReloadGrid so the rows rerender with new item
-  
+
   function handleButtonAdd() {
     setAddClicked(!addClicked);
     setSelectedTask("");
@@ -396,7 +404,7 @@ const TaskPage = () => {
         reloadTheGrid();
         setReloadTaskBoard((prev) => !prev);
         socket.emit("taskNotification", {
-          message: `Task "${selectedTask[0]?. taskName}" was resumed.`,
+          message: `Task "${selectedTask[0]?.taskName}" was resumed.`,
           action: "resume",
         });
       }
@@ -456,7 +464,7 @@ const TaskPage = () => {
           taskId: selectedTask[0].id,
           taskName: selectedTask[0].taskName,
           action: "complete",
-          });
+        });
         return selectedId;
       }
     } catch (error) {
@@ -743,27 +751,36 @@ const TaskPage = () => {
         <Header title="TASKS" subtitle="Welcome to your dashboard" />
       </div>
       <div className="flex justify-end">
-        <div className="flex border w-[8rem] mb-[1rem] py-[.3rem] rounded-md text-white justify-around transition-all duration-100 ">
+        <div
+          className="flex w-[8rem] mb-[1rem] p-1 rounded-md justify-around transition-all duration-100 "
+          style={{
+            border: `1px solid ${colors.primary[100]}`,
+            color: `${colors.primary[100]}`,
+          }}
+        >
           <button
-            className={`p-1 rounded-md w-[3rem] transition-all duration-100 ${
-              currentView === "list" ? "bg-[#3E4396]" : ""
-            }`}
+            className={`p-1 rounded-md w-[3rem] transition-all duration-100`}
+            style={{
+              background: currentView === "list" ? colors.blueAccent[700] : "",
+            }}
             onClick={handleListClick}
           >
             List
           </button>
           <button
-            className={`p-1 rounded-md w-[3rem] transition-all duration-100 ${
-              currentView === "board" ? "bg-[#3E4396]" : ""
-            }`}
+            className={`p-1 rounded-md w-[3rem] transition-all duration-100 `}
+            style={{
+              background: currentView === "board" ? colors.blueAccent[700] : "",
+            }}
             onClick={handleBoardClick}
           >
             Board
           </button>
           <button
-            className={`p-1 rounded-md w-[3rem] transition-all duration-100 ${
-              currentView === "gantt" ? "bg-[#3E4396]" : ""
-            }`}
+            className={`p-1 rounded-md w-[3rem] transition-all duration-100 `}
+            style={{
+              background: currentView === "gantt" ? colors.blueAccent[700] : "",
+            }}
             onClick={handleGanttClick}
           >
             Gantt
