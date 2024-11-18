@@ -35,7 +35,6 @@ export default function TaskEditMenu({
   const [taskId, setTaskId] = useState("");
   const [taskName, setTaskName] = useState("");
   const [projectTask, setProjectTask] = useState("");
-  const [projectId, setProjectId] = useState("");
   const [assignedTo, setAssignedTo] = useState("");
   const [taskStatus, setTaskStatus] = useState("");
   const [priority, setPriority] = useState("");
