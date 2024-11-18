@@ -1,7 +1,7 @@
 import React from "react";
 import "gantt-task-react/dist/index.css";
 import { ViewMode } from "gantt-task-react";
-
+import "./Gantt.css";
 const ViewSwitcher = ({ onViewModeChange, onViewListChange, isChecked }) => {
   const handleViewModeChange = (mode) => {
     onViewModeChange(mode);
@@ -28,7 +28,7 @@ const ViewSwitcher = ({ onViewModeChange, onViewListChange, isChecked }) => {
 
       {/* Show Task List */}
       <div
-        className="Switch"
+        className="gantt-task-name"
         style={{ margin: "4px 15px", display: "flex", alignItems: "center" }}
       >
         <input
@@ -37,7 +37,7 @@ const ViewSwitcher = ({ onViewModeChange, onViewListChange, isChecked }) => {
           onChange={() => onViewListChange(!isChecked)}
           style={{ marginRight: "5px" }}
         />
-        <label style={{ fontSize: "16px" }}> Show Projects & Tasks List </label>
+        <label style={{ fontSize: "14px" }}> Show Projects & Tasks List </label>
       </div>
     </div>
   );
