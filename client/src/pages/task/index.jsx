@@ -287,6 +287,7 @@ const TaskPage = () => {
     setAddClicked(!addClicked);
     setSelectedTask("");
     toggleForm();
+
     // socket.emit("taskNotification", {
     //   message: `Task "${selectedTask[0]?.taskName}" was created.`,
     //   action: "add",
@@ -626,26 +627,26 @@ const TaskPage = () => {
       const response = await deleteTask(task.id);
 
       if (response.status === 200) {
-        console.log(
-          "projectTask: ",
-          selectedTask[0].projectTask,
-          ", projectId:",
-          selectedTask[0].projectId
-        );
+        // console.log(
+        //   "projectTask: ",
+        //   selectedTask[0].projectTask,
+        //   ", projectId:",
+        //   selectedTask[0].projectId
+        // );
 
         const projectMatch = projects.find(
           (project) => project._id === selectedTask[0].projectId
         );
-        console.log("project that task will be deleted from", projectMatch._id);
+        // console.log("project that task will be deleted from", projectMatch._id);
 
         const taskObject = {
           taskId: task.id,
         };
 
-        console.log(
-          "inside handle delete btn, TASK that task will be deleted from project",
-          taskObject.taskId
-        );
+        // console.log(
+        //   "inside handle delete btn, TASK that task will be deleted from project",
+        //   taskObject.taskId
+        // );
 
         const projectId = projectMatch._id;
 
@@ -653,11 +654,6 @@ const TaskPage = () => {
           projectId,
           taskObject
         );
-
-        console.log("after deleting task from project", deleteResponse);
-        // socket.emit("taskNotification", {
-        //   message: `Task "${selectedTask[0]?.taskName}" was deleted.`,
-        // });
 
         reloadTheGrid();
         setReloadTaskBoard((prev) => !prev);
@@ -997,17 +993,18 @@ const TaskPage = () => {
             projects={projects}
             tasks={tasks}
             addTaskToProject={addTaskToProject}
+            reloadTaskBoard={reloadTaskBoard}
+            setReloadTaskBoard={setReloadTaskBoard}
           ></TaskEditMenu>
         </>
       )}
       {currentView === "board" && (
         <>
           <TaskBoard
-            reloadTaskBoard={reloadTaskBoard}
             setIsOpen={setIsOpen}
             setViewClicked={setViewClicked}
             setSelectedTask={setSelectedTask}
-            handleButtonStart={handleButtonStart(selectedTask)}
+            handleButtonStart={handleButtonStart}
             handleButtonPause={handlePauseandCalculate}
             handleButtonResume={handleButtonResume}
             handleButtonComplete={handleCompleteandCalculate}
@@ -1030,6 +1027,8 @@ const TaskPage = () => {
             projects={projects}
             tasks={tasks}
             addTaskToProject={addTaskToProject}
+            reloadTaskBoard={reloadTaskBoard}
+            setReloadTaskBoard={setReloadTaskBoard}
           ></TaskEditMenu>
         </>
       )}

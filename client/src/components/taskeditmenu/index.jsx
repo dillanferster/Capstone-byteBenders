@@ -33,6 +33,7 @@ export default function TaskEditMenu({
   tasks,
   addTaskToProject,
   setReloadTaskBoard,
+  reloadTaskBoard,
 }) {
   // * state
   const [taskId, setTaskId] = useState("");
@@ -159,7 +160,8 @@ export default function TaskEditMenu({
             updateTaskToProject(taskId, projectTask);
 
             reloadTheGrid();
-            if (setReloadTaskBoard) {
+
+            if (reloadTaskBoard) {
               setReloadTaskBoard((prev) => !prev);
             }
             toggleForm();
@@ -223,11 +225,13 @@ export default function TaskEditMenu({
             const newTaskId = response.data.insertedId;
             console.log("New task ID:", newTaskId);
             updateTaskToProject(newTaskId);
-
             reloadTheGrid();
-            if (setReloadTaskBoard) {
+
+            if (reloadTaskBoard) {
               setReloadTaskBoard((prev) => !prev);
+              console.log("reloading task board from added task button");
             }
+
             toggleForm();
             clearAddInputs();
             setAddClicked(!addClicked);
@@ -256,6 +260,7 @@ export default function TaskEditMenu({
     setAddClicked(false);
     setEditClicked(false);
     setViewClicked(false);
+    reloadTheGrid();
 
     toggleForm();
   };

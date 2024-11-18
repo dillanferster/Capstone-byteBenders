@@ -37,6 +37,7 @@ const Column = ({
   handleButtonResume,
   handleButtonComplete,
   setIsDeleteModalOpen,
+ 
 }) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
