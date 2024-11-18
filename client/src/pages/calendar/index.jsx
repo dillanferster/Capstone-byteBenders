@@ -48,6 +48,28 @@ const Calendar = () => {
     message: "",
     severity: "success",
   });
+  const [currentUser, setCurrentUser] = useState(null);
+
+  // Fetch current user data
+  useEffect(() => {
+    const fetchUserData = async () => {
+      try {
+        const response = await fetch("/api/users/current", {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        });
+        if (response.ok) {
+          const userData = await response;
+          setCurrentUser(userData);
+        }
+      } catch (error) {
+        console.error("Failed to fetch user data:", error);
+      }
+    };
+
+    fetchUserData();
+  }, []);
 
   // Fetch events from the backend
   const fetchEvents = async () => {
@@ -431,6 +453,7 @@ const Calendar = () => {
         defaultStart={defaultStart}
         defaultEnd={defaultEnd}
         selectedEvent={selectedEvent}
+        currentUser={currentUser}
       />
 
       {/* Alert Snackbar */}

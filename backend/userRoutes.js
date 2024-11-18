@@ -27,6 +27,12 @@
  * 2. POST `/users/login`
  *    - Use Case: Authenticates an existing user by comparing the hashed password. Then generates a JWT token.
  *    - Returns a JWT token if authentication is successful.
+ * 3. GET `/users/current`
+ *    - Use Case: Retrieves the current logged-in user's information.
+ *    - Returns user data excluding sensitive information like password.
+ * 4. GET `/users/search`
+ *    - Use Case: Searches for users based on name or email.
+ *    - Returns filtered user data for participant selection.
  *
  * Environment Variables:
  * - SECRET_KEY: Used to sign JWT tokens.
@@ -42,7 +48,7 @@ const jwt = require("jsonwebtoken"); // import for for token generation and veri
 require("dotenv").config({ path: "./.env" }); // import .env file for secret key
 const { verifyToken } = require("./middleware/auth"); // import verifyToken function from auth.js
 
-let userRoutes = express.Router(); // create router for user routes. What is Router??
+let userRoutes = express.Router(); // create router for user routes
 const SALT_ROUNDS = 10; // number of rounds to generate salt for password hashing
 const secretKey = process.env.SECRET_KEY;
 
@@ -93,9 +99,17 @@ userRoutes.route("/users").post(verifyToken, async (request, response) => {
   }
 });
 
-// Route #2 - Verify user login
-// connects to database via ./connect file module function
-// goes into connection and finds item that matches the email
+/**
+ * Route #2: POST /users/login
+ *
+ * This route handles user authentication. It performs the following:
+ * 1. Checks if the user exists in the database.
+ * 2. Compares the provided password with the stored hash.
+ * 3. Generates a JWT token if authentication is successful.
+ *
+ * @param {Object} request.body - Contains login credentials (email, password).
+ * @param {Object} response - JSON response containing authentication result and token.
+ */
 userRoutes.route("/users/login").post(async (request, response) => {
   let db = database.getDb();
   const user = await db
@@ -118,5 +132,80 @@ userRoutes.route("/users/login").post(async (request, response) => {
     response.json({ success: false, message: "User not found" });
   }
 });
+
+/**
+ * Route #3: GET /users/current
+ *
+ * This route retrieves the current user's information. It performs the following:
+ * 1. Uses the verifyToken middleware to ensure user is authenticated.
+ * 2. Retrieves user information from the database using the ID from the token.
+ * 3. Returns user data excluding sensitive information.
+ *
+ * @param {Object} request - Contains user ID from the verified token.
+ * @param {Object} response - JSON response containing user data or error message.
+ */
+userRoutes
+  .route("/users/current")
+  .get(verifyToken, async (request, response) => {
+    let db = database.getDb();
+    try {
+      const userId = request.body.user._id;
+
+      const userData = await db.collection("users").findOne(
+        { _id: new ObjectId(userId) },
+        { projection: { password: 0 } } // Exclude password
+      );
+
+      if (!userData) {
+        return response.status(404).json({ error: "User not found" });
+      }
+
+      response.json(userData);
+    } catch (error) {
+      response.status(500).json({ error: "Failed to fetch user data" });
+    }
+  });
+
+/**
+ * Route #4: GET /users/search
+ *
+ * This route searches for users based on query parameters. It performs the following:
+ * 1. Uses the verifyToken middleware to ensure user is authenticated.
+ * 2. Searches users by first name, last name, or email.
+ * 3. Returns filtered user data for participant selection.
+ *
+ * @param {Object} request.query - Contains search parameters.
+ * @param {Object} response - JSON response containing matched users or error message.
+ */
+userRoutes
+  .route("/users/search")
+  .get(verifyToken, async (request, response) => {
+    let db = database.getDb();
+    try {
+      const query = request.query.query || "";
+
+      const users = await db
+        .collection("users")
+        .find({
+          $or: [
+            { fname: { $regex: query, $options: "i" } },
+            { lname: { $regex: query, $options: "i" } },
+            { email: { $regex: query, $options: "i" } },
+          ],
+        })
+        .project({
+          _id: 1,
+          fname: 1,
+          lname: 1,
+          email: 1,
+        })
+        .limit(10)
+        .toArray();
+
+      response.json(users);
+    } catch (error) {
+      response.status(500).json({ error: "Failed to search users" });
+    }
+  });
 
 module.exports = userRoutes;

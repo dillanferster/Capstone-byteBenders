@@ -6,7 +6,25 @@
     "end": "2024-10-28T10:30",
     "description": "Quarterly review of sales performance and planning for end-of-year targets",
     "meetingLink": "https://teams.microsoft.com/l/meetup-join/sales-q4-rev-19%40thread.v2",
-    "participants": ["Sarah C.", "Mike R.", "Aisha P.", "David K."]
+    "participants": [
+      {
+        "_id": "66ecad9e8a3f2ac1cf9c5e69",
+        "name": "Gigi Vu",
+        "email": "gigivu2804@gmail.com"
+      },
+      {
+        "_id": "66edf316e28a0a2b418a2914",
+        "name": "Dillan Ferster",
+        "email": "dillyferster@gmail.com"
+      },
+      {
+        "_id": "67096afe0de38ea01b0c9422",
+        "name": "Test Account",
+        "email": "test@test.com"
+      }
+    ],
+    "createdBy": "66ecad9e8a3f2ac1cf9c5e69",
+    "createdAt": "2024-10-28T08:00:00.000Z"
   },
   {
     "_id": {"$oid": "671ac51d0a8c26c8598c6d02"},
@@ -15,7 +33,25 @@
     "end": "2024-10-28T15:00",
     "description": "Planning session for Sprint 24 - focus on new feature implementation",
     "meetingLink": "https://teams.microsoft.com/l/meetup-join/sprint24-plan-28%40thread.v2",
-    "participants": ["James W.", "Elena S.", "Raj S.", "Lisa M."]
+    "participants": [
+      {
+        "_id": "6709c2d8b011d617133190ae",
+        "name": "hermela yimer",
+        "email": "heru@gmail.com"
+      },
+      {
+        "_id": "6723e03980f0bfe37458578f",
+        "name": "Desmond Readwin",
+        "email": "gdread3@gmail.com"
+      },
+      {
+        "_id": "673ab72cc6ef58f5d1bf0974",
+        "name": "Mike Hunt",
+        "email": "mikehunt@test.com"
+      }
+    ],
+    "createdBy": "6709c2d8b011d617133190ae",
+    "createdAt": "2024-10-28T13:00:00.000Z"
   },
   {
     "_id": {"$oid": "671ac51d0a8c26c8598c6d03"},
@@ -24,7 +60,25 @@
     "end": "2024-10-30T11:00",
     "description": "Initial onboarding meeting with TechCorp team to discuss implementation timeline",
     "meetingLink": "https://teams.microsoft.com/l/meetup-join/techcorp-onboard-31%40thread.v2",
-    "participants": ["Emma T.", "John D.", "Maria G."]
+    "participants": [
+      {
+        "_id": "673ab740c6ef58f5d1bf0975",
+        "name": "Paul Jobs",
+        "email": "PaulJobs@test.com"
+      },
+      {
+        "_id": "673ab74dc6ef58f5d1bf0976",
+        "name": "Henry Fifth",
+        "email": "henryFifth@test.com"
+      },
+      {
+        "_id": "673ab761c6ef58f5d1bf0977",
+        "name": "Caleb Polsky",
+        "email": "CalebPolsky@test.com"
+      }
+    ],
+    "createdBy": "673ab740c6ef58f5d1bf0975",
+    "createdAt": "2024-10-30T09:30:00.000Z"
   },
   {
     "_id": {"$oid": "671ac51d0a8c26c8598c6d04"},
@@ -33,7 +87,25 @@
     "end": "2024-10-30T17:30",
     "description": "Collaborative workshop to finalize the new dashboard design",
     "meetingLink": "https://teams.microsoft.com/l/meetup-join/uiux-workshop-44%40thread.v2",
-    "participants": ["Alex W.", "Nina P.", "Carlos R.", "Sophie M."]
+    "participants": [
+      {
+        "_id": "66ecad9e8a3f2ac1cf9c5e69",
+        "name": "Gigi Vu",
+        "email": "gigivu2804@gmail.com"
+      },
+      {
+        "_id": "673ab71bc6ef58f5d1bf0973",
+        "name": "Frank Bosse",
+        "email": "frankbosse@test.com"
+      },
+      {
+        "_id": "67398dcf16c5d3ed05ae1508",
+        "name": "baby cat",
+        "email": "baby@gmail.com"
+      }
+    ],
+    "createdBy": "66ecad9e8a3f2ac1cf9c5e69",
+    "createdAt": "2024-10-30T14:30:00.000Z"
   },
   {
     "_id": {"$oid": "671ac51d0a8c26c8598c6d05"},
@@ -42,7 +114,25 @@
     "end": "2024-11-01T11:30",
     "description": "Annual budget planning session with finance team",
     "meetingLink": "https://teams.microsoft.com/l/meetup-join/budget-fy25-52%40thread.v2",
-    "participants": ["Robert C.", "Amanda J.", "Hassan A."]
+    "participants": [
+      {
+        "_id": "66edf316e28a0a2b418a2914",
+        "name": "Dillan Ferster",
+        "email": "dillyferster@gmail.com"
+      },
+      {
+        "_id": "6723e03980f0bfe37458578f",
+        "name": "Desmond Readwin",
+        "email": "gdread3@gmail.com"
+      },
+      {
+        "_id": "673ab74dc6ef58f5d1bf0976",
+        "name": "Henry Fifth",
+        "email": "henryFifth@test.com"
+      }
+    ],
+    "createdBy": "66edf316e28a0a2b418a2914",
+    "createdAt": "2024-11-01T09:00:00.000Z"
   },
   {
     "_id": {"$oid": "671ac51d0a8c26c8598c6d06"},
@@ -51,7 +141,25 @@
     "end": "2024-11-01T14:30",
     "description": "Regular team sync to discuss ongoing projects and blockers",
     "meetingLink": "https://teams.microsoft.com/l/meetup-join/team-sync-61%40thread.v2",
-    "participants": ["Tom W.", "Sarah P.", "Raj M.", "Lucy C."]
+    "participants": [
+      {
+        "_id": "67096afe0de38ea01b0c9422",
+        "name": "Test Account",
+        "email": "test@test.com"
+      },
+      {
+        "_id": "673ab72cc6ef58f5d1bf0974",
+        "name": "Mike Hunt",
+        "email": "mikehunt@test.com"
+      },
+      {
+        "_id": "673ab761c6ef58f5d1bf0977",
+        "name": "Caleb Polsky",
+        "email": "CalebPolsky@test.com"
+      }
+    ],
+    "createdBy": "67096afe0de38ea01b0c9422",
+    "createdAt": "2024-11-01T13:00:00.000Z"
   },
   {
     "_id": {"$oid": "671ac51d0a8c26c8598c6d07"},
@@ -60,7 +168,25 @@
     "end": "2024-11-04T10:00",
     "description": "Coordination meeting for November product launch",
     "meetingLink": "https://teams.microsoft.com/l/meetup-join/prod-launch-73%40thread.v2",
-    "participants": ["Michelle L.", "Brian T.", "Priya S.", "Kevin O."]
+    "participants": [
+      {
+        "_id": "6709c2d8b011d617133190ae",
+        "name": "hermela yimer",
+        "email": "heru@gmail.com"
+      },
+      {
+        "_id": "673ab71bc6ef58f5d1bf0973",
+        "name": "Frank Bosse",
+        "email": "frankbosse@test.com"
+      },
+      {
+        "_id": "673ab740c6ef58f5d1bf0975",
+        "name": "Paul Jobs",
+        "email": "PaulJobs@test.com"
+      }
+    ],
+    "createdBy": "6709c2d8b011d617133190ae",
+    "createdAt": "2024-11-04T08:00:00.000Z"
   },
   {
     "_id": {"$oid": "671ac51d0a8c26c8598c6d08"},
@@ -69,7 +195,25 @@
     "end": "2024-11-04T16:30",
     "description": "Monthly security compliance and audit review",
     "meetingLink": "https://teams.microsoft.com/l/meetup-join/security-audit-82%40thread.v2",
-    "participants": ["Frank R.", "Diana W.", "Samuel J."]
+    "participants": [
+      {
+        "_id": "66ecad9e8a3f2ac1cf9c5e69",
+        "name": "Gigi Vu",
+        "email": "gigivu2804@gmail.com"
+      },
+      {
+        "_id": "67398dcf16c5d3ed05ae1508",
+        "name": "baby cat",
+        "email": "baby@gmail.com"
+      },
+      {
+        "_id": "673ab761c6ef58f5d1bf0977",
+        "name": "Caleb Polsky",
+        "email": "CalebPolsky@test.com"
+      }
+    ],
+    "createdBy": "66ecad9e8a3f2ac1cf9c5e69",
+    "createdAt": "2024-11-04T14:30:00.000Z"
   },
   {
     "_id": {"$oid": "671ac51d0a8c26c8598c6d09"},
@@ -78,7 +222,25 @@
     "end": "2024-11-06T12:00",
     "description": "Monthly customer feedback review and action items planning",
     "meetingLink": "https://teams.microsoft.com/l/meetup-join/cust-feedback-91%40thread.v2",
-    "participants": ["Lisa C.", "Mark T.", "Aisha K.", "Jordan S."]
+    "participants": [
+      {
+        "_id": "66edf316e28a0a2b418a2914",
+        "name": "Dillan Ferster",
+        "email": "dillyferster@gmail.com"
+      },
+      {
+        "_id": "673ab71bc6ef58f5d1bf0973",
+        "name": "Frank Bosse",
+        "email": "frankbosse@test.com"
+      },
+      {
+        "_id": "673ab74dc6ef58f5d1bf0976",
+        "name": "Henry Fifth",
+        "email": "henryFifth@test.com"
+      }
+    ],
+    "createdBy": "66edf316e28a0a2b418a2914",
+    "createdAt": "2024-11-06T10:00:00.000Z"
   },
   {
     "_id": {"$oid": "671ac51d0a8c26c8598c6d10"},
@@ -87,6 +249,24 @@
     "end": "2024-11-06T15:30",
     "description": "Technical planning session for cloud migration project",
     "meetingLink": "https://teams.microsoft.com/l/meetup-join/infra-migrate-103%40thread.v2",
-    "participants": ["Derek C.", "Maya P.", "Chris W.", "Anna K."]
+    "participants": [
+      {
+        "_id": "67096afe0de38ea01b0c9422",
+        "name": "Test Account",
+        "email": "test@test.com"
+      },
+      {
+        "_id": "6723e03980f0bfe37458578f",
+        "name": "Desmond Readwin",
+        "email": "gdread3@gmail.com"
+      },
+      {
+        "_id": "673ab72cc6ef58f5d1bf0974",
+        "name": "Mike Hunt",
+        "email": "mikehunt@test.com"
+      }
+    ],
+    "createdBy": "67096afe0de38ea01b0c9422",
+    "createdAt": "2024-11-06T13:00:00.000Z"
   }
 ]
