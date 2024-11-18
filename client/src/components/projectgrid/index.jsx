@@ -34,7 +34,6 @@ const ProjectGrid = ({
 
   const gridTheme = {
     "--ag-background-color": colors.primary[400],
-    // "--ag-header-background-color": colors.greenAccent[500],
     "--ag-odd-row-background-color": colors.primary[300],
     "--ag-row-hover-color": colors.primary[200],
     // // Text colors
