@@ -38,6 +38,9 @@ const Column = ({
   handleButtonComplete,
   setIsDeleteModalOpen,
 }) => {
+  const theme = useTheme();
+  const colors = tokens(theme.palette.mode);
+
   const [active, setActive] = useState(false);
   const [dropIndicatorY, setDropIndicatorY] = useState(null);
 
@@ -177,7 +180,10 @@ const Column = ({
 
   return (
     <div className="w-56 shrink-0 h-screen">
-      <div className="mb-3 flex items-center gap-2 border-b sticky top-0 z-[10] backdrop-blur-lg border-neutral-700">
+      <div
+        className="mb-3 flex items-center gap-2 border-b sticky top-0 z-[10] backdrop-blur-xl border-neutral-700 p-2"
+        // style={{ background: colors.primary[300] }}
+      >
         <span className="rounded text-sm text-neutral-400">
           {filteredCards.length}
         </span>
@@ -185,7 +191,7 @@ const Column = ({
       </div>
       <div
         className={`h-full w-full transition-colors rounded-md relative  ${
-          active ? "bg-neutral-800/50" : ""
+          active ? "bg-neutral-500/20" : ""
         }`}
         onDragOver={handleDragOver}
         onDragLeave={handleDragLeave}
@@ -194,7 +200,7 @@ const Column = ({
         {/* Drop indicator line */}
         {dropIndicatorY !== null && (
           <div
-            className="absolute w-full h-1 bg-violet-300/80 rounded-full transform -translate-y-1/2 pointer-events-none"
+            className="absolute w-full h-1 bg-violet-400/80 rounded-full transform -translate-y-1/2 pointer-events-none"
             style={{ top: `${dropIndicatorY}px` }}
           />
         )}
@@ -224,7 +230,7 @@ const DeleteModal = ({ isOpen, onClose, handleButtonDelete }) => {
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-20 flex items-center justify-center backdrop-blur-sm z-[100] transition-all duration-300 translate-x-[5rem]">
-      <div className="bg-neutral-800 p-6 rounded-lg shadow-lg border border-neutral-700">
+      <div className="bg-neutral-300 p-6 rounded-lg shadow-lg border border-neutral-700">
         <h3 className="text-lg font-medium text-white mb-4">Confirm Delete</h3>
         <p className="text-neutral-300 mb-6">
           Are you sure you want to delete this task?
@@ -353,9 +359,11 @@ const Card = ({
         }
       >
         <div className="flex justify-between border-b border-neutral-500">
-          <p className="text-sm text-neutral-400 ">{taskName}</p>
+          <p className="text-sm  " style={{ color: `${colors.primary[200]}` }}>
+            {taskName}
+          </p>
           <button
-            className="text-neutral-400 hover:text-red-500 "
+            className=" hover:text-red-500 "
             onClick={(e) =>
               handleDelete(e, {
                 _id,
@@ -382,7 +390,9 @@ const Card = ({
           </button>
         </div>
 
-        <p className="text-sm text-neutral-400">{taskDesc}</p>
+        <p className="text-sm " style={{ color: `${colors.primary[200]}` }}>
+          {taskDesc}
+        </p>
         <div className="flex justify-between">
           {" "}
           <p
@@ -396,7 +406,13 @@ const Card = ({
           >
             {priority}
           </p>
-          <p className="text-sm text-neutral-400 rounded-lg px-1 bg-neutral-700/80">
+          <p
+            className="text-sm  rounded-lg px-1 "
+            style={{
+              color: `${colors.primary[100]}`,
+              background: `${colors.primary[400]}`,
+            }}
+          >
             {assignedTo}
           </p>
         </div>

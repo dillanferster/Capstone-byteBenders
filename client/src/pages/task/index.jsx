@@ -751,7 +751,13 @@ const TaskPage = () => {
         <Header title="TASKS" subtitle="Welcome to your dashboard" />
       </div>
       <div className="flex justify-end">
-        <div className="flex border w-[8rem] mb-[1rem] py-[.3rem] rounded-md text-white justify-around transition-all duration-100 ">
+        <div
+          className="flex w-[8rem] mb-[1rem] p-1 rounded-md justify-around transition-all duration-100 "
+          style={{
+            border: `1px solid ${colors.primary[100]}`,
+            color: `${colors.primary[100]}`,
+          }}
+        >
           <button
             className={`p-1 rounded-md w-[3rem] transition-all duration-100 ${
               currentView === "list" ? "bg-[#3E4396]" : ""
