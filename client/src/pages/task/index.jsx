@@ -704,6 +704,57 @@ const TaskPage = () => {
     setSelectedTask([]);
   };
 
+  const handleOpenGanttViewMenu = (gantttask) => {
+    // Log the task to see its structure
+    console.log("Task received in handleOpenGanttViewMenu:", gantttask);
+
+    // Check if task is defined and has the expected properties
+    if (!gantttask || !gantttask.id) {
+      console.error("Invalid task object:", gantttask);
+      return; // Exit the function if task is invalid
+    }
+
+    // Proceed with finding the project
+    const task = tasks.find((t) => t._id === gantttask.id);
+    console.log("task", task);
+
+    const mappedTask = tasks.map((t) => ({
+      taskStatus: t.taskStatus,
+      priority: t.priority,
+      taskCategory: t.taskCategory,
+      startDate: t.startDate,
+      dueDate: t.dueDate,
+      projectTask: t.projectTask,
+      projectStatus: t.projectStatus,
+      addChronicles: t.addChronicles,
+      taskDesc: t.taskDesc,
+      attachments: t.attachments,
+      startTime: t.startTime,
+      completeTime: t.completeTime,
+      totalTime: t.totalTime,
+      dependencies: t.dependencies,
+      chroniclesComplete: t.chroniclesComplete,
+      projectId: t.projectId,
+      pauseTime: t.pauseTime,
+      id: t._id,
+      taskName: t.taskName,
+      assignedTo: t.assignedTo,
+    }));
+    console.log("mappedTask", mappedTask);
+    const moreMappedTask = mappedTask.filter((t) => t.id === gantttask.id);
+    console.log("moreMappedTask", moreMappedTask);
+
+    if (moreMappedTask) {
+      setSelectedTask(moreMappedTask);
+      console.log("selected Task", moreMappedTask);
+      setViewClicked(!viewClicked);
+      console.log("set view to", viewClicked);
+      toggleForm();
+    } else {
+      console.error("Project not found for task:", task);
+    }
+  };
+
   // loads all projects from database into list
   // When app component renders loadAllProjects() is called asynchronously
   // so the rest on the program can still run when the function logic is being executed and returned some time in future
@@ -750,41 +801,54 @@ const TaskPage = () => {
       <div display="flex" justifyContent="space-between" alignItems="center">
         <Header title="TASKS" subtitle="Welcome to your dashboard" />
       </div>
-      <div className="flex justify-end">
-        <div
-          className="flex w-[8rem] mb-[1rem] p-1 rounded-md justify-around transition-all duration-100 "
-          style={{
-            border: `1px solid ${colors.primary[100]}`,
-            color: `${colors.primary[100]}`,
-          }}
+      <div className=" pb-[1rem] flex justify-between   w-full">
+        {" "}
+        <Button
+          variant="contained"
+          color="secondary"
+          onClick={() => handleButtonAdd()}
         >
-          <button
-            className={`p-1 rounded-md w-[3rem] transition-all duration-100`}
+          Add Task
+        </Button>
+        <div className="flex mx-1">
+          <div
+            className="flex w-[8rem] p-1 rounded-md justify-around transition-all duration-100 "
             style={{
-              background: currentView === "list" ? colors.blueAccent[700] : "",
+              border: `1px solid ${colors.primary[100]}`,
+              color: `${colors.primary[100]}`,
             }}
-            onClick={handleListClick}
           >
-            List
-          </button>
-          <button
-            className={`p-1 rounded-md w-[3rem] transition-all duration-100 `}
-            style={{
-              background: currentView === "board" ? colors.blueAccent[700] : "",
-            }}
-            onClick={handleBoardClick}
-          >
-            Board
-          </button>
-          <button
-            className={`p-1 rounded-md w-[3rem] transition-all duration-100 `}
-            style={{
-              background: currentView === "gantt" ? colors.blueAccent[700] : "",
-            }}
-            onClick={handleGanttClick}
-          >
-            Gantt
-          </button>
+            <button
+              className={`p-1 rounded-md w-[3rem] transition-all duration-100`}
+              style={{
+                background:
+                  currentView === "list" ? colors.blueAccent[700] : "",
+              }}
+              onClick={handleListClick}
+            >
+              List
+            </button>
+            <button
+              className={`p-1 rounded-md w-[3rem] transition-all duration-100 `}
+              style={{
+                background:
+                  currentView === "board" ? colors.blueAccent[700] : "",
+              }}
+              onClick={handleBoardClick}
+            >
+              Board
+            </button>
+            <button
+              className={`p-1 rounded-md w-[3rem] transition-all duration-100 `}
+              style={{
+                background:
+                  currentView === "gantt" ? colors.blueAccent[700] : "",
+              }}
+              onClick={handleGanttClick}
+            >
+              Gantt
+            </button>
+          </div>
         </div>
       </div>
 
@@ -792,16 +856,6 @@ const TaskPage = () => {
         <>
           <div className=" pb-[1rem] flex justify-between w-full ">
             <div className="flex gap-8">
-              <div>
-                <Button
-                  variant="contained"
-                  color="success"
-                  onClick={() => handleButtonAdd()}
-                >
-                  Add Task
-                </Button>
-              </div>
-
               <div className="flex gap-4">
                 {selectedTask.length === 1 &&
                   selectedTask[0].taskStatus === "Not Started" && (
@@ -948,15 +1002,6 @@ const TaskPage = () => {
       )}
       {currentView === "board" && (
         <>
-          <div>
-            <Button
-              variant="contained"
-              color="success"
-              onClick={() => handleButtonAdd()}
-            >
-              Add Task
-            </Button>
-          </div>
           <TaskBoard
             reloadTaskBoard={reloadTaskBoard}
             setIsOpen={setIsOpen}
@@ -990,16 +1035,29 @@ const TaskPage = () => {
       )}
       {currentView === "gantt" && (
         <>
-          <div>
-            <Button
-              variant="contained"
-              color="success"
-              onClick={() => handleButtonAdd()}
-            >
-              Add Task
-            </Button>
-          </div>
-          <ProjectGantt tasks={tasks} />
+          <ProjectGantt
+            projects={projects}
+            tasks={tasks}
+            onTaskDoubleClick={handleOpenGanttViewMenu}
+          />
+          <TaskEditMenu
+            isOpen={isOpen}
+            setIsOpen={setIsOpen}
+            toggleForm={toggleForm}
+            selectedTask={selectedTask}
+            updateTask={updateTask}
+            createTask={createTask}
+            viewClicked={viewClicked}
+            setViewClicked={setViewClicked}
+            addClicked={addClicked}
+            setAddClicked={setAddClicked}
+            editClicked={editClicked}
+            setEditClicked={setEditClicked}
+            reloadTheGrid={reloadTheGrid}
+            projects={projects}
+            tasks={tasks}
+            addTaskToProject={addTaskToProject}
+          ></TaskEditMenu>
         </>
       )}
     </div>

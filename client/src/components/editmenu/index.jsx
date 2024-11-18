@@ -54,17 +54,17 @@ export default function EditMenu({
   // dependencies : selectedProject
   useEffect(() => {
     if (selectedProject.length > 0) {
-      setProjectId(selectedProject[0].id);
-      setProjectName(selectedProject[0].projectName);
-      setDateCreated(selectedProject[0].dateCreated);
-      setCaseId(selectedProject[0].caseId);
-      setDataClassification(selectedProject[0].dataClassification);
-      setAssignedTo(selectedProject[0].assignedTo);
-      setProjectStatus(selectedProject[0].projectStatus);
-      setQuickBaseLink(selectedProject[0].quickBaseLink);
-      setProjectDescription(selectedProject[0].projectDesc);
-
-      console.log("set project defaults");
+      const project = selectedProject[0];
+      setProjectId(project.id);
+      setProjectName(project.projectName);
+      setDateCreated(project.dateCreated);
+      setCaseId(project.caseId);
+      setDataClassification(project.dataClassification);
+      setAssignedTo(project.assignedTo);
+      setProjectStatus(project.projectStatus);
+      setQuickBaseLink(project.quickBaseLink);
+      setProjectDescription(project.projectDesc);
+      console.log("set project defaults: ");
     } else {
       clearAddInputs();
     }

@@ -37,7 +37,9 @@ import ProjectGrid from "../../components/projectgrid/index.jsx";
 import EditMenu from "../../components/editmenu/index.jsx";
 import ProjectGantt from "../../components/GanttChart/ProjectGantt.jsx";
 import { useSocket } from "../../contexts/SocketContext";
-
+import { useTheme } from "@mui/material/styles";
+import { tokens } from "../../theme";
+import TaskEditMenu from "../../components/taskeditmenu/index.jsx";
 // columns for AG grid
 // field: corresponds to a row with a matching property ex. field: id in column matches to id: in rows
 // headerName: column display name
@@ -133,8 +135,9 @@ const ProjectPage = () => {
   const [editClicked, setEditClicked] = useState(false); // for add button
   const [deleteOpen, setDeleteOpen] = useState(false); // for dlt btn
   const [showGantt, setShowGantt] = useState(false); // Add this new state
-  const socket = useSocket();
-
+  // const socket = useSocket();
+  const theme = useTheme();
+  const colors = tokens(theme.palette.mode);
   //*
 
   // projects object array from the database
@@ -215,9 +218,9 @@ const ProjectPage = () => {
     setAddClicked(!addClicked);
     setSelectedProject("");
     toggleForm();
-    socket.emit("projectNotification", {
-      message: `New project was created`,
-    });
+    // socket.emit("projectNotification", {
+    //   message: `New project was created`,
+    // });
   }
 
   // function handles edit button
@@ -225,9 +228,9 @@ const ProjectPage = () => {
   function handleButtonEdit() {
     setEditClicked(!editClicked);
     toggleForm();
-    socket.emit("projectNotification", {
-      message: `Project was edited`,
-    });
+    // socket.emit("projectNotification", {
+    //   message: `Project was edited`,
+    // });
   }
 
   const reloadTheGrid = () => {
@@ -253,9 +256,9 @@ const ProjectPage = () => {
         if (response.status === 200) {
           console.log("deleted project with id:", project.id);
           reloadTheGrid();
-          socket.emit("projectNotification", {
-            message: `Project was deleted`,
-          });
+          // socket.emit("projectNotification", {
+          //   message: `Project was deleted`,
+          // });
         }
       });
     });
@@ -274,7 +277,6 @@ const ProjectPage = () => {
   const handleOnSelectionChanged = (event) => {
     let checkedRows = event.api.getSelectedRows();
     console.log("selected row", checkedRows);
-
     setSelectedProject(checkedRows);
   };
 
@@ -307,6 +309,54 @@ const ProjectPage = () => {
     loadAllTasks();
   }, [reloadGrid]);
 
+  const handleOpenGanttViewMenu = (task) => {
+    // Log the task to see its structure
+    console.log("Task received in handleOpenGanttViewMenu:", task);
+
+    // Check if task is defined and has the expected properties
+    if (!task || !task.id) {
+      console.error("Invalid task object:", task);
+      return; // Exit the function if task is invalid
+    }
+
+    // Proceed with finding the project
+    const project = projects.find((p) => p._id === task.id);
+    console.log("project", project);
+
+    const mappedProject = projects.map((p) => ({
+      id: p._id,
+      projectName: p.projectName,
+      caseId: p.caseId,
+      dataClassification: p.dataClassification,
+      assignedTo: p.assignedTo,
+      dateCreated: p.dateCreated,
+      projectStatus: p.projectStatus,
+      quickBaseLink: p.quickBaseLink,
+      projectDesc: p.projectDesc,
+    }));
+    console.log("mappedProject", mappedProject);
+    const moreMappedProject = mappedProject.filter((p) => p.id === task.id);
+    console.log("moreMappedProject", moreMappedProject);
+
+    if (moreMappedProject) {
+      setSelectedProject(moreMappedProject);
+      console.log("selected Project", moreMappedProject);
+      setViewClicked(!viewClicked);
+      console.log("set view to", viewClicked);
+      toggleForm();
+    } else {
+      console.error("Project not found for task:", task);
+    }
+  };
+
+  // const handleTaskDateChange = (task) => {
+  //   console.log("Task date changed:", task);
+  //   // Update the tasks state with the new task data
+  //   const updatedTasks = tasks.map((t) => (t.id === task.id ? task : t));
+  //   setProjects(updatedTasks);
+  //   updateProject(task.project, projects);
+  // };
+
   return (
     <div className="p-5">
       <div display="flex" justifyContent="space-between" alignItems="center">
@@ -316,17 +366,17 @@ const ProjectPage = () => {
         <div className="flex gap-4">
           <Button
             variant="contained"
-            color="success"
+            color="secondary"
             onClick={() => handleButtonAdd()}
           >
             Add project
           </Button>
           <Button
             variant="outlined"
-            color="success"
+            color="inherit"
             onClick={() => setShowGantt(!showGantt)}
           >
-            {showGantt ? "Show Table View" : "Show Gantt View"}
+            {showGantt ? "Show List View" : "Show Gantt View"}
           </Button>
         </div>
         <div className="flex gap-4">
@@ -425,7 +475,24 @@ const ProjectPage = () => {
           <ProjectGantt
             projects={projects}
             tasks={tasks}
+            // onTaskDateChange={handleTaskDateChange}
+            onTaskDoubleClick={handleOpenGanttViewMenu}
             // style={{ height: "80vh", overflow: "auto" }}
+          />
+          <EditMenu
+            isOpen={isOpen}
+            setIsOpen={setIsOpen}
+            toggleForm={toggleForm}
+            selectedProject={selectedProject}
+            updateProject={updateProject}
+            createProject={createProject}
+            viewClicked={viewClicked}
+            setViewClicked={setViewClicked}
+            addClicked={addClicked}
+            setAddClicked={setAddClicked}
+            editClicked={editClicked}
+            setEditClicked={setEditClicked}
+            reloadTheGrid={reloadTheGrid}
           />
         </>
       )}
