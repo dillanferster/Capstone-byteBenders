@@ -231,7 +231,7 @@ taskRoutes
 taskRoutes
   .route("/tasks/:id/status")
   .put(verifyToken, async (request, response) => {
-    console.log("inside of task status");
+    // console.log("inside of task status");
     let db = database.getDb();
     let mongoObject = {
       $set: { taskStatus: request.body.taskStatus },
@@ -257,24 +257,23 @@ taskRoutes
     response.json(data);
   });
 
-//notification route
-taskRoutes.route("/tasks").post(verifyToken, async (req, res) => {
-  let db = database.getDb();
-  let mongoObject = {
-    taskName: req.body.taskName,
-    assignedTo: req.body.assignedTo,
-    // Add other fields here
-  };
-  let data = await db.collection("tasks").insertOne(mongoObject);
+// //notification route
+// taskRoutes.route("/tasks").post(verifyToken, async (req, res) => {
+//   let db = database.getDb();
+//   let mongoObject = {
+//     taskName: req.body.taskName,
+//     assignedTo: req.body.assignedTo,
+//     // Add other fields here
+//   };
+//   let data = await db.collection("tasks").insertOne(mongoObject);
 
-  // Emit a notification to all connected users
-  req.io.emit("taskCreated", {
-    message: `New task created: ${mongoObject.taskName}`,
-    task: mongoObject,
-  });
+//   // Emit a notification to all connected users
+//   req.io.emit("taskCreated", {
+//     message: `New task created: ${mongoObject.taskName}`,
+//     task: mongoObject,
+//   });
 
-  res.json(data);
-});
-
+//   res.json(data);
+// });
 
 module.exports = taskRoutes;
