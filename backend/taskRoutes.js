@@ -86,7 +86,7 @@ taskRoutes.route("/tasks").post(verifyToken, async (request, response) => {
   let db = database.getDb();
   let mongoObject = {
     assignedTo: request.body.assignedTo,
-    projectId: request.body.projectId,
+    // projectId: request.body.projectId,
     taskName: request.body.taskName,
     taskStatus: request.body.taskStatus,
     priority: request.body.priority,
@@ -120,7 +120,7 @@ taskRoutes.route("/tasks/:id").put(verifyToken, async (request, response) => {
   let mongoObject = {
     $set: {
       assignedTo: request.body.assignedTo,
-      projectId: request.body.projectId,
+      // projectId: request.body.projectId,
       taskName: request.body.taskName,
       taskStatus: request.body.taskStatus,
       priority: request.body.priority,
