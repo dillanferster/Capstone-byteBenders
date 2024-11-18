@@ -11,7 +11,14 @@ const mapTasksToProjects = (projects, tasks) => {
   return projects.map((project) => {
     // Ensure TaskIdForProject is defined and is an array
     const taskIds = project.TaskIdForProject || [];
-
+    const projectProgress =
+      project.projectStatus === "Completed"
+        ? 100
+        : project.projectStatus === "In Progress"
+        ? 50
+        : project.projectStatus === "Paused"
+        ? 25
+        : 0;
     // Create the project object for Gantt chart
     const ganttProject = {
       start: new Date(project.dateCreated),
@@ -22,14 +29,7 @@ const mapTasksToProjects = (projects, tasks) => {
       ), // 14 days from start date
       name: project.projectName,
       id: project._id, // Assuming _id is a string
-      progress:
-        project.projectStatus === "Completed"
-          ? 100
-          : project.projectStatus === "In Progress"
-          ? 50
-          : project.projectStatus === "Paused"
-          ? 25
-          : 0,
+      progress: projectProgress,
       type: "project",
       hideChildren: false,
     };
@@ -67,18 +67,18 @@ const mapTasksToProjects = (projects, tasks) => {
       });
 
     // Check if there are no tasks and add a placeholder task
-    if (projectTasks.length === 0) {
-      projectTasks.push({
-        start: ganttProject.start,
-        end: ganttProject.start,
-        name: "No task in project", // Placeholder message
-        id: `${ganttProject.id}-no-tasks`, // Unique ID for the placeholder
-        progress: 0,
-        type: "task",
-        dependencies: [],
-        project: ganttProject.id, // Reference to the project id
-      });
-    }
+    // if (projectTasks.length === 0) {
+    //   projectTasks.push({
+    //     start: ganttProject.start,
+    //     end: ganttProject.start,
+    //     name: "No task in project", // Placeholder message
+    //     id: `${ganttProject.id}-no-tasks`, // Unique ID for the placeholder
+    //     progress: 0,
+    //     type: "task",
+    //     dependencies: [],
+    //     project: ganttProject.id, // Reference to the project id
+    //   });
+    // }
 
     return { ganttProject, projectTasks };
   });

@@ -126,15 +126,22 @@ const Dashboard = () => {
 
         // Calculate average task time
         let totalTaskTime = 0;
+        let nonValidTasks = 0;
         dataTasks.map((task) => {
           // Extract only the number from strings like "Minutes: 35"
-          const minutes = parseInt(task.totalTime.split(": ")[1]);
-          if (!isNaN(minutes)) {
-            // Make sure we got a valid number
-            totalTaskTime += minutes;
+          if (task.totalTime !== undefined) {
+            const minutes = parseFloat(task.totalTime.split(": ")[1]);
+            if (!isNaN(minutes)) {
+              // Make sure we got a valid number
+              totalTaskTime += minutes;
+            }
+          } else {
+            nonValidTasks++;
           }
         });
-        setAvgTimeTask(Math.round(totalTaskTime / dataTasks.length));
+        setAvgTimeTask(
+          Math.round(totalTaskTime / (dataTasks.length - nonValidTasks))
+        );
       }
     }
 
