@@ -18,7 +18,7 @@ export const tokens = (mode) => ({
         },
         primary: {
           100: "#d0d1d5",
-          200: "#a1a4ab",
+          200: "#4B5674 ",
           300: "#2B3754",
           400: "#1F2A40",
           500: "#141b2d",
@@ -75,8 +75,8 @@ export const tokens = (mode) => ({
         },
         primary: {
           100: "#1F2A40", // Darkest blue-grey
-          200: "#2F3B54", // Dark blue-grey
-          300: "#404B64", // Medium dark blue-grey
+          200: "#C8CDD4 ", // Dark blue-grey
+          300: "#D8DDE4 ", // Medium dark blue-grey
           400: "#E8EDF4", // Medium blue-grey
           500: "#D5DCE8", // Light medium blue-grey
           600: "#D5DCE8", // Light blue-grey

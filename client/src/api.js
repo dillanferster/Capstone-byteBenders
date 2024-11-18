@@ -435,6 +435,24 @@ export async function verifyUser(user) {
     throw new Error(response.statusText);
   }
 }
+
+// search users
+export async function searchUsers(query) {
+  try {
+    const token = sessionStorage.getItem("User");
+    const response = await axios.get(`${URL}/users/search`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+      params: { query: query },
+    });
+    return response.data;
+  } catch (error) {
+    console.error("Error searching users:", error);
+    throw error;
+  }
+}
+
 ///USER///
 
 ///NOTES///
@@ -757,6 +775,23 @@ export async function getCalendarEventsByParticipant(email) {
     throw error;
   }
 }
+
+// gets current user
+export async function getCurrentUser() {
+  try {
+    const token = sessionStorage.getItem("User"); // Retrieve the token
+    const response = await axios.get(`${URL}/users/current`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching current user:", error);
+    throw error;
+  }
+}
+
 ///^CALENDAR^///
 
 /**

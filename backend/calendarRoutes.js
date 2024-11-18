@@ -1,12 +1,43 @@
+/**
+ * Calendar Events API
+ *
+ * This module provides routes for managing calendar events in a Node.js/Express application using MongoDB.
+ * It handles CRUD operations for events and manages participant data.
+ *
+ * Author: Gigi Vu
+ *
+ * Dependencies:
+ * - `express`: Framework for handling HTTP requests
+ * - `mongodb`: MongoDB client for database operations
+ * - `jsonwebtoken`: For token verification through middleware
+ *
+ * Routes:
+ * 1. GET `/events`
+ *    - Retrieves all events where the authenticated user is a participant
+ * 2. GET `/events/:id`
+ *    - Retrieves a specific event by ID
+ * 3. POST `/events`
+ *    - Creates a new event with the authenticated user as creator
+ * 4. PUT `/events/:id`
+ *    - Updates an existing event
+ * 5. DELETE `/events/:id`
+ *    - Deletes an event
+ *
+ * @module calendarRoutes
+ */
+
 const express = require("express");
 const database = require("./connect");
 const { verifyToken } = require("./middleware/auth");
 require("dotenv").config({ path: "./.env" });
-
-let calendarRoutes = express.Router();
 const ObjectId = require("mongodb").ObjectId;
 
-// Read all events / GET - Modified to only get user's events
+let calendarRoutes = express.Router();
+
+/**
+ * GET /events
+ * Retrieves all events where the current user is a participant.
+ */
 calendarRoutes.route("/events").get(verifyToken, async (request, response) => {
   let db = database.getDb();
   try {
@@ -15,7 +46,9 @@ calendarRoutes.route("/events").get(verifyToken, async (request, response) => {
 
     let data = await db
       .collection("calendar")
-      .find({ assignedTo: userId })
+      .find({
+        "participants._id": userId,
+      })
       .toArray();
 
     response.json(data || []);
@@ -24,7 +57,10 @@ calendarRoutes.route("/events").get(verifyToken, async (request, response) => {
   }
 });
 
-// Read one event / GET
+/**
+ * GET /events/:id
+ * Retrieves a specific event by ID.
+ */
 calendarRoutes
   .route("/events/:id")
   .get(verifyToken, async (request, response) => {
@@ -33,44 +69,77 @@ calendarRoutes
       let data = await db
         .collection("calendar")
         .findOne({ _id: new ObjectId(request.params.id) });
-      if (data) {
-        response.json(data);
-      } else {
-        response.status(404).json({ error: "Event not found" });
+
+      if (!data) {
+        return response.status(404).json({ error: "Event not found" });
       }
+      response.json(data);
     } catch (error) {
       response.status(500).json({ error: "Failed to fetch event" });
     }
   });
 
-// Create event / POST - Modified to include assignedTo
+/**
+ * POST /events
+ * Creates a new event with the current user as creator and first participant.
+ */
 calendarRoutes.route("/events").post(verifyToken, async (request, response) => {
   let db = database.getDb();
   try {
+    const creator = {
+      _id: request.body.user._id,
+      fname: request.body.user.fname,
+      lname: request.body.user.lname,
+      email: request.body.user.email,
+    };
+
+    // Ensure creator is first in participants list
+    const participants = request.body.participants || [];
+    if (!participants.some((p) => p._id === creator._id)) {
+      participants.unshift(creator);
+    }
+
     let eventObject = {
       title: request.body.title,
       start: request.body.start,
       end: request.body.end,
       description: request.body.description,
       meetingLink: request.body.meetingLink,
-      participants: request.body.participants,
-      assignedTo: request.body.user._id, // Add user ID from token
+      participants: participants,
+      createdBy: creator._id,
+      createdAt: new Date(),
     };
 
     let data = await db.collection("calendar").insertOne(eventObject);
     response.json(data);
   } catch (error) {
-    console.log("IN CATCH BLOCK: ", error);
+    console.error("Error creating event:", error);
     response.status(500).json({ error: "Failed to create event" });
   }
 });
 
-// Update event / PUT
+/**
+ * PUT /events/:id
+ * Updates an existing event while maintaining the creator in participants.
+ */
 calendarRoutes
   .route("/events/:id")
   .put(verifyToken, async (request, response) => {
     let db = database.getDb();
     try {
+      const creator = {
+        _id: request.body.user._id,
+        fname: request.body.user.fname,
+        lname: request.body.user.lname,
+        email: request.body.user.email,
+      };
+
+      // Ensure creator stays in participants list
+      const participants = request.body.participants || [];
+      if (!participants.some((p) => p._id === creator._id)) {
+        participants.unshift(creator);
+      }
+
       let eventObject = {
         $set: {
           title: request.body.title,
@@ -78,26 +147,28 @@ calendarRoutes
           end: request.body.end,
           description: request.body.description,
           meetingLink: request.body.meetingLink,
-          participants: request.body.participants,
-          // lastModified: new Date(),
-          // modifiedBy: request.user.id, // Assuming user info is added by auth middleware
+          participants: participants,
+          updatedAt: new Date(),
         },
       };
+
       let data = await db
         .collection("calendar")
         .updateOne({ _id: new ObjectId(request.params.id) }, eventObject);
 
       if (data.matchedCount === 0) {
-        response.status(404).json({ error: "Event not found" });
-      } else {
-        response.json(data);
+        return response.status(404).json({ error: "Event not found" });
       }
+      response.json(data);
     } catch (error) {
       response.status(500).json({ error: "Failed to update event" });
     }
   });
 
-// Delete event / DELETE
+/**
+ * DELETE /events/:id
+ * Deletes an event by ID.
+ */
 calendarRoutes
   .route("/events/:id")
   .delete(verifyToken, async (request, response) => {
@@ -108,57 +179,11 @@ calendarRoutes
         .deleteOne({ _id: new ObjectId(request.params.id) });
 
       if (data.deletedCount === 0) {
-        response.status(404).json({ error: "Event not found" });
-      } else {
-        response.json(data);
+        return response.status(404).json({ error: "Event not found" });
       }
+      response.json(data);
     } catch (error) {
       response.status(500).json({ error: "Failed to delete event" });
-    }
-  });
-
-// Get events by date range / GET - Modified to include user filter
-calendarRoutes
-  .route("/events/range")
-  .get(verifyToken, async (request, response) => {
-    let db = database.getDb();
-    try {
-      const { start, end } = request.query;
-      const userId = request.body.user._id;
-
-      let data = await db
-        .collection("calendar")
-        .find({
-          assignedTo: userId,
-          start: { $gte: new Date(start) },
-          end: { $lte: new Date(end) },
-        })
-        .toArray();
-
-      response.json(data);
-    } catch (error) {
-      response
-        .status(500)
-        .json({ error: "Failed to fetch events by date range" });
-    }
-  });
-
-// Get events by participant / GET
-calendarRoutes
-  .route("/events/participant/:email")
-  .get(verifyToken, async (request, response) => {
-    let db = database.getDb();
-    try {
-      let data = await db
-        .collection("calendar")
-        .find({ participants: request.params.email })
-        .toArray();
-
-      response.json(data);
-    } catch (error) {
-      response
-        .status(500)
-        .json({ error: "Failed to fetch events by participant" });
     }
   });
 

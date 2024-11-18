@@ -135,7 +135,6 @@ const ProjectPage = () => {
   const [showGantt, setShowGantt] = useState(false); // Add this new state
   const socket = useSocket();
 
-
   //*
 
   // projects object array from the database

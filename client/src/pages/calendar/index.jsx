@@ -32,6 +32,7 @@ import {
   createCalendarEvent,
   updateCalendarEvent,
   deleteCalendarEvent,
+  getCurrentUser,
 } from "../../api";
 
 const Calendar = () => {
@@ -48,6 +49,25 @@ const Calendar = () => {
     message: "",
     severity: "success",
   });
+  const [currentUser, setCurrentUser] = useState(null);
+
+  // Fetch current user data
+  useEffect(() => {
+    const fetchUserData = async () => {
+      try {
+        const userData = await getCurrentUser();
+        setCurrentUser(userData);
+      } catch (error) {
+        console.error("Failed to fetch user data:", error);
+        showAlert("Failed to load user data", "error");
+      }
+    };
+
+    fetchUserData();
+  }, []);
+
+  // Log when passing to EventModal
+  console.log("Current user being passed to modal:", currentUser);
 
   // Fetch events from the backend
   const fetchEvents = async () => {
@@ -102,6 +122,59 @@ const Calendar = () => {
   const handleEventClick = (selected) => {
     setSelectedEvent(selected.event);
     setModalOpen(true);
+  };
+
+  const handleEventChange = async (changeInfo) => {
+    try {
+      const startStr = changeInfo.event.start
+        .toLocaleString("sv")
+        .replace(" ", "T");
+      const endStr = changeInfo.event.end
+        ? changeInfo.event.end.toLocaleString("sv").replace(" ", "T")
+        : new Date(changeInfo.event.start.getTime() + 60 * 60 * 1000)
+            .toLocaleString("sv")
+            .replace(" ", "T");
+
+      const updatedEvent = {
+        title: changeInfo.event.title,
+        start: startStr,
+        end: endStr,
+        description: changeInfo.event.extendedProps.description || "",
+        meetingLink: changeInfo.event.extendedProps.meetingLink || "",
+        participants: changeInfo.event.extendedProps.participants || [],
+      };
+
+      const response = await updateCalendarEvent(
+        changeInfo.event.id,
+        updatedEvent
+      );
+
+      if (!response || response.status !== 200) {
+        // If update fails, revert the change
+        changeInfo.revert();
+        throw new Error("Failed to update event");
+      }
+
+      // Update was successful, update local state
+      setCurrentEvents((prev) =>
+        prev.map((event) =>
+          event.id === changeInfo.event.id
+            ? {
+                ...event,
+                start: changeInfo.event.start,
+                end:
+                  changeInfo.event.end ||
+                  new Date(changeInfo.event.start.getTime() + 60 * 60 * 1000),
+              }
+            : event
+        )
+      );
+
+      showAlert("Event updated successfully");
+    } catch (error) {
+      showAlert("Failed to update event", "error");
+      // The changeInfo.revert() above will handle reverting the UI
+    }
   };
 
   const handleAddEvent = async (eventData) => {
@@ -354,6 +427,7 @@ const Calendar = () => {
               center: "title",
               right: "dayGridMonth,timeGridWeek,timeGridDay,listMonth",
             }}
+            timeZone="local"
             initialView="dayGridMonth"
             editable={true}
             selectable={true}
@@ -361,6 +435,7 @@ const Calendar = () => {
             dayMaxEvents={true}
             select={handleDateClick}
             eventClick={handleEventClick}
+            eventChange={handleEventChange}
             events={currentEvents}
           />
         </Box>
@@ -376,6 +451,7 @@ const Calendar = () => {
         defaultStart={defaultStart}
         defaultEnd={defaultEnd}
         selectedEvent={selectedEvent}
+        currentUser={currentUser}
       />
 
       {/* Alert Snackbar */}
