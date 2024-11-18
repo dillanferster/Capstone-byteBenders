@@ -53,7 +53,7 @@ export default function TaskEditMenu({
   const [errors, setErrors] = useState({});
 
   const theme = useTheme();
-  const colors = tokens(theme);
+  const colors = tokens(theme.palette.mode);
 
   //*
 
@@ -272,9 +272,14 @@ export default function TaskEditMenu({
         className={`fixed top-0 right-0 w-full max-w-2xl h-full text-gray-100 p-8 z-[10] shadow-xl transition-transform duration-300 ease-in-out transform overflow-y-scroll ${
           isOpen ? "translate-x-0" : "translate-x-full"
         }`}
-        style={{ backgroundColor: colors.primary[300], opacity: 0.98 }}
+        style={{ backgroundColor: colors.primary[400], opacity: 0.98 }}
       >
-        <h2 className="text-2xl font-bold mb-4 text-white">Task</h2>
+        <h2
+          className="text-2xl font-bold mb-4"
+          style={{ color: colors.grey[100] }}
+        >
+          Task
+        </h2>
 
         <form className="space-y-6">
           <div className="flex justify-between">
@@ -282,7 +287,8 @@ export default function TaskEditMenu({
             <div className="w-[18rem]">
               <label
                 htmlFor="taskId"
-                className="block text-sm font-medium mb-2 text-gray-300"
+                className="block text-sm font-medium mb-2"
+                style={{ color: colors.grey[300] }}
               >
                 Task ID
               </label>
@@ -290,7 +296,11 @@ export default function TaskEditMenu({
                 type="text"
                 id="taskName"
                 defaultValue={taskId}
-                className="w-full px-4 py-2 bg-gray-700 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full px-4 py-2 rounded-lg placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                style={{
+                  backgroundColor: colors.primary[300],
+                  color: colors.grey[200],
+                }}
                 disabled
                 placeholder={
                   addClicked ? "ID will be generated automatically" : ""
@@ -300,7 +310,8 @@ export default function TaskEditMenu({
             <div className="w-[18rem] ">
               <label
                 htmlFor="taskName"
-                className="block text-sm font-medium mb-2 text-gray-300"
+                className="block text-sm font-medium mb-2"
+                style={{ color: colors.grey[300] }}
               >
                 Task Name
               </label>
@@ -310,7 +321,11 @@ export default function TaskEditMenu({
                 id="taskName"
                 value={taskName}
                 onChange={(e) => setTaskName(e.target.value)}
-                className="w-full px-4 py-2 bg-gray-700 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full px-4 py-2 rounded-lg placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                style={{
+                  backgroundColor: colors.primary[300],
+                  color: colors.grey[200],
+                }}
                 disabled={viewClicked}
                 placeholder={addClicked ? "Add task name" : ""}
               />
@@ -325,7 +340,8 @@ export default function TaskEditMenu({
             <div className="w-[18rem]">
               <label
                 htmlFor="projectTask"
-                className="block text-sm font-medium mb-2 text-gray-300"
+                className="block text-sm font-medium mb-2"
+                style={{ color: colors.grey[300] }}
               >
                 Project
               </label>
@@ -333,7 +349,11 @@ export default function TaskEditMenu({
                 id="projectTask"
                 value={projectTask}
                 onChange={(e) => setProjectTask(e.target.value)}
-                className="w-full px-4 py-2 bg-gray-700 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full px-4 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                style={{
+                  backgroundColor: colors.primary[300],
+                  color: colors.grey[200],
+                }}
                 disabled={viewClicked}
               >
                 {addClicked && (
@@ -352,7 +372,8 @@ export default function TaskEditMenu({
             <div className="w-[18rem]">
               <label
                 htmlFor="projectStatus"
-                className="block text-sm font-medium mb-2 text-gray-300"
+                className="block text-sm font-medium mb-2"
+                style={{ color: colors.grey[300] }}
               >
                 Project Status
               </label>
@@ -360,7 +381,11 @@ export default function TaskEditMenu({
                 id="projectStatus"
                 value={projectStatus}
                 onChange={(e) => setProjectStatus(e.target.value)}
-                className="w-full px-4 py-2 bg-gray-700 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full px-4 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                style={{
+                  backgroundColor: colors.primary[300],
+                  color: colors.grey[200],
+                }}
                 disabled={viewClicked}
               >
                 {addClicked && (
@@ -380,7 +405,8 @@ export default function TaskEditMenu({
             <div className="w-[16rem]">
               <label
                 htmlFor="assignedTo"
-                className="block text-sm font-medium mb-2 text-gray-300"
+                className="block text-sm font-medium mb-2"
+                style={{ color: colors.grey[300] }}
               >
                 Assigned To
               </label>
@@ -389,7 +415,11 @@ export default function TaskEditMenu({
                 id="assignedTo"
                 value={assignedTo}
                 onChange={(e) => setAssignedTo(e.target.value)}
-                className="w-full px-4 py-2 bg-gray-700 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full px-4 py-2 rounded-lg placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                style={{
+                  backgroundColor: colors.primary[300],
+                  color: colors.grey[200],
+                }}
                 required
                 placeholder="Assign"
                 disabled={viewClicked}
@@ -401,7 +431,8 @@ export default function TaskEditMenu({
             <div className="w-[16rem]">
               <label
                 htmlFor="dependencies"
-                className="block text-sm font-medium mb-2 text-gray-300"
+                className="block text-sm font-medium mb-2"
+                style={{ color: colors.grey[300] }}
               >
                 Dependencies
               </label>
@@ -415,7 +446,11 @@ export default function TaskEditMenu({
                   ).map((option) => option.value);
                   setDependencies(selectedOptions);
                 }}
-                className="w-full px-4 py-2 bg-gray-700 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full px-4 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                style={{
+                  backgroundColor: colors.primary[300],
+                  color: colors.grey[200],
+                }}
                 disabled={viewClicked}
               >
                 {addClicked && (
@@ -434,7 +469,8 @@ export default function TaskEditMenu({
             <div className="w-[16rem]">
               <label
                 htmlFor="taskStatus"
-                className="block text-sm font-medium mb-2 text-gray-300"
+                className="block text-sm font-medium mb-2"
+                style={{ color: colors.grey[300] }}
               >
                 Task Status
               </label>
@@ -442,7 +478,11 @@ export default function TaskEditMenu({
                 id="taskStatus"
                 value={taskStatus}
                 onChange={(e) => setTaskStatus(e.target.value)}
-                className="w-full px-4 py-2 bg-gray-700 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full px-4 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                style={{
+                  backgroundColor: colors.primary[300],
+                  color: colors.grey[200],
+                }}
                 disabled={viewClicked}
               >
                 {addClicked && (
@@ -461,7 +501,8 @@ export default function TaskEditMenu({
             <div className="w-[18rem]">
               <label
                 htmlFor="priority"
-                className="block text-sm font-medium mb-2 text-gray-300"
+                className="block text-sm font-medium mb-2"
+                style={{ color: colors.grey[300] }}
               >
                 Priority
               </label>
@@ -469,7 +510,11 @@ export default function TaskEditMenu({
                 id="priority"
                 value={priority}
                 onChange={(e) => setPriority(e.target.value)}
-                className="w-full px-4 py-2 bg-gray-700 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full px-4 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                style={{
+                  backgroundColor: colors.primary[300],
+                  color: colors.grey[200],
+                }}
                 disabled={viewClicked}
               >
                 {addClicked && (
@@ -485,7 +530,8 @@ export default function TaskEditMenu({
             <div className="w-[18rem]">
               <label
                 htmlFor="taskCategory"
-                className="block text-sm font-medium mb-2 text-gray-300"
+                className="block text-sm font-medium mb-2"
+                style={{ color: colors.grey[300] }}
               >
                 Category
               </label>
@@ -494,7 +540,11 @@ export default function TaskEditMenu({
                 id="taskCategory"
                 value={taskCategory}
                 onChange={(e) => setTaskCategory(e.target.value)}
-                className="w-full px-4 py-2 bg-gray-700 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full px-4 py-2 rounded-lg placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                style={{
+                  backgroundColor: colors.primary[300],
+                  color: colors.grey[200],
+                }}
                 required
                 placeholder="Enter Category"
                 disabled={viewClicked}
@@ -510,7 +560,8 @@ export default function TaskEditMenu({
             <div className="w-[18rem]">
               <label
                 htmlFor="startDate"
-                className="block text-sm font-medium mb-2 text-gray-300"
+                className="block text-sm font-medium mb-2"
+                style={{ color: colors.grey[300] }}
               >
                 Start Date
               </label>
@@ -519,7 +570,11 @@ export default function TaskEditMenu({
                 id="startDate"
                 value={startDate}
                 onChange={(e) => setStartDate(e.target.value)}
-                className="w-full px-4 py-2 bg-gray-700 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full px-4 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                style={{
+                  backgroundColor: colors.primary[300],
+                  color: colors.grey[200],
+                }}
                 required
                 disabled={viewClicked}
               />
@@ -530,7 +585,8 @@ export default function TaskEditMenu({
             <div className="w-[18rem]">
               <label
                 htmlFor="dueDate"
-                className="block text-sm font-medium mb-2 text-gray-300"
+                className="block text-sm font-medium mb-2"
+                style={{ color: colors.grey[300] }}
               >
                 Due Date
               </label>
@@ -539,7 +595,11 @@ export default function TaskEditMenu({
                 id="dueDate"
                 value={dueDate}
                 onChange={(e) => setDueDate(e.target.value)}
-                className="w-full px-4 py-2 bg-gray-700 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full px-4 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                style={{
+                  backgroundColor: colors.primary[300],
+                  color: colors.grey[200],
+                }}
                 required
                 disabled={viewClicked}
               />
@@ -554,7 +614,8 @@ export default function TaskEditMenu({
             <div className="w-[18rem]">
               <label
                 htmlFor="addChronicles"
-                className="block text-sm font-medium mb-2 text-gray-300"
+                className="block text-sm font-medium mb-2"
+                style={{ color: colors.grey[300] }}
               >
                 Add Chronicles
               </label>
@@ -563,7 +624,11 @@ export default function TaskEditMenu({
                 id="addChronicles"
                 value={addChronicles}
                 onChange={(e) => setAddChronicles(e.target.value)}
-                className="w-full px-4 py-2 bg-gray-700 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full px-4 py-2 rounded-lg placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                style={{
+                  backgroundColor: colors.primary[300],
+                  color: colors.grey[200],
+                }}
                 required
                 placeholder="Add Chronicles"
                 disabled={viewClicked}
@@ -575,7 +640,8 @@ export default function TaskEditMenu({
             <div className="w-[18rem]">
               <label
                 htmlFor="chroniclesComplete"
-                className="block text-sm font-medium mb-2 text-gray-300"
+                className="block text-sm font-medium mb-2"
+                style={{ color: colors.grey[300] }}
               >
                 Chronicles Complete
               </label>
@@ -583,7 +649,11 @@ export default function TaskEditMenu({
                 id="chroniclesComplete"
                 value={chroniclesComplete}
                 onChange={(e) => setChroniclesComplete(e.target.value)}
-                className="w-full px-4 py-2 bg-gray-700 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full px-4 py-2 rounded-lg placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                style={{
+                  backgroundColor: colors.primary[300],
+                  color: colors.grey[200],
+                }}
                 rows={4}
                 placeholder="Chronicles Completes"
                 disabled={viewClicked}
@@ -597,7 +667,8 @@ export default function TaskEditMenu({
           <div>
             <label
               htmlFor="Description"
-              className="block text-sm font-medium mb-2 text-gray-300"
+              className="block text-sm font-medium mb-2"
+              style={{ color: colors.grey[300] }}
             >
               Description
             </label>
@@ -605,7 +676,11 @@ export default function TaskEditMenu({
               id="description"
               value={taskDesc}
               onChange={(e) => setTaskDesc(e.target.value)}
-              className="w-full px-4 py-2 bg-gray-700 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-4 py-2 rounded-lg placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              style={{
+                backgroundColor: colors.primary[300],
+                color: colors.grey[200],
+              }}
               rows={4}
               placeholder="Enter Desc"
               disabled={viewClicked}
@@ -618,7 +693,8 @@ export default function TaskEditMenu({
           <div>
             <label
               htmlFor="attachments"
-              className="block text-sm font-medium mb-2 text-gray-300"
+              className="block text-sm font-medium mb-2"
+              style={{ color: colors.grey[300] }}
             >
               Attachments
             </label>
@@ -626,7 +702,11 @@ export default function TaskEditMenu({
               id="attachments"
               value={attachments}
               onChange={(e) => setAttachments(e.target.value)}
-              className="w-full px-4 py-2 bg-gray-700 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-4 py-2 rounded-lg placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              style={{
+                backgroundColor: colors.primary[300],
+                color: colors.grey[200],
+              }}
               rows={4}
               placeholder="Enter Attachments"
               disabled={viewClicked}
