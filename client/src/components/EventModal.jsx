@@ -22,17 +22,24 @@ const EventModal = ({
   useEffect(() => {
     if (isOpen) {
       if (selectedEvent) {
-        // Prefill with selected event data when editing
+        // For editing existing events
         setTitle(selectedEvent.title);
-        setStart(selectedEvent.start.toISOString().slice(0, 16));
-        setEnd(selectedEvent.end.toISOString().slice(0, 16));
+
+        // Convert the Date objects to YYYY-MM-DDTHH:mm format
+        const startStr = selectedEvent.start
+          .toLocaleString("sv")
+          .replace(" ", "T");
+        const endStr = selectedEvent.end.toLocaleString("sv").replace(" ", "T");
+
+        setStart(startStr);
+        setEnd(endStr);
         setDescription(selectedEvent.extendedProps?.description || "");
         setMeetingLink(selectedEvent.extendedProps?.meetingLink || "");
         setParticipants(
           (selectedEvent.extendedProps?.participants || []).join(", ")
         );
       } else {
-        // Clear fields for a new event
+        // For new events
         setTitle("");
         setStart(defaultStart);
         setEnd(defaultEnd);
@@ -97,6 +104,7 @@ const EventModal = ({
             onChange={(e) => setStart(e.target.value)}
             required
             sx={{ mb: 2 }}
+            InputLabelProps={{ shrink: true }}
           />
           <TextField
             fullWidth
@@ -107,6 +115,7 @@ const EventModal = ({
             onChange={(e) => setEnd(e.target.value)}
             required
             sx={{ mb: 2 }}
+            InputLabelProps={{ shrink: true }}
           />
           <TextField
             fullWidth

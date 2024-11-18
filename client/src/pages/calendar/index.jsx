@@ -354,6 +354,7 @@ const Calendar = () => {
               center: "title",
               right: "dayGridMonth,timeGridWeek,timeGridDay,listMonth",
             }}
+            timeZone="local"
             initialView="dayGridMonth"
             editable={true}
             selectable={true}
