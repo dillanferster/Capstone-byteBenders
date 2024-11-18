@@ -181,8 +181,8 @@ const Column = ({
   return (
     <div className="w-56 shrink-0 h-screen">
       <div
-        className="mb-3 flex items-center gap-2 border-b sticky top-0 z-[10] backdrop-blur-xl border-neutral-700 p-2"
-        // style={{ background: colors.primary[300] }}
+        className="mb-3 flex items-center gap-2 sticky top-0 z-[10] border-neutral-700 p-2 rounded-sm"
+        style={{ background: colors.primary[600] }}
       >
         <span className="rounded text-sm text-neutral-400">
           {filteredCards.length}
@@ -476,7 +476,7 @@ const TaskBoard = ({
       <Column
         title="Not Started"
         column="Not Started"
-        headingColor="text-red-300"
+        headingColor="text-red-500"
         cards={cards}
         setCards={setCards}
         setIsOpen={setIsOpen}
@@ -488,7 +488,7 @@ const TaskBoard = ({
       <Column
         title="In Progress"
         column="In Progress"
-        headingColor="text-yellow-300"
+        headingColor="text-orange-500"
         cards={cards}
         setCards={setCards}
         setIsOpen={setIsOpen}
@@ -501,7 +501,7 @@ const TaskBoard = ({
       <Column
         title="Paused"
         column="Paused"
-        headingColor="text-blue-300"
+        headingColor="text-blue-500"
         cards={cards}
         setCards={setCards}
         setIsOpen={setIsOpen}
@@ -513,7 +513,7 @@ const TaskBoard = ({
       <Column
         title="Completed"
         column="Completed"
-        headingColor="text-green-300"
+        headingColor="text-green-500"
         cards={cards}
         setCards={setCards}
         setIsOpen={setIsOpen}
