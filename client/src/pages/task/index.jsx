@@ -759,25 +759,28 @@ const TaskPage = () => {
           }}
         >
           <button
-            className={`p-1 rounded-md w-[3rem] transition-all duration-100 ${
-              currentView === "list" ? "bg-[#3E4396]" : ""
-            }`}
+            className={`p-1 rounded-md w-[3rem] transition-all duration-100`}
+            style={{
+              background: currentView === "list" ? colors.blueAccent[700] : "",
+            }}
             onClick={handleListClick}
           >
             List
           </button>
           <button
-            className={`p-1 rounded-md w-[3rem] transition-all duration-100 ${
-              currentView === "board" ? "bg-[#3E4396]" : ""
-            }`}
+            className={`p-1 rounded-md w-[3rem] transition-all duration-100 `}
+            style={{
+              background: currentView === "board" ? colors.blueAccent[700] : "",
+            }}
             onClick={handleBoardClick}
           >
             Board
           </button>
           <button
-            className={`p-1 rounded-md w-[3rem] transition-all duration-100 ${
-              currentView === "gantt" ? "bg-[#3E4396]" : ""
-            }`}
+            className={`p-1 rounded-md w-[3rem] transition-all duration-100 `}
+            style={{
+              background: currentView === "gantt" ? colors.blueAccent[700] : "",
+            }}
             onClick={handleGanttClick}
           >
             Gantt
