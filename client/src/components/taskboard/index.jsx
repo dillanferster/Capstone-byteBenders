@@ -37,7 +37,6 @@ const Column = ({
   handleButtonResume,
   handleButtonComplete,
   setIsDeleteModalOpen,
- 
 }) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
@@ -182,7 +181,7 @@ const Column = ({
   return (
     <div className="w-56 shrink-0 h-screen">
       <div
-        className="mb-3 flex items-center gap-2 sticky top-0 z-[10] border-neutral-700 p-2 rounded-sm"
+        className="mb-3 flex items-center gap-2 sticky top-0 z-[5] border-neutral-700 p-2 rounded-sm"
         style={{ background: colors.primary[600] }}
       >
         <span className="rounded text-sm text-neutral-400">
@@ -424,6 +423,7 @@ const Card = ({
 
 const TaskBoard = ({
   reloadTaskBoard,
+  setReloadTaskBoard,
   setIsOpen,
   setViewClicked,
   setSelectedTask,
@@ -457,10 +457,14 @@ const TaskBoard = ({
   // dependencies : reloadGrid
   useEffect(() => {
     async function loadAllTasks() {
-      const data = await getTasks();
-      if (data) {
-        console.log("New task data received:", data);
-        setCards(data);
+      try {
+        const data = await getTasks();
+        if (data) {
+          console.log("Reloading task board with new data:", data);
+          setCards(data);
+        }
+      } catch (error) {
+        console.error("Error loading tasks:", error);
       }
     }
 
