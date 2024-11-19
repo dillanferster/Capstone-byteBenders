@@ -110,7 +110,7 @@ const NotePage = () => {
       </div>
       <div className="note-page">
         <ToastContainer />
-        <div className="note-sidebar">
+        <div className="note-sidebar" align="center">
           <Sidebar
             notes={notes}
             currentNoteId={currentNoteId}
