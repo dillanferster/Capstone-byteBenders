@@ -363,3 +363,63 @@
 .notification.error {
   background-color: #f44336;
 }
+.note-preview {
+  padding: 2rem;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  margin: 1rem;
+  min-height: 300px;
+}
+
+/* Dark mode styles */
+@media (prefers-color-scheme: dark) {
+  .note-preview {
+    background-color: #2c2c54;
+    color: #2c2c54;
+  }
+
+  .note-preview h2 {
+    color: #ffffff;
+  }
+
+  .note-preview .content {
+    color: #e0e0e0;
+    line-height: 1.6;
+  }
+
+  .note-preview .no-note {
+    color: #a0a0a0;
+  }
+}
+
+/* Light mode styles */
+@media (prefers-color-scheme: light) {
+  .note-preview {
+    background-color:white;
+    color: black;
+  }
+
+  .note-preview h2 {
+    color: #1a1a2e;
+  }
+
+  .note-preview .content {
+    color: black;
+    line-height: 1.6;
+  }
+
+  .note-preview .no-note {
+    color: black;
+  }
+}
+
+.note-preview h2 {
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+}
+
+.note-preview .content {
+  white-space: pre-wrap;
+  font-size: 1rem;
+}

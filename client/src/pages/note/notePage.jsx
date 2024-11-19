@@ -41,21 +41,19 @@ const NotePage = () => {
       toast.error("Cannot update note: Missing ID");
       return;
     }
-
+  
     try {
-      // Transform the note data to match the expected structure
       const noteToUpdate = {
-        title: noteData.title || noteData.noteTitle, // Handle both property names
-        content: noteData.content || noteData.noteContent, // Handle both property names
+        noteTitle: noteData.noteTitle,
+        noteContent: noteData.noteContent,
         taskId: noteData.taskId || null,
         dateUpdated: new Date().toISOString(),
       };
-
+  
       console.log("Sending update request with data:", noteToUpdate);
-
+  
       const updatedNote = await updateNote(noteData._id, noteToUpdate);
-
-      // Update the notes state with the updated note
+  
       setNotes((prevNotes) =>
         prevNotes.map((note) =>
           note._id === noteData._id
@@ -67,7 +65,7 @@ const NotePage = () => {
             : note
         )
       );
-
+  
       toast.success("Note updated successfully");
     } catch (error) {
       console.error("Error updating note:", error);
@@ -144,22 +142,18 @@ const NotePage = () => {
               saveNote={handleSaveNote}
             />
           ) : (
-            <div className="note-preview">
+            <div className="note-preview bg-black dark:bg-gray-800 p-6 rounded-lg shadow">
               {currentNoteId ? (
                 <>
-                  <h2>
-                    {getCurrentNote()?.title ||
-                      getCurrentNote()?.noteTitle ||
-                      "Untitled"}
+                  <h2 className="text-2xl font-bold mb-4 text-gray-900 dark:text-white">
+                    {getCurrentNote()?.noteTitle || getCurrentNote()?.title || "Untitled"}
                   </h2>
-                  <div className="content">
-                    {getCurrentNote()?.content ||
-                      getCurrentNote()?.noteContent ||
-                      "No content available..."}
+                  <div className="prose dark:prose-invert text-gray-800 dark:text-gray-200">
+                    {getCurrentNote()?.noteContent || getCurrentNote()?.content || "No content available..."}
                   </div>
                 </>
               ) : (
-                <div className="no-note">
+                <div className="text-gray-600 dark:text-gray-400 text-center">
                   Please select a note or create a new one.
                 </div>
               )}
