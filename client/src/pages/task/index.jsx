@@ -1001,6 +1001,8 @@ const TaskPage = () => {
       {currentView === "board" && (
         <>
           <TaskBoard
+            reloadTaskBoard={reloadTaskBoard}
+            setReloadTaskBoard={setReloadTaskBoard}
             setIsOpen={setIsOpen}
             setViewClicked={setViewClicked}
             setSelectedTask={setSelectedTask}
@@ -1013,6 +1015,8 @@ const TaskPage = () => {
           <TaskEditMenu
             isOpen={isOpen}
             setIsOpen={setIsOpen}
+            reloadTaskBoard={reloadTaskBoard}
+            setReloadTaskBoard={setReloadTaskBoard}
             toggleForm={toggleForm}
             selectedTask={selectedTask}
             updateTask={updateTask}
@@ -1027,8 +1031,6 @@ const TaskPage = () => {
             projects={projects}
             tasks={tasks}
             addTaskToProject={addTaskToProject}
-            reloadTaskBoard={reloadTaskBoard}
-            setReloadTaskBoard={setReloadTaskBoard}
           ></TaskEditMenu>
         </>
       )}
