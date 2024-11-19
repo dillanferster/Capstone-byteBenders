@@ -19,7 +19,9 @@ const NotePage = () => {
       const notesFromDB = await getNotes();
       const updatedNotes = notesFromDB.map((note) => ({
         ...note,
-        isTaskNote: !!note.taskId,
+        isTaskNote: Boolean(note.taskId), // More explicit conversion
+        noteTitle: note.noteTitle || note.title, // Handle both property names
+        noteContent: note.noteContent || note.content, // Handle both property names
       }));
       setNotes(updatedNotes || []);
     } catch (error) {
