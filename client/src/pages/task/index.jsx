@@ -233,6 +233,7 @@ const TaskPage = () => {
         startDate: task.startDate,
         dueDate: task.dueDate,
         projectTask: task.projectTask,
+        projectId: task.projectId,
         projectStatus: task.projectStatus,
         addChronicles: task.addChronicles,
         taskDesc: task.taskDesc,
@@ -624,20 +625,13 @@ const TaskPage = () => {
     setDeleteOpen((prev) => !prev);
 
     for (const task of selectedTask) {
+      let projectId = "";
       const response = await deleteTask(task.id);
 
       if (response.status === 200) {
-        // console.log(
-        //   "projectTask: ",
-        //   selectedTask[0].projectTask,
-        //   ", projectId:",
-        //   selectedTask[0].projectId
-        // );
+        console.log("projectTask: ", selectedTask[0].projectId);
 
-        const projectMatch = projects.find(
-          (project) => project._id === selectedTask[0].projectId
-        );
-        // console.log("project that task will be deleted from", projectMatch._id);
+        projectId = selectedTask[0].projectId;
 
         const taskObject = {
           taskId: task.id,
@@ -647,8 +641,6 @@ const TaskPage = () => {
         //   "inside handle delete btn, TASK that task will be deleted from project",
         //   taskObject.taskId
         // );
-
-        const projectId = projectMatch._id;
 
         const deleteResponse = await deleteTaskFromProject(
           projectId,
@@ -1001,6 +993,8 @@ const TaskPage = () => {
       {currentView === "board" && (
         <>
           <TaskBoard
+            reloadTaskBoard={reloadTaskBoard}
+            setReloadTaskBoard={setReloadTaskBoard}
             setIsOpen={setIsOpen}
             setViewClicked={setViewClicked}
             setSelectedTask={setSelectedTask}
@@ -1013,6 +1007,8 @@ const TaskPage = () => {
           <TaskEditMenu
             isOpen={isOpen}
             setIsOpen={setIsOpen}
+            reloadTaskBoard={reloadTaskBoard}
+            setReloadTaskBoard={setReloadTaskBoard}
             toggleForm={toggleForm}
             selectedTask={selectedTask}
             updateTask={updateTask}
@@ -1027,8 +1023,6 @@ const TaskPage = () => {
             projects={projects}
             tasks={tasks}
             addTaskToProject={addTaskToProject}
-            reloadTaskBoard={reloadTaskBoard}
-            setReloadTaskBoard={setReloadTaskBoard}
           ></TaskEditMenu>
         </>
       )}
