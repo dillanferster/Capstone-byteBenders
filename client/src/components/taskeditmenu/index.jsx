@@ -158,13 +158,12 @@ export default function TaskEditMenu({
         try {
           const response = await updateTask(taskId, updatedTask);
           if (response.status === 200) {
-            updateTaskToProject(taskId, projectTask);
+            await updateTaskToProject(taskId, projectTask);
 
             reloadTheGrid();
 
-            if (reloadTaskBoard) {
-              setReloadTaskBoard((prev) => !prev);
-            }
+            setReloadTaskBoard((prev) => !prev);
+
             toggleForm();
             clearAddInputs();
             setEditClicked(!editClicked);
