@@ -407,6 +407,31 @@ export async function taskTotalTime(id, updatedTime) {
 
 //// TASK TIME ////
 
+//// TASK POSITION KANBAN ////
+export async function reorderTask(taskId, newPosition, column) {
+  try {
+    const token = sessionStorage.getItem("User");
+    const response = await axios.put(
+      `${URL}/tasks/reorder`,
+      { 
+        taskId, 
+        newPosition, 
+        column 
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    return response.data;
+  } catch (error) {
+    console.error("Error reordering task:", error);
+    throw error;
+  }
+}
+//////
+
 ///USER///
 // creates a new user , pass in user object
 // Author: Gigi Vu (gigi-vu2804)

@@ -18,6 +18,7 @@ import {
   getProjects,
   addTaskToProject,
   deleteTaskFromProject,
+  reorderTask,
 } from "../../api.js";
 
 import { useTheme } from "@mui/material";
@@ -84,40 +85,31 @@ const Column = ({
     e.preventDefault();
     setActive(true);
 
-    // Get the container's bounding rect
     const containerRect = e.currentTarget.getBoundingClientRect();
     const mouseY = e.clientY - containerRect.top;
-
-    // Get all cards in this column
     const cards = e.currentTarget.getElementsByClassName("task-card");
 
-    // Find the insertion point
-    let insertIndex = 0;
+    let insertIndex = cards.length;
     let indicatorY = 0;
 
-    for (const card of cards) {
+    // Find insertion point based on mouse position
+    for (let i = 0; i < cards.length; i++) {
+      const card = cards[i];
       const cardRect = card.getBoundingClientRect();
       const cardMiddle = cardRect.top + cardRect.height / 2 - containerRect.top;
 
-      if (mouseY > cardMiddle) {
-        insertIndex++;
-        indicatorY = cardRect.bottom - containerRect.top;
-      } else {
+      if (mouseY < cardMiddle) {
+        insertIndex = i;
         indicatorY = cardRect.top - containerRect.top;
         break;
-      }
-    }
-
-    // If mouse is below all cards, place indicator at bottom
-    if (insertIndex === cards.length) {
-      const lastCard = cards[cards.length - 1];
-      if (lastCard) {
-        const lastCardRect = lastCard.getBoundingClientRect();
-        indicatorY = lastCardRect.bottom - containerRect.top;
+      } else {
+        indicatorY = cardRect.bottom - containerRect.top;
       }
     }
 
     setDropIndicatorY(indicatorY);
+    // Store the insert index for use in handleDragEnd
+    e.currentTarget.dataset.insertIndex = insertIndex;
   };
 
   const handleDragLeave = () => {
@@ -125,54 +117,59 @@ const Column = ({
     setDropIndicatorY(null);
   };
 
-  const handleDragEnd = (e) => {
+  const handleDragEnd = async (e) => {
+    e.preventDefault();
     setActive(false);
     setDropIndicatorY(null);
 
-    const tempCardData = JSON.parse(e.dataTransfer.getData("cardObject"));
+    const cardData = JSON.parse(e.dataTransfer.getData("cardObject"));
+    // Get the stored insert index
+    const insertIndex = parseInt(e.currentTarget.dataset.insertIndex) || 0;
 
-    const selectedTask = [
-      {
-        id: tempCardData._id,
-        taskName: tempCardData.taskName,
-        assignedTo: tempCardData.assignedTo,
-        taskStatus: tempCardData.taskStatus,
-        priority: tempCardData.priority,
-        taskCategory: tempCardData.taskCategory,
-        startDate: tempCardData.startDate,
-        dueDate: tempCardData.dueDate,
-        projectTask: tempCardData.projectTask,
-        projectStatus: tempCardData.projectStatus,
-        addChronicles: tempCardData.addChronicles,
-        taskDesc: tempCardData.taskDesc,
-        attachments: tempCardData.attachments,
-        startTime: tempCardData.startTime,
-        completeTime: tempCardData.completeTime,
-        totalTime: tempCardData.totalTime,
-        chroniclesComplete: tempCardData.chroniclesComplete,
-      },
-    ];
+    // Handle status transitions
+    if (cardData.taskStatus !== column) {
+      if (cardData.taskStatus === "Not Started" && column === "In Progress") {
+        await handleButtonStart([cardData]);
+      } else if (cardData.taskStatus === "In Progress" && column === "Paused") {
+        await handleButtonPause([cardData]);
+      }
+      // ... other status transitions ...
+    }
 
-    if (
-      selectedTask[0].taskStatus === "Not Started" &&
-      column === "In Progress"
-    ) {
-      handleButtonStart(selectedTask);
-    }
-    if (selectedTask[0].taskStatus === "In Progress" && column === "Paused") {
-      handleButtonPause(selectedTask);
-    }
-    if (selectedTask[0].taskStatus === "Paused" && column === "In Progress") {
-      handleButtonResume(selectedTask);
-    }
-    if (
-      selectedTask[0].taskStatus === "In Progress" &&
-      column === "Completed"
-    ) {
-      handleButtonComplete(selectedTask);
-    }
-    if (selectedTask[0].taskStatus === "Paused" && column === "Completed") {
-      handleButtonComplete(selectedTask);
+    // Update cards array with new order
+    const updatedCards = [...cards];
+    const oldIndex = updatedCards.findIndex((c) => c._id === cardData._id);
+
+    if (oldIndex !== -1) {
+      // Remove card from old position
+      const [movedCard] = updatedCards.splice(oldIndex, 1);
+
+      // Get all cards in the target column
+      const columnCards = updatedCards.filter((c) => c.taskStatus === column);
+
+      // Insert at the correct position within the column
+      const targetIndex =
+        updatedCards.indexOf(
+          columnCards[insertIndex] || columnCards[columnCards.length - 1]
+        ) || 0;
+
+      // Insert card at new position
+      updatedCards.splice(targetIndex, 0, {
+        ...movedCard,
+        taskStatus: column,
+      });
+
+      setCards(updatedCards);
+
+      // Update in database
+      try {
+        await updateTask(cardData._id, {
+          ...cardData,
+          taskStatus: column,
+        });
+      } catch (error) {
+        console.error("Error updating task position:", error);
+      }
     }
   };
 
@@ -266,6 +263,7 @@ const Card = ({
   startDate,
   dueDate,
   projectTask,
+  projectId,
   projectStatus,
   addChronicles,
   attachments,
@@ -295,6 +293,7 @@ const Card = ({
         startDate: card.startDate,
         dueDate: card.dueDate,
         projectTask: card.projectTask,
+        projectId: card.projectId,
         projectStatus: card.projectStatus,
         addChronicles: card.addChronicles,
         taskDesc: card.taskDesc,
@@ -375,6 +374,7 @@ const Card = ({
                 startDate,
                 dueDate,
                 projectTask,
+                projectId,
                 projectStatus,
                 addChronicles,
                 taskDesc,
