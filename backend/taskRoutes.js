@@ -86,7 +86,7 @@ taskRoutes.route("/tasks").post(verifyToken, async (request, response) => {
   let db = database.getDb();
   let mongoObject = {
     assignedTo: request.body.assignedTo,
-    // projectId: request.body.projectId,
+    projectId: request.body.projectId,
     taskName: request.body.taskName,
     taskStatus: request.body.taskStatus,
     priority: request.body.priority,
@@ -120,7 +120,7 @@ taskRoutes.route("/tasks/:id").put(verifyToken, async (request, response) => {
   let mongoObject = {
     $set: {
       assignedTo: request.body.assignedTo,
-      // projectId: request.body.projectId,
+      projectId: request.body.projectId,
       taskName: request.body.taskName,
       taskStatus: request.body.taskStatus,
       priority: request.body.priority,
@@ -255,6 +255,32 @@ taskRoutes
       .collection("FrankTask")
       .updateOne({ _id: new ObjectId(request.params.id) }, mongoObject);
     response.json(data);
+  });
+
+// kanban order
+taskRoutes
+  .route("/tasks/reorder")
+  .put(verifyToken, async (request, response) => {
+    try {
+      let db = database.getDb();
+      const { taskId, newPosition, column } = request.body;
+
+      // Update single task with its new position and status
+      const result = await db.collection("FrankTask").updateOne(
+        { _id: new ObjectId(taskId) },
+        {
+          $set: {
+            position: newPosition,
+            taskStatus: column,
+          },
+        }
+      );
+
+      response.json(result);
+    } catch (error) {
+      console.error("Error reordering task:", error);
+      response.status(500).json({ error: error.message });
+    }
   });
 
 // //notification route
