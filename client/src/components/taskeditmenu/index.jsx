@@ -39,6 +39,7 @@ export default function TaskEditMenu({
   const [taskId, setTaskId] = useState("");
   const [taskName, setTaskName] = useState("");
   const [projectTask, setProjectTask] = useState("");
+  const [projectId, setProjectId] = useState("");
   const [assignedTo, setAssignedTo] = useState("");
   const [taskStatus, setTaskStatus] = useState("");
   const [priority, setPriority] = useState("");
@@ -198,6 +199,7 @@ export default function TaskEditMenu({
     const addedTask = {
       taskName: taskName,
       assignedTo: assignedTo,
+      projectId: projectId,
       taskStatus: "Not Started",
       priority: priority,
       taskCategory: taskCategory,
@@ -246,6 +248,11 @@ export default function TaskEditMenu({
 
       setErrors((prev) => ({ ...errorMessages }));
     }
+  };
+
+  const handleProjectChange = (selectedProject) => {
+    setProjectId(selectedProject._id);
+    setProjectTask(selectedProject.projectName);
   };
 
   // handles click off menu
@@ -348,7 +355,12 @@ export default function TaskEditMenu({
               <select
                 id="projectTask"
                 value={projectTask}
-                onChange={(e) => setProjectTask(e.target.value)}
+                onChange={(e) => {
+                  const selectedProject = projects.find(
+                    (p) => p.projectName === e.target.value
+                  );
+                  handleProjectChange(selectedProject);
+                }}
                 className="w-full px-4 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                 style={{
                   backgroundColor: colors.primary[300],
