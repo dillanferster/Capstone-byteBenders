@@ -40,6 +40,7 @@ export default function TaskEditMenu({
   const [taskName, setTaskName] = useState("");
   const [projectTask, setProjectTask] = useState("");
   const [projectId, setProjectId] = useState("");
+
   const [assignedTo, setAssignedTo] = useState("");
   const [taskStatus, setTaskStatus] = useState("");
   const [priority, setPriority] = useState("");
@@ -252,6 +253,7 @@ export default function TaskEditMenu({
   const handleProjectChange = (selectedProject) => {
     setProjectId(selectedProject._id);
     setProjectTask(selectedProject.projectName);
+    setProjectStatus(selectedProject.projectStatus);
   };
 
   // handles click off menu
@@ -388,7 +390,8 @@ export default function TaskEditMenu({
               >
                 Project Status
               </label>
-              <select
+              <input
+                type="text"
                 id="projectStatus"
                 value={projectStatus}
                 onChange={(e) => setProjectStatus(e.target.value)}
@@ -397,18 +400,8 @@ export default function TaskEditMenu({
                   backgroundColor: colors.primary[300],
                   color: colors.grey[200],
                 }}
-                disabled={viewClicked}
-              >
-                {addClicked && (
-                  <option value="" disabled={addClicked}>
-                    --Select an option--
-                  </option>
-                )}
-                <option value="In progress">In Progress</option>
-                <option value="Complete">Complete</option>
-                <option value="Not started">Not Started</option>
-                <option value="Storage">Storage</option>
-              </select>
+                disabled
+              />
             </div>
           </div>
 
@@ -485,25 +478,18 @@ export default function TaskEditMenu({
               >
                 Task Status
               </label>
-              <select
+              <input
+                type="text"
                 id="taskStatus"
-                value={taskStatus}
+                value={taskStatus || "Not Started"}
                 onChange={(e) => setTaskStatus(e.target.value)}
                 className="w-full px-4 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                 style={{
                   backgroundColor: colors.primary[300],
                   color: colors.grey[200],
                 }}
-                disabled={viewClicked}
-              >
-                {addClicked && (
-                  <option value="" disabled={addClicked}>
-                    Not Started
-                  </option>
-                )}
-
-                <option value={taskStatus}>{taskStatus}</option>
-              </select>
+                disabled
+              />
             </div>
           </div>
 
