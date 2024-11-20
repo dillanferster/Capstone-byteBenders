@@ -224,20 +224,15 @@ export default function TaskEditMenu({
           if (response.status === 200) {
             const newTaskId = response.data.insertedId;
             console.log("New task ID:", newTaskId);
-            updateTaskToProject(newTaskId);
+            await updateTaskToProject(newTaskId);
             reloadTheGrid();
-
-            if (reloadTaskBoard) {
-              setReloadTaskBoard((prev) => !prev);
-              console.log("reloading task board from added task button");
-            }
-
+            setReloadTaskBoard((prev) => !prev);
             toggleForm();
             clearAddInputs();
-            setAddClicked(!addClicked);
+            setAddClicked(false);
           }
         } catch (error) {
-          console.error("Error updating task:", error);
+          console.error("Error creating task:", error);
         }
       }
     } catch (err) {
@@ -267,7 +262,7 @@ export default function TaskEditMenu({
   return (
     <div>
       <div
-        className={`fixed inset-0 bg-gray-500/20 backdrop-blur-sm transition-opacity duration-300  ${
+        className={`fixed inset-0 bg-gray-500/20 backdrop-blur-sm transition-opacity duration-300 z-[10]   ${
           isOpen ? "opacity-100" : "opacity-0 pointer-events-none"
         }`}
         onClick={() => handleClickOff()}

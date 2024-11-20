@@ -515,7 +515,16 @@ export async function getNote(id) {
 export async function createNote(note) {
   try {
     const token = sessionStorage.getItem("User");
-    const response = await axios.post(`${URL}/notes`, note, {
+    // Transform the data to match the expected MongoDB structure
+    const noteData = {
+      noteTitle: note.title, // Frontend sends 'title', backend expects 'noteTitle'
+      noteContent: note.content, // Frontend sends 'content', backend expects 'noteContent'
+      taskId: note.taskId, // Make sure taskId is included
+      dateCreated: new Date(),
+      dateUpdated: new Date(),
+    };
+
+    const response = await axios.post(`${URL}/notes`, noteData, {
       headers: {
         Authorization: `Bearer ${token}`,
         "Content-Type": "application/json",
