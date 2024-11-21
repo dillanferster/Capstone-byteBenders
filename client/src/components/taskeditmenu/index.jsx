@@ -286,8 +286,23 @@ export default function TaskEditMenu({
     const files = Array.from(e.target.files);
     const base64Files = [];
 
+    const allowedTypes = [
+      "image/jpeg",
+      "image/png",
+      "image/gif",
+      "application/pdf",
+      "text/plain",
+      "application/msword",
+      "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+    ];
+
     for (const file of files) {
       try {
+        if (!allowedTypes.includes(file.type)) {
+          console.error(`File type ${file.type} not supported`);
+          continue;
+        }
+
         const base64 = await convertFileToBase64(file);
         base64Files.push({
           name: file.name,
@@ -299,7 +314,37 @@ export default function TaskEditMenu({
       }
     }
 
-    setAttachments(base64Files);
+    setAttachments((prev) => [...prev, ...base64Files]);
+  };
+
+  // Helper function to create viewable URL from base64
+  // Reference: cursor / Claude.AI prompt : "how to convert and display file to base64"
+  const getViewableUrl = (file) => {
+    // If it's already a base64 string with data URI prefix, use it directly
+    if (file.data?.startsWith("data:")) {
+      return file.data;
+    }
+
+    // If it's a base64 string without prefix, add the appropriate prefix
+    if (file.data && file.type) {
+      return `data:${file.type};base64,${file.data.replace(
+        /^data:.*?;base64,/,
+        ""
+      )}`;
+    }
+
+    // Fallback for other cases
+    return file.data || file;
+  };
+
+  // Helper function to get file icon/preview based on type
+  // Reference: cursor / Claude.AI prompt : "how to convert and display file to base64"
+  const getFileIcon = (fileType) => {
+    if (fileType?.includes("pdf")) return "📄";
+    if (fileType?.includes("word")) return "📝";
+    if (fileType?.includes("sheet")) return "📊";
+    if (fileType?.includes("image")) return "🖼️";
+    return "📎";
   };
 
   return (
@@ -756,29 +801,66 @@ export default function TaskEditMenu({
                     className="flex items-center justify-between p-2 bg-gray-700 rounded"
                   >
                     <div className="flex gap-4 items-center">
+                      {/* File Preview/Icon */}
                       {file.type?.startsWith("image/") ? (
                         <img
-                          src={file.data}
+                          src={getViewableUrl(file)}
                           alt={file.name}
                           className="w-10 h-10 object-cover rounded"
                         />
                       ) : (
-                        <span className="text-gray-300">
-                          {file.name || `File ${index + 1}`}
+                        <span className="text-gray-300 text-2xl">
+                          {getFileIcon(file.type)}
+                          <span className="text-sm ml-2">
+                            {file.name || `File ${index + 1}`}
+                          </span>
                         </span>
                       )}
 
+                      {/* Action Buttons */}
                       <div className="flex gap-3">
-                        <a
-                          href={file.data}
-                          target="_blank"
-                          rel="noopener noreferrer"
+                        <button
+                          onClick={() => {
+                            const url = getViewableUrl(file);
+                            const newWindow = window.open();
+                            if (file.type?.includes("pdf")) {
+                              // For PDFs, create an embed element
+                              newWindow.document.write(`
+                                <iframe 
+                                  src="${url}" 
+                                  width="100%" 
+                                  height="100%" 
+                                  style="border: none;">
+                                </iframe>
+                              `);
+                            } else if (file.type?.startsWith("image/")) {
+                              // For images, create an img element
+                              newWindow.document.write(`
+                                <img 
+                                  src="${url}" 
+                                  style="max-width: 100%; height: auto;"
+                                />
+                              `);
+                            } else if (file.type?.includes("text")) {
+                              // For text files, fetch and display the content
+                              fetch(url)
+                                .then((response) => response.text())
+                                .then((text) => {
+                                  newWindow.document.write(`
+                                    <pre style="white-space: pre-wrap;">${text}</pre>
+                                  `);
+                                });
+                            } else {
+                              // For other files, try to display or download
+                              newWindow.location.href = url;
+                            }
+                          }}
                           className="text-blue-400 hover:text-blue-300"
                         >
                           View
-                        </a>
+                        </button>
                         <a
-                          href={file.data}
+                          href={getViewableUrl(file)}
                           download={file.name || `File ${index + 1}`}
                           className="text-green-400 hover:text-green-300"
                         >
@@ -787,6 +869,7 @@ export default function TaskEditMenu({
                       </div>
                     </div>
 
+                    {/* Delete Button */}
                     {!viewClicked && (
                       <button
                         onClick={() => {
