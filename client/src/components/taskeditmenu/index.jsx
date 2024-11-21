@@ -268,6 +268,40 @@ export default function TaskEditMenu({
 
     toggleForm();
   };
+
+  // Add this function to handle file to base64 conversion
+  // Reference: cursor / Claude.AI prompt : "how to convert file to base64"
+  const convertFileToBase64 = (file) => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = () => resolve(reader.result);
+      reader.onerror = (error) => reject(error);
+    });
+  };
+
+  // Modify the file input handler
+  // Reference: cursor / Claude.AI prompt : "how to convert file to base64"
+  const handleFileChange = async (e) => {
+    const files = Array.from(e.target.files);
+    const base64Files = [];
+
+    for (const file of files) {
+      try {
+        const base64 = await convertFileToBase64(file);
+        base64Files.push({
+          name: file.name,
+          type: file.type,
+          data: base64,
+        });
+      } catch (error) {
+        console.error("Error converting file to base64:", error);
+      }
+    }
+
+    setAttachments(base64Files);
+  };
+
   return (
     <div>
       <div
@@ -700,7 +734,7 @@ export default function TaskEditMenu({
               id="attachments"
               type="file"
               multiple
-              onChange={(e) => setAttachments(Array.from(e.target.files))}
+              onChange={handleFileChange}
               className="w-full px-4 py-2 rounded-lg file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border file:border-gray-800 file:text-sm hover:file:bg-primary-700 file:bg-gray-300"
               style={{
                 backgroundColor: colors.primary[300],
@@ -721,37 +755,38 @@ export default function TaskEditMenu({
                     key={index}
                     className="flex items-center justify-between p-2 bg-gray-700 rounded"
                   >
-                    {typeof file === "string" ? (
-                      // For existing file URLs
-                      <a
-                        href={file}
-                        download
-                        className="text-blue-400 hover:text-blue-300"
-                      >
-                        {file.split("/").pop()}
-                      </a>
-                    ) : // For newly uploaded files
-                    file instanceof File ? (
-                      <div className="flex gap-4">
+                    <div className="flex gap-4 items-center">
+                      {file.type?.startsWith("image/") ? (
+                        <img
+                          src={file.data}
+                          alt={file.name}
+                          className="w-10 h-10 object-cover rounded"
+                        />
+                      ) : (
+                        <span className="text-gray-300">
+                          {file.name || `File ${index + 1}`}
+                        </span>
+                      )}
+
+                      <div className="flex gap-3">
                         <a
-                          href={URL.createObjectURL(file)}
+                          href={file.data}
                           target="_blank"
                           rel="noopener noreferrer"
                           className="text-blue-400 hover:text-blue-300"
                         >
-                          View {file.name}
+                          View
                         </a>
                         <a
-                          href={URL.createObjectURL(file)}
-                          download={file.name}
+                          href={file.data}
+                          download={file.name || `File ${index + 1}`}
                           className="text-green-400 hover:text-green-300"
                         >
                           Download
                         </a>
                       </div>
-                    ) : (
-                      <span className="text-gray-400">Invalid file</span>
-                    )}
+                    </div>
+
                     {!viewClicked && (
                       <button
                         onClick={() => {
