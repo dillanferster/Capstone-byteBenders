@@ -140,6 +140,7 @@ export default function TaskEditMenu({
       startDate: startDate,
       dueDate: dueDate,
       projectTask: projectTask,
+      projectId: projectId,
       projectStatus: projectStatus,
       addChronicles: addChronicles,
       attachments: attachments,
