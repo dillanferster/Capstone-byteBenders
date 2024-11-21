@@ -100,7 +100,7 @@ export default function TaskEditMenu({
     setProjectStatus("");
     setAddChronicles("");
     setTaskDesc("");
-    setAttachments("");
+    setAttachments([]);
     setChroniclesComplete("");
     setProjectTask("");
     setDependencies([""]);
@@ -697,20 +697,75 @@ export default function TaskEditMenu({
             </label>
             <input
               id="attachments"
-              value={attachments}
-              onChange={(e) => setAttachments(e.target.value)}
-              className="w-full px-4 py-2 rounded-lg placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              type="file"
+              multiple
+              onChange={(e) => setAttachments(Array.from(e.target.files))}
+              className="w-full px-4 py-2 rounded-lg file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border file:border-gray-800 file:text-sm hover:file:bg-primary-700 file:bg-gray-300"
               style={{
                 backgroundColor: colors.primary[300],
-                color: colors.grey[200],
+                color: colors.grey[500],
               }}
-              rows={4}
-              placeholder="Enter Attachments"
+              accept=".pdf,.doc,.docx,.txt,.jpg,.jpeg,.png"
               disabled={viewClicked}
+              required="false"
             />
             {errors.attachments && (
               <div className="text-red-600">{errors.attachments}</div>
             )}
+
+            <div className="mt-4 space-y-2">
+              {Array.isArray(attachments) &&
+                attachments.map((file, index) => (
+                  <div
+                    key={index}
+                    className="flex items-center justify-between p-2 bg-gray-700 rounded"
+                  >
+                    {typeof file === "string" ? (
+                      // For existing file URLs
+                      <a
+                        href={file}
+                        download
+                        className="text-blue-400 hover:text-blue-300"
+                      >
+                        {file.split("/").pop()}
+                      </a>
+                    ) : // For newly uploaded files
+                    file instanceof File ? (
+                      <div className="flex gap-4">
+                        <a
+                          href={URL.createObjectURL(file)}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-blue-400 hover:text-blue-300"
+                        >
+                          View {file.name}
+                        </a>
+                        <a
+                          href={URL.createObjectURL(file)}
+                          download={file.name}
+                          className="text-green-400 hover:text-green-300"
+                        >
+                          Download
+                        </a>
+                      </div>
+                    ) : (
+                      <span className="text-gray-400">Invalid file</span>
+                    )}
+                    {!viewClicked && (
+                      <button
+                        onClick={() => {
+                          const newAttachments = [...attachments];
+                          newAttachments.splice(index, 1);
+                          setAttachments(newAttachments);
+                        }}
+                        className="text-red-400 hover:text-red-300"
+                      >
+                        Delete
+                      </button>
+                    )}
+                  </div>
+                ))}
+            </div>
           </div>
 
           {viewClicked && (
