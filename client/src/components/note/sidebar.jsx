@@ -4,6 +4,7 @@ import CreateNoteForm from "./CreateNoteForm";
 import { createNote } from "../../api";
 import Notification from "./notification";
 
+
 const Sidebar = ({
   notes,
   currentNoteId,
