@@ -100,7 +100,7 @@ export default function TaskEditMenu({
     setProjectStatus("");
     setAddChronicles("");
     setTaskDesc("");
-    setAttachments("");
+    setAttachments([]);
     setChroniclesComplete("");
     setProjectTask("");
     setDependencies([""]);
@@ -140,6 +140,7 @@ export default function TaskEditMenu({
       startDate: startDate,
       dueDate: dueDate,
       projectTask: projectTask,
+      projectId: projectId,
       projectStatus: projectStatus,
       addChronicles: addChronicles,
       attachments: attachments,
@@ -267,6 +268,85 @@ export default function TaskEditMenu({
 
     toggleForm();
   };
+
+  // Add this function to handle file to base64 conversion
+  // Reference: cursor / Claude.AI prompt : "how to convert file to base64"
+  const convertFileToBase64 = (file) => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = () => resolve(reader.result);
+      reader.onerror = (error) => reject(error);
+    });
+  };
+
+  // Modify the file input handler
+  // Reference: cursor / Claude.AI prompt : "how to convert file to base64"
+  const handleFileChange = async (e) => {
+    const files = Array.from(e.target.files);
+    const base64Files = [];
+
+    const allowedTypes = [
+      "image/jpeg",
+      "image/png",
+      "image/gif",
+      "application/pdf",
+      "text/plain",
+      "application/msword",
+      "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+    ];
+
+    for (const file of files) {
+      try {
+        if (!allowedTypes.includes(file.type)) {
+          console.error(`File type ${file.type} not supported`);
+          continue;
+        }
+
+        const base64 = await convertFileToBase64(file);
+        base64Files.push({
+          name: file.name,
+          type: file.type,
+          data: base64,
+        });
+      } catch (error) {
+        console.error("Error converting file to base64:", error);
+      }
+    }
+
+    setAttachments((prev) => [...prev, ...base64Files]);
+  };
+
+  // Helper function to create viewable URL from base64
+  // Reference: cursor / Claude.AI prompt : "how to convert and display file to base64"
+  const getViewableUrl = (file) => {
+    // If it's already a base64 string with data URI prefix, use it directly
+    if (file.data?.startsWith("data:")) {
+      return file.data;
+    }
+
+    // If it's a base64 string without prefix, add the appropriate prefix
+    if (file.data && file.type) {
+      return `data:${file.type};base64,${file.data.replace(
+        /^data:.*?;base64,/,
+        ""
+      )}`;
+    }
+
+    // Fallback for other cases
+    return file.data || file;
+  };
+
+  // Helper function to get file icon/preview based on type
+  // Reference: cursor / Claude.AI prompt : "how to convert and display file to base64"
+  const getFileIcon = (fileType) => {
+    if (fileType?.includes("pdf")) return "📄";
+    if (fileType?.includes("word")) return "📝";
+    if (fileType?.includes("sheet")) return "📊";
+    if (fileType?.includes("image")) return "🖼️";
+    return "📎";
+  };
+
   return (
     <div>
       <div
@@ -697,20 +777,114 @@ export default function TaskEditMenu({
             </label>
             <input
               id="attachments"
-              value={attachments}
-              onChange={(e) => setAttachments(e.target.value)}
-              className="w-full px-4 py-2 rounded-lg placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              type="file"
+              multiple
+              onChange={handleFileChange}
+              className="w-full px-4 py-2 rounded-lg file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border file:border-gray-800 file:text-sm hover:file:bg-primary-700 file:bg-gray-300"
               style={{
                 backgroundColor: colors.primary[300],
-                color: colors.grey[200],
+                color: colors.grey[500],
               }}
-              rows={4}
-              placeholder="Enter Attachments"
+              accept=".pdf,.doc,.docx,.txt,.jpg,.jpeg,.png"
               disabled={viewClicked}
+              required="false"
             />
             {errors.attachments && (
               <div className="text-red-600">{errors.attachments}</div>
             )}
+
+            <div className="mt-4 space-y-2">
+              {Array.isArray(attachments) &&
+                attachments.map((file, index) => (
+                  <div
+                    key={index}
+                    className="flex items-center justify-between p-2 bg-gray-700 rounded"
+                  >
+                    <div className="flex gap-4 items-center">
+                      {/* File Preview/Icon */}
+                      {file.type?.startsWith("image/") ? (
+                        <img
+                          src={getViewableUrl(file)}
+                          alt={file.name}
+                          className="w-10 h-10 object-cover rounded"
+                        />
+                      ) : (
+                        <span className="text-gray-300 text-2xl">
+                          {getFileIcon(file.type)}
+                          <span className="text-sm ml-2">
+                            {file.name || `File ${index + 1}`}
+                          </span>
+                        </span>
+                      )}
+
+                      {/* Action Buttons */}
+                      <div className="flex gap-3">
+                        <button
+                          onClick={() => {
+                            const url = getViewableUrl(file);
+                            const newWindow = window.open();
+                            if (file.type?.includes("pdf")) {
+                              // For PDFs, create an embed element
+                              newWindow.document.write(`
+                                <iframe 
+                                  src="${url}" 
+                                  width="100%" 
+                                  height="100%" 
+                                  style="border: none;">
+                                </iframe>
+                              `);
+                            } else if (file.type?.startsWith("image/")) {
+                              // For images, create an img element
+                              newWindow.document.write(`
+                                <img 
+                                  src="${url}" 
+                                  style="max-width: 100%; height: auto;"
+                                />
+                              `);
+                            } else if (file.type?.includes("text")) {
+                              // For text files, fetch and display the content
+                              fetch(url)
+                                .then((response) => response.text())
+                                .then((text) => {
+                                  newWindow.document.write(`
+                                    <pre style="white-space: pre-wrap;">${text}</pre>
+                                  `);
+                                });
+                            } else {
+                              // For other files, try to display or download
+                              newWindow.location.href = url;
+                            }
+                          }}
+                          className="text-blue-400 hover:text-blue-300"
+                        >
+                          View
+                        </button>
+                        <a
+                          href={getViewableUrl(file)}
+                          download={file.name || `File ${index + 1}`}
+                          className="text-green-400 hover:text-green-300"
+                        >
+                          Download
+                        </a>
+                      </div>
+                    </div>
+
+                    {/* Delete Button */}
+                    {!viewClicked && (
+                      <button
+                        onClick={() => {
+                          const newAttachments = [...attachments];
+                          newAttachments.splice(index, 1);
+                          setAttachments(newAttachments);
+                        }}
+                        className="text-red-400 hover:text-red-300"
+                      >
+                        Delete
+                      </button>
+                    )}
+                  </div>
+                ))}
+            </div>
           </div>
 
           {viewClicked && (

@@ -424,3 +424,11 @@
   white-space: pre-wrap;
   font-size: 1rem;
 }
+
+.filter-dropdown {
+  background-color: white;
+  color: black;
+  border-radius: 4px;
+  padding: 8px;
+  font-size: 14px;
+}
