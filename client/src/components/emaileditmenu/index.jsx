@@ -40,7 +40,7 @@ export default function EmailEditMenu({
   const colors = tokens(theme.palette.mode);
 
   // All useState declarations
-  const [dimensions, setDimensions] = useState({ width: 800, height: 600 });
+  const [dimensions, setDimensions] = useState({ width: 500, height: 700 });
   const [taskId, setTaskId] = useState("");
   const [taskName, setTaskName] = useState("");
   const [projectTask, setProjectTask] = useState("");
@@ -281,6 +281,12 @@ export default function EmailEditMenu({
   // };
 
   return (
+    /**
+     * Draggable component
+     * handle is the header of the modal
+     * defaultPosition is the starting position of the modal
+     * bounds is the parent of the modal
+     */
     <Draggable
       handle=".modal-header"
       defaultPosition={{ x: 50, y: 50 }}
