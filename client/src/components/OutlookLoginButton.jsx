@@ -7,6 +7,7 @@ import Button from "@mui/material/Button";
 const LoginButton = () => {
   const handleLogin = () => {
     emailLogin();
+    console.log("Login button clicked");
   };
 
   return (

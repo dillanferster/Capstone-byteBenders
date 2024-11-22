@@ -39,6 +39,8 @@ import {
 } from "@mui/icons-material";
 import LoginButton from "../../components/OutlookLoginButton";
 import { useNavigate } from "react-router-dom";
+import EmailEditMenu from "../../components/emaileditmenu";
+import { getTasks, createTask, getProjects, addTaskToProject } from "../../api";
 
 const EmailPage = () => {
   const navigate = useNavigate();
@@ -55,7 +57,16 @@ const EmailPage = () => {
     subject: "",
     content: "",
   });
-  // const [currentFolder, setCurrentFolder] = useState("inbox");
+  const [currentFolder, setCurrentFolder] = useState("inbox");
+
+  // Email Edit Menu
+  const [isOpen, setIsOpen] = useState(false);
+  const [selectedTask, setSelectedTask] = useState("");
+  const [addClicked, setAddClicked] = useState(false);
+  const [editClicked, setEditClicked] = useState(false);
+  const [viewClicked, setViewClicked] = useState(false);
+  const [tasks, setTasks] = useState([]);
+  const [projects, setProjects] = useState([]);
 
   // hook heck login status when the component mounts
   // This is to ensure that the user is logged in before fetching emails
@@ -167,6 +178,41 @@ const EmailPage = () => {
     }
   };
 
+  /**Functions for Email Edit Menu */
+  const handleCreateTask = async () => {
+    if (!selectedEmail) return;
+    setIsOpen(true);
+    setAddClicked(true);
+    setEditClicked(false);
+    setViewClicked(false);
+    console.log("Create task clicked");
+  };
+
+  const toggleForm = () => {
+    setIsOpen(!isOpen);
+  };
+
+  useEffect(() => {
+    if (addClicked) {
+      const loadAllTasks = async () => {
+        const data = await getTasks();
+        setTasks(data);
+        console.log("Tasks:", tasks);
+      };
+
+      const loadAllProjects = async () => {
+        const data = await getProjects();
+        setProjects(data);
+        console.log("Projects:", projects);
+      };
+
+      loadAllTasks();
+      loadAllProjects();
+    }
+  }, [addClicked]);
+
+  /**End of Functions for Email Edit Menu */
+
   // // Function to handle folder change
   // const handleFolderChange = (folder) => {
   //   setCurrentFolder(folder);
@@ -202,7 +248,14 @@ const EmailPage = () => {
   }
 
   return (
-    <Box sx={{ flexGrow: 1, height: "100vh", overflow: "hidden" }}>
+    <Box
+      sx={{
+        flexGrow: 1,
+        height: "100vh",
+        overflow: "hidden",
+        // "& .modal-container": { position: "absolute", zIndex: 1300 },
+      }}
+    >
       <AppBar position="static" color="default" elevation={1}>
         <Toolbar>
           <Typography
@@ -272,224 +325,256 @@ const EmailPage = () => {
       </AppBar>
 
       {loggedIn ? (
-        <Grid container sx={{ height: "calc(100% - 64px)" }}>
-          <Grid item xs={2} sx={{ borderRight: 1, borderColor: "divider" }}>
-            <List>
-              <ListItem button>
-                <Inbox sx={{ mr: 2 }} />
-                <ListItemText primary="Inbox" />
-              </ListItem>
-              <ListItem button>
-                <Send sx={{ mr: 2 }} />
-                <ListItemText primary="Sent" />
-              </ListItem>
-              <ListItem button>
-                <Drafts sx={{ mr: 2 }} />
-                <ListItemText primary="Drafts" />
-              </ListItem>
-            </List>
-          </Grid>
-          <Grid
-            item
-            xs={4}
-            sx={{ borderRight: 1, borderColor: "divider", overflowY: "auto" }}
-          >
-            <List>
-              {emails.map((email) => (
-                <React.Fragment key={email.id}>
-                  <ListItem
-                    alignItems="flex-start"
-                    button
-                    onClick={() => handleEmailClick(email)}
-                    sx={{
-                      "&:hover": {
-                        backgroundColor: "action.hover",
-                      },
-                    }}
-                  >
-                    <ListItemText
-                      primary={
-                        <Typography
-                          variant="subtitle1"
-                          fontWeight="bold"
-                          noWrap
-                        >
-                          {email.subject}
-                        </Typography>
-                      }
-                      secondary={
-                        <React.Fragment>
-                          <Tooltip
-                            title={
-                              email.from?.emailAddress?.address ||
-                              "Unknown Email"
-                            }
-                          >
-                            <Typography
-                              sx={{ display: "inline" }}
-                              component="span"
-                              variant="body2"
-                              color="text.primary"
-                              noWrap
-                            >
-                              {email.from?.emailAddress?.name ||
-                                "Unknown Sender"}
-                            </Typography>
-                          </Tooltip>
+        <>
+          <EmailEditMenu
+            toggleForm={toggleForm}
+            isOpen={isOpen}
+            setIsOpen={setIsOpen}
+            selectedTask={selectedTask}
+            editClicked={editClicked}
+            setEditClicked={setEditClicked}
+            viewClicked={viewClicked}
+            setViewClicked={setViewClicked}
+            createTask={createTask}
+            addClicked={addClicked}
+            setAddClicked={setAddClicked}
+            tasks={tasks}
+            projects={projects}
+            addTaskToProject={addTaskToProject}
+          />
+          <Grid container sx={{ height: "calc(100% - 64px)" }}>
+            <Grid item xs={2} sx={{ borderRight: 1, borderColor: "divider" }}>
+              <List>
+                <ListItem button>
+                  <Inbox sx={{ mr: 2 }} />
+                  <ListItemText primary="Inbox" />
+                </ListItem>
+                <ListItem button>
+                  <Send sx={{ mr: 2 }} />
+                  <ListItemText primary="Sent" />
+                </ListItem>
+                <ListItem button>
+                  <Drafts sx={{ mr: 2 }} />
+                  <ListItemText primary="Drafts" />
+                </ListItem>
+              </List>
+            </Grid>
+            <Grid
+              item
+              xs={4}
+              sx={{ borderRight: 1, borderColor: "divider", overflowY: "auto" }}
+            >
+              <List>
+                {emails.map((email) => (
+                  <React.Fragment key={email.id}>
+                    <ListItem
+                      alignItems="flex-start"
+                      button
+                      onClick={() => handleEmailClick(email)}
+                      sx={{
+                        "&:hover": {
+                          backgroundColor: "action.hover",
+                        },
+                      }}
+                    >
+                      <ListItemText
+                        primary={
                           <Typography
-                            component="span"
-                            variant="body2"
-                            color="text.secondary"
+                            variant="subtitle1"
+                            fontWeight="bold"
                             noWrap
                           >
-                            {" — " + email.bodyPreview}
+                            {email.subject}
                           </Typography>
-                        </React.Fragment>
-                      }
-                    />
-                  </ListItem>
-                  <Divider component="li" />
-                </React.Fragment>
-              ))}
-            </List>
-          </Grid>
-          <Grid item xs={6} sx={{ p: 2, overflowY: "scroll" }}>
-            {selectedEmail ? (
-              <Paper elevation={1} sx={{ p: 2 }}>
-                {/* Email Header */}
-                <Typography variant="h5" fontWeight="bold" gutterBottom>
-                  {selectedEmail.subject}
-                </Typography>
-                <Box
-                  display="flex"
-                  justifyContent="space-between"
-                  alignItems="center"
-                >
-                  <Box>
-                    <Tooltip
-                      title={
-                        selectedEmail.from?.emailAddress?.address ||
-                        "Unknown Email"
-                      }
-                    >
-                      <Typography
-                        variant="subtitle1"
-                        color="text.secondary"
-                        sx={{
-                          "&:hover": {
-                            backgroundColor: "action.hover",
-                          },
-                        }}
-                      >
-                        From:{" "}
-                        {selectedEmail.from?.emailAddress?.name ||
-                          "Unknown Sender"}
-                      </Typography>
-                    </Tooltip>
-                    {selectedEmail.ccRecipients.length > 0 && (
+                        }
+                        secondary={
+                          <React.Fragment>
+                            <Tooltip
+                              title={
+                                email.from?.emailAddress?.address ||
+                                "Unknown Email"
+                              }
+                            >
+                              <Typography
+                                sx={{ display: "inline" }}
+                                component="span"
+                                variant="body2"
+                                color="text.primary"
+                                noWrap
+                              >
+                                {email.from?.emailAddress?.name ||
+                                  "Unknown Sender"}
+                              </Typography>
+                            </Tooltip>
+                            <Typography
+                              component="span"
+                              variant="body2"
+                              color="text.secondary"
+                              noWrap
+                            >
+                              {" — " + email.bodyPreview}
+                            </Typography>
+                          </React.Fragment>
+                        }
+                      />
+                    </ListItem>
+                    <Divider component="li" />
+                  </React.Fragment>
+                ))}
+              </List>
+            </Grid>
+            <Grid item xs={6} sx={{ p: 2, overflowY: "scroll" }}>
+              {selectedEmail ? (
+                <Paper elevation={1} sx={{ p: 2 }}>
+                  {/* Email Header */}
+                  <Typography variant="h5" fontWeight="bold" gutterBottom>
+                    {selectedEmail.subject}
+                  </Typography>
+                  <Box
+                    display="flex"
+                    justifyContent="space-between"
+                    alignItems="center"
+                  >
+                    <Box>
                       <Tooltip
                         title={
-                          selectedEmail.ccRecipients
+                          selectedEmail.from?.emailAddress?.address ||
+                          "Unknown Email"
+                        }
+                      >
+                        <Typography
+                          variant="subtitle1"
+                          color="text.secondary"
+                          sx={{
+                            "&:hover": {
+                              backgroundColor: "action.hover",
+                            },
+                          }}
+                        >
+                          From:{" "}
+                          {selectedEmail.from?.emailAddress?.name ||
+                            "Unknown Sender"}
+                        </Typography>
+                      </Tooltip>
+                      {selectedEmail.ccRecipients.length > 0 && (
+                        <Tooltip
+                          title={
+                            selectedEmail.ccRecipients
+                              .map(
+                                (recipient) => recipient.emailAddress.address
+                              )
+                              .join(", ") || "Unknown CC"
+                          }
+                        >
+                          <Typography
+                            variant="subtitle1"
+                            color="text.secondary"
+                          >
+                            CC:{" "}
+                            {selectedEmail.ccRecipients
+                              .map(
+                                (recipient) => recipient.emailAddress.address
+                              )
+                              .join(", ")}
+                          </Typography>
+                        </Tooltip>
+                      )}
+                      <Tooltip
+                        title={
+                          selectedEmail.toRecipients
                             .map((recipient) => recipient.emailAddress.address)
-                            .join(", ") || "Unknown CC"
+                            .join(", ") || "Unknown To"
                         }
                       >
                         <Typography variant="subtitle1" color="text.secondary">
-                          CC:{" "}
-                          {selectedEmail.ccRecipients
+                          To:{" "}
+                          {selectedEmail.toRecipients
                             .map((recipient) => recipient.emailAddress.address)
                             .join(", ")}
                         </Typography>
                       </Tooltip>
-                    )}
-                    <Tooltip
-                      title={
-                        selectedEmail.toRecipients
-                          .map((recipient) => recipient.emailAddress.address)
-                          .join(", ") || "Unknown To"
-                      }
-                    >
                       <Typography variant="subtitle1" color="text.secondary">
-                        To:{" "}
-                        {selectedEmail.toRecipients
-                          .map((recipient) => recipient.emailAddress.address)
-                          .join(", ")}
+                        Date:{" "}
+                        {selectedEmail.receivedDateTime
+                          ? new Date(
+                              selectedEmail.receivedDateTime
+                            ).toLocaleString("en-US", {
+                              day: "numeric",
+                              month: "short",
+                              year: "numeric",
+                              hour: "numeric",
+                              minute: "numeric",
+                              hour12: true,
+                            })
+                          : "Unknown Date and Time"}
                       </Typography>
-                    </Tooltip>
-                    <Typography variant="subtitle1" color="text.secondary">
-                      Date:{" "}
-                      {selectedEmail.receivedDateTime
-                        ? new Date(
-                            selectedEmail.receivedDateTime
-                          ).toLocaleString("en-US", {
-                            day: "numeric",
-                            month: "short",
-                            year: "numeric",
-                            hour: "numeric",
-                            minute: "numeric",
-                            hour12: true,
-                          })
-                        : "Unknown Date and Time"}
-                    </Typography>
+                    </Box>
+                    {/* Email Operation Buttons */}
+                    <Box>
+                      <Button
+                        color="info"
+                        onClick={handleReply}
+                        startIcon={<Send />}
+                      >
+                        Reply
+                      </Button>
+                      <Button
+                        color="primary"
+                        onClick={() => {
+                          const emailContent =
+                            selectedEmail?.body.content.replace(/<[^>]+>/g, "");
+                          navigator.clipboard
+                            .writeText(emailContent)
+                            .then(() => {
+                              console.log("Email content copied to clipboard");
+                              navigate("/emailanalysis");
+                            })
+                            .catch((err) => {
+                              console.error("Failed to copy text: ", err);
+                              alert(
+                                "Failed to copy email content. Please try again."
+                              );
+                            });
+                        }}
+                        startIcon={<Create />}
+                      >
+                        Create Project
+                      </Button>
+                      <Button
+                        color="secondary"
+                        onClick={handleCreateTask}
+                        startIcon={<Create />}
+                      >
+                        Create Task
+                      </Button>
+                      <Button
+                        color="error"
+                        onClick={handleDelete}
+                        startIcon={<Delete />}
+                      >
+                        Delete
+                      </Button>
+                    </Box>
                   </Box>
-                  {/* Email Operation Buttons */}
-                  <Box>
-                    <Button
-                      color="info"
-                      onClick={handleReply}
-                      startIcon={<Send />}
-                    >
-                      Reply
-                    </Button>
-                    <Button
-                      color="primary"
-                      onClick={() => {
-                        const emailContent =
-                          selectedEmail?.body.content.replace(/<[^>]+>/g, "");
-                        navigator.clipboard
-                          .writeText(emailContent)
-                          .then(() => {
-                            console.log("Email content copied to clipboard");
-                            navigate("/emailanalysis");
-                          })
-                          .catch((err) => {
-                            console.error("Failed to copy text: ", err);
-                            alert(
-                              "Failed to copy email content. Please try again."
-                            );
-                          });
-                      }}
-                      startIcon={<Create />}
-                    >
-                      Create Project
-                    </Button>
-                    <Button
-                      color="error"
-                      onClick={handleDelete}
-                      startIcon={<Delete />}
-                    >
-                      Delete
-                    </Button>
-                  </Box>
-                </Box>
-                <Divider sx={{ my: 2 }} />
+                  <Divider sx={{ my: 2 }} />
 
-                {/* Email Body */}
-                <div
-                  style={{ maxHeight: "500px" }}
-                  dangerouslySetInnerHTML={{
-                    __html: selectedEmail?.body.content,
-                  }}
-                />
-                {/* End of Email Body */}
-              </Paper>
-            ) : (
-              <Typography align="center" color="text.secondary">
-                Select an email to view
-              </Typography>
-            )}
+                  {/* Email Body */}
+                  <div
+                    style={{ maxHeight: "500px" }}
+                    dangerouslySetInnerHTML={{
+                      __html: selectedEmail?.body.content,
+                    }}
+                  />
+                  {/* End of Email Body */}
+                </Paper>
+              ) : (
+                <Typography align="center" color="text.secondary">
+                  Select an email to view
+                </Typography>
+              )}
+            </Grid>
           </Grid>
-        </Grid>
+        </>
       ) : (
         <Typography align="center" sx={{ mt: 4 }}>
           Please sign in to view your emails.
