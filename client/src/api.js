@@ -237,10 +237,10 @@ export async function getTask(id) {
   }
 }
 
-// creates a new project , pass in project object
+// creates a new task , pass in task object
 // async function
-// awaits axios post method, sends the HTTP request to the /project route on backend
-// passes in the project object as the request
+// awaits axios post method, sends the HTTP request to the /tasks route on backend
+// passes in the task object as the request
 // returns the response object
 export async function createTask(task) {
   try {
@@ -252,7 +252,7 @@ export async function createTask(task) {
     });
     return response;
   } catch (error) {
-    console.error("Error creating project:", error);
+    console.error("Error creating task:", error);
     throw error;
   }
 }
@@ -413,10 +413,10 @@ export async function reorderTask(taskId, newPosition, column) {
     const token = sessionStorage.getItem("User");
     const response = await axios.put(
       `${URL}/tasks/reorder`,
-      { 
-        taskId, 
-        newPosition, 
-        column 
+      {
+        taskId,
+        newPosition,
+        column,
       },
       {
         headers: {

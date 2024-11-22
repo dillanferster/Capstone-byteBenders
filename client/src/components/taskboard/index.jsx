@@ -81,6 +81,7 @@ const Column = ({
     e.dataTransfer.setData("cardObject", cardData);
   };
 
+  // Reference: cursor / Claude.AI prompt : "how to drag and drop task cards in a column"
   const handleDragOver = (e) => {
     e.preventDefault();
     setActive(true);
@@ -117,6 +118,7 @@ const Column = ({
     setDropIndicatorY(null);
   };
 
+  // Reference: cursor / Claude.AI prompt : "how to drag and drop task cards in a column"
   const handleDragEnd = async (e) => {
     e.preventDefault();
     setActive(false);
