@@ -4,7 +4,6 @@ import CreateNoteForm from "./CreateNoteForm";
 import { createNote } from "../../api";
 import Notification from "./notification";
 
-
 const Sidebar = ({
   notes,
   currentNoteId,
@@ -151,7 +150,7 @@ const Sidebar = ({
       )}
 
       {/* List of notes */}
-      <div className="notes-list">
+      <div className="notes-list" style={{ height: "inherit" }}>
         {notes.map((note) => (
           <NoteCard
             key={note._id}
