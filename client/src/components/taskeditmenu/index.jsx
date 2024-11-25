@@ -197,20 +197,24 @@ export default function TaskEditMenu({
   // Reference : PHIND , prompt : "how is that different from using .then like how i have it"
   const submitAddedTask = async () => {
     const addedTask = {
-      taskName: taskName,
-      assignedTo: assignedTo,
       projectId: projectId,
+      assignedTo: assignedTo,
+      taskName: taskName,
       taskStatus: "Not Started",
       priority: priority,
       taskCategory: taskCategory,
       startDate: startDate,
       dueDate: dueDate,
-      projectTask: projectTask,
       projectStatus: projectStatus,
+      projectTask: projectTask,
       addChronicles: addChronicles,
       taskDesc: taskDesc,
       attachments: attachments,
       chroniclesComplete: chroniclesComplete,
+      startTime: null,
+      pauseTime: null,
+      completeTime: null,
+      totalTime: null,
       dependencies: dependencies,
     };
 
