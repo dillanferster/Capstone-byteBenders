@@ -62,13 +62,13 @@ const taskSchema = Yup.object().shape({
     )
     .max(500, "Task description must not exceed 500 characters")
     .required("Task description is required"),
-  attachments: Yup.string()
-    .matches(
-      /^[a-zA-Z0-9\s.,_-]+$/,
-      "Only alphanumeric characters, spaces, dots, commas, underscores, and hyphens are allowed"
-    )
-    .max(255, "Attachments must not exceed 255 characters")
-    .required("Attachments are required"),
+  // attachments: Yup.string()
+  //   .matches(
+  //     /^[a-zA-Z0-9\s.,_-]+$/,
+  //     "Only alphanumeric characters, spaces, dots, commas, underscores, and hyphens are allowed"
+  //   )
+  //   .max(255, "Attachments must not exceed 255 characters")
+  //   .required("Attachments are required"),
   chroniclesComplete: Yup.number()
     .required("Number of completed chronicles is required")
     .positive("Must be a positive number")

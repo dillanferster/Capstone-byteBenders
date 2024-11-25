@@ -1,6 +1,6 @@
 .note-page {
   display: flex;
-  height: 100vh;
+  height: calc(100% - 50px);
   background-color: #f5f5f5;
 }
 
@@ -9,10 +9,11 @@
   background-color: #2c2c54;
   color: black;
   padding: 20px;
-  padding-left: 10px;
+  /* padding-left: 10px; */
   display: flex;
+  height: inherit;
   flex-direction: column;
-  /* overflow-y: auto; */
+  overflow-y: auto;
 }
 
 .add-note-button {
@@ -423,4 +424,12 @@
 .note-preview .content {
   white-space: pre-wrap;
   font-size: 1rem;
+}
+
+.filter-dropdown {
+  background-color: white;
+  color: black;
+  border-radius: 4px;
+  padding: 8px;
+  font-size: 14px;
 }

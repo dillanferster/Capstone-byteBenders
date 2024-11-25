@@ -84,6 +84,8 @@ taskRoutes.route("/tasks/:id").get(verifyToken, async (request, response) => {
 // References for this file are from  https://www.youtube.com/watch?v=Jcs_2jNPgtE&t=8033s
 taskRoutes.route("/tasks").post(verifyToken, async (request, response) => {
   let db = database.getDb();
+
+  // The attachments are already in base64 format from the frontend
   let mongoObject = {
     assignedTo: request.body.assignedTo,
     projectId: request.body.projectId,
@@ -97,10 +99,11 @@ taskRoutes.route("/tasks").post(verifyToken, async (request, response) => {
     projectTask: request.body.projectTask,
     addChronicles: request.body.addChronicles,
     taskDesc: request.body.taskDesc,
-    attachments: request.body.attachments,
+    attachments: request.body.attachments, // Now contains array of {name, type, data} objects
     chroniclesComplete: request.body.chroniclesComplete,
     dependencies: request.body.dependencies,
   };
+
   let data = await db.collection("FrankTask").insertOne(mongoObject);
   response.json(data);
 });
@@ -131,11 +134,12 @@ taskRoutes.route("/tasks/:id").put(verifyToken, async (request, response) => {
       projectStatus: request.body.projectStatus,
       addChronicles: request.body.addChronicles,
       taskDesc: request.body.taskDesc,
-      attachments: request.body.attachments,
+      attachments: request.body.attachments, // Now contains array of {name, type, data} objects
       chroniclesComplete: request.body.chroniclesComplete,
       dependencies: request.body.dependencies,
     },
   };
+
   let data = await db
     .collection("FrankTask")
     .updateOne({ _id: new ObjectId(request.params.id) }, mongoObject);
