@@ -6,6 +6,7 @@ import { getNotes, getTasks, updateNote, deleteNote } from "../../api"; // Impor
 import { ToastContainer, toast } from "react-toastify"; // Import Toast notifications
 import "react-toastify/dist/ReactToastify.css"; // Import Toast CSS
 import Header from "../../components/Header"; // Import Header component
+import "./notePage.css";
 
 const NotePage = () => {
   // State to store all notes fetched from the database
@@ -159,7 +160,7 @@ const NotePage = () => {
   };
 
   return (
-    <div className="m-5">
+    <div className="p-5" style={{ height: "calc(100vh - 69px)" }}>
       {/* Page Header */}
       <div display="flex" justifyContent="space-between" alignItems="center">
         <Header title="NOTES" subtitle="Personal notes" />
@@ -171,18 +172,16 @@ const NotePage = () => {
         <ToastContainer />
 
         {/* Sidebar for Notes */}
-        <div className="note-sidebar" align="center">
-          <Sidebar
-            notes={filteredNotes} // Pass filtered notes to the sidebar
-            currentNoteId={currentNoteId}
-            setCurrentNoteId={setCurrentNoteId}
-            addNote={addNote}
-            deleteNoteById={handleDeleteNote}
-          />
-        </div>
+        <Sidebar
+          notes={filteredNotes} // Pass filtered notes to the sidebar
+          currentNoteId={currentNoteId}
+          setCurrentNoteId={setCurrentNoteId}
+          addNote={addNote}
+          deleteNoteById={handleDeleteNote}
+        />
 
         {/* Note Editor/Preview Section */}
-        <div className="note-editor">
+        <div className="note-editor" style={{ height: "inherit" }}>
           {/* Header with Tabs and Filter Dropdown */}
           <div className="editor-header">
             {/* Dropdown for filtering notes by task */}
