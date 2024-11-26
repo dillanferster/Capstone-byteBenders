@@ -439,6 +439,9 @@ const TaskBoard = ({
   const [projects, setProjects] = useState([]);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
 
+  const theme = useTheme();
+  const colors = tokens(theme.palette.mode);
+
   // loads all PROJECTS from database into list
   useEffect(() => {
     async function loadAllProjects() {
@@ -474,61 +477,63 @@ const TaskBoard = ({
   }, [reloadTaskBoard]);
 
   return (
-    <div className="flex h-full w-full justify-between overflow-y-scroll mt-8  px-12 ">
-      <DeleteModal
-        isOpen={isDeleteModalOpen}
-        onClose={() => setIsDeleteModalOpen((prev) => !prev)}
-        handleButtonDelete={handleButtonDelete}
-      />
-      <Column
-        title="Not Started"
-        column="Not Started"
-        headingColor="text-red-500"
-        cards={cards}
-        setCards={setCards}
-        setIsOpen={setIsOpen}
-        setViewClicked={setViewClicked}
-        setSelectedTask={setSelectedTask}
-        setIsDeleteModalOpen={setIsDeleteModalOpen}
-      />
+    <div style={{ background: colors.primary[400] }} className="p-5 mt-4">
+      <div className="flex h-full w-full justify-between overflow-y-scroll  px-12 ">
+        <DeleteModal
+          isOpen={isDeleteModalOpen}
+          onClose={() => setIsDeleteModalOpen((prev) => !prev)}
+          handleButtonDelete={handleButtonDelete}
+        />
+        <Column
+          title="Not Started"
+          column="Not Started"
+          headingColor="text-red-500"
+          cards={cards}
+          setCards={setCards}
+          setIsOpen={setIsOpen}
+          setViewClicked={setViewClicked}
+          setSelectedTask={setSelectedTask}
+          setIsDeleteModalOpen={setIsDeleteModalOpen}
+        />
 
-      <Column
-        title="In Progress"
-        column="In Progress"
-        headingColor="text-orange-500"
-        cards={cards}
-        setCards={setCards}
-        setIsOpen={setIsOpen}
-        setViewClicked={setViewClicked}
-        setSelectedTask={setSelectedTask}
-        handleButtonStart={handleButtonStart}
-        handleButtonResume={handleButtonResume}
-        setIsDeleteModalOpen={setIsDeleteModalOpen}
-      />
-      <Column
-        title="Paused"
-        column="Paused"
-        headingColor="text-blue-500"
-        cards={cards}
-        setCards={setCards}
-        setIsOpen={setIsOpen}
-        setViewClicked={setViewClicked}
-        setSelectedTask={setSelectedTask}
-        handleButtonPause={handleButtonPause}
-        setIsDeleteModalOpen={setIsDeleteModalOpen}
-      />
-      <Column
-        title="Completed"
-        column="Completed"
-        headingColor="text-green-500"
-        cards={cards}
-        setCards={setCards}
-        setIsOpen={setIsOpen}
-        setViewClicked={setViewClicked}
-        setSelectedTask={setSelectedTask}
-        handleButtonComplete={handleButtonComplete}
-        setIsDeleteModalOpen={setIsDeleteModalOpen}
-      />
+        <Column
+          title="In Progress"
+          column="In Progress"
+          headingColor="text-orange-500"
+          cards={cards}
+          setCards={setCards}
+          setIsOpen={setIsOpen}
+          setViewClicked={setViewClicked}
+          setSelectedTask={setSelectedTask}
+          handleButtonStart={handleButtonStart}
+          handleButtonResume={handleButtonResume}
+          setIsDeleteModalOpen={setIsDeleteModalOpen}
+        />
+        <Column
+          title="Paused"
+          column="Paused"
+          headingColor="text-blue-500"
+          cards={cards}
+          setCards={setCards}
+          setIsOpen={setIsOpen}
+          setViewClicked={setViewClicked}
+          setSelectedTask={setSelectedTask}
+          handleButtonPause={handleButtonPause}
+          setIsDeleteModalOpen={setIsDeleteModalOpen}
+        />
+        <Column
+          title="Completed"
+          column="Completed"
+          headingColor="text-green-500"
+          cards={cards}
+          setCards={setCards}
+          setIsOpen={setIsOpen}
+          setViewClicked={setViewClicked}
+          setSelectedTask={setSelectedTask}
+          handleButtonComplete={handleButtonComplete}
+          setIsDeleteModalOpen={setIsDeleteModalOpen}
+        />
+      </div>
     </div>
   );
 };
