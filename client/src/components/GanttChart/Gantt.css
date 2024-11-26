@@ -1,14 +1,11 @@
-/* ProjectGantt.css */
 .gantt-task-name {
-  color: black !important; /* Change task name color to black */
+  color: black !important;
 }
 
 .gantt-task-progress {
-  color: black !important; /* Change progress text color to black */
+  color: black !important;
 }
 
 .gantt-task-dependency {
-  color: black !important; /* Change dependency text color to black */
+  color: black !important;
 }
-
-/* Add more styles as needed for other text elements */

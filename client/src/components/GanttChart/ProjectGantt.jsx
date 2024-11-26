@@ -99,7 +99,7 @@ const ProjectGantt = ({ projects: projectsProp, tasks, onTaskDoubleClick }) => {
       <div
         style={{
           height: "700px",
-          backgroundColor: "#fff",
+          backgroundColor: colors.primary[300],
           border: "1px solid #ddd",
           borderRadius: "10px",
           padding: "10px",
@@ -111,7 +111,10 @@ const ProjectGantt = ({ projects: projectsProp, tasks, onTaskDoubleClick }) => {
           onViewListChange={setIsChecked}
           isChecked={isChecked}
         />
-        <div className="gantt-task-name">
+        <div
+          className="gantt-task-name"
+          style={{ backgroundColor: colors.primary[300] }}
+        >
           <Gantt
             tasks={tasksForGantt}
             viewMode={viewMode}

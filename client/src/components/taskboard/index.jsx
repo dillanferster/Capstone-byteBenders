@@ -478,7 +478,7 @@ const TaskBoard = ({
 
   return (
     <div
-      className="flex h-full w-full justify-between overflow-y-scroll   px-12 p-4 rounded-lg"
+      className="flex h-full w-full justify-between overflow-y-scroll px-12 p-5 mt-4 rounded-lg"
       style={{ background: colors.primary[400] }}
     >
       <DeleteModal
