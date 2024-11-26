@@ -181,7 +181,7 @@ const Column = ({
     <div className="w-56 shrink-0 h-screen">
       <div
         className="mb-3 flex items-center gap-2 sticky top-0 z-[5] border-neutral-700 p-2 rounded-sm"
-        style={{ background: colors.primary[600] }}
+        style={{ background: colors.primary[300] }}
       >
         <span className="rounded text-sm text-neutral-400">
           {filteredCards.length}
@@ -315,7 +315,7 @@ const Card = ({
       <div
         className="task-card h-[10rem] mt-2 cursor-grab rounded border border-neutral-700 p-3 active:cursor-grabbing flex flex-col  justify-between active:border-violet-300/60 hover:border-violet-300/40 "
         draggable="true"
-        style={{ background: colors.primary[600] }}
+        style={{ background: colors.primary[300] }}
         onDragStart={(e) =>
           handleDragStart(e, {
             _id,
@@ -477,63 +477,64 @@ const TaskBoard = ({
   }, [reloadTaskBoard]);
 
   return (
-    <div style={{ background: colors.primary[400] }} className="p-5 mt-4">
-      <div className="flex h-full w-full justify-between overflow-y-scroll  px-12 ">
-        <DeleteModal
-          isOpen={isDeleteModalOpen}
-          onClose={() => setIsDeleteModalOpen((prev) => !prev)}
-          handleButtonDelete={handleButtonDelete}
-        />
-        <Column
-          title="Not Started"
-          column="Not Started"
-          headingColor="text-red-500"
-          cards={cards}
-          setCards={setCards}
-          setIsOpen={setIsOpen}
-          setViewClicked={setViewClicked}
-          setSelectedTask={setSelectedTask}
-          setIsDeleteModalOpen={setIsDeleteModalOpen}
-        />
+    <div
+      className="flex h-full w-full justify-between overflow-y-scroll   px-12 p-4 rounded-lg"
+      style={{ background: colors.primary[400] }}
+    >
+      <DeleteModal
+        isOpen={isDeleteModalOpen}
+        onClose={() => setIsDeleteModalOpen((prev) => !prev)}
+        handleButtonDelete={handleButtonDelete}
+      />
+      <Column
+        title="Not Started"
+        column="Not Started"
+        headingColor="text-red-500"
+        cards={cards}
+        setCards={setCards}
+        setIsOpen={setIsOpen}
+        setViewClicked={setViewClicked}
+        setSelectedTask={setSelectedTask}
+        setIsDeleteModalOpen={setIsDeleteModalOpen}
+      />
 
-        <Column
-          title="In Progress"
-          column="In Progress"
-          headingColor="text-orange-500"
-          cards={cards}
-          setCards={setCards}
-          setIsOpen={setIsOpen}
-          setViewClicked={setViewClicked}
-          setSelectedTask={setSelectedTask}
-          handleButtonStart={handleButtonStart}
-          handleButtonResume={handleButtonResume}
-          setIsDeleteModalOpen={setIsDeleteModalOpen}
-        />
-        <Column
-          title="Paused"
-          column="Paused"
-          headingColor="text-blue-500"
-          cards={cards}
-          setCards={setCards}
-          setIsOpen={setIsOpen}
-          setViewClicked={setViewClicked}
-          setSelectedTask={setSelectedTask}
-          handleButtonPause={handleButtonPause}
-          setIsDeleteModalOpen={setIsDeleteModalOpen}
-        />
-        <Column
-          title="Completed"
-          column="Completed"
-          headingColor="text-green-500"
-          cards={cards}
-          setCards={setCards}
-          setIsOpen={setIsOpen}
-          setViewClicked={setViewClicked}
-          setSelectedTask={setSelectedTask}
-          handleButtonComplete={handleButtonComplete}
-          setIsDeleteModalOpen={setIsDeleteModalOpen}
-        />
-      </div>
+      <Column
+        title="In Progress"
+        column="In Progress"
+        headingColor="text-orange-500"
+        cards={cards}
+        setCards={setCards}
+        setIsOpen={setIsOpen}
+        setViewClicked={setViewClicked}
+        setSelectedTask={setSelectedTask}
+        handleButtonStart={handleButtonStart}
+        handleButtonResume={handleButtonResume}
+        setIsDeleteModalOpen={setIsDeleteModalOpen}
+      />
+      <Column
+        title="Paused"
+        column="Paused"
+        headingColor="text-blue-500"
+        cards={cards}
+        setCards={setCards}
+        setIsOpen={setIsOpen}
+        setViewClicked={setViewClicked}
+        setSelectedTask={setSelectedTask}
+        handleButtonPause={handleButtonPause}
+        setIsDeleteModalOpen={setIsDeleteModalOpen}
+      />
+      <Column
+        title="Completed"
+        column="Completed"
+        headingColor="text-green-500"
+        cards={cards}
+        setCards={setCards}
+        setIsOpen={setIsOpen}
+        setViewClicked={setViewClicked}
+        setSelectedTask={setSelectedTask}
+        handleButtonComplete={handleButtonComplete}
+        setIsDeleteModalOpen={setIsDeleteModalOpen}
+      />
     </div>
   );
 };
