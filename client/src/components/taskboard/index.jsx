@@ -360,7 +360,7 @@ const Card = ({
         }
       >
         <div className="flex justify-between border-b border-neutral-500">
-          <p className="text-sm  " style={{ color: `${colors.primary[200]}` }}>
+          <p className="text-sm  " style={{ color: `${colors.primary[100]}` }}>
             {taskName}
           </p>
           <button
@@ -392,7 +392,7 @@ const Card = ({
           </button>
         </div>
 
-        <p className="text-sm " style={{ color: `${colors.primary[200]}` }}>
+        <p className="text-sm " style={{ color: `${colors.primary[100]}` }}>
           {taskDesc}
         </p>
         <div className="flex justify-between">
