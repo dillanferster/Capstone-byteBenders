@@ -49,6 +49,7 @@ calendarRoutes.route("/events").get(verifyToken, async (request, response) => {
       .find({
         "participants._id": userId,
       })
+      .sort({ start: 1 })
       .toArray();
 
     response.json(data || []);
