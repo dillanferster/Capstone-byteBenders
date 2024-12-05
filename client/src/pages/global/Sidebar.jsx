@@ -12,6 +12,8 @@ import PersonOutlinedIcon from "@mui/icons-material/PersonOutlined";
 import CalendarTodayOutlinedIcon from "@mui/icons-material/CalendarTodayOutlined";
 import MenuOutlinedIcon from "@mui/icons-material/MenuOutlined";
 import logomini from "../../assets/images/logomini.png";
+import { getCurrentUser } from "../../api";
+
 const Item = ({ title, to, icon, selected, setSelected }) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
@@ -40,6 +42,12 @@ const Sidebar = () => {
   const colors = tokens(theme.palette.mode);
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [selected, setSelected] = useState("Dashboard");
+  const [userRole, setUserRole] = useState("user");
+
+  getCurrentUser().then((user) => {
+    setUserRole(user.role);
+    console.log("User role:", userRole);
+  });
 
   return (
     <Box
@@ -219,20 +227,24 @@ const Sidebar = () => {
             />
 
             {/* ADMIN TOOLS */}
-            <Typography
-              variant="h6"
-              color={colors.grey[300]}
-              sx={{ m: "15px 0 5px 20px" }}
-            >
-              Admin Tools
-            </Typography>
-            <Item
-              title="Create User"
-              to="/create-user"
-              icon={<CalendarTodayOutlinedIcon />}
-              selected={selected}
-              setSelected={setSelected}
-            />
+            {userRole === "admin" && (
+              <Box>
+                <Typography
+                  variant="h6"
+                  color={colors.grey[300]}
+                  sx={{ m: "15px 0 5px 20px" }}
+                >
+                  Admin Tools
+                </Typography>
+                <Item
+                  title="Create User"
+                  to="/create-user"
+                  icon={<CalendarTodayOutlinedIcon />}
+                  selected={selected}
+                  setSelected={setSelected}
+                />
+              </Box>
+            )}
           </Box>
         </Menu>
       </ProSidebar>
