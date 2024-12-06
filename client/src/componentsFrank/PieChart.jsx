@@ -11,11 +11,16 @@ const PieChart = () => {
   const total = data.reduce((sum, entry) => sum + entry.value, 0);
 
   // Transform data to include calculated percentages
-  const dataWithPercentages = data.map((d) => ({
-    ...d,
-    formattedValue: `${Math.round((d.value / total) * 100)}%`,
-    label: `${d.id}\n${Math.round((d.value / total) * 100)}%`,
-  }));
+  const dataWithPercentages = data.map((d) => {
+    const percentage = Math.round((d.value / total) * 100);
+    return {
+      ...d,
+      originalValue: d.value, // Keep original value
+      value: d.value, // Keep the value property for Nivo
+      percentage: percentage, // Add percentage for our label
+      label: `${d.id}\n${percentage}%`, // Add formatted label
+    };
+  });
 
   return (
     <div style={{ height: "100%", minHeight: "160px" }}>
@@ -55,10 +60,9 @@ const PieChart = () => {
           modifiers: [["darker", 0.2]],
         }}
         enableArcLabels={true}
-        arcLabelsRadiusOffset={0.5}
-        arcLabelsTextColor={colors.grey[100]}
+        arcLabel={(d) => `${d.data.id}\n${d.data.percentage}%`} // Changed to access data property
+        arcLabelsTextColor="black" //{colors.grey[100]}
         arcLabelsSkipAngle={10}
-        arcLabel={(d) => d.id}
         enableArcLinkLabels={false}
         defs={[
           {
@@ -80,33 +84,6 @@ const PieChart = () => {
             spacing: 10,
           },
         ]}
-        layers={[
-          "arcs",
-          "arcLabels",
-          "arcLinkLabels",
-          "legends",
-          ({ centerX, centerY }) => {
-            return dataWithPercentages.map((datum, index) => (
-              <g
-                key={index}
-                transform={`translate(${centerX}, ${centerY})`}
-                textAnchor="middle"
-              >
-                <text
-                  y={0}
-                  style={{
-                    fontSize: "14px",
-                    fill: colors.grey[100],
-                    fontWeight: "bold",
-                  }}
-                >
-                  {datum.formattedValue}
-                </text>
-              </g>
-            ));
-          },
-        ]}
-        fit={true}
       />
     </div>
   );
