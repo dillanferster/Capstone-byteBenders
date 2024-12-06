@@ -1,5 +1,5 @@
 import React from "react";
-import { Box, useTheme } from "@mui/material";
+import { Box, useTheme, Typography } from "@mui/material";
 import PieChart from "../../componentsFrank/PieChart";
 import LineChart from "../../componentsFrank/LineChart";
 import Header from "../../components/Header";
@@ -21,7 +21,7 @@ const Analysis = () => {
         gap="20px"
       >
         {/* ROW 1 */}
-        {/* Open Tasks Section */}
+        {/* Open Tasks Section with Two Pie Charts */}
         <Box
           gridColumn="span 4"
           gridRow="span 8"
@@ -30,16 +30,35 @@ const Analysis = () => {
           display="flex"
           flexDirection="column"
         >
-          <Box
-            display="flex"
-            justifyContent="space-between"
-            alignItems="center"
-            mb={2}
-          >
-            <h3 className="text-lg font-semibold">Open Tasks</h3>
+          {/* First Pie Chart */}
+          <Box flex="1" display="flex" flexDirection="column">
+            <Typography
+              variant="h5"
+              fontWeight="600"
+              color={colors.grey[100]}
+              mb="10px"
+            >
+              User Specific Performance
+            </Typography>
+            <Box flex="1" height="45%">
+              <PieChart />
+            </Box>
           </Box>
-          <Box height="100%" width="100%">
-            <PieChart />
+
+          {/* Second Pie Chart */}
+          <Box flex="1" display="flex" flexDirection="column">
+            <Typography
+              variant="h5"
+              fontWeight="600"
+              color={colors.grey[100]}
+              mb="10px"
+              mt="10px"
+            >
+              Team Average
+            </Typography>
+            <Box flex="1" height="45%">
+              <PieChart />
+            </Box>
           </Box>
         </Box>
 
@@ -58,9 +77,9 @@ const Analysis = () => {
             alignItems="center"
             mb={2}
           >
-            <h3 className="text-lg font-semibold">
+            <Typography variant="h5" fontWeight="600" color={colors.grey[100]}>
               Productivity Versus Previous Months
-            </h3>
+            </Typography>
           </Box>
           <Box
             display="flex"
