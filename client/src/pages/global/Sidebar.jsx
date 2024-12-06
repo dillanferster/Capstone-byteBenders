@@ -243,6 +243,13 @@ const Sidebar = () => {
                   selected={selected}
                   setSelected={setSelected}
                 />
+                <Item
+                  title="Analysis Tools"
+                  to="/analysis-tools"
+                  icon={<CalendarTodayOutlinedIcon />}
+                  selected={selected}
+                  setSelected={setSelected}
+                />
               </Box>
             )}
           </Box>

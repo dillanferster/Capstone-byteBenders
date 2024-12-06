@@ -16,9 +16,10 @@ import SignUpPage from "./pages/signup/index.jsx";
 import NotePage from "./pages/note/notePage.jsx";
 import CalendarPage from "./pages/calendar";
 import DocumentationPage from "./pages/documentation";
-import CreateUserPage from "./pages/create-user/index.jsx";
 import EmailPage from "./pages/outlook/index.jsx";
 import EmailPage2 from "./pages/outlook copy/index.jsx";
+import CreateUserPage from "./pages/create-user/index.jsx";
+import AnalysisPage from "./pages/analysis/index.jsx";
 // import DashboardPage from "./pages/home/index.jsx";
 import { nanoid } from "nanoid";
 import EmailAnalysisForm from "./pages/emailanalysis/index.jsx";
@@ -89,10 +90,11 @@ const App = () => {
                 <Route path="/calendar" element={<CalendarPage />} />
                 <Route path="/note" element={<NotePage />} />
                 <Route path="/documentation" element={<DocumentationPage />} />
-                <Route path="/create-user" element={<CreateUserPage />} />
                 <Route path="/emailanalysis" element={<EmailAnalysisForm />} />
                 <Route path="/email-inbox" element={<EmailPage />} />
                 <Route path="/email-inbox2" element={<EmailPage2 />} />
+                <Route path="/create-user" element={<CreateUserPage />} />
+                <Route path="/analysis-tools" element={<AnalysisPage />} />
               </Route>
             </Routes>
           </main>
