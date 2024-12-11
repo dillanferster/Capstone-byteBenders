@@ -330,7 +330,12 @@ const Calendar = () => {
         </Box>
 
         {/* CALENDAR */}
-        <Box flex="1 1 100%" ml="15px">
+        <Box
+          flex="1 1 100%"
+          ml="15px"
+          backgroundColor={colors.primary[400]}
+          p="15px"
+        >
           <style>
             {`
               /* List view container */
@@ -374,8 +379,8 @@ const Calendar = () => {
 
               /* Button styles */
               .fc-button-primary {
-                background-color: ${colors.primary[400]} !important;
-                border-color: ${colors.primary[400]} !important;
+                background-color: ${colors.primary[300]} !important;
+                border-color: ${colors.primary[300]} !important;
                 color: ${colors.grey[100]} !important;
               }
 
