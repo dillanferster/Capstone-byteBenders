@@ -1,7 +1,4 @@
 import React from 'react';
-// reference: https://www.youtube.com/watch?v=571sn_pS4kY
-// reference: https://www.youtube.com/watch?v=571sn_pS4kYhttps://blog.danylkecha.com/react-notes-app?x-host=blog.danylkecha.com
-// reference: Chatgpt 
 
 const NoteCard = ({ note, isActive, onClick, onDelete }) => {
   const handleDelete = (e) => {
