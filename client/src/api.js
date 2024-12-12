@@ -244,15 +244,19 @@ export async function getTask(id) {
 // returns the response object
 export async function createTask(task) {
   try {
+    console.log("Sending task data to server:", task); // Add this log
     const token = sessionStorage.getItem("User"); // Retrieve the token
     const response = await axios.post(`${URL}/tasks`, task, {
       headers: {
         Authorization: `Bearer ${token}`, // Attach the token in the Authorization header
+        "Content-Type": "application/json", // Add this explicitly
       },
     });
     return response;
   } catch (error) {
-    console.error("Error creating task:", error);
+    console.error("Server Error Response:", error.response?.data); // Add detailed error logging
+    console.error("Error Status:", error.response?.status);
+    console.error("Error Headers:", error.response?.headers);
     throw error;
   }
 }

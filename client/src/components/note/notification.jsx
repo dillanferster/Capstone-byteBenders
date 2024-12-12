@@ -1,6 +1,5 @@
 import React from 'react';
 
-
 const Notification = ({ message, type, onClose }) => {
   return (
     <div className={`notification ${type}`}>

@@ -18,7 +18,6 @@ import CalendarPage from "./pages/calendar";
 import DocumentationPage from "./pages/documentation";
 import CreateUserPage from "./pages/create-user/index.jsx";
 import EmailPage from "./pages/outlook/index.jsx";
-import EmailPage2 from "./pages/outlook copy/index.jsx";
 // import DashboardPage from "./pages/home/index.jsx";
 import { nanoid } from "nanoid";
 import EmailAnalysisForm from "./pages/emailanalysis/index.jsx";
@@ -92,7 +91,6 @@ const App = () => {
                 <Route path="/create-user" element={<CreateUserPage />} />
                 <Route path="/emailanalysis" element={<EmailAnalysisForm />} />
                 <Route path="/email-inbox" element={<EmailPage />} />
-                <Route path="/email-inbox2" element={<EmailPage2 />} />
               </Route>
             </Routes>
           </main>

@@ -205,13 +205,6 @@ const Sidebar = () => {
               setSelected={setSelected}
             />
             <Item
-              title="Analyze Email"
-              to="/emailanalysis"
-              icon={<CalendarTodayOutlinedIcon />}
-              selected={selected}
-              setSelected={setSelected}
-            />
-            <Item
               title="Outlook Email"
               to="/email-inbox"
               icon={<CalendarTodayOutlinedIcon />}
@@ -219,8 +212,8 @@ const Sidebar = () => {
               setSelected={setSelected}
             />
             <Item
-              title="Outlook Email Fix"
-              to="/email-inbox2"
+              title="Analyze Email (WIP)"
+              to="/emailanalysis"
               icon={<CalendarTodayOutlinedIcon />}
               selected={selected}
               setSelected={setSelected}

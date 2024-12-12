@@ -10,13 +10,12 @@
  */
 
 import { useContext, useEffect, useState } from "react";
-import taskSchema from "../../validations/taskValidation";
-
+import taskSchema from "../validations/taskValidation";
+import { IconButton } from "@mui/material";
 import { useTheme } from "@mui/material";
-import { tokens } from "../../theme.js";
-
-export default function TaskEditMenu({
-  toggleForm,
+import { tokens } from "../theme.js";
+import { Close } from "@mui/icons-material";
+export default function EmailTaskEditMenu({
   isOpen,
   setIsOpen,
   selectedTask,
@@ -28,19 +27,22 @@ export default function TaskEditMenu({
   setAddClicked,
   editClicked,
   setEditClicked,
-  reloadTheGrid,
   projects,
   tasks,
+  reloadTheGrid,
   addTaskToProject,
   setReloadTaskBoard,
   reloadTaskBoard,
 }) {
+  // Theme hooks
+  const theme = useTheme();
+  const colors = tokens(theme.palette.mode);
+
   // * state
   const [taskId, setTaskId] = useState("");
   const [taskName, setTaskName] = useState("");
   const [projectTask, setProjectTask] = useState("");
   const [projectId, setProjectId] = useState("");
-
   const [assignedTo, setAssignedTo] = useState("");
   const [taskStatus, setTaskStatus] = useState("");
   const [priority, setPriority] = useState("");
@@ -54,10 +56,6 @@ export default function TaskEditMenu({
   const [chroniclesComplete, setChroniclesComplete] = useState("");
   const [dependencies, setDependencies] = useState([""]);
   const [errors, setErrors] = useState({});
-
-  const theme = useTheme();
-  const colors = tokens(theme.palette.mode);
-
   //*
 
   // conditional
@@ -87,6 +85,13 @@ export default function TaskEditMenu({
       clearAddInputs();
     }
   }, [selectedTask]);
+
+  // Conditional return after all hooks
+  if (!isOpen) return null;
+
+  const toggleForm = () => {
+    setIsOpen(!isOpen);
+  };
 
   function clearAddInputs() {
     setTaskId("");
@@ -159,6 +164,7 @@ export default function TaskEditMenu({
         setErrors({});
         try {
           const response = await updateTask(taskId, updatedTask);
+          console.log("response", response.status);
           if (response.status === 200) {
             await updateTaskToProject(taskId, projectTask);
 
@@ -197,6 +203,16 @@ export default function TaskEditMenu({
   // then we call reloadGrid which reloads the rows, toggleFrom closes menu, and clearInputs
   // Reference : PHIND , prompt : "how is that different from using .then like how i have it"
   const submitAddedTask = async () => {
+    // Add validation check for required fields
+    if (!taskName || !projectTask) {
+      setErrors((prev) => ({
+        ...prev,
+        submit: "Task name and project are required",
+      }));
+      console.log("Missing required fields:", { taskName, projectTask });
+      return;
+    }
+
     const addedTask = {
       taskName: taskName,
       assignedTo: assignedTo,
@@ -204,8 +220,8 @@ export default function TaskEditMenu({
       taskStatus: "Not Started",
       priority: priority,
       taskCategory: taskCategory,
-      startDate: startDate,
-      dueDate: dueDate,
+      startDate: startDate || new Date().toISOString().split("T")[0],
+      dueDate: dueDate || "",
       projectTask: projectTask,
       projectStatus: projectStatus,
       addChronicles: addChronicles,
@@ -215,27 +231,30 @@ export default function TaskEditMenu({
       dependencies: dependencies,
     };
 
+    console.log("Task data before validation:", addedTask); // Add this log
     try {
       const isValid = await taskSchema.validate(addedTask, {
         abortEarly: false,
       });
       if (isValid) {
-        console.log("data is valid");
-        setErrors({});
+        console.log("Sending task data:", addedTask);
         try {
           const response = await createTask(addedTask);
           if (response.status === 200) {
             const newTaskId = response.data.insertedId;
             console.log("New task ID:", newTaskId);
             await updateTaskToProject(newTaskId);
-            reloadTheGrid();
-            setReloadTaskBoard((prev) => !prev);
             toggleForm();
             clearAddInputs();
             setAddClicked(false);
           }
         } catch (error) {
+          console.error("Server response:", error.response?.data);
           console.error("Error creating task:", error);
+          setErrors((prev) => ({
+            ...prev,
+            submit: error.response?.data?.message || "Error creating task",
+          }));
         }
       }
     } catch (err) {
@@ -243,10 +262,6 @@ export default function TaskEditMenu({
       err.inner.forEach((error) => {
         errorMessages[error.path] = error.message;
       });
-
-      console.log(errorMessages.taskName);
-      console.log(errorMessages);
-
       setErrors((prev) => ({ ...errorMessages }));
     }
   };
@@ -260,14 +275,14 @@ export default function TaskEditMenu({
   // handles click off menu
   // closes menu and resets button states
 
-  const handleClickOff = () => {
-    setAddClicked(false);
-    setEditClicked(false);
-    setViewClicked(false);
-    reloadTheGrid();
+  //   const handleClickOff = () => {
+  //     setAddClicked(false);
+  //     setEditClicked(false);
+  //     setViewClicked(false);
+  //     reloadTheGrid();
 
-    toggleForm();
-  };
+  //     toggleForm();
+  //   };
 
   // Add this function to handle file to base64 conversion
   // Reference: cursor / Claude.AI prompt : "how to convert file to base64"
@@ -349,25 +364,31 @@ export default function TaskEditMenu({
 
   return (
     <div>
-      <div
-        className={`fixed inset-0 bg-gray-500/20 backdrop-blur-sm transition-opacity duration-300 z-[10]   ${
-          isOpen ? "opacity-100" : "opacity-0 pointer-events-none"
-        }`}
-        onClick={() => handleClickOff()}
-      />
+      <div />
 
       <div
-        className={`fixed top-0 right-0 w-full max-w-2xl h-full text-gray-100 p-8 z-[10] shadow-xl transition-transform duration-300 ease-in-out transform overflow-y-scroll ${
+        className={`fixed top-0 left-235 w-full max-w-2xl h-full text-gray-100 p-8 z-[9] shadow-xl transition-transform duration-300 ease-in-out transform overflow-y-scroll ${
           isOpen ? "translate-x-0" : "translate-x-full"
         }`}
         style={{ backgroundColor: colors.primary[400], opacity: 0.98 }}
       >
-        <h2
-          className="text-2xl font-bold mb-4"
-          style={{ color: colors.grey[100] }}
-        >
-          Task
-        </h2>
+        <div className="flex justify-between items-center mb-4">
+          <h2
+            className="text-2xl font-bold"
+            style={{ color: colors.grey[100] }}
+          >
+            Add Task
+          </h2>
+          <IconButton
+            onClick={() => {
+              toggleForm();
+              clearAddInputs();
+            }}
+            sx={{ color: colors.grey[100] }}
+          >
+            <Close />
+          </IconButton>
+        </div>
 
         <form className="space-y-6">
           <div className="flex justify-between">
