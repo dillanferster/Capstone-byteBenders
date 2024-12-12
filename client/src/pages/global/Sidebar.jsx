@@ -4,13 +4,16 @@ import { Box, IconButton, Typography, useTheme } from "@mui/material";
 import { Link } from "react-router-dom";
 import "react-pro-sidebar/dist/css/styles.css";
 import { tokens } from "../../theme";
-import HomeOutlinedIcon from "@mui/icons-material/HomeOutlined";
-import PeopleOutlinedIcon from "@mui/icons-material/PeopleOutlined";
-import ContactsOutlinedIcon from "@mui/icons-material/ContactsOutlined";
-import ReceiptOutlinedIcon from "@mui/icons-material/ReceiptOutlined";
-import PersonOutlinedIcon from "@mui/icons-material/PersonOutlined";
-import CalendarTodayOutlinedIcon from "@mui/icons-material/CalendarTodayOutlined";
 import MenuOutlinedIcon from "@mui/icons-material/MenuOutlined";
+import HomeOutlinedIcon from "@mui/icons-material/HomeOutlined";
+import FolderOutlinedIcon from "@mui/icons-material/FolderOutlined";
+import AssignmentOutlinedIcon from "@mui/icons-material/AssignmentOutlined";
+import CalendarTodayOutlinedIcon from "@mui/icons-material/CalendarTodayOutlined";
+import DescriptionOutlinedIcon from "@mui/icons-material/DescriptionOutlined";
+import LibraryBooksOutlinedIcon from "@mui/icons-material/LibraryBooksOutlined";
+import EmailOutlinedIcon from "@mui/icons-material/EmailOutlined";
+import AnalyticsOutlinedIcon from "@mui/icons-material/AnalyticsOutlined";
+import PersonAddOutlinedIcon from "@mui/icons-material/PersonAddOutlined";
 import logomini from "../../assets/images/logomini.png";
 import { getCurrentUser } from "../../api";
 
@@ -163,14 +166,14 @@ const Sidebar = () => {
             <Item
               title="Projects"
               to="/project"
-              icon={<PeopleOutlinedIcon />}
+              icon={<FolderOutlinedIcon />}
               selected={selected}
               setSelected={setSelected}
             />
             <Item
               title="Tasks"
               to="/task"
-              icon={<ContactsOutlinedIcon />}
+              icon={<AssignmentOutlinedIcon />}
               selected={selected}
               setSelected={setSelected}
             />
@@ -186,35 +189,35 @@ const Sidebar = () => {
             <Item
               title="Calendar"
               to="/calendar"
-              icon={<ReceiptOutlinedIcon />}
+              icon={<CalendarTodayOutlinedIcon />}
               selected={selected}
               setSelected={setSelected}
             />
             <Item
               title="Notes"
               to="/note"
-              icon={<PersonOutlinedIcon />}
+              icon={<DescriptionOutlinedIcon />}
               selected={selected}
               setSelected={setSelected}
             />
             <Item
               title="Documentation"
               to="/documentation"
-              icon={<CalendarTodayOutlinedIcon />}
+              icon={<LibraryBooksOutlinedIcon />}
               selected={selected}
               setSelected={setSelected}
             />
             <Item
               title="Outlook Email"
               to="/email-inbox"
-              icon={<CalendarTodayOutlinedIcon />}
+              icon={<EmailOutlinedIcon />}
               selected={selected}
               setSelected={setSelected}
             />
             <Item
               title="Analyze Email (WIP)"
               to="/emailanalysis"
-              icon={<CalendarTodayOutlinedIcon />}
+              icon={<EmailOutlinedIcon />}
               selected={selected}
               setSelected={setSelected}
             />
@@ -232,7 +235,7 @@ const Sidebar = () => {
                 <Item
                   title="Create User"
                   to="/create-user"
-                  icon={<CalendarTodayOutlinedIcon />}
+                  icon={<PersonAddOutlinedIcon />}
                   selected={selected}
                   setSelected={setSelected}
                 />
