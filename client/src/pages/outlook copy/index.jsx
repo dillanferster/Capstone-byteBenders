@@ -35,6 +35,7 @@ import {
 import LoginButton from "../../components/OutlookLoginButton";
 import { useNavigate } from "react-router-dom";
 import EmailEditMenu from "../../components/emaileditmenu";
+import EmailTaskEditMenu from "../../components/emailtaskeditmenu";
 import Header from "../../components/Header";
 import {
   getTasks,
@@ -290,7 +291,23 @@ const EmailPage2 = () => {
     >
       {isOpen ? (
         <>
-          <EmailEditMenu
+          {/* <EmailEditMenu
+            toggleForm={toggleForm}
+            isOpen={isOpen}
+            setIsOpen={setIsOpen}
+            selectedTask={selectedTask}
+            createTask={createTask}
+            viewClicked={viewClicked}
+            setViewClicked={setViewClicked}
+            addClicked={addClicked}
+            setAddClicked={setAddClicked}
+            editClicked={editClicked}
+            setEditClicked={setEditClicked}
+            projects={projects}
+            tasks={tasks}
+            addTaskToProjeFct={addTaskToProject}
+          /> */}
+          <EmailTaskEditMenu
             toggleForm={toggleForm}
             isOpen={isOpen}
             setIsOpen={setIsOpen}
@@ -305,6 +322,7 @@ const EmailPage2 = () => {
             projects={projects}
             tasks={tasks}
             addTaskToProject={addTaskToProject}
+            reloadTheGrid={() => handleGetEmails()}
           />
           <div
             display="flex"
