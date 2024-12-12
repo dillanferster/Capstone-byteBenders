@@ -181,7 +181,7 @@ const Column = ({
     <div className="w-56 shrink-0 h-screen">
       <div
         className="mb-3 flex items-center gap-2 sticky top-0 z-[5] border-neutral-700 p-2 rounded-sm"
-        style={{ background: colors.primary[600] }}
+        style={{ background: colors.primary[300] }}
       >
         <span className="rounded text-sm text-neutral-400">
           {filteredCards.length}
@@ -315,7 +315,7 @@ const Card = ({
       <div
         className="task-card h-[10rem] mt-2 cursor-grab rounded border border-neutral-700 p-3 active:cursor-grabbing flex flex-col  justify-between active:border-violet-300/60 hover:border-violet-300/40 "
         draggable="true"
-        style={{ background: colors.primary[600] }}
+        style={{ background: colors.primary[300] }}
         onDragStart={(e) =>
           handleDragStart(e, {
             _id,
@@ -360,7 +360,7 @@ const Card = ({
         }
       >
         <div className="flex justify-between border-b border-neutral-500">
-          <p className="text-sm  " style={{ color: `${colors.primary[200]}` }}>
+          <p className="text-sm  " style={{ color: `${colors.primary[100]}` }}>
             {taskName}
           </p>
           <button
@@ -392,7 +392,7 @@ const Card = ({
           </button>
         </div>
 
-        <p className="text-sm " style={{ color: `${colors.primary[200]}` }}>
+        <p className="text-sm " style={{ color: `${colors.primary[100]}` }}>
           {taskDesc}
         </p>
         <div className="flex justify-between">
@@ -439,6 +439,9 @@ const TaskBoard = ({
   const [projects, setProjects] = useState([]);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
 
+  const theme = useTheme();
+  const colors = tokens(theme.palette.mode);
+
   // loads all PROJECTS from database into list
   useEffect(() => {
     async function loadAllProjects() {
@@ -474,7 +477,10 @@ const TaskBoard = ({
   }, [reloadTaskBoard]);
 
   return (
-    <div className="flex h-full w-full justify-between overflow-y-scroll mt-8  px-12 ">
+    <div
+      className="flex h-full w-full justify-between overflow-y-scroll px-12 p-4 rounded-lg"
+      style={{ background: colors.primary[400] }}
+    >
       <DeleteModal
         isOpen={isDeleteModalOpen}
         onClose={() => setIsDeleteModalOpen((prev) => !prev)}

@@ -6,12 +6,11 @@
 
 .note-sidebar {
   width: 300px;
-  background-color: #2c2c54;
-  color: black;
+  background-color: rgba(29, 39, 58, 0.998);  color: black;
   padding: 20px;
   /* padding-left: 10px; */
   display: flex;
-  height: inherit;
+  height: 100%;
   flex-direction: column;
   overflow-y: auto;
 }
@@ -337,6 +336,7 @@
 
 .add-task-note-button {
   background-color: #2196f3; /* Different color for task note button */
+  margin-bottom: 10px;
 }
 
 .add-note-button:hover {

@@ -789,7 +789,7 @@ const TaskPage = () => {
       <div display="flex" justifyContent="space-between" alignItems="center">
         <Header title="TASKS" subtitle="Welcome to your dashboard" />
       </div>
-      <div className=" pb-[1rem] flex justify-between   w-full">
+      <div className=" pb-[1rem] flex justify-between w-full ">
         {" "}
         <Button
           variant="contained"

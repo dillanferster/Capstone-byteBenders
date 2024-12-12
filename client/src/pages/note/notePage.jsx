@@ -7,7 +7,9 @@ import { ToastContainer, toast } from "react-toastify"; // Import Toast notifica
 import "react-toastify/dist/ReactToastify.css"; // Import Toast CSS
 import Header from "../../components/Header"; // Import Header component
 import "./notePage.css";
-
+// reference: https://www.youtube.com/watch?v=571sn_pS4kY
+// reference: https://www.youtube.com/watch?v=571sn_pS4kYhttps://blog.danylkecha.com/react-notes-app?x-host=blog.danylkecha.com
+// reference: Chatgpt
 const NotePage = () => {
   // State to store all notes fetched from the database
   const [notes, setNotes] = useState([]);
@@ -181,7 +183,7 @@ const NotePage = () => {
         />
 
         {/* Note Editor/Preview Section */}
-        <div className="note-editor" style={{ height: "inherit" }}>
+        <div className="note-editor" style={{ height: "100%" }}>
           {/* Header with Tabs and Filter Dropdown */}
           <div className="editor-header">
             {/* Dropdown for filtering notes by task */}
