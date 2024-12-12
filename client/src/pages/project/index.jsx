@@ -135,6 +135,15 @@ const ProjectPage = () => {
   const [editClicked, setEditClicked] = useState(false); // for add button
   const [deleteOpen, setDeleteOpen] = useState(false); // for dlt btn
   const [showGantt, setShowGantt] = useState(false); // Add this new state
+  const [filterType, setFilterType] = useState("none");
+  const [filterValue, setFilterValue] = useState("");
+  const [availableStatuses] = useState([
+    "Not Started",
+    "In Progress",
+    "Complete",
+    "Storage",
+    // Add other status values your system uses
+  ]);
   // const socket = useSocket();
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
@@ -357,12 +366,33 @@ const ProjectPage = () => {
   //   updateProject(task.project, projects);
   // };
 
+  const getFilteredProjects = () => {
+    if (!filterType || !filterValue) return projects;
+
+    return projects.filter((project) => {
+      switch (filterType) {
+        case "projectStatus":
+          return project.projectStatus
+            .toLowerCase()
+            .includes(filterValue.toLowerCase());
+        case "assignedTo":
+          return project.assignedTo
+            .toLowerCase()
+            .includes(filterValue.toLowerCase());
+        case "caseId":
+          return project.caseId.toString().includes(filterValue);
+        default:
+          return true;
+      }
+    });
+  };
+
   return (
     <div className="p-5">
       <div display="flex" justifyContent="space-between" alignItems="center">
         <Header title="PROJECTS" subtitle="Projects pages" />
       </div>
-      <div className=" pb-[1rem] flex justify-between   w-full">
+      <div className="pb-4 flex justify-between w-full">
         <div className="flex gap-4">
           <Button
             variant="contained"
@@ -378,6 +408,73 @@ const ProjectPage = () => {
           >
             {showGantt ? "Show List View" : "Show Gantt View"}
           </Button>
+          {showGantt && (
+            <div className="flex gap-4 items-center">
+              <select
+                value={filterType}
+                onChange={(e) => setFilterType(e.target.value)}
+                className="px-4 py-2 rounded-lg min-w-[150px]"
+                style={{
+                  backgroundColor: colors.primary[400],
+                  color: colors.grey[100],
+                }}
+              >
+                <option value="" disabled>
+                  Filter By
+                </option>
+                <option value="none">No Filter</option>
+                <option value="projectStatus">Project Status</option>
+                <option value="assignedTo">Assigned To</option>
+                <option value="caseId">Case ID</option>
+              </select>
+
+              {filterType === "projectStatus" ? (
+                <select
+                  value={filterValue}
+                  onChange={(e) => setFilterValue(e.target.value)}
+                  className="px-4 py-2 rounded-lg min-w-[150px]"
+                  style={{
+                    backgroundColor: colors.primary[400],
+                    color: colors.grey[100],
+                  }}
+                >
+                  <option value="">Select Status</option>
+                  {availableStatuses.map((status) => (
+                    <option key={status} value={status}>
+                      {status}
+                    </option>
+                  ))}
+                </select>
+              ) : (
+                filterType !== "none" && (
+                  <input
+                    type="text"
+                    value={filterValue}
+                    onChange={(e) => setFilterValue(e.target.value)}
+                    placeholder={`Filter by ${filterType}...`}
+                    className="px-4 py-2 rounded-lg"
+                    style={{
+                      backgroundColor: colors.primary[400],
+                      color: colors.grey[100],
+                    }}
+                  />
+                )
+              )}
+
+              {filterType !== "none" && filterValue && (
+                <Button
+                  variant="outlined"
+                  color="secondary"
+                  onClick={() => {
+                    setFilterType("none");
+                    setFilterValue("");
+                  }}
+                >
+                  Clear Filter
+                </Button>
+              )}
+            </div>
+          )}
         </div>
         <div className="flex gap-4">
           {deleteOpen && (
@@ -472,8 +569,14 @@ const ProjectPage = () => {
         </>
       ) : (
         <>
+          {showGantt && filterType !== "none" && (
+            <div className="mb-2 text-sm" style={{ color: colors.grey[100] }}>
+              Showing {getFilteredProjects().length} of {projects.length}{" "}
+              projects
+            </div>
+          )}
           <ProjectGantt
-            projects={projects}
+            projects={getFilteredProjects()}
             tasks={tasks}
             // onTaskDateChange={handleTaskDateChange}
             onTaskDoubleClick={handleOpenGanttViewMenu}
