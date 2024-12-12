@@ -123,7 +123,7 @@ userRoutes.route("/users/login").post(async (request, response) => {
     );
     if (confirmation) {
       // generate JWT token for this login session
-      const token = jwt.sign(user, secretKey, { expiresIn: "1h" }); // token expires in 1 hour
+      const token = jwt.sign(user, secretKey, { expiresIn: "3h" }); // token expires in 1 hour
       response.json({ success: true, token, message: "User exists" }); // return token to client
     } else {
       response.json({ success: false, message: "Incorrect password" });
