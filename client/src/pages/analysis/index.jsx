@@ -145,7 +145,7 @@ const Analysis = () => {
               User Specific Performance
             </Typography>
             <Box flex="1" height="45%">
-              <PieChart />
+              <PieChart data={tasks} isUserSpecific={true} userId="Alex" />
             </Box>
           </Box>
 
@@ -161,7 +161,7 @@ const Analysis = () => {
               Team Average
             </Typography>
             <Box flex="1" height="45%">
-              <PieChart />
+              <PieChart data={tasks} isUserSpecific={false} />
             </Box>
           </Box>
         </Box>

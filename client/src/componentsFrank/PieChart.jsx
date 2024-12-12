@@ -1,24 +1,53 @@
 import { ResponsivePie } from "@nivo/pie";
 import { tokens } from "../theme";
 import { useTheme } from "@mui/material";
-import { mockPieData as data } from "../data/mockData";
 
-const PieChart = () => {
+const PieChart = ({ data, isUserSpecific = false, userId = "Alex" }) => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
 
-  // Calculate total value
-  const total = data.reduce((sum, entry) => sum + entry.value, 0);
+  if (!data) return <div>Loading...</div>;
 
-  // Transform data to include calculated percentages
-  const dataWithPercentages = data.map((d) => {
+  // Filter data based on whether it's user specific or team view
+  const filteredData = isUserSpecific
+    ? data.filter((task) => task.assignedTo === userId)
+    : data;
+
+  // Transform tasks data into the format needed for the pie chart
+  const chartData = [
+    {
+      id: "Completed",
+      value: filteredData.filter((task) => task.taskStatus === "Completed")
+        .length,
+      color: colors.greenAccent[500],
+    },
+    {
+      id: "In Progress",
+      value: filteredData.filter(
+        (task) =>
+          task.taskStatus === "In Progress" || task.taskStatus === "Paused"
+      ).length,
+      color: colors.blueAccent[400],
+    },
+    {
+      id: "Not Started",
+      value: filteredData.filter((task) => task.taskStatus === "Not Started")
+        .length,
+      color: colors.blueAccent[400],
+    },
+  ];
+
+  // Only proceed if we have values
+  const total = chartData.reduce((sum, entry) => sum + entry.value, 0);
+  if (total === 0) return <div>No data to display</div>;
+
+  // Add percentages to the data
+  const dataWithPercentages = chartData.map((d) => {
     const percentage = Math.round((d.value / total) * 100);
     return {
       ...d,
-      originalValue: d.value, // Keep original value
-      value: d.value, // Keep the value property for Nivo
-      percentage: percentage, // Add percentage for our label
-      label: `${d.id}\n${percentage}%`, // Add formatted label
+      value: d.value,
+      percentage: percentage,
     };
   });
 
@@ -60,10 +89,11 @@ const PieChart = () => {
           modifiers: [["darker", 0.2]],
         }}
         enableArcLabels={true}
-        arcLabel={(d) => `${d.data.id}\n${d.data.percentage}%`} // Changed to access data property
-        arcLabelsTextColor="black" //{colors.grey[100]}
+        arcLabel={(d) => `${d.data.id}\n${d.data.percentage}%`}
+        arcLabelsTextColor={colors.grey[100]}
         arcLabelsSkipAngle={10}
         enableArcLinkLabels={false}
+        colors={({ data }) => data.color}
         defs={[
           {
             id: "dots",
