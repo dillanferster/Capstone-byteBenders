@@ -1,11 +1,9 @@
 # Planzo
+<div align="center">
+  <img src="https://github.com/user-attachments/assets/73f7188d-362f-4dec-9c73-02e774fc1e64" alt="Planzo Logo" width="50%">
+</div>
 
-## by ByteBenders
-
-## README TEMPLATE
-
-## Table of Contents
-
+## Directory
 - [Introduction](#introduction)
 - [Features](#features)
 - [Installation](#installation)
@@ -14,9 +12,7 @@
 - [Technologies Used](#technologies-used)
 
 ## Introduction
-
-Welcome to Planzo! This web application is designed to [brief description of what the application does].
-
+Planzo is a project management web application that helps teams collaborate on projects, track tasks, and monitor real-time progress. With an intuitive dashboard, Planzo enables teams of any size to organize work efficiently and meet deadlines effectively.
 ## Features
 
 ### All-in-One Dashboard:
@@ -56,7 +52,4 @@ This project is licensed under the [MIT License](LICENSE).
 - **Backend**: Node.js, Express
 - **Database**: MongoDB
 - **Email API**: Microsoft Graph API
-- **Natural Processing Language Model**: AWS Comprehend 
-
-
-
+- **Natural Processing Language Model**: AWS Comprehend
