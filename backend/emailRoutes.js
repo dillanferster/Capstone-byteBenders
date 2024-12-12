@@ -76,7 +76,7 @@ emailRoutes.route("/email-inbox/callback").get(async (req, res) => {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production", // // only use secure connection in production environment
       sameSite: "strict", // prevents cookie to be sent with corss-site request - prevent CSRF attacks (forgery)
-      maxAge: 3600000, // 1 hour (in milliseconds) - cookie expiration duration
+      maxAge: 10800000, // 3 hour (in milliseconds) - cookie expiration duration
     });
 
     res.redirect("http://localhost:5173/email-inbox/"); // Redirect user to the main email inbox page
