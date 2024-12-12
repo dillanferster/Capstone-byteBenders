@@ -498,10 +498,18 @@ const EmailPage = () => {
                   <Grid2
                     item
                     size={7}
-                    sx={{ p: 2, overflowY: "auto", height: "100%" }}
+                    sx={{
+                      p: 2,
+                      overflowY: "auto",
+                      height: "100%",
+                      backgroundColor: colors.primary[400],
+                    }}
                   >
                     {selectedEmail ? (
-                      <Paper elevation={1} sx={{ p: 2 }}>
+                      <Paper
+                        elevation={1}
+                        sx={{ p: 2, backgroundColor: colors.primary[400] }}
+                      >
                         {/* Email Header */}
                         <Typography variant="h5" fontWeight="bold" gutterBottom>
                           {selectedEmail.subject}
